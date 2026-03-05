@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HomeSphere — Kenya's Verified Real Estate Ecosystem</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:      #0F1A14;
+  --forest:   #1B3028;
+  --terra:    #B85C38;
+  --terra-lt: #D4714A;
+  --ivory:    #FDFAF5;
+  --mist:     rgba(253,250,245,0.05);
+  --mist-md:  rgba(253,250,245,0.10);
+}
+
+html, body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--ink);
+  color: var(--ivory);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 999; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* ── NAV — one action only ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 24px 60px;
+}
+.logo {
+  display: flex; align-items: center; gap: 9px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 700; color: var(--ivory);
+  text-decoration: none;
+}
+.logo-mark {
+  width: 30px; height: 30px; border-radius: 6px;
+  background: var(--terra);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700; color: white;
+  font-family: 'Cormorant Garamond', serif;
+}
+.nav-signin {
+  font-size: 13px; font-weight: 400;
+  color: rgba(253,250,245,.4);
+  background: none; border: none; cursor: pointer;
+  transition: color .2s;
+}
+.nav-signin:hover { color: var(--ivory); }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 800px; height: 800px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -56%);
+  background: radial-gradient(ellipse, rgba(45,74,62,.55) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.hero-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(253,250,245,.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(253,250,245,.02) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 700px;
+  display: flex; flex-direction: column;
+  align-items: center;
+}
+
+.manifesto-tag {
+  display: inline-flex; align-items: center; gap: 9px;
+  border: 1px solid rgba(184,92,56,.35);
+  background: rgba(184,92,56,.07);
+  border-radius: 40px; padding: 6px 16px 6px 11px;
+  margin-bottom: 40px;
+  opacity: 0; animation: rise .6s .1s forwards;
+}
+.m-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--terra); flex-shrink: 0;
+  box-shadow: 0 0 7px var(--terra);
+  animation: breathe 2.5s 1s infinite;
+}
+.m-text {
+  font-size: 11px; font-weight: 500; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--terra-lt);
+}
+@keyframes breathe {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:.4; transform:scale(.75); }
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(54px, 7.5vw, 90px);
+  font-weight: 700; line-height: 1.0;
+  letter-spacing: -.025em;
+  color: var(--ivory); margin-bottom: 28px;
+  opacity: 0; animation: rise .7s .28s forwards;
+}
+h1 em {
+  font-style: italic; color: var(--terra); display: block;
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2vw, 18px);
+  font-weight: 300; line-height: 1.75;
+  color: rgba(253,250,245,.52);
+  max-width: 500px; margin-bottom: 52px;
+  opacity: 0; animation: rise .7s .44s forwards;
+}
+.hero-sub strong { color: rgba(253,250,245,.82); font-weight: 500; }
+
+/* Single CTA */
+.hero-cta {
+  opacity: 0; animation: rise .7s .58s forwards;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+.btn-single {
+  background: var(--terra); color: white;
+  border: none; border-radius: 7px;
+  padding: 18px 56px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px; font-weight: 500;
+  cursor: pointer; transition: all .28s;
+  display: inline-flex; align-items: center; gap: 12px;
+}
+.btn-single:hover {
+  background: var(--terra-lt); transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(184,92,56,.45);
+}
+.btn-single svg { width: 16px; height: 16px; transition: transform .25s; }
+.btn-single:hover svg { transform: translateX(4px); }
+.cta-micro {
+  font-size: 12px; color: rgba(253,250,245,.26); letter-spacing: .02em;
+}
+
+/* Proof */
+.proof-row {
+  display: flex; align-items: center;
+  margin-top: 80px;
+  border-top: 1px solid var(--mist-md);
+  padding-top: 40px;
+  opacity: 0; animation: rise .7s .78s forwards;
+}
+.proof-item {
+  text-align: center; padding: 0 44px;
+  border-right: 1px solid var(--mist-md);
+}
+.proof-item:last-child { border-right: none; }
+.proof-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px; font-weight: 700; color: var(--ivory); line-height: 1;
+}
+.proof-num span { color: var(--terra); }
+.proof-label {
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: rgba(253,250,245,.28); margin-top: 5px;
+}
+
+/* ── ROLE GATE ── */
+.role-gate {
+  position: fixed; inset: 0; z-index: 300;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 24px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s ease;
+}
+.role-gate.visible { opacity: 1; pointer-events: all; }
+
+.gate-back {
+  position: absolute; top: 28px; left: 40px;
+  background: none; border: none; cursor: pointer;
+  color: rgba(253,250,245,.3); font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  display: flex; align-items: center; gap: 7px;
+  transition: color .2s;
+}
+.gate-back:hover { color: var(--ivory); }
+.gate-back svg { width: 14px; height: 14px; }
+
+.gate-eyebrow {
+  font-size: 11px; font-weight: 500; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--terra);
+  margin-bottom: 14px;
+}
+.gate-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(30px, 5vw, 50px); font-weight: 700;
+  color: var(--ivory); text-align: center;
+  line-height: 1.1; margin-bottom: 10px;
+}
+.gate-sub {
+  font-size: 15px; font-weight: 300;
+  color: rgba(253,250,245,.4);
+  margin-bottom: 48px; text-align: center;
+}
+
+.role-cards {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 12px; width: 100%; max-width: 580px;
+}
+.role-card {
+  background: var(--mist);
+  border: 1px solid var(--mist-md);
+  border-radius: 10px; padding: 26px 22px;
+  cursor: pointer; transition: all .22s; text-align: left;
+}
+.role-card:hover {
+  background: rgba(253,250,245,.08);
+  border-color: rgba(253,250,245,.18);
+  transform: translateY(-2px);
+}
+.role-card:hover .rc-arrow { opacity: 1; transform: translateX(0); }
+.rc-icon { font-size: 24px; margin-bottom: 14px; }
+.rc-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px; font-weight: 700; color: var(--ivory); margin-bottom: 6px;
+}
+.rc-desc {
+  font-size: 12px; font-weight: 300;
+  color: rgba(253,250,245,.38); line-height: 1.55;
+}
+.rc-arrow {
+  margin-top: 14px; color: var(--terra);
+  font-size: 17px; opacity: 0;
+  transform: translateX(-6px);
+  transition: all .22s; display: block;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  nav { padding: 20px 24px; }
+  .role-cards { grid-template-columns: 1fr; }
+  .proof-row { flex-wrap: wrap; justify-content: center; }
+  .proof-item { border-right: none; padding: 12px 24px; }
+  .gate-back { left: 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-mark">H</div>
+    HomeSphere
+  </a>
+  <button class="nav-signin">Sign In</button>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+
+    <div class="manifesto-tag">
+      <div class="m-dot"></div>
+      <span class="m-text">Real estate deserves a trust layer</span>
+    </div>
+
+    <h1>
+      From First Search
+      <em>to Fully Settled.</em>
+    </h1>
+
+    <p class="hero-sub">
+      HomeSphere is Kenya's verified real estate ecosystem —
+      <strong>every listing, agent, developer, and service provider accountable</strong>,
+      with AI guiding you every step of the way.
+    </p>
+
+    <div class="hero-cta">
+      <button class="btn-single" onclick="openGate()">
+        Get Started
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <span class="cta-micro">Free to join &nbsp;·&nbsp; No fee to browse &nbsp;·&nbsp; Verified only</span>
+    </div>
+
+    <div class="proof-row">
+      <div class="proof-item">
+        <div class="proof-num">4,800<span>+</span></div>
+        <div class="proof-label">Verified Listings</div>
+      </div>
+      <div class="proof-item">
+        <div class="proof-num">1,200<span>+</span></div>
+        <div class="proof-label">Verified Agents</div>
+      </div>
+      <div class="proof-item">
+        <div class="proof-num">Zero</div>
+        <div class="proof-label">Unverified Listings</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SCREEN 2 — Role Gate -->
+<div class="role-gate" id="roleGate">
+
+  <button class="gate-back" onclick="closeGate()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    Back
+  </button>
+
+  <p class="gate-eyebrow">Welcome to HomeSphere</p>
+  <h2 class="gate-heading">How are you joining us?</h2>
+  <p class="gate-sub">We'll personalise your experience from here.</p>
+
+  <div class="role-cards">
+    <div class="role-card" onclick="goTo('buyer')">
+      <div class="rc-icon">🏠</div>
+      <div class="rc-title">I'm a Buyer or Renter</div>
+      <div class="rc-desc">Find verified listings and connect with trusted agents across Kenya.</div>
+      <span class="rc-arrow">→</span>
+    </div>
+    <div class="role-card" onclick="goTo('agent')">
+      <div class="rc-icon">🤝</div>
+      <div class="rc-title">I'm an Agent</div>
+      <div class="rc-desc">Get verified, build your profile, and reach serious buyers — not tyre-kickers.</div>
+      <span class="rc-arrow">→</span>
+    </div>
+    <div class="role-card" onclick="goTo('developer')">
+      <div class="rc-icon">🏗️</div>
+      <div class="rc-title">I'm a Developer</div>
+      <div class="rc-desc">List your development, reach qualified buyers, and pre-sell with confidence.</div>
+      <span class="rc-arrow">→</span>
+    </div>
+    <div class="role-card" onclick="goTo('service')">
+      <div class="rc-icon">🔧</div>
+      <div class="rc-title">I'm a Service Provider</div>
+      <div class="rc-desc">Get found by buyers and agents who need movers, designers, lawyers, and more.</div>
+      <span class="rc-arrow">→</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function openGate() {
+  document.getElementById('roleGate').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+function closeGate() {
+  document.getElementById('roleGate').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+function goTo(role) {
+  alert('Routing to ' + role + ' onboarding — connect your signup flow here.');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeGate();
+});
+</script>
+</body>
+</html>

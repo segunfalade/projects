@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HomeSphere — Kenya's Verified Real Estate Ecosystem</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:      #0F1A14;
+  --forest:   #1B3028;
+  --moss:     #2D4A3E;
+  --terra:    #B85C38;
+  --terra-lt: #D4714A;
+  --amber:    #C9913A;
+  --sand:     #F2EBE0;
+  --ivory:    #FDFAF5;
+  --mist:     rgba(253,250,245,0.06);
+  --mist-md:  rgba(253,250,245,0.12);
+  --mist-hi:  rgba(253,250,245,0.70);
+}
+
+html, body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--ink);
+  color: var(--ivory);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Noise texture overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 60px;
+  border-bottom: 1px solid transparent;
+  transition: all .4s;
+}
+nav.scrolled {
+  background: rgba(15,26,20,.94);
+  border-bottom-color: var(--mist-md);
+  backdrop-filter: blur(16px);
+}
+.logo {
+  display: flex; align-items: center; gap: 9px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 700;
+  letter-spacing: .01em; color: var(--ivory);
+  text-decoration: none;
+}
+.logo-mark {
+  width: 32px; height: 32px;
+  background: var(--terra);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700;
+  color: white; font-family: 'Cormorant Garamond', serif;
+  flex-shrink: 0;
+}
+.nav-center {
+  display: flex; gap: 8px;
+  background: var(--mist);
+  border: 1px solid var(--mist-md);
+  border-radius: 40px; padding: 5px;
+}
+.nav-pill {
+  padding: 7px 18px; border-radius: 30px;
+  font-size: 13px; font-weight: 400;
+  color: var(--mist-hi); cursor: pointer;
+  background: transparent; border: none;
+  transition: all .2s; white-space: nowrap;
+}
+.nav-pill:hover, .nav-pill.active {
+  background: var(--mist-md); color: var(--ivory);
+}
+.nav-right { display: flex; gap: 12px; align-items: center; }
+.nav-link {
+  font-size: 13px; font-weight: 400;
+  color: rgba(253,250,245,.55);
+  background: none; border: none; cursor: pointer;
+  padding: 8px 4px; transition: color .2s;
+}
+.nav-link:hover { color: var(--ivory); }
+.nav-cta {
+  background: var(--terra); color: white;
+  border: none; border-radius: 6px;
+  padding: 10px 22px; font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all .2s;
+}
+.nav-cta:hover {
+  background: var(--terra-lt);
+  box-shadow: 0 4px 20px rgba(184,92,56,.4);
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 140px 60px 80px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Radial glow behind content */
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 900px; height: 900px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse, rgba(45,74,62,.55) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Subtle grid lines */
+.hero-grid {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(253,250,245,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(253,250,245,.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* Large faint wordmark watermark */
+.hero-watermark {
+  position: absolute;
+  bottom: -40px; right: -60px; z-index: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 260px; font-weight: 700; line-height: 1;
+  color: rgba(253,250,245,.018);
+  white-space: nowrap; pointer-events: none; user-select: none;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  max-width: 860px;
+}
+
+/* Manifesto tag */
+.manifesto-tag {
+  display: inline-flex; align-items: center; gap: 10px;
+  border: 1px solid rgba(184,92,56,.4);
+  background: rgba(184,92,56,.08);
+  border-radius: 40px; padding: 7px 18px 7px 12px;
+  margin-bottom: 36px;
+  opacity: 0; animation: riseIn .6s .15s forwards;
+}
+.manifesto-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--terra); flex-shrink: 0;
+  box-shadow: 0 0 8px var(--terra);
+  animation: pulse 2s 1s infinite;
+}
+.manifesto-text {
+  font-size: 12px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--terra-lt);
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .5; transform: scale(.8); }
+}
+
+/* Main headline */
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(52px, 7vw, 88px);
+  font-weight: 700; line-height: 1.0;
+  letter-spacing: -.02em;
+  color: var(--ivory);
+  margin-bottom: 12px;
+  opacity: 0; animation: riseIn .7s .3s forwards;
+}
+.hero h1 .italic-line {
+  font-style: italic; color: var(--terra);
+  display: block;
+}
+
+/* Sub-manifesto — second headline line */
+.hero-declaration {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(20px, 2.8vw, 28px);
+  font-weight: 400; font-style: italic;
+  color: rgba(253,250,245,.45);
+  margin-bottom: 32px;
+  letter-spacing: .01em;
+  opacity: 0; animation: riseIn .7s .45s forwards;
+}
+
+/* Body copy */
+.hero-body {
+  font-size: 17px; font-weight: 300; line-height: 1.75;
+  color: rgba(253,250,245,.6);
+  max-width: 580px;
+  margin-bottom: 44px;
+  opacity: 0; animation: riseIn .7s .58s forwards;
+}
+.hero-body strong { color: var(--ivory); font-weight: 500; }
+
+/* Role selector — the routing mechanic */
+.role-selector {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  margin-bottom: 32px;
+  opacity: 0; animation: riseIn .7s .7s forwards;
+}
+.role-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--mist);
+  border: 1px solid var(--mist-md);
+  border-radius: 40px; padding: 10px 20px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 400; color: rgba(253,250,245,.65);
+  cursor: pointer; transition: all .25s;
+}
+.role-btn:hover, .role-btn.active {
+  background: var(--mist-md);
+  border-color: rgba(253,250,245,.25);
+  color: var(--ivory);
+}
+.role-btn.active { border-color: var(--terra); }
+.role-icon { font-size: 15px; }
+
+/* Dynamic CTA area */
+.cta-area {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0; animation: riseIn .7s .82s forwards;
+}
+.btn-main {
+  background: var(--terra); color: white;
+  border: none; border-radius: 6px;
+  padding: 16px 38px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px; font-weight: 500;
+  cursor: pointer; transition: all .25s;
+  display: flex; align-items: center; gap: 10px;
+}
+.btn-main:hover {
+  background: var(--terra-lt); transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(184,92,56,.4);
+}
+.btn-main svg { width: 16px; height: 16px; }
+.btn-outline {
+  background: transparent; color: rgba(253,250,245,.7);
+  border: 1px solid var(--mist-md);
+  border-radius: 6px; padding: 15px 30px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px; font-weight: 400;
+  cursor: pointer; transition: all .25s;
+}
+.btn-outline:hover {
+  border-color: rgba(253,250,245,.4); color: var(--ivory);
+}
+
+/* ── JOURNEY STRIP ── */
+.journey-strip {
+  position: relative; z-index: 2;
+  margin-top: 80px; width: 100%;
+  max-width: 900px;
+  opacity: 0; animation: riseIn .7s 1s forwards;
+}
+.journey-label {
+  font-size: 10px; font-weight: 500; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(253,250,245,.3);
+  text-align: center; margin-bottom: 20px;
+}
+.journey-steps {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  border: 1px solid var(--mist-md);
+  border-radius: 10px; overflow: hidden;
+  background: var(--mist);
+}
+.journey-step {
+  padding: 20px 16px;
+  text-align: center;
+  border-right: 1px solid var(--mist-md);
+  position: relative;
+  transition: background .2s;
+}
+.journey-step:last-child { border-right: none; }
+.journey-step:hover { background: rgba(253,250,245,.05); }
+.step-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px; font-weight: 600;
+  color: rgba(253,250,245,.08);
+  line-height: 1; margin-bottom: 6px;
+}
+.step-icon { font-size: 20px; margin-bottom: 8px; }
+.step-name {
+  font-size: 12px; font-weight: 500; color: rgba(253,250,245,.7);
+  margin-bottom: 3px;
+}
+.step-desc {
+  font-size: 11px; color: rgba(253,250,245,.3); line-height: 1.4;
+}
+.step-ai {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(201,145,58,.15);
+  color: var(--amber);
+  font-size: 9px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase;
+  border-radius: 3px; padding: 2px 6px;
+}
+
+/* ── SOCIAL PROOF STRIP ── */
+.proof-strip {
+  position: relative; z-index: 2;
+  margin-top: 32px; width: 100%; max-width: 900px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 0;
+  opacity: 0; animation: riseIn .7s 1.1s forwards;
+}
+.proof-item {
+  text-align: center; padding: 0 36px;
+  border-right: 1px solid var(--mist-md);
+}
+.proof-item:last-child { border-right: none; }
+.proof-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px; font-weight: 700; color: var(--ivory);
+  line-height: 1;
+}
+.proof-num span { color: var(--terra); }
+.proof-label {
+  font-size: 11px; font-weight: 400; letter-spacing: .05em;
+  text-transform: uppercase;
+  color: rgba(253,250,245,.35); margin-top: 4px;
+}
+
+/* ── FLOATING VERIFIED CARD (left) ── */
+.float-left {
+  position: absolute; left: 40px; top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  opacity: 0; animation: slideFromLeft .8s 1.2s forwards;
+}
+.verified-card {
+  background: var(--forest);
+  border: 1px solid rgba(253,250,245,.1);
+  border-radius: 10px; padding: 18px 20px;
+  width: 210px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.4);
+}
+.vc-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.vc-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--terra), var(--amber));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 600; color: white;
+  flex-shrink: 0;
+}
+.vc-name { font-size: 14px; font-weight: 500; color: var(--ivory); }
+.vc-role { font-size: 11px; color: rgba(253,250,245,.4); }
+.vc-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(45,74,62,.5);
+  border: 1px solid rgba(45,74,62,.8);
+  border-radius: 4px; padding: 6px 10px;
+  font-size: 11px; font-weight: 500;
+  color: #7BC99E;
+  margin-bottom: 10px;
+}
+.vc-badge::before { content: '✓'; font-weight: 700; }
+.vc-stat { font-size: 11px; color: rgba(253,250,245,.35); }
+.vc-stat strong { color: rgba(253,250,245,.7); font-weight: 500; }
+
+/* ── FLOATING AI CARD (right) ── */
+.float-right {
+  position: absolute; right: 40px; top: 50%;
+  transform: translateY(-60%);
+  z-index: 3;
+  opacity: 0; animation: slideFromRight .8s 1.3s forwards;
+}
+.ai-card {
+  background: var(--forest);
+  border: 1px solid rgba(201,145,58,.2);
+  border-radius: 10px; padding: 18px 20px;
+  width: 220px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.4);
+}
+.ai-tag {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber);
+  margin-bottom: 12px;
+}
+.ai-tag-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 6px var(--amber);
+}
+.ai-message {
+  font-size: 13px; color: rgba(253,250,245,.75);
+  line-height: 1.5; margin-bottom: 12px;
+  font-style: italic;
+}
+.ai-actions { display: flex; flex-direction: column; gap: 6px; }
+.ai-action-btn {
+  background: var(--mist); border: 1px solid var(--mist-md);
+  border-radius: 5px; padding: 8px 12px;
+  font-size: 12px; color: rgba(253,250,245,.6);
+  cursor: pointer; text-align: left; transition: all .2s;
+}
+.ai-action-btn:hover {
+  background: var(--mist-md); color: var(--ivory);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideFromLeft {
+  from { opacity: 0; transform: translate(-20px, -50%); }
+  to   { opacity: 1; transform: translate(0, -50%); }
+}
+@keyframes slideFromRight {
+  from { opacity: 0; transform: translate(20px, -60%); }
+  to   { opacity: 1; transform: translate(0, -60%); }
+}
+
+/* ── MOBILE ── */
+@media (max-width: 1100px) {
+  .float-left, .float-right { display: none; }
+}
+@media (max-width: 768px) {
+  nav { padding: 18px 24px; }
+  .nav-center { display: none; }
+  .hero { padding: 120px 24px 60px; }
+  .journey-steps { grid-template-columns: 1fr 1fr; }
+  .journey-step:nth-child(2) { border-right: none; }
+  .journey-step:nth-child(5) { grid-column: 1/-1; border-right: none; }
+  .proof-strip { flex-wrap: wrap; gap: 24px; }
+  .proof-item { border-right: none; }
+  .hero h1 { font-size: 48px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">
+    <div class="logo-mark">H</div>
+    HomeSphere
+  </a>
+  <div class="nav-center">
+    <button class="nav-pill active">Listings</button>
+    <button class="nav-pill">Agents</button>
+    <button class="nav-pill">Developers</button>
+    <button class="nav-pill">Services</button>
+  </div>
+  <div class="nav-right">
+    <button class="nav-link">Sign In</button>
+    <button class="nav-cta">Get Verified</button>
+  </div>
+</nav>
+
+<!-- FLOATING VERIFIED AGENT CARD -->
+<div class="float-left">
+  <div class="verified-card">
+    <div class="vc-header">
+      <div class="vc-avatar">JM</div>
+      <div>
+        <div class="vc-name">James Mwangi</div>
+        <div class="vc-role">Verified Agent · Nairobi</div>
+      </div>
+    </div>
+    <div class="vc-badge">HomeSphere Verified</div>
+    <div class="vc-stat"><strong>47 deals closed</strong> · 4.9★ rating</div>
+  </div>
+</div>
+
+<!-- FLOATING AI ASSISTANT CARD -->
+<div class="float-right">
+  <div class="ai-card">
+    <div class="ai-tag">
+      <div class="ai-tag-dot"></div>
+      AI Guide · Active
+    </div>
+    <div class="ai-message">"Based on your budget, I found 3 verified listings in Kilimani you haven't seen yet."</div>
+    <div class="ai-actions">
+      <button class="ai-action-btn">📋 Show listings</button>
+      <button class="ai-action-btn">🏠 Book viewing</button>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-watermark">HomeSphere</div>
+
+  <div class="hero-content">
+
+    <!-- Manifesto tag -->
+    <div class="manifesto-tag">
+      <div class="manifesto-dot"></div>
+      <span class="manifesto-text">Real estate deserves a trust layer</span>
+    </div>
+
+    <!-- Headline -->
+    <h1>
+      From First Search
+      <span class="italic-line">to Fully Settled.</span>
+    </h1>
+
+    <p class="hero-declaration">Kenya's only verified real estate ecosystem.</p>
+
+    <!-- Body -->
+    <p class="hero-body">
+      HomeSphere connects <strong>buyers, agents, developers, and service providers</strong>
+      under one accountable platform — with <strong>AI guiding every step</strong> so your
+      property journey ends in a home you trust, not a story you regret.
+    </p>
+
+    <!-- Role selector -->
+    <div class="role-selector">
+      <button class="role-btn active" onclick="setRole(this, 'buyer')">
+        <span class="role-icon">🏠</span> I'm buying or renting
+      </button>
+      <button class="role-btn" onclick="setRole(this, 'agent')">
+        <span class="role-icon">🤝</span> I'm an agent
+      </button>
+      <button class="role-btn" onclick="setRole(this, 'developer')">
+        <span class="role-icon">🏗️</span> I'm a developer
+      </button>
+      <button class="role-btn" onclick="setRole(this, 'service')">
+        <span class="role-icon">🔧</span> I provide services
+      </button>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-area" id="cta-area">
+      <button class="btn-main">
+        Browse Verified Listings
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <button class="btn-outline">How it works</button>
+    </div>
+
+  </div>
+
+  <!-- Journey strip -->
+  <div class="journey-strip">
+    <div class="journey-label">The full HomeSphere journey</div>
+    <div class="journey-steps">
+      <div class="journey-step">
+        <div class="step-num">01</div>
+        <div class="step-icon">🔍</div>
+        <div class="step-name">Search</div>
+        <div class="step-desc">Browse verified listings only</div>
+      </div>
+      <div class="journey-step">
+        <div class="step-num">02</div>
+        <div class="step-icon">✅</div>
+        <div class="step-name">Verify</div>
+        <div class="step-desc">Every agent, listing & dev is vetted</div>
+      </div>
+      <div class="journey-step">
+        <div class="step-num">03</div>
+        <div class="step-icon">🤝</div>
+        <div class="step-name">Connect</div>
+        <div class="step-desc">Meet vetted professionals directly</div>
+        <div class="step-ai">AI</div>
+      </div>
+      <div class="journey-step">
+        <div class="step-num">04</div>
+        <div class="step-icon">📝</div>
+        <div class="step-name">Transact</div>
+        <div class="step-desc">Guided, safe deal process</div>
+        <div class="step-ai">AI</div>
+      </div>
+      <div class="journey-step">
+        <div class="step-num">05</div>
+        <div class="step-icon">🛋️</div>
+        <div class="step-name">Settle In</div>
+        <div class="step-desc">Movers, designers, contractors — all verified</div>
+        <div class="step-ai">AI</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social proof -->
+  <div class="proof-strip">
+    <div class="proof-item">
+      <div class="proof-num">4,800<span>+</span></div>
+      <div class="proof-label">Verified Listings</div>
+    </div>
+    <div class="proof-item">
+      <div class="proof-num">1,200<span>+</span></div>
+      <div class="proof-label">Verified Agents</div>
+    </div>
+    <div class="proof-item">
+      <div class="proof-num">Zero</div>
+      <div class="proof-label">Unverified Listings</div>
+    </div>
+    <div class="proof-item">
+      <div class="proof-num">360<span>°</span></div>
+      <div class="proof-label">Journey Coverage</div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+// Scroll nav effect
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Nav pills
+document.querySelectorAll('.nav-pill').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Role selector — changes CTA dynamically
+const roleCTAs = {
+  buyer: {
+    primary: 'Browse Verified Listings',
+    secondary: 'How it works'
+  },
+  agent: {
+    primary: 'Get Your Verified Badge',
+    secondary: 'See early adopter perks'
+  },
+  developer: {
+    primary: 'List Your Development',
+    secondary: 'Reach qualified buyers'
+  },
+  service: {
+    primary: 'Join as a Service Provider',
+    secondary: 'See how it works'
+  }
+};
+
+function setRole(btn, role) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const cta = roleCTAs[role];
+  const area = document.getElementById('cta-area');
+  area.innerHTML = `
+    <button class="btn-main">
+      ${cta.primary}
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </button>
+    <button class="btn-outline">${cta.secondary}</button>
+  `;
+}
+</script>
+</body>
+</html>

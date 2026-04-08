@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proptech Foundation Copywriter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for output area */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        .markdown-body h3 { font-size: 1.25rem; font-weight: 600; color: #1e293b; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        .markdown-body p { margin-bottom: 1rem; color: #475569; line-height: 1.6; }
+        .markdown-body strong { color: #0f172a; font-weight: 600; }
+        .markdown-body blockquote { border-left: 4px solid #14b8a6; padding-left: 1rem; font-style: italic; color: #334155; background: #f0fdfa; padding: 0.5rem 1rem; margin-bottom: 1rem; border-radius: 0 0.25rem 0.25rem 0; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="bg-primary-600 text-white p-2 rounded-lg">
+                    <i class="fa-solid fa-building-user text-xl"></i>
+                </div>
+                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Proptech<span class="text-primary-600">Copywriter</span></h1>
+            </div>
+            <button onclick="toggleFramework()" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-book-open"></i> Read the Framework
+            </button>
+        </div>
+    </header>
+
+    <!-- Framework Modal (Hidden by default) -->
+    <div id="frameworkModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar relative transform scale-95 transition-transform duration-300" id="frameworkContent">
+            <button onclick="toggleFramework()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="p-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">The Foundation Framework</h2>
+                
+                <div class="prose prose-slate max-w-none text-sm space-y-4">
+                    <p class="font-medium">Before we touch a single word of your copy, we need to get one thing right. If you get this wrong, nothing else works.</p>
+                    <div class="bg-primary-50 text-primary-900 p-4 rounded-lg font-bold text-center border border-primary-100">
+                        The Foundation = Customer + Problem + Promise
+                    </div>
+                    <p>This sounds basic. It is. And 90% of proptech brands still get it wrong… because they answer it from the wrong angle.</p>
+                    
+                    <h3 class="font-bold text-lg mt-6">How most brands do it (The Wrong Way)</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-600">
+                        <li><strong>Customer:</strong> “Real estate professionals, property managers...”</li>
+                        <li><strong>Problem:</strong> “Inefficient manual processes, lack of data visibility...”</li>
+                        <li><strong>Solution:</strong> “Our AI-powered platform centralises all property data...”</li>
+                    </ul>
+                    <p class="text-red-600 text-xs italic mt-2">Brands that answer from this angle see a 60-70% higher bounce rate.</p>
+
+                    <h3 class="font-bold text-lg mt-6">How to answer correctly (The Right Way)</h3>
+                    <p>Start with what keeps them up at night. What is the emotional weight your customer is carrying every day that you could lift off their shoulders?</p>
+                    
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mt-4">
+                        <p class="font-semibold mb-2">Example — Rental Management SaaS:</p>
+                        <p class="text-red-600 mb-2"><i class="fa-solid fa-xmark mr-2"></i><strong>Wrong:</strong> “Our platform streamlines rental management with automated payments...”</p>
+                        <p class="text-green-600"><i class="fa-solid fa-check mr-2"></i><strong>Right:</strong> “You’re still chasing rent payments on WhatsApp at 10pm. You know there’s a better way — you just haven’t found a platform that actually fits how you work.”</p>
+                    </div>
+                    <p class="font-medium mt-4">The second version makes the customer feel seen. And when they feel seen, they lean in.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <div class="mb-8 max-w-2xl">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2">Craft Copy That Connects</h2>
+            <p class="text-slate-600">Stop talking about your features. Start talking about their pain. Use the framework below to generate prospect-focused messaging that converts visitors into demos.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Input Form -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    
+                    <div class="space-y-6">
+                        <!-- Input 1 -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-900 mb-1">1. Who is your customer, specifically?</label>
+                            <p class="text-xs text-slate-500 mb-2">Not "property managers." Think: "A first-time landlord in Lagos terrified of getting scammed" or "A commercial firm managing 500+ units."</p>
+                            <textarea id="customerInput" rows="2" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none text-sm" placeholder="e.g. Someone managing 3 properties as a side income..."></textarea>
+                        </div>
+
+                        <!-- Input 2 -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-900 mb-1">2. What problem do they actually have?</label>
+                            <p class="text-xs text-slate-500 mb-2">Go deeper than functional. What does it feel like? What keeps them up at night? What are they embarrassed about?</p>
+                            <textarea id="problemInput" rows="3" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none text-sm" placeholder="e.g. They are still chasing rent payments on WhatsApp at 10pm, dealing with fragmented spreadsheets, and terrified of double-booking..."></textarea>
+                        </div>
+
+                        <!-- Input 3 -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-900 mb-1">3. What is your promise?</label>
+                            <p class="text-xs text-slate-500 mb-2">In plain language. No features. What transformation do they experience? Before and after.</p>
+                            <textarea id="promiseInput" rows="3" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none text-sm" placeholder="e.g. They get their evenings back. They look professional to tenants and collect rent automatically without awkward conversations..."></textarea>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div id="errorBox" class="hidden bg-red-50 text-red-600 p-3 rounded-lg text-sm flex items-start gap-2 border border-red-100">
+                            <i class="fa-solid fa-circle-exclamation mt-0.5"></i>
+                            <span id="errorMessage">Please fill in all fields to generate copy.</span>
+                        </div>
+
+                        <button id="generateBtn" onclick="generateCopy()" class="w-full bg-slate-900 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span id="btnText">Generate Messaging</span>
+                            <div id="btnSpinner" class="hidden animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full ml-2"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Area -->
+            <div class="lg:col-span-7 flex flex-col">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex-grow flex flex-col overflow-hidden h-full min-h-[500px]">
+                    
+                    <!-- Output Header -->
+                    <div class="border-b border-slate-100 bg-slate-50/50 px-6 py-4 flex items-center justify-between">
+                        <h3 class="font-semibold text-slate-800 flex items-center gap-2">
+                            <i class="fa-regular fa-file-lines text-primary-500"></i> Generated Copy
+                        </h3>
+                        <button id="copyBtn" onclick="copyResult()" class="hidden text-sm text-slate-500 hover:text-primary-600 transition-colors flex items-center gap-1 bg-white border border-slate-200 px-3 py-1.5 rounded-md hover:border-primary-300">
+                            <i class="fa-regular fa-copy"></i> Copy All
+                        </button>
+                    </div>
+
+                    <!-- Output Content -->
+                    <div class="p-6 flex-grow overflow-y-auto custom-scrollbar relative" id="outputContainer">
+                        
+                        <!-- Empty State -->
+                        <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 p-6 text-center">
+                            <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
+                                <i class="fa-regular fa-pen-to-square text-2xl text-slate-300"></i>
+                            </div>
+                            <p class="font-medium text-slate-500">Your tailored messaging will appear here.</p>
+                            <p class="text-sm mt-1 max-w-sm">Fill in the framework on the left and hit generate to see copy that speaks directly to your prospects' pain.</p>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loadingState" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white z-10">
+                            <div class="animate-pulse flex flex-col items-center">
+                                <div class="h-12 w-12 text-primary-500 mb-4 animate-bounce">
+                                    <i class="fa-solid fa-laptop-code text-4xl"></i>
+                                </div>
+                                <p class="text-slate-500 font-medium">Channeling your inner copywriter...</p>
+                                <p class="text-xs text-slate-400 mt-2">Translating features into emotions.</p>
+                            </div>
+                        </div>
+
+                        <!-- Result State -->
+                        <div id="resultState" class="hidden markdown-body h-full pb-4">
+                            <!-- Content injected via JS -->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2 z-50">
+        <i class="fa-solid fa-check-circle text-green-400"></i>
+        <span id="toastMsg">Copied to clipboard!</span>
+    </div>
+
+    <script>
+        // --- Gemini API Setup ---
+        const apiKey = ""; // Provided by execution environment
+        
+        // --- UI State Management ---
+        const els = {
+            customer: document.getElementById('customerInput'),
+            problem: document.getElementById('problemInput'),
+            promise: document.getElementById('promiseInput'),
+            btn: document.getElementById('generateBtn'),
+            btnText: document.getElementById('btnText'),
+            btnSpinner: document.getElementById('btnSpinner'),
+            emptyState: document.getElementById('emptyState'),
+            loadingState: document.getElementById('loadingState'),
+            resultState: document.getElementById('resultState'),
+            errorBox: document.getElementById('errorBox'),
+            errorMessage: document.getElementById('errorMessage'),
+            copyBtn: document.getElementById('copyBtn'),
+            modal: document.getElementById('frameworkModal'),
+            modalContent: document.getElementById('frameworkContent')
+        };
+
+        let generatedText = "";
+
+        function toggleFramework() {
+            if (els.modal.classList.contains('hidden')) {
+                els.modal.classList.remove('hidden');
+                // Small delay to allow display:block to apply before opacity transition
+                setTimeout(() => {
+                    els.modal.classList.remove('opacity-0');
+                    els.modalContent.classList.remove('scale-95');
+                }, 10);
+            } else {
+                els.modal.classList.add('opacity-0');
+                els.modalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    els.modal.classList.add('hidden');
+                }, 300); // match transition duration
+            }
+        }
+
+        function showError(msg) {
+            els.errorMessage.textContent = msg;
+            els.errorBox.classList.remove('hidden');
+            setTimeout(() => {
+                els.errorBox.classList.add('hidden');
+            }, 5000);
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                els.btn.disabled = true;
+                els.btnText.textContent = "Writing...";
+                els.btnSpinner.classList.remove('hidden');
+                els.emptyState.classList.add('hidden');
+                els.resultState.classList.add('hidden');
+                els.loadingState.classList.remove('hidden');
+                els.copyBtn.classList.add('hidden');
+            } else {
+                els.btn.disabled = false;
+                els.btnText.textContent = "Generate Messaging";
+                els.btnSpinner.classList.add('hidden');
+                els.loadingState.classList.add('hidden');
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function copyResult() {
+            if (!generatedText) return;
+            
+            // Fallback for iframe environments
+            const textArea = document.createElement("textarea");
+            textArea.value = generatedText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("Copy successfully copied to clipboard!");
+            } catch (err) {
+                console.error('Failed to copy', err);
+                showToast("Failed to copy text.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Basic Markdown to HTML parser for the result
+        function parseMarkdown(md) {
+            let html = md;
+            
+            // Headers
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            
+            // Bold
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Italic
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Quotes
+            html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+            
+            // Paragraphs (split by double line breaks)
+            html = html.split(/\n\s*\n/).map(p => {
+                if(p.startsWith('<h') || p.startsWith('<blockquote')) return p;
+                return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+            }).join('');
+
+            return html;
+        }
+
+        // --- API Logic ---
+        
+        async function fetchWithRetry(url, options, maxRetries = 5) {
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    if (i === maxRetries - 1) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delays[i]));
+                }
+            }
+        }
+
+        async function generateCopy() {
+            const customer = els.customer.value.trim();
+            const problem = els.problem.value.trim();
+            const promise = els.promise.value.trim();
+
+            if (!customer || !problem || !promise) {
+                showError("Please fill out all three fields completely to generate accurate copy.");
+                return;
+            }
+
+            setLoading(true);
+
+            const systemPrompt = `You are an elite, high-converting SaaS copywriter specializing in Proptech. 
+Your philosophy: "The Foundation = Customer + Problem + Promise."
+You know that talking about features or using generic terms ("streamline", "optimize", "platform") kills conversions.
+Instead, you focus on the deep emotional pain of the prospect and the transformation they want. You write from their POV or speak directly to them (e.g., "You're still chasing rent...").
+
+Your task is to take the user's inputs and generate 3 powerful copy variations.
+
+FORMAT YOUR RESPONSE EXACTLY LIKE THIS IN MARKDOWN:
+
+### 1. The Website Hero Section
+**Headline:** [Punchy, outcome-focused headline, max 8 words]
+**Sub-headline:** [1-2 sentences directly attacking the pain point and introducing the promise without feature-vomiting]
+
+### 2. The Emotional Narrative (The "Feel Seen" paragraph)
+> [Write a 2-3 sentence paragraph describing their current painful reality in visceral, specific detail, followed by the emotional relief your promise brings. Similar to the "WhatsApp at 10pm" example.]
+
+### 3. The Cold Email Intro
+[A short, 2-sentence opening for a cold email that immediately proves you understand their specific struggle before pitching anything.]`;
+
+            const userQuery = `Customer: ${customer}\nProblem: ${problem}\nPromise: ${promise}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            try {
+                const result = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (result && result.candidates && result.candidates[0].content.parts[0].text) {
+                    generatedText = result.candidates[0].content.parts[0].text;
+                    
+                    els.resultState.innerHTML = parseMarkdown(generatedText);
+                    els.resultState.classList.remove('hidden');
+                    els.copyBtn.classList.remove('hidden');
+                } else {
+                    throw new Error("Invalid response format from API");
+                }
+            } catch (error) {
+                console.error("Generation error:", error);
+                showError("Failed to generate copy. Please check your connection and try again.");
+                els.emptyState.classList.remove('hidden');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // Fill test data on double click of header for quick testing (secret feature)
+        document.querySelector('header h1').addEventListener('dblclick', () => {
+            els.customer.value = "A first-time landlord in Lagos terrified of getting scammed by fake tenants.";
+            els.problem.value = "They spend hours verifying documents manually, lying awake worrying if they let a professional squatter in. They've been burnt before and it cost them 6 months of rent.";
+            els.promise.value = "They get absolute peace of mind. We pre-vet tenants with bank-level security so they only meet safe, verified renters.";
+        });
+    </script>
+</body>
+</html>

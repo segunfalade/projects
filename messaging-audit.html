@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is Your Messaging Growing Your Business — Or Quietly Killing It?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: rgba(255,255,255,0.08);
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --gold-dim: rgba(201,168,76,0.15);
+    --white: #f0ede8;
+    --muted: rgba(240,237,232,0.45);
+    --red: #e05252;
+    --amber: #e09952;
+    --green: #52c4a0;
+    --radius: 4px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* Progress bar */
+  #progress-bar-wrap {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+    z-index: 100;
+  }
+  #progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* Screens */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    padding: 80px 24px 60px;
+    max-width: 680px;
+    margin: 0 auto;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .screen.active { display: flex; }
+
+  /* Intro screen */
+  .intro-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+
+  .intro-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 6vw, 52px);
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+
+  .intro-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .intro-body {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--muted);
+    margin-bottom: 48px;
+    max-width: 520px;
+  }
+
+  .intro-meta {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+
+  .meta-value {
+    font-size: 14px;
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--gold);
+    color: #0a0a0f;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 16px 32px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary .arrow {
+    transition: transform 0.2s ease;
+  }
+
+  .btn-primary:hover .arrow { transform: translateX(4px); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    padding: 12px 0;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    margin-top: 12px;
+  }
+
+  .btn-secondary:hover { color: var(--white); }
+
+  /* Question screen */
+  .question-counter {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .question-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 4vw, 34px);
+    line-height: 1.25;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .question-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+
+  /* Options */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold-dim);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .option:hover::before { opacity: 1; }
+  .option:hover { border-color: rgba(201,168,76,0.3); }
+
+  .option.selected {
+    border-color: var(--gold);
+    background: var(--surface2);
+  }
+
+  .option.selected::before { opacity: 1; }
+
+  .option-key {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.2s ease;
+    margin-top: 1px;
+  }
+
+  .option.selected .option-key {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #0a0a0f;
+  }
+
+  @keyframes optionBlink {
+    0%   { opacity: 1; }
+    25%  { opacity: 0.3; }
+    50%  { opacity: 1; }
+    75%  { opacity: 0.3; }
+    100% { opacity: 1; }
+  }
+
+  .option.confirming {
+    animation: optionBlink 0.5s ease;
+    pointer-events: none;
+  }
+
+  .option-text {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--white);
+    position: relative;
+  }
+
+  /* Navigation */
+  .nav-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* Divider */
+  .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    margin-bottom: 32px;
+  }
+
+  /* Results screen */
+  .score-display {
+    margin-bottom: 48px;
+  }
+
+  .score-ring-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 32px;
+  }
+
+  .score-ring-wrap svg {
+    transform: rotate(-90deg);
+  }
+
+  .score-ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .score-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    line-height: 1;
+  }
+
+  .score-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+
+  .result-tier {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    margin-bottom: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .tier-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .result-headline {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(24px, 4vw, 36px);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .result-summary {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+
+  /* Breakdown */
+  .breakdown-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .breakdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .breakdown-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  .breakdown-icon {
+    font-size: 16px;
+    min-width: 20px;
+    margin-top: 1px;
+  }
+
+  .breakdown-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .breakdown-text strong {
+    color: var(--white);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* CTA block */
+  .cta-block {
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid rgba(201,168,76,0.25);
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .cta-block-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .cta-block-body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .cta-block-body strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--gold);
+    color: #0a0a0f;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 15px 28px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-cta:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  .retake-link {
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: color 0.2s;
+  }
+
+  .retake-link:hover { color: var(--white); }
+
+  /* Signature */
+  .signature {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sig-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  /* Animation */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .screen.active > * {
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .screen.active > *:nth-child(1) { animation-delay: 0.0s; }
+  .screen.active > *:nth-child(2) { animation-delay: 0.06s; }
+  .screen.active > *:nth-child(3) { animation-delay: 0.12s; }
+  .screen.active > *:nth-child(4) { animation-delay: 0.18s; }
+  .screen.active > *:nth-child(5) { animation-delay: 0.24s; }
+  .screen.active > *:nth-child(6) { animation-delay: 0.30s; }
+  .screen.active > *:nth-child(7) { animation-delay: 0.36s; }
+
+  @media (max-width: 480px) {
+    .screen { padding: 72px 20px 48px; }
+    .intro-meta { flex-direction: column; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+<!-- INTRO SCREEN -->
+<div class="screen active" id="screen-intro">
+  <p class="intro-eyebrow">Messaging Audit — PropTech &amp; FinTech</p>
+  <h1 class="intro-title">Is your messaging growing your business — <em>or quietly killing it?</em></h1>
+  <p class="intro-body">Most PropTech and FinTech brands have a messaging problem they don't know about. This 10-question diagnostic is designed to find it — and show you exactly what it's costing you.</p>
+  <div class="intro-meta">
+    <div class="meta-item">
+      <span class="meta-label">Questions</span>
+      <span class="meta-value">10</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Time</span>
+      <span class="meta-value">Under 3 minutes</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Result</span>
+      <span class="meta-value">Instant scoring + breakdown</span>
+    </div>
+  </div>
+  <button class="btn-primary" onclick="startQuiz()">Start the audit <span class="arrow">→</span></button>
+</div>
+
+<!-- QUESTION SCREENS -->
+<div class="screen" id="screen-quiz">
+  <p class="question-counter" id="q-counter">Question 1 of 10</p>
+  <div class="divider"></div>
+  <h2 class="question-text" id="q-text"></h2>
+  <p class="question-sub" id="q-sub"></p>
+  <div class="options" id="q-options"></div>
+  <div class="nav-row">
+    <button class="btn-secondary" id="btn-back" onclick="prevQuestion()">← Back</button>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="screen" id="screen-result">
+  <div id="result-content"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    text: "When someone lands on your homepage for the first time, what does your headline communicate?",
+    sub: "Be honest — what would a cold visitor actually read?",
+    options: [
+      { text: "What our platform does — features, capabilities, or technology.", score: 0 },
+      { text: "A broad claim like 'transforming real estate' or 'next-generation platform.'", score: 0 },
+      { text: "A specific outcome for a specific type of buyer.", score: 2 },
+      { text: "The problem our buyer is dealing with right now.", score: 3 }
+    ]
+  },
+  {
+    text: "How clearly does your messaging speak to one specific type of buyer?",
+    sub: "Think about your homepage, ads, and pitch deck.",
+    options: [
+      { text: "We speak broadly — our product works for many different buyer types.", score: 0 },
+      { text: "We have a general target audience but our messaging could apply to anyone.", score: 1 },
+      { text: "We have a defined ICP but our copy doesn't always reflect it.", score: 2 },
+      { text: "Every word of our messaging is written for one specific buyer in one specific situation.", score: 3 }
+    ]
+  },
+  {
+    text: "Does your messaging address the fear your buyer has before they decide to trust you?",
+    sub: "In PropTech and FinTech, buyers arrive suspicious. Does your copy acknowledge that?",
+    options: [
+      { text: "No — we lead with features and let the product speak for itself.", score: 0 },
+      { text: "We have a trust signals section (reviews, logos, certifications) but nothing more.", score: 1 },
+      { text: "We address some objections but haven't mapped the full fear landscape.", score: 2 },
+      { text: "Yes — our messaging directly names the buyer's hesitation and resolves it before we pitch.", score: 3 }
+    ]
+  },
+  {
+    text: "How specific is the social proof on your website or pitch materials?",
+    sub: "Vague proof is no proof in a trust-scarce market.",
+    options: [
+      { text: "We use phrases like 'trusted by thousands' or 'industry-leading platform.'", score: 0 },
+      { text: "We have logos and star ratings but no stories or specific results.", score: 1 },
+      { text: "We have some case studies but they lack specific numbers or named outcomes.", score: 2 },
+      { text: "We have named clients, specific results, and before/after narratives.", score: 3 }
+    ]
+  },
+  {
+    text: "If a competitor removed your logo from your homepage — would a visitor know it was yours?",
+    sub: "This is a differentiation test.",
+    options: [
+      { text: "Honestly, no — our messaging sounds similar to others in our category.", score: 0 },
+      { text: "Probably not — we follow industry conventions to stay familiar.", score: 1 },
+      { text: "Somewhat — we have a distinct tone but our value proposition is generic.", score: 2 },
+      { text: "Yes — our positioning, language, and perspective are unmistakably ours.", score: 3 }
+    ]
+  },
+  {
+    text: "When a high-intent lead goes quiet after a demo, what's your team's first assumption?",
+    sub: "What you blame reveals what you believe.",
+    options: [
+      { text: "They weren't ready — timing or budget issue.", score: 0 },
+      { text: "The market is tough right now.", score: 0 },
+      { text: "Something in the demo didn't land well.", score: 1 },
+      { text: "There's a gap between what our messaging promised and what the demo delivered.", score: 3 }
+    ]
+  },
+  {
+    text: "Does your messaging make the return on investment easy to see — without the buyer having to work it out?",
+    sub: "KPMG research confirms ROI clarity is the #1 barrier to PropTech adoption.",
+    options: [
+      { text: "We describe features and let the buyer calculate the ROI themselves.", score: 0 },
+      { text: "We mention benefits but in general terms — 'save time,' 'reduce costs.'", score: 1 },
+      { text: "We use some numbers but haven't built a clear before/after value narrative.", score: 2 },
+      { text: "We show a specific cost of the problem, a specific outcome, and the payback period.", score: 3 }
+    ]
+  },
+  {
+    text: "How consistent is your core message across all touchpoints?",
+    sub: "Ad → landing page → sales call → demo → follow-up email.",
+    options: [
+      { text: "Each team owns their part — marketing, sales, and product tell different stories.", score: 0 },
+      { text: "There's some alignment but the language shifts between channels.", score: 1 },
+      { text: "We have brand guidelines but haven't built a unified messaging architecture.", score: 2 },
+      { text: "One core narrative runs through every touchpoint — the story never breaks.", score: 3 }
+    ]
+  },
+  {
+    text: "After a deal closes, how does your communication maintain trust with the new customer?",
+    sub: "In trust-heavy industries, silence after the sale reads as abandonment — or worse.",
+    options: [
+      { text: "We have an onboarding sequence but go quiet after setup.", score: 0 },
+      { text: "We send product updates occasionally but nothing strategic.", score: 1 },
+      { text: "We have some check-ins but no proactive trust-building content.", score: 2 },
+      { text: "We send milestone updates, proof points, and progress communications without being asked.", score: 3 }
+    ]
+  },
+  {
+    text: "How would you describe the language your brand uses across its marketing?",
+    sub: "Read your homepage copy as if you were a cold, skeptical buyer.",
+    options: [
+      { text: "It uses industry standard terms — 'innovative,' 'seamless,' 'end-to-end,' 'cutting-edge.'", score: 0 },
+      { text: "It's clear but generic — accurate but not distinctive.", score: 1 },
+      { text: "It's mostly specific but still has some filler phrases we haven't replaced.", score: 2 },
+      { text: "Every word was chosen to speak directly to a specific buyer fear or outcome.", score: 3 }
+    ]
+  }
+];
+
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+
+function startQuiz() {
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function updateProgress() {
+  const answered = answers.filter(a => a !== null).length;
+  const pct = (answered / questions.length) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const keys = ['A','B','C','D'];
+  document.getElementById('q-counter').textContent = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-sub').textContent = q.sub;
+  const optWrap = document.getElementById('q-options');
+  optWrap.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option' + (answers[current] === i ? ' selected' : '');
+    div.innerHTML = `<span class="option-key">${keys[i]}</span><span class="option-text">${opt.text}</span>`;
+    div.onclick = () => selectOption(i);
+    optWrap.appendChild(div);
+  });
+  document.getElementById('btn-back').style.display = current === 0 ? 'none' : 'inline-flex';
+  updateProgress();
+}
+
+function selectOption(i) {
+  answers[current] = i;
+  const allOptions = document.querySelectorAll('.option');
+  allOptions.forEach((el, idx) => {
+    el.classList.toggle('selected', idx === i);
+    el.style.pointerEvents = 'none';
+  });
+  allOptions[i].classList.add('confirming');
+  setTimeout(() => {
+    if (current < questions.length - 1) {
+      current++;
+      renderQuestion();
+    } else {
+      showResults();
+    }
+  }, 600);
+}
+
+function prevQuestion() {
+  if (current > 0) { current--; renderQuestion(); }
+}
+
+function showResults() {
+  document.getElementById('progress-bar').style.width = '100%';
+  const total = answers.reduce((sum, a, qi) => sum + (a !== null ? questions[qi].options[a].score : 0), 0);
+  const max = questions.length * 3;
+  const pct = Math.round((total / max) * 100);
+
+  let tier, tierColor, tierBg, headline, summary, breakdowns, ctaTitle, ctaBody;
+
+  if (pct <= 40) {
+    tier = 'Critical Gap';
+    tierColor = '#e05252';
+    tierBg = 'rgba(224,82,82,0.1)';
+    headline = 'Your messaging is actively losing you deals.';
+    summary = 'Based on your answers, there are significant trust gaps in how your brand communicates — gaps that are showing up as slow sales cycles, low demo conversions, and leads that go quiet. This isn\'t a product problem. It\'s a messaging problem. And the cost is real.';
+    breakdowns = [
+      { icon: '⚠', label: 'Buyer Clarity', text: 'Your messaging isn\'t specific enough to make the right buyer feel seen. When no one feels addressed, no one moves.' },
+      { icon: '⚠', label: 'Trust Architecture', text: 'Your copy is explaining the product without resolving the fear around it. In trust-heavy industries, that gap kills deals.' },
+      { icon: '⚠', label: 'Differentiation', text: 'Your brand likely sounds similar to competitors. Generic language doesn\'t lose you deals loudly — it loses them silently.' },
+      { icon: '⚠', label: 'ROI Clarity', text: 'Buyers can\'t picture what they get back. KPMG confirms this is the #1 adoption barrier in PropTech.' }
+    ];
+    ctaTitle = 'This is fixable — but it needs attention now.';
+    ctaBody = 'A <strong>tailored messaging audit</strong> will identify exactly where your copy is losing buyers, what it\'s costing you in pipeline, and the specific changes that will close the gap. This isn\'t a generic review — it\'s a line-by-line diagnostic of your website, flows, and core messaging.';
+  } else if (pct <= 70) {
+    tier = 'Significant Gaps';
+    tierColor = '#e09952';
+    tierBg = 'rgba(224,153,82,0.1)';
+    headline = 'Your messaging has the right instincts — but critical gaps remain.';
+    summary = 'You\'ve done some things right. But based on your answers, there are specific places where your messaging is letting down an otherwise strong product. The leads you\'re losing to silence aren\'t rejecting you — they\'re hitting friction points your copy isn\'t resolving.';
+    breakdowns = [
+      { icon: '◐', label: 'Buyer Specificity', text: 'Your ICP is defined but your messaging doesn\'t always speak directly to them. Generic language is slipping in where specific language should be.' },
+      { icon: '◐', label: 'Trust Signals', text: 'You have proof but it may not be specific enough. Claimed trust and earned trust are different things in high-stakes markets.' },
+      { icon: '◐', label: 'Message Consistency', text: 'There\'s likely a gap between how marketing describes the product and how sales pitches it. That inconsistency registers as risk.' },
+      { icon: '◐', label: 'Post-Sale Communication', text: 'The trust work doesn\'t stop at conversion. Silence after the sale is a retention and referral problem waiting to happen.' }
+    ];
+    ctaTitle = 'You\'re closer than you think — but close isn\'t closed.';
+    ctaBody = 'A <strong>targeted messaging audit</strong> will pinpoint the specific gaps that are costing you pipeline, and map out the exact changes that will sharpen your conversion at every stage. Most clients see the problem clearly within the first session.';
+  } else {
+    tier = 'Strong Foundation';
+    tierColor = '#52c4a0';
+    tierBg = 'rgba(82,196,160,0.1)';
+    headline = 'Your messaging is working — here\'s how to make it compound.';
+    summary = 'You\'re ahead of most brands in your category. Your messaging shows clarity, specificity, and awareness of how trust-first buyers actually think. The opportunity now is to systematise what\'s working and eliminate the remaining inconsistencies before they become costly.';
+    breakdowns = [
+      { icon: '✓', label: 'Buyer Clarity', text: 'You know who you\'re writing for. That specificity is the foundation everything else builds on.' },
+      { icon: '✓', label: 'Trust Architecture', text: 'Your copy is doing meaningful trust work — not just claiming credibility but demonstrating it.' },
+      { icon: '◐', label: 'Consistency', text: 'Even strong messaging can drift between touchpoints. Worth auditing whether your story holds end-to-end.' },
+      { icon: '◐', label: 'Compounding', text: 'The brands that pull away from the pack don\'t just have good messaging — they have a system that keeps improving it.' }
+    ];
+    ctaTitle = 'Don\'t let strong messaging plateau.';
+    ctaBody = 'A <strong>strategic messaging review</strong> will identify the specific gaps between where your copy is now and where it could be — and build the architecture that lets your messaging compound as your brand grows.';
+  }
+
+  const ringCircumference = 2 * Math.PI * 54;
+  const ringOffset = ringCircumference - (pct / 100) * ringCircumference;
+
+  const html = `
+    <p class="intro-eyebrow">Your Results</p>
+    <div class="score-display">
+      <div class="score-ring-wrap">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="54" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+          <circle cx="70" cy="70" r="54" fill="none" stroke="${tierColor}" stroke-width="8"
+            stroke-dasharray="${ringCircumference}" stroke-dashoffset="${ringOffset}"
+            stroke-linecap="round" style="transition: stroke-dashoffset 1s ease;"/>
+        </svg>
+        <div class="score-ring-text">
+          <span class="score-number" style="color:${tierColor}">${pct}%</span>
+          <span class="score-label">Score</span>
+        </div>
+      </div>
+      <div class="result-tier" style="background:${tierBg}; color:${tierColor}">
+        <span class="tier-dot" style="background:${tierColor}"></span>
+        ${tier}
+      </div>
+    </div>
+    <div class="divider"></div>
+    <h2 class="result-headline">${headline}</h2>
+    <p class="result-summary">${summary}</p>
+    <p class="breakdown-title">What your answers reveal</p>
+    <div class="breakdown-list">
+      ${breakdowns.map(b => `
+        <div class="breakdown-item">
+          <span class="breakdown-icon">${b.icon}</span>
+          <div class="breakdown-text"><strong>${b.label}</strong>${b.text}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="cta-block">
+      <h3 class="cta-block-title">${ctaTitle}</h3>
+      <p class="cta-block-body">${ctaBody}</p>
+      <a class="btn-cta" href="https://calendly.com/segunfalade/messaging-audit" target="_blank">Book a free audit call →</a>
+    </div>
+    <button class="retake-link" onclick="retake()">Retake the audit</button>
+    <div class="signature">
+      <span class="sig-dot"></span>
+      <span>Segun Falade &nbsp;·&nbsp; Copy Strategist for PropTech &amp; FinTech</span>
+    </div>
+  `;
+
+  document.getElementById('result-content').innerHTML = html;
+  showScreen('screen-result');
+}
+
+function retake() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  document.getElementById('progress-bar').style.width = '0%';
+  showScreen('screen-intro');
+}
+</script>
+</body>
+</html>

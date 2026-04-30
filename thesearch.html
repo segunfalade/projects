@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Digital Footprint Finder</title>
+    <style>
+        /* This section styles the page to make it clean and easy to use */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Ensures padding doesn't widen the input */
+            font-size: 16px;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        .results {
+            margin-top: 25px;
+        }
+        .result-link {
+            display: block;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #e9ecef;
+            text-decoration: none;
+            color: #0056b3;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .result-link:hover {
+            background-color: #dbe2e8;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Brand Footprint Finder</h1>
+        <p>Enter a brand name or website domain to generate targeted footprint searches.</p>
+        
+        <!-- Input field for the brand -->
+        <input type="text" id="brandInput" placeholder="e.g., Google or google.com">
+        
+        <!-- Button to trigger the JavaScript function -->
+        <button onclick="findFootprint()">Find Socials & Blogs</button>
+
+        <!-- This empty div is where the JavaScript will insert the links -->
+        <div id="resultsArea" class="results"></div>
+    </div>
+
+    <script>
+        // This function runs when the button is clicked
+        function findFootprint() {
+            // 1. Get the value typed into the input box
+            const brand = document.getElementById('brandInput').value.trim();
+            const resultsArea = document.getElementById('resultsArea');
+            
+            // Clear previous results
+            resultsArea.innerHTML = '';
+
+            // If the input is empty, stop the function
+            if (!brand) {
+                alert("Please enter a brand name or website first.");
+                return;
+            }
+
+            // 2. Encode the brand name so it is safe to use in a URL (e.g., spaces become %20)
+            const encodedBrand = encodeURIComponent('"' + brand + '"');
+
+            // 3. Define the targeted search queries using Google Dorks
+            const searchTargets = [
+                { platform: "LinkedIn", query: `site:linkedin.com/company ${encodedBrand}` },
+                { platform: "Twitter / X", query: `site:twitter.com ${encodedBrand}` },
+                { platform: "Instagram", query: `site:instagram.com ${encodedBrand}` },
+                { platform: "Facebook", query: `site:facebook.com ${encodedBrand}` },
+                { platform: "TikTok", query: `site:tiktok.com ${encodedBrand}` },
+                { platform: "Blogs & Features", query: `inurl:blog ${encodedBrand}` },
+                { platform: "News Mentions", query: `${encodedBrand} location:news` }
+            ];
+
+            // 4. Loop through our targets and create clickable links
+            searchTargets.forEach(target => {
+                // Create the final Google Search URL
+                const googleUrl = `https://www.google.com/search?q=${target.query}`;
+                
+                // Create a new <a> (link) HTML element
+                const linkElement = document.createElement('a');
+                linkElement.href = googleUrl;
+                linkElement.target = "_blank"; // Opens the link in a new tab
+                linkElement.className = "result-link";
+                linkElement.textContent = `Search on ${target.platform}`;
+                
+                // Add the link to the page
+                resultsArea.appendChild(linkElement);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -5,142 +5,211 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trust Funnel Diagnostic Tool</title>
     <style>
-        /* Basic styling for a clean, easy-to-read interface */
+        /* CSS Variables for a consistent, premium dark theme */
+        :root {
+            --bg-color: #0f172a;       /* Deep midnight background */
+            --card-bg: #1e293b;        /* Slate for containers */
+            --text-main: #f8fafc;      /* Crisp white for main text */
+            --text-muted: #94a3b8;     /* Soft gray for secondary text */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-blue: #38bdf8;
+            --btn-hover: #0284c7;
+            
+            /* Status Colors - slightly more vibrant for dark mode */
+            --status-green: #10b981;
+            --status-amber: #f59e0b;
+            --status-red: #ef4444;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             line-height: 1.6;
-            padding: 20px;
+            padding: 30px 20px;
             max-width: 900px;
             margin: 0 auto;
         }
-        h1, h2 {
-            color: #2c3e50;
-        }
+
+        /* --- Standout Title Styling --- */
         .header-section {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
+        .header-section h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+            /* Premium gradient text effect */
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1em;
+            font-weight: 300;
+        }
+
+        /* --- Container Styling --- */
         .step-container {
-            background: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border-left: 5px solid #ccc;
-            transition: border-color 0.3s;
+            background: var(--card-bg);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* Soft dark shadow */
+            border-left: 6px solid #475569; /* Default neutral left border */
+            border-top: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
         }
         .step-title {
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1.25em;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
         }
         
-        /* Styling for the collapsible reference guides */
+        /* --- Collapsible Reference Guides --- */
         .reference-guide {
-            margin-bottom: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            border: 1px solid #e9ecef;
+            margin-bottom: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
         .reference-guide summary {
-            padding: 10px;
-            font-weight: bold;
+            padding: 12px 15px;
+            font-weight: 600;
             cursor: pointer;
-            color: #2980b9;
-            list-style: none; /* Removes default triangle in some browsers */
+            color: var(--accent-blue);
+            list-style: none;
+            transition: background-color 0.2s;
         }
         .reference-guide summary::-webkit-details-marker {
-            display: none; /* Removes default triangle in WebKit */
+            display: none;
         }
         .reference-guide summary:hover {
-            background-color: #e2e6ea;
-            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
         }
         .reference-content {
-            padding: 10px 15px 15px 15px;
-            font-size: 0.9em;
-            color: #495057;
-            border-top: 1px solid #e9ecef;
+            padding: 15px;
+            font-size: 0.95em;
+            color: #cbd5e1;
+            border-top: 1px solid var(--border-color);
         }
         .reference-content ul {
-            margin-top: 5px;
+            margin-top: 8px;
             padding-left: 20px;
         }
         .highlight-text {
-            background-color: #fff3cd;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-weight: bold;
+            background-color: rgba(245, 158, 11, 0.15); /* Subtle amber background */
+            color: #fbbf24;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: 600;
         }
 
+        /* --- Form Elements --- */
         .controls {
             display: flex;
             gap: 15px;
             margin-bottom: 15px;
         }
+        select, input[type="text"], textarea {
+            background-color: #0f172a;
+            color: var(--text-main);
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        select:focus, input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
         select {
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
             font-weight: bold;
-            min-width: 140px;
+            min-width: 150px;
+            cursor: pointer;
+        }
+        input[type="text"] {
+            flex-grow: 1;
         }
         textarea {
             width: 100%;
-            height: 80px;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
+            height: 90px;
             resize: vertical;
-            font-family: inherit;
             box-sizing: border-box;
         }
+        input::placeholder, textarea::placeholder {
+            color: #64748b;
+        }
+
+        /* --- Buttons --- */
         .btn {
-            background-color: #2980b9;
-            color: white;
-            padding: 12px 20px;
+            background-color: var(--accent-blue);
+            color: #0f172a; /* Dark text on bright button for pop */
+            font-weight: 600;
+            padding: 14px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
             display: block;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 30px;
+            transition: background-color 0.2s, transform 0.1s;
         }
         .btn:hover {
-            background-color: #3498db;
+            background-color: #7dd3fc;
         }
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* --- Output Section --- */
         #output-section {
             margin-top: 40px;
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 25px;
-            border-radius: 8px;
+            background: #0b1120; /* Extra dark for contrast */
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
             display: none;
+        }
+        #output-section h2 {
+            margin-top: 0;
+            color: var(--accent-blue);
         }
         #outreach-text {
             white-space: pre-wrap;
-            background: #34495e;
-            padding: 15px;
-            border-radius: 5px;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
             margin-top: 15px;
-            font-family: monospace;
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            line-height: 1.5;
         }
         .copy-btn {
-            background-color: #27ae60;
-            margin-top: 10px;
+            background-color: var(--status-green);
+            color: white;
+            margin-top: 15px;
         }
         .copy-btn:hover {
-            background-color: #2ecc71;
+            background-color: #059669;
         }
     </style>
 </head>
 <body>
 
     <div class="header-section">
-        <h1>Trust Funnel Diagnostic Tool 🩻✨</h1>
+        <h1>Trust Funnel Diagnostic</h1>
         <p>15-Minute Sweep to identify where trust hemorrhages.</p>
     </div>
 
@@ -154,7 +223,7 @@
                 <div class="reference-content">
                     <strong>Check where first contact happens:</strong> LinkedIn/X content, founder bio, homepage, lead magnet, ads, podcasts.<br><br>
                     <strong>Ask:</strong> What promise is being made here? (e.g., "close property deals faster", "reduce fraud risk")<br><br>
-                    <span class="highlight-text">Key Question: Does the first promise survive the click?</span><br>
+                    <span class="highlight-text">Key Question: Does the first promise survive the click?</span><br><br>
                     If the post promises certainty but the landing page becomes vague corporate soup ("modern digital infrastructure"), curiosity dies.
                 </div>
             </details>
@@ -165,7 +234,7 @@
                     <option value="Amber">Amber - Friction / doubt</option>
                     <option value="Red">Red - Likely leak</option>
                 </select>
-                <input type="text" id="title-1" placeholder="Title (e.g., Trust breaks between discovery and landing page)" style="flex-grow: 1; padding: 8px;">
+                <input type="text" id="title-1" placeholder="Title (e.g., Trust breaks between discovery and landing page)">
             </div>
             <textarea id="note-1" placeholder="Note the fracture and likely impact here..."></textarea>
         </div>
@@ -179,7 +248,7 @@
                 <div class="reference-content">
                     <strong>Check Clarity (5-second rule):</strong> What this is, who it's for, why it matters now.<br><br>
                     <strong>Check Credibility:</strong> Proof, numbers, case studies, logos, trust badges, compliance. <br>
-                    <em>*Absence of proof in proptech/fintech is a red flare 🚨</em><br><br>
+                    <em>*Absence of proof is a red flare 🚨</em><br><br>
                     <strong>Objection Handling:</strong> What fear would a buyer naturally have? (scam risk, data security, hidden fees). Is it addressed?<br><br>
                     <span class="highlight-text">Consultant Note: If unaddressed, label as "core buyer objection left unanswered."</span>
                 </div>
@@ -191,7 +260,7 @@
                     <option value="Amber">Amber - Friction / doubt</option>
                     <option value="Red">Red - Likely leak</option>
                 </select>
-                <input type="text" id="title-2" placeholder="Title (e.g., Core buyer objection left unanswered)" style="flex-grow: 1; padding: 8px;">
+                <input type="text" id="title-2" placeholder="Title (e.g., Core buyer objection left unanswered)">
             </div>
             <textarea id="note-2" placeholder="Note the fracture and likely impact here..."></textarea>
         </div>
@@ -209,7 +278,7 @@
                         <li>Learn More -> Generic homepage (Weak)</li>
                         <li>Get Started -> Signup wall (Friction)</li>
                     </ul>
-                    <span class="highlight-text">Key Question: Does the CTA deepen certainty or interrupt momentum?</span><br>
+                    <span class="highlight-text">Key Question: Does the CTA deepen certainty or interrupt momentum?</span><br><br>
                     Sending a warm prospect to a generic homepage is like making someone ready to buy go back to the parking lot.
                 </div>
             </details>
@@ -220,7 +289,7 @@
                     <option value="Amber">Amber - Friction / doubt</option>
                     <option value="Red">Red - Likely leak</option>
                 </select>
-                <input type="text" id="title-3" placeholder="Title (e.g., CTA interrupts momentum)" style="flex-grow: 1; padding: 8px;">
+                <input type="text" id="title-3" placeholder="Title (e.g., CTA interrupts momentum)">
             </div>
             <textarea id="note-3" placeholder="Note the fracture and likely impact here..."></textarea>
         </div>
@@ -245,7 +314,7 @@
                     <option value="Amber">Amber - Friction / doubt</option>
                     <option value="Red">Red - Likely leak</option>
                 </select>
-                <input type="text" id="title-4" placeholder="Title (e.g., Lead capture form increases skepticism)" style="flex-grow: 1; padding: 8px;">
+                <input type="text" id="title-4" placeholder="Title (e.g., Lead capture form increases skepticism)">
             </div>
             <textarea id="note-4" placeholder="Note the fracture and likely impact here..."></textarea>
         </div>
@@ -259,7 +328,7 @@
                 <div class="reference-content">
                     <strong>Action:</strong> Opt in with a spare email and watch what happens.<br><br>
                     <strong>Audit:</strong> Instant confirmation? Reminder email? Nurture/trust-building sequence? Is there sales pressure too early?<br><br>
-                    <span class="highlight-text">Key Question: Does the follow-up continue the psychological journey?</span><br>
+                    <span class="highlight-text">Key Question: Does the follow-up continue the psychological journey?</span><br><br>
                     If the LP builds safety but the email screams "BOOK NOW!", that's tonal whiplash.
                 </div>
             </details>
@@ -270,7 +339,7 @@
                     <option value="Amber">Amber - Friction / doubt</option>
                     <option value="Red">Red - Likely leak</option>
                 </select>
-                <input type="text" id="title-5" placeholder="Title (e.g., No post-signup trust reinforcement)" style="flex-grow: 1; padding: 8px;">
+                <input type="text" id="title-5" placeholder="Title (e.g., No post-signup trust reinforcement)">
             </div>
             <textarea id="note-5" placeholder="Note the fracture and likely impact here..."></textarea>
         </div>
@@ -293,7 +362,7 @@
                     <option value="Amber">Amber - Friction / doubt</option>
                     <option value="Red">Red - Likely leak</option>
                 </select>
-                <input type="text" id="title-6" placeholder="Title (e.g., High-intent leads enter sales call without belief reinforcement)" style="flex-grow: 1; padding: 8px;">
+                <input type="text" id="title-6" placeholder="Title (e.g., High-intent leads enter sales call without belief reinforcement)">
             </div>
             <textarea id="note-6" placeholder="Note the fracture and likely impact here..."></textarea>
         </div>
@@ -309,23 +378,26 @@
     </div>
 
     <script>
+        // Updated JavaScript to pull colors from our new CSS variables
         function updateColor(stepNumber) {
             const status = document.getElementById(`status-${stepNumber}`).value;
             const container = document.getElementById(`container-${stepNumber}`);
             
             if (status === 'Green') {
-                container.style.borderLeftColor = '#27ae60';
+                container.style.borderLeftColor = 'var(--status-green)';
             } else if (status === 'Amber') {
-                container.style.borderLeftColor = '#f39c12';
+                container.style.borderLeftColor = 'var(--status-amber)';
             } else if (status === 'Red') {
-                container.style.borderLeftColor = '#e74c3c';
+                container.style.borderLeftColor = 'var(--status-red)';
             }
         }
 
+        // Initialize colors on page load
         for(let i=1; i<=6; i++) {
             updateColor(i);
         }
 
+        // Function to collect data and generate the final text
         function generateReport() {
             let fracturesFound = [];
 
@@ -359,9 +431,10 @@
 
             document.getElementById('outreach-text').innerText = finalOutput;
             document.getElementById('output-section').style.display = 'block';
-            window.scrollTo(0, document.body.scrollHeight);
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
 
+        // Function to copy text
         function copyText() {
             const textToCopy = document.getElementById('outreach-text').innerText;
             navigator.clipboard.writeText(textToCopy).then(() => {

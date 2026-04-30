@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Funnel Diagnostic Tool</title>
+    <style>
+        /* Basic styling for a clean, easy-to-read interface */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .step-container {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 5px solid #ccc; /* Default border color */
+            transition: border-color 0.3s;
+        }
+        .step-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-weight: bold;
+        }
+        .green { color: #27ae60; }
+        .amber { color: #f39c12; }
+        .red { color: #e74c3c; }
+        
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .btn {
+            background-color: #2980b9;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #3498db;
+        }
+        #output-section {
+            margin-top: 40px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 25px;
+            border-radius: 8px;
+            display: none; /* Hidden until generated */
+        }
+        #outreach-text {
+            white-space: pre-wrap; /* Keeps your formatting and line breaks */
+            background: #34495e;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-family: monospace;
+        }
+        .copy-btn {
+            background-color: #27ae60;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <h1>Trust Funnel Diagnostic Tool 🩻✨</h1>
+        <p>15-Minute Sweep to identify where trust hemorrhages.</p>
+    </div>
+
+    <form id="diagnostic-form">
+        <!-- Step 1 -->
+        <div class="step-container" id="container-1">
+            <div class="step-title">1) Entry Point Audit (3 mins)</div>
+            <div class="controls">
+                <select id="status-1" onchange="updateColor(1)">
+                    <option value="Green">Green - Trust intact</option>
+                    <option value="Amber">Amber - Friction / doubt</option>
+                    <option value="Red">Red - Likely leak</option>
+                </select>
+                <input type="text" id="title-1" placeholder="Title (e.g., Trust breaks between discovery and landing page)" style="flex-grow: 1; padding: 8px;">
+            </div>
+            <textarea id="note-1" placeholder="Note the fracture and likely impact here..."></textarea>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-container" id="container-2">
+            <div class="step-title">2) Landing Page Trust Check (4 mins)</div>
+            <div class="controls">
+                <select id="status-2" onchange="updateColor(2)">
+                    <option value="Green">Green - Trust intact</option>
+                    <option value="Amber">Amber - Friction / doubt</option>
+                    <option value="Red">Red - Likely leak</option>
+                </select>
+                <input type="text" id="title-2" placeholder="Title (e.g., Core buyer objection left unanswered)" style="flex-grow: 1; padding: 8px;">
+            </div>
+            <textarea id="note-2" placeholder="Note the fracture and likely impact here..."></textarea>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-container" id="container-3">
+            <div class="step-title">3) CTA Pathway Audit (3 mins)</div>
+            <div class="controls">
+                <select id="status-3" onchange="updateColor(3)">
+                    <option value="Green">Green - Trust intact</option>
+                    <option value="Amber">Amber - Friction / doubt</option>
+                    <option value="Red">Red - Likely leak</option>
+                </select>
+                <input type="text" id="title-3" placeholder="Title (e.g., CTA interrupts momentum)" style="flex-grow: 1; padding: 8px;">
+            </div>
+            <textarea id="note-3" placeholder="Note the fracture and likely impact here..."></textarea>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-container" id="container-4">
+            <div class="step-title">4) Form + Lead Capture Friction (2 mins)</div>
+            <div class="controls">
+                <select id="status-4" onchange="updateColor(4)">
+                    <option value="Green">Green - Trust intact</option>
+                    <option value="Amber">Amber - Friction / doubt</option>
+                    <option value="Red">Red - Likely leak</option>
+                </select>
+                <input type="text" id="title-4" placeholder="Title (e.g., Lead capture form increases skepticism)" style="flex-grow: 1; padding: 8px;">
+            </div>
+            <textarea id="note-4" placeholder="Note the fracture and likely impact here..."></textarea>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-container" id="container-5">
+            <div class="step-title">5) Follow-Up Sequence Test (4 to 5 mins)</div>
+            <div class="controls">
+                <select id="status-5" onchange="updateColor(5)">
+                    <option value="Green">Green - Trust intact</option>
+                    <option value="Amber">Amber - Friction / doubt</option>
+                    <option value="Red">Red - Likely leak</option>
+                </select>
+                <input type="text" id="title-5" placeholder="Title (e.g., No post-signup trust reinforcement)" style="flex-grow: 1; padding: 8px;">
+            </div>
+            <textarea id="note-5" placeholder="Note the fracture and likely impact here..."></textarea>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step-container" id="container-6">
+            <div class="step-title">6) Sales Handoff / Demo Flow (2 mins)</div>
+            <div class="controls">
+                <select id="status-6" onchange="updateColor(6)">
+                    <option value="Green">Green - Trust intact</option>
+                    <option value="Amber">Amber - Friction / doubt</option>
+                    <option value="Red">Red - Likely leak</option>
+                </select>
+                <input type="text" id="title-6" placeholder="Title (e.g., High-intent leads enter sales call without belief reinforcement)" style="flex-grow: 1; padding: 8px;">
+            </div>
+            <textarea id="note-6" placeholder="Note the fracture and likely impact here..."></textarea>
+        </div>
+
+        <button type="button" class="btn" onclick="generateReport()">Generate Outreach Message</button>
+    </form>
+
+    <!-- Output Section -->
+    <div id="output-section">
+        <h2>Your Outreach Copy</h2>
+        <div id="outreach-text"></div>
+        <button type="button" class="btn copy-btn" onclick="copyText()">Copy to Clipboard</button>
+    </div>
+
+    <script>
+        // Function to change the side border color based on the selected status
+        function updateColor(stepNumber) {
+            const status = document.getElementById(`status-${stepNumber}`).value;
+            const container = document.getElementById(`container-${stepNumber}`);
+            
+            if (status === 'Green') {
+                container.style.borderLeftColor = '#27ae60';
+            } else if (status === 'Amber') {
+                container.style.borderLeftColor = '#f39c12';
+            } else if (status === 'Red') {
+                container.style.borderLeftColor = '#e74c3c';
+            }
+        }
+
+        // Initialize colors on page load
+        for(let i=1; i<=6; i++) {
+            updateColor(i);
+        }
+
+        // Function to collect data and generate the final text
+        function generateReport() {
+            let fracturesFound = [];
+
+            // Loop through all 6 steps
+            for (let i = 1; i <= 6; i++) {
+                const status = document.getElementById(`status-${i}`).value;
+                const title = document.getElementById(`title-${i}`).value;
+                const note = document.getElementById(`note-${i}`).value;
+
+                // We only want to report on Amber or Red items, and we need notes to exist
+                if ((status === 'Amber' || status === 'Red') && note.trim() !== "") {
+                    fracturesFound.push({
+                        title: title || `Fracture found at stage ${i}`,
+                        note: note
+                    });
+                }
+            }
+
+            // We only need the top 3 for the outreach
+            const top3 = fracturesFound.slice(0, 3);
+            
+            let finalOutput = "";
+
+            if (top3.length === 0) {
+                finalOutput = "No friction points recorded! Make sure to set statuses to Amber or Red and write notes to generate fractures.";
+            } else {
+                // Build the text using your specific structure
+                top3.forEach((fracture, index) => {
+                    finalOutput += `Funnel Fracture #${index + 1}\n`;
+                    finalOutput += `${fracture.title}\n`;
+                    finalOutput += `${fracture.note}\n\n`;
+                });
+
+                // Add the closing hook
+                finalOutput += `I ran a quick Trust Funnel Diagnostic on your buyer journey and spotted ${top3.length} points where skepticism may be slowing conversions. Happy to share the breakdown if useful.`;
+            }
+
+            // Display the text and show the section
+            document.getElementById('outreach-text').innerText = finalOutput;
+            document.getElementById('output-section').style.display = 'block';
+            
+            // Scroll to the bottom to see it
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        // Function to copy the generated text to the user's clipboard
+        function copyText() {
+            const textToCopy = document.getElementById('outreach-text').innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("Outreach message copied to clipboard!");
+            }).catch(err => {
+                alert("Failed to copy text: ", err);
+            });
+        }
+    </script>
+</body>
+</html>

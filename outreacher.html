@@ -28,7 +28,7 @@
             margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border-left: 5px solid #ccc; /* Default border color */
+            border-left: 5px solid #ccc;
             transition: border-color 0.3s;
         }
         .step-title {
@@ -36,6 +36,45 @@
             font-size: 1.2em;
             margin-bottom: 10px;
         }
+        
+        /* Styling for the collapsible reference guides */
+        .reference-guide {
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+        .reference-guide summary {
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #2980b9;
+            list-style: none; /* Removes default triangle in some browsers */
+        }
+        .reference-guide summary::-webkit-details-marker {
+            display: none; /* Removes default triangle in WebKit */
+        }
+        .reference-guide summary:hover {
+            background-color: #e2e6ea;
+            border-radius: 5px;
+        }
+        .reference-content {
+            padding: 10px 15px 15px 15px;
+            font-size: 0.9em;
+            color: #495057;
+            border-top: 1px solid #e9ecef;
+        }
+        .reference-content ul {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+        .highlight-text {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
         .controls {
             display: flex;
             gap: 15px;
@@ -46,11 +85,8 @@
             border-radius: 4px;
             border: 1px solid #ccc;
             font-weight: bold;
+            min-width: 140px;
         }
-        .green { color: #27ae60; }
-        .amber { color: #f39c12; }
-        .red { color: #e74c3c; }
-        
         textarea {
             width: 100%;
             height: 80px;
@@ -59,6 +95,7 @@
             border: 1px solid #ccc;
             resize: vertical;
             font-family: inherit;
+            box-sizing: border-box;
         }
         .btn {
             background-color: #2980b9;
@@ -81,10 +118,10 @@
             color: #ecf0f1;
             padding: 25px;
             border-radius: 8px;
-            display: none; /* Hidden until generated */
+            display: none;
         }
         #outreach-text {
-            white-space: pre-wrap; /* Keeps your formatting and line breaks */
+            white-space: pre-wrap;
             background: #34495e;
             padding: 15px;
             border-radius: 5px;
@@ -111,6 +148,17 @@
         <!-- Step 1 -->
         <div class="step-container" id="container-1">
             <div class="step-title">1) Entry Point Audit (3 mins)</div>
+            
+            <details class="reference-guide">
+                <summary>➕ View Analysis Checklist</summary>
+                <div class="reference-content">
+                    <strong>Check where first contact happens:</strong> LinkedIn/X content, founder bio, homepage, lead magnet, ads, podcasts.<br><br>
+                    <strong>Ask:</strong> What promise is being made here? (e.g., "close property deals faster", "reduce fraud risk")<br><br>
+                    <span class="highlight-text">Key Question: Does the first promise survive the click?</span><br>
+                    If the post promises certainty but the landing page becomes vague corporate soup ("modern digital infrastructure"), curiosity dies.
+                </div>
+            </details>
+
             <div class="controls">
                 <select id="status-1" onchange="updateColor(1)">
                     <option value="Green">Green - Trust intact</option>
@@ -125,6 +173,18 @@
         <!-- Step 2 -->
         <div class="step-container" id="container-2">
             <div class="step-title">2) Landing Page Trust Check (4 mins)</div>
+            
+            <details class="reference-guide">
+                <summary>➕ View Analysis Checklist</summary>
+                <div class="reference-content">
+                    <strong>Check Clarity (5-second rule):</strong> What this is, who it's for, why it matters now.<br><br>
+                    <strong>Check Credibility:</strong> Proof, numbers, case studies, logos, trust badges, compliance. <br>
+                    <em>*Absence of proof in proptech/fintech is a red flare 🚨</em><br><br>
+                    <strong>Objection Handling:</strong> What fear would a buyer naturally have? (scam risk, data security, hidden fees). Is it addressed?<br><br>
+                    <span class="highlight-text">Consultant Note: If unaddressed, label as "core buyer objection left unanswered."</span>
+                </div>
+            </details>
+
             <div class="controls">
                 <select id="status-2" onchange="updateColor(2)">
                     <option value="Green">Green - Trust intact</option>
@@ -139,6 +199,21 @@
         <!-- Step 3 -->
         <div class="step-container" id="container-3">
             <div class="step-title">3) CTA Pathway Audit (3 mins)</div>
+            
+            <details class="reference-guide">
+                <summary>➕ View Analysis Checklist</summary>
+                <div class="reference-content">
+                    <strong>Action:</strong> Click every CTA and map where each button goes.<br>
+                    <ul>
+                        <li>Book Demo -> Calendly (Good)</li>
+                        <li>Learn More -> Generic homepage (Weak)</li>
+                        <li>Get Started -> Signup wall (Friction)</li>
+                    </ul>
+                    <span class="highlight-text">Key Question: Does the CTA deepen certainty or interrupt momentum?</span><br>
+                    Sending a warm prospect to a generic homepage is like making someone ready to buy go back to the parking lot.
+                </div>
+            </details>
+
             <div class="controls">
                 <select id="status-3" onchange="updateColor(3)">
                     <option value="Green">Green - Trust intact</option>
@@ -153,6 +228,17 @@
         <!-- Step 4 -->
         <div class="step-container" id="container-4">
             <div class="step-title">4) Form + Lead Capture Friction (2 mins)</div>
+            
+            <details class="reference-guide">
+                <summary>➕ View Analysis Checklist</summary>
+                <div class="reference-content">
+                    <strong>Check:</strong> Number of fields, unclear labels, weak reassurance text.<br><br>
+                    <strong>Bad:</strong> "Submit your details"<br>
+                    <strong>Better:</strong> "Get your fraud-risk audit in 24 hours" (preserves value narrative).<br><br>
+                    <span class="highlight-text">Silent Leak Check: Is there privacy reassurance? For trust-first industries, this matters heavily.</span>
+                </div>
+            </details>
+
             <div class="controls">
                 <select id="status-4" onchange="updateColor(4)">
                     <option value="Green">Green - Trust intact</option>
@@ -167,6 +253,17 @@
         <!-- Step 5 -->
         <div class="step-container" id="container-5">
             <div class="step-title">5) Follow-Up Sequence Test (4 to 5 mins)</div>
+            
+            <details class="reference-guide">
+                <summary>➕ View Analysis Checklist</summary>
+                <div class="reference-content">
+                    <strong>Action:</strong> Opt in with a spare email and watch what happens.<br><br>
+                    <strong>Audit:</strong> Instant confirmation? Reminder email? Nurture/trust-building sequence? Is there sales pressure too early?<br><br>
+                    <span class="highlight-text">Key Question: Does the follow-up continue the psychological journey?</span><br>
+                    If the LP builds safety but the email screams "BOOK NOW!", that's tonal whiplash.
+                </div>
+            </details>
+
             <div class="controls">
                 <select id="status-5" onchange="updateColor(5)">
                     <option value="Green">Green - Trust intact</option>
@@ -181,6 +278,15 @@
         <!-- Step 6 -->
         <div class="step-container" id="container-6">
             <div class="step-title">6) Sales Handoff / Demo Flow (2 mins)</div>
+            
+            <details class="reference-guide">
+                <summary>➕ View Analysis Checklist</summary>
+                <div class="reference-content">
+                    <strong>Check what happens before the call:</strong> Confirmation page, founder intro video, prep email, case study link, expectations set.<br><br>
+                    <span class="highlight-text">If none exists, note: "High-intent leads enter sales call without belief reinforcement."</span>
+                </div>
+            </details>
+
             <div class="controls">
                 <select id="status-6" onchange="updateColor(6)">
                     <option value="Green">Green - Trust intact</option>
@@ -203,7 +309,6 @@
     </div>
 
     <script>
-        // Function to change the side border color based on the selected status
         function updateColor(stepNumber) {
             const status = document.getElementById(`status-${stepNumber}`).value;
             const container = document.getElementById(`container-${stepNumber}`);
@@ -217,22 +322,18 @@
             }
         }
 
-        // Initialize colors on page load
         for(let i=1; i<=6; i++) {
             updateColor(i);
         }
 
-        // Function to collect data and generate the final text
         function generateReport() {
             let fracturesFound = [];
 
-            // Loop through all 6 steps
             for (let i = 1; i <= 6; i++) {
                 const status = document.getElementById(`status-${i}`).value;
                 const title = document.getElementById(`title-${i}`).value;
                 const note = document.getElementById(`note-${i}`).value;
 
-                // We only want to report on Amber or Red items, and we need notes to exist
                 if ((status === 'Amber' || status === 'Red') && note.trim() !== "") {
                     fracturesFound.push({
                         title: title || `Fracture found at stage ${i}`,
@@ -241,34 +342,26 @@
                 }
             }
 
-            // We only need the top 3 for the outreach
             const top3 = fracturesFound.slice(0, 3);
-            
             let finalOutput = "";
 
             if (top3.length === 0) {
                 finalOutput = "No friction points recorded! Make sure to set statuses to Amber or Red and write notes to generate fractures.";
             } else {
-                // Build the text using your specific structure
                 top3.forEach((fracture, index) => {
                     finalOutput += `Funnel Fracture #${index + 1}\n`;
                     finalOutput += `${fracture.title}\n`;
                     finalOutput += `${fracture.note}\n\n`;
                 });
 
-                // Add the closing hook
                 finalOutput += `I ran a quick Trust Funnel Diagnostic on your buyer journey and spotted ${top3.length} points where skepticism may be slowing conversions. Happy to share the breakdown if useful.`;
             }
 
-            // Display the text and show the section
             document.getElementById('outreach-text').innerText = finalOutput;
             document.getElementById('output-section').style.display = 'block';
-            
-            // Scroll to the bottom to see it
             window.scrollTo(0, document.body.scrollHeight);
         }
 
-        // Function to copy the generated text to the user's clipboard
         function copyText() {
             const textToCopy = document.getElementById('outreach-text').innerText;
             navigator.clipboard.writeText(textToCopy).then(() => {

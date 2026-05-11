@@ -1,176 +1,884 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Habit Architect | Systemic Change</title>
-    <style>
-        :root {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --accent: #38bdf8;
-            --text: #f8fafc;
-            --danger: #ef4444;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.5;
-        }
-        .container { max-width: 500px; margin: 0 auto; }
-        .card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        h1, h2 { color: var(--accent); margin-top: 0; }
-        button { 
-            background: var(--accent); color: var(--bg); border: none; 
-            padding: 12px 20px; border-radius: 8px; font-weight: bold; 
-            cursor: pointer; width: 100%; margin-top: 10px;
-        }
-        button.secondary { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
-        button.emergency { background: var(--danger); color: white; }
-        input, select, textarea { 
-            width: 100%; padding: 10px; margin: 8px 0; 
-            border-radius: 6px; border: 1px solid #334155;
-            background: #0f172a; color: white; box-sizing: border-box;
-        }
-        .nav { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; }
-        .tab-btn { flex: 1; padding: 10px; border: 1px solid var(--accent); background: none; color: var(--accent); border-radius: 20px; white-space: nowrap; }
-        .tab-btn.active { background: var(--accent); color: var(--bg); }
-        .view { display: none; }
-        .view.active { display: block; }
-        .timer-display { font-size: 3rem; font-weight: bold; text-align: center; margin: 20px 0; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BREAK FREE — Discipline System</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+:root {
+  --bg: #070707;
+  --surface: #111111;
+  --surface2: #181818;
+  --border: #252525;
+  --red: #cc2200;
+  --red-dim: #4a0d00;
+  --white: #eeeeee;
+  --muted: #555555;
+  --green: #1a5c1a;
+  --green-bright: #2db52d;
+  --yellow: #a07800;
+  --yellow-bright: #d4a017;
+  --font-d: 'Oswald', sans-serif;
+  --font-m: 'Share Tech Mono', monospace;
+}
+
+html, body { background:var(--bg); color:var(--white); font-family:var(--font-m); height:100%; overflow-x:hidden; }
+body { padding-bottom:72px; }
+
+/* ---- NAV ---- */
+nav {
+  position:fixed; bottom:0; left:0; right:0;
+  background:#0a0a0a; border-top:1px solid var(--border);
+  display:flex; z-index:100;
+}
+nav button {
+  flex:1; background:none; border:none; color:var(--muted);
+  padding:10px 4px 8px; font-family:var(--font-m); font-size:9px;
+  letter-spacing:1px; cursor:pointer; display:flex; flex-direction:column;
+  align-items:center; gap:3px; text-transform:uppercase; transition:color 0.15s;
+}
+nav button.active { color:var(--white); border-top:2px solid var(--red); margin-top:-1px; }
+nav button .nav-icon { font-size:18px; line-height:1; }
+
+/* ---- SECTIONS ---- */
+section { display:none; padding:20px 16px; min-height:calc(100vh - 72px); animation:fadeUp 0.2s ease; }
+section.active { display:block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* ---- TYPE ---- */
+h1 { font-family:var(--font-d); font-size:30px; font-weight:700; letter-spacing:2px; text-transform:uppercase; line-height:1.05; }
+h2 { font-family:var(--font-d); font-size:21px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; }
+h3 { font-family:var(--font-d); font-size:14px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
+.label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
+
+/* ---- TAG ---- */
+.tag { display:inline-block; font-size:9px; letter-spacing:2px; text-transform:uppercase; padding:3px 8px; border:1px solid; margin-bottom:8px; }
+.tag-red { color:var(--red); border-color:var(--red-dim); }
+.tag-green { color:var(--green-bright); border-color:var(--green); }
+.tag-white { color:var(--muted); border-color:var(--border); }
+.tag-yellow { color:var(--yellow-bright); border-color:var(--yellow); }
+
+/* ---- CARDS ---- */
+.card { background:var(--surface); border:1px solid var(--border); padding:16px; margin-bottom:12px; }
+.card-red { border-color:var(--red-dim); background:#0d0400; }
+
+/* ---- BUTTONS ---- */
+.btn {
+  display:block; width:100%; background:var(--surface2); border:1px solid var(--border);
+  color:var(--white); font-family:var(--font-m); font-size:12px; letter-spacing:1.5px;
+  padding:14px 16px; text-transform:uppercase; cursor:pointer; text-align:center;
+  transition:background 0.1s; -webkit-appearance:none; border-radius:0;
+}
+.btn:active { background:#222; }
+.btn:disabled { opacity:0.4; cursor:not-allowed; }
+.btn-red { background:var(--red-dim); border-color:var(--red); }
+.btn-red:active { background:#6b1500; }
+.btn-green { background:var(--green); border-color:var(--green-bright); }
+.btn-green:active { background:#236b23; }
+.btn-ghost { background:transparent; border-color:var(--border); color:var(--muted); font-size:10px; }
+
+/* ---- DIVIDER ---- */
+hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+
+/* ---- STREAK ---- */
+.streak-num { font-family:var(--font-d); font-size:80px; font-weight:700; line-height:1; }
+.c-red { color:var(--red); }
+.c-green { color:var(--green-bright); }
+.c-yellow { color:var(--yellow-bright); }
+
+/* ---- STATUS ROW ---- */
+.status-row { display:flex; gap:8px; margin-bottom:12px; }
+.status-item { flex:1; background:var(--surface); border:1px solid var(--border); padding:10px 6px; text-align:center; }
+.status-item .val { font-family:var(--font-d); font-size:24px; font-weight:700; display:block; }
+.status-item .lab { font-size:8px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); display:block; margin-top:2px; }
+
+/* ---- TIMER ---- */
+.timer { font-family:var(--font-d); font-size:60px; font-weight:700; text-align:center; letter-spacing:4px; padding:16px 0; }
+.timer.running { color:var(--red); }
+.timer.done { color:var(--green-bright); }
+
+/* ---- BRIDGE GRID ---- */
+.bridge-grid { display:grid; grid-template-columns:repeat(11,1fr); gap:4px; margin:10px 0; }
+.bd { aspect-ratio:1; background:var(--surface2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:7px; color:var(--muted); }
+.bd.clean { background:var(--green); border-color:var(--green-bright); color:transparent; }
+.bd.failed { background:var(--red-dim); border-color:var(--red); color:transparent; }
+.bd.partial { background:var(--yellow); border-color:var(--yellow-bright); color:transparent; }
+.bd.today { border-color:var(--white); color:var(--white); font-weight:bold; }
+.bd.missed { opacity:0.25; }
+
+/* ---- PROGRESS BAR ---- */
+.prog-wrap { background:var(--surface); height:5px; border:1px solid var(--border); margin-top:8px; }
+.prog-bar { background:var(--red); height:100%; width:0%; transition:width 0.4s; }
+
+/* ---- RECKONING ---- */
+.rec-group { margin-bottom:14px; }
+.rec-group label { display:block; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+.rec-group textarea {
+  width:100%; background:var(--surface); border:1px solid var(--border);
+  color:var(--white); font-family:var(--font-m); font-size:13px; padding:10px;
+  resize:none; -webkit-appearance:none; border-radius:0; line-height:1.6;
+}
+.rec-group textarea:focus { outline:none; border-color:var(--muted); }
+
+.spiral-opts { display:flex; gap:6px; margin-bottom:14px; }
+.spiral-opt {
+  flex:1; background:var(--surface); border:1px solid var(--border); color:var(--muted);
+  font-family:var(--font-m); font-size:11px; letter-spacing:1px; padding:10px 4px;
+  text-transform:uppercase; cursor:pointer; text-align:center; -webkit-appearance:none; transition:all 0.1s;
+}
+.spiral-opt.sel-no { background:var(--green); border-color:var(--green-bright); color:var(--white); }
+.spiral-opt.sel-partial { background:var(--yellow); border-color:var(--yellow-bright); color:var(--white); }
+.spiral-opt.sel-yes { background:var(--red-dim); border-color:var(--red); color:var(--white); }
+
+/* ---- WHY TEXT ---- */
+.why-block { border-left:3px solid var(--red); padding-left:14px; }
+.why-block p { font-size:13px; line-height:1.9; color:#ccc; }
+.why-block strong { color:var(--white); font-family:var(--font-d); font-size:15px; letter-spacing:1px; }
+
+/* ---- STEP LIST ---- */
+.step-list { list-style:none; }
+.step-list li { padding:12px 0; border-bottom:1px solid var(--border); display:flex; gap:12px; align-items:flex-start; }
+.step-list li:last-child { border-bottom:none; }
+.step-n { font-family:var(--font-d); font-size:22px; font-weight:700; color:var(--red); min-width:22px; line-height:1.1; }
+.step-body { flex:1; }
+.step-title { font-size:12px; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:4px; color:var(--white); }
+.step-sub { font-size:11px; color:var(--muted); line-height:1.7; }
+
+/* ---- PUSH COUNTER ---- */
+.push-count { font-family:var(--font-d); font-size:90px; font-weight:700; text-align:center; line-height:1; padding:16px 0 8px; }
+.push-count.done { color:var(--green-bright); }
+
+/* ---- CRISIS TEXT ---- */
+.crisis-body { font-family:var(--font-d); font-size:14px; letter-spacing:1px; text-transform:uppercase; line-height:2.2; color:var(--red); }
+
+/* ---- TOP BAR ---- */
+.top-bar { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; }
+
+/* ---- RITUAL CHECK ---- */
+.rit-step { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+.rit-step:last-child { border-bottom:none; }
+.ck { width:22px; height:22px; border:1px solid var(--border); background:var(--surface); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:14px; }
+.ck.done { background:var(--green); border-color:var(--green-bright); }
+.ck-label { font-size:12px; text-transform:uppercase; letter-spacing:1px; }
+
+/* ---- TOAST ---- */
+.toast {
+  position:fixed; bottom:82px; left:16px; right:16px; background:var(--surface);
+  border:1px solid var(--border); padding:11px 14px; font-size:11px; letter-spacing:1px;
+  text-align:center; z-index:300; opacity:0; transform:translateY(8px);
+  transition:opacity 0.2s, transform 0.2s; pointer-events:none; text-transform:uppercase;
+}
+.toast.show { opacity:1; transform:translateY(0); }
+
+/* ---- PHASE ROW ---- */
+.phase-row { font-size:11px; line-height:2.1; }
+.phase-row .ph-num { color:var(--white); font-family:var(--font-d); }
+.phase-row .ph-note { color:var(--muted); }
+</style>
 </head>
 <body>
 
-<div class="container">
-    <div class="nav">
-        <button class="tab-btn active" onclick="showView('dash')">Dash</button>
-        <button class="tab-btn" onclick="showView('lab')">The Lab</button>
-        <button class="tab-btn" onclick="showView('mirror')">Mirror</button>
-        <button class="tab-btn" onclick="showView('emergency')">URGENT</button>
+<!-- ============================================================
+     SECTION: MIRROR (Home)
+============================================================ -->
+<section id="sec-mirror" class="active">
+  <div class="top-bar">
+    <div>
+      <span class="tag tag-red">Discipline System</span>
+      <h1>THE<br>MIRROR</h1>
+    </div>
+    <div style="text-align:right; padding-top:4px">
+      <div class="label" id="today-date-display"></div>
+      <div class="label" style="margin-top:3px; color:var(--white)" id="day-num-display"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:8px">
+    <div class="label" style="margin-bottom:4px">Clean Streak</div>
+    <div class="streak-num" id="streak-display">0</div>
+    <div class="label" style="margin-top:4px">consecutive days without spiral</div>
+  </div>
+
+  <div class="status-row">
+    <div class="status-item">
+      <span class="val c-green" id="stat-clean">0</span>
+      <span class="lab">Clean</span>
+    </div>
+    <div class="status-item">
+      <span class="val c-yellow" id="stat-partial">0</span>
+      <span class="lab">Partial</span>
+    </div>
+    <div class="status-item">
+      <span class="val c-red" id="stat-failed">0</span>
+      <span class="lab">Spirals</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="label" style="margin-bottom:8px">Today's Log</div>
+    <div id="mirror-ritual-status" style="font-size:12px; color:var(--muted)">— Ritual: not done</div>
+    <div id="mirror-reckoning-status" style="font-size:12px; color:var(--muted); margin-top:4px">— Reckoning: not logged</div>
+  </div>
+
+  <hr>
+
+  <div class="label" style="margin-bottom:10px">Your Why — Read It</div>
+  <div class="card card-red" style="margin-bottom:12px">
+    <div class="why-block">
+      <p>
+        <strong>You are in Nigeria.</strong><br><br>
+        Your 9-to-5 barely covers the bills. Your daughter is growing up <em>right now.</em> Not later. Tonight. Every evening you hand over to cheap dopamine is another day you stay in that job — underpaid, trapped, asking for permission to live your own life.<br><br>
+        You said you want your own apartment. You said you want to give her the best childhood money can offer. You said you want to make decisions because that's what <em>you</em> want — not because of what you can afford.<br><br>
+        <strong>None of that happens without the work you do in these hours.</strong><br><br>
+        Outreach is hard. Not seeing results is painful. Feeling stuck is real. Those feelings are the exact price of the life you say you want. You don't get to skip the payment. No one is coming to rescue you. Your employer won't. Luck won't. Only the work you do tonight — after a full day, when it is hard — builds the exit.<br><br>
+        Copywriting is the door. Outreach is the key. Every message you send is a brick in the wall between you and that job. Every spiral tears one out.<br><br>
+        <strong>Your daughter is watching the man you are becoming.<br>Be the man she deserves.</strong>
+      </p>
+    </div>
+  </div>
+
+  <button class="btn btn-red" onclick="navigate('sec-emergency')" style="font-size:13px; padding:16px;">⚠ &nbsp;EMERGENCY — I'M ABOUT TO SPIRAL</button>
+</section>
+
+<!-- ============================================================
+     SECTION: RITUAL
+============================================================ -->
+<section id="sec-ritual">
+  <span class="tag tag-white">Daily Protocol</span>
+  <h1 style="margin-bottom:6px">Transition<br>Ritual</h1>
+  <p class="label" style="margin-bottom:20px; line-height:1.8">Do this every day between 9-to-5 and brand work. No exceptions.</p>
+
+  <!-- STEP 1 -->
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+      <h3>Step 1 — 5 Min Stretch</h3>
+      <span class="tag tag-white" id="stretch-tag">NOT DONE</span>
+    </div>
+    <p class="label" style="margin-bottom:4px; line-height:1.8">Full body. Quads, hips, shoulders, neck.<br>Timer starts when you press start.</p>
+    <div class="timer" id="stretch-timer-display">5:00</div>
+    <div style="display:flex; gap:8px">
+      <button class="btn" id="stretch-start-btn" onclick="toggleStretch()" style="flex:2">START</button>
+      <button class="btn btn-ghost" onclick="resetStretch()" style="flex:1">RESET</button>
+    </div>
+    <button class="btn btn-green" id="stretch-manual-btn" onclick="markStretchDone()" style="margin-top:8px; font-size:10px; display:none">MARK AS DONE MANUALLY</button>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+      <h3>Step 2 — Cold Water</h3>
+      <span class="tag tag-white" id="water-tag">NOT DONE</span>
+    </div>
+    <p class="label" style="margin-bottom:12px; line-height:1.8">Get up. Go to the sink. Splash cold water on your face. Right now.</p>
+    <button class="btn" id="water-btn" onclick="markWaterDone()">✓ &nbsp;FACE SPLASHED — DONE</button>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card">
+    <h3 style="margin-bottom:10px">Step 3 — Say This Out Loud</h3>
+    <div class="why-block" style="margin-bottom:14px">
+      <p style="font-size:13px">"I am a copywriter building my exit. The next hours are for my daughter and my future. I do not scroll. I do the work."</p>
+    </div>
+    <button class="btn btn-green" id="ritual-complete-btn" onclick="completeRitual()" disabled>
+      RITUAL COMPLETE — START WORK
+    </button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION: EMERGENCY (SOS)
+============================================================ -->
+<section id="sec-emergency">
+  <span class="tag tag-red">⚠ Emergency Protocol</span>
+  <h1 style="color:var(--red); margin-bottom:6px">STOP.<br>RIGHT<br>NOW.</h1>
+  <p class="label" style="margin-bottom:20px">Execute every step. In order. Do not skip.</p>
+
+  <div class="card card-red" style="margin-bottom:12px">
+    <ul class="step-list">
+      <li>
+        <span class="step-n">1</span>
+        <div class="step-body">
+          <div class="step-title">Put The Phone In Another Room</div>
+          <div class="step-sub">Physical distance. Face down. Not your pocket. Another room. Do it before you read step 2. You are reading this on your phone — so use a computer or do this from memory. Move the phone.</div>
+        </div>
+      </li>
+      <li>
+        <span class="step-n">2</span>
+        <div class="step-body">
+          <div class="step-title">Read Your Why. Out Loud.</div>
+          <div class="step-sub">Your daughter. The apartment. The exit from that job. The man you are becoming. Not tomorrow — tonight.</div>
+          <button class="btn" style="margin-top:10px; font-size:10px" onclick="navigate('sec-mirror')">OPEN THE MIRROR →</button>
+        </div>
+      </li>
+      <li>
+        <span class="step-n">3</span>
+        <div class="step-body">
+          <div class="step-title">Do 10 Push-Ups. Now.</div>
+          <div class="step-sub">Not after. Not in a minute. Get on the floor. Use the counter below when you start.</div>
+        </div>
+      </li>
+      <li>
+        <span class="step-n">4</span>
+        <div class="step-body">
+          <div class="step-title">Open Your Work. One Task.</div>
+          <div class="step-sub">Pick the single smallest task in your brand work — one line of outreach, one sentence of copy — and execute it. Momentum beats motivation every time.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Push-up counter -->
+  <div class="card">
+    <h3 style="margin-bottom:0">Push-Up Counter</h3>
+    <div class="push-count" id="push-count-display">0</div>
+    <p class="label" style="text-align:center; margin-bottom:14px" id="push-label">TAP EVERY TIME YOU COME UP</p>
+    <div style="display:flex; gap:8px">
+      <button class="btn btn-red" id="push-tap-btn" onclick="tapPush()" style="flex:3; font-size:22px; padding:22px; letter-spacing:2px">TAP</button>
+      <button class="btn btn-ghost" onclick="resetPush()" style="flex:1; font-size:10px">RESET</button>
+    </div>
+    <div id="push-done-msg" style="display:none; margin-top:12px">
+      <div class="tag tag-green" style="display:block; text-align:center; margin-bottom:8px">10 DONE — DISCIPLINE CHOSEN</div>
+      <p style="font-size:12px; color:var(--muted); line-height:1.8; text-align:center">You just proved you are stronger than the craving. Now open the work. Your future client is waiting. Your daughter's future is waiting.</p>
+    </div>
+  </div>
+
+  <!-- Crisis reminder -->
+  <div class="card card-red">
+    <div class="label" style="color:var(--red); margin-bottom:8px">This Is The Truth</div>
+    <div class="crisis-body">
+      The job you hate will still be there tomorrow.<br>
+      The habit you give in to tonight<br>
+      makes it harder to leave.<br><br>
+      The frustration you are running from<br>
+      is the exact discomfort that builds<br>
+      the copywriter who gets clients.<br><br>
+      There is no other way out.<br>
+      Only through.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION: RECKONING
+============================================================ -->
+<section id="sec-reckoning">
+  <span class="tag tag-white">Nightly Practice</span>
+  <h1 style="margin-bottom:6px">The<br>Reckoning</h1>
+  <p class="label" style="margin-bottom:20px; line-height:1.8">3 minutes. Every night. No matter what happened.</p>
+
+  <div id="rec-form">
+    <div class="card">
+      <div class="label" style="margin-bottom:10px">Did the spiral happen today?</div>
+      <div class="spiral-opts">
+        <button class="spiral-opt" id="sopt-no" onclick="pickSpiral('no')">NO</button>
+        <button class="spiral-opt" id="sopt-partial" onclick="pickSpiral('partial')">PARTIAL</button>
+        <button class="spiral-opt" id="sopt-yes" onclick="pickSpiral('yes')">YES</button>
+      </div>
     </div>
 
-    <div id="dash" class="view active">
-        <h1>Habit Dashboard</h1>
-        <div class="card">
-            <h2>Current If-Then Script</h2>
-            <div id="currentScript">No script set in The Lab.</div>
-        </div>
-        <div class="card">
-            <h2>Identity Statement</h2>
-            <p id="identityText">"I am the type of person who..."</p>
-            <button class="secondary" onclick="editIdentity()">Edit Identity</button>
-        </div>
+    <div class="rec-group">
+      <label>What triggered it? (or almost triggered it?)</label>
+      <textarea id="rec-trigger" rows="3" placeholder="Be specific. Time, emotion, what you were doing, what you were avoiding..."></textarea>
     </div>
 
-    <div id="lab" class="view">
-        <h1>The Habit Lab</h1>
-        <div class="card">
-            <h2>Implementation Intention</h2>
-            <p>Define your If-Then Horse Race logic.</p>
-            <label>If (The Cue/Urge):</label>
-            <input type="text" id="cueInput" placeholder="e.g. When I feel stressed after work...">
-            <label>Then (Replacement Routine):</label>
-            <input type="text" id="actionInput" placeholder="e.g. I will do 2 pushups and breathe.">
-            <button onclick="saveScript()">Save Architecture</button>
-        </div>
+    <div class="rec-group">
+      <label>What will you do differently tomorrow? (be specific)</label>
+      <textarea id="rec-tomorrow" rows="3" placeholder="One concrete action, not a vague intention..."></textarea>
     </div>
 
-    <div id="mirror" class="view">
-        <h1>Accountability Mirror</h1>
-        <div class="card">
-            <h2>Daily Truth Log</h2>
-            <textarea id="mirrorLog" rows="5" placeholder="List your truths, your failures, and your 'Taking Souls' wins for today."></textarea>
-            <button onclick="saveMirror()">Log to History</button>
-        </div>
-    </div>
+    <button class="btn btn-green" onclick="saveReckoning()">LOG TODAY — CLOSE THE DAY</button>
+  </div>
 
-    <div id="emergency" class="view">
-        <h1>Urge Surfer</h1>
-        <div class="card">
-            <p>The wave will rise, peak, and fall. Do not fight it. Surf it for 10 minutes.</p>
-            <div class="timer-display" id="timer">10:00</div>
-            <button id="startTimerBtn" onclick="toggleTimer()">Start Surfing</button>
-            <p style="margin-top: 20px; font-style: italic;">"What you think today determines how you live tomorrow."</p>
-        </div>
+  <div id="rec-saved" style="display:none">
+    <div class="card">
+      <div class="label" style="margin-bottom:8px">Today Logged</div>
+      <div id="rec-saved-spiral" style="font-size:14px; font-family:var(--font-d); letter-spacing:1px; margin-bottom:10px;"></div>
+      <div class="label" style="margin-bottom:4px">Trigger</div>
+      <div id="rec-saved-trigger" style="font-size:12px; color:var(--muted); line-height:1.7; margin-bottom:10px;"></div>
+      <div class="label" style="margin-bottom:4px">Tomorrow</div>
+      <div id="rec-saved-tomorrow" style="font-size:12px; color:var(--muted); line-height:1.7; margin-bottom:12px;"></div>
+      <button class="btn btn-ghost" onclick="editRec()">EDIT</button>
     </div>
-</div>
+    <div class="card card-red" id="rec-fail-note" style="display:none">
+      <p style="font-size:12px; line-height:1.8; color:#ccc;">
+        You spiraled today. That's data, not defeat. The fact that you're here logging it means the part of you that wants to change is still in the fight. Read what triggered it. Read what you'll do tomorrow. Then close this app and sleep. Tomorrow you execute.
+      </p>
+    </div>
+    <div class="card" id="rec-win-note" style="display:none; border-color:var(--green);">
+      <p style="font-size:12px; line-height:1.8; color:var(--green-bright);">
+        Clean day. One more brick in the wall. You did the work tonight when it was hard. That is the version of you your daughter gets to keep.
+      </p>
+    </div>
+  </div>
+</section>
 
+<!-- ============================================================
+     SECTION: BRIDGE
+============================================================ -->
+<section id="sec-bridge">
+  <span class="tag tag-white">The Long Game</span>
+  <h1 style="margin-bottom:6px">66-Day<br>Bridge</h1>
+  <p class="label" style="margin-bottom:4px; line-height:1.8">You are building across. One day at a time.</p>
+  <p style="font-size:11px; color:var(--muted); margin-bottom:16px; line-height:1.8;">Automaticity takes 18–254 days. Median: 66. You are not trying to be motivated. You are rewiring your brain through repetition. This is neurobiology, not willpower.</p>
+
+  <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:12px">
+    <div style="display:flex; align-items:center; gap:6px; font-size:9px; letter-spacing:1px; text-transform:uppercase;">
+      <div style="width:12px;height:12px;background:var(--green);border:1px solid var(--green-bright)"></div>Clean
+    </div>
+    <div style="display:flex; align-items:center; gap:6px; font-size:9px; letter-spacing:1px; text-transform:uppercase;">
+      <div style="width:12px;height:12px;background:var(--yellow);border:1px solid var(--yellow-bright)"></div>Partial
+    </div>
+    <div style="display:flex; align-items:center; gap:6px; font-size:9px; letter-spacing:1px; text-transform:uppercase;">
+      <div style="width:12px;height:12px;background:var(--red-dim);border:1px solid var(--red)"></div>Spiral
+    </div>
+    <div style="display:flex; align-items:center; gap:6px; font-size:9px; letter-spacing:1px; text-transform:uppercase;">
+      <div style="width:12px;height:12px;background:var(--surface2);border:1px solid var(--white)"></div>Today
+    </div>
+  </div>
+
+  <div class="bridge-grid" id="bridge-grid"></div>
+
+  <div style="margin-top:14px;">
+    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+      <span class="label">Bridge Progress</span>
+      <span class="label" id="bridge-pct" style="color:var(--white)">0%</span>
+    </div>
+    <div class="prog-wrap"><div class="prog-bar" id="prog-bar"></div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="label" style="margin-bottom:8px">Phase Guide</div>
+    <div class="phase-row">
+      <span class="ph-num">Days 01–14</span> <span class="ph-note">→ Hardest. Expect failure. Do not quit.</span><br>
+      <span class="ph-num">Days 15–40</span> <span class="ph-note">→ Friction eases. Stay vigilant.</span><br>
+      <span class="ph-num">Days 41–66</span> <span class="ph-note">→ New pattern competes with old one.</span><br>
+      <span style="color:var(--green-bright); font-family:var(--font-d);">Day 67+&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="ph-note">→ New pattern starts winning.</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:0; border-color:var(--red-dim)">
+    <div class="label" style="margin-bottom:6px; color:var(--red)">The 40% Rule</div>
+    <p style="font-size:11px; color:var(--muted); line-height:1.8;">When you feel like you have nothing left and want to escape — you are at 40% of your real capacity. The craving you feel right now is not your limit. It is your governor trying to protect you from growth. You have 60% more. Use it.</p>
+  </div>
+
+  <button class="btn btn-ghost" onclick="doReset()" style="margin-top:6px; font-size:9px">RESET ALL DATA (CAUTION)</button>
+</section>
+
+<!-- ============================================================
+     NAV
+============================================================ -->
+<nav>
+  <button onclick="navigate('sec-mirror')" id="nav-mirror" class="active">
+    <span class="nav-icon">◉</span>MIRROR
+  </button>
+  <button onclick="navigate('sec-ritual')" id="nav-ritual">
+    <span class="nav-icon">⏱</span>RITUAL
+  </button>
+  <button onclick="navigate('sec-emergency')" id="nav-emergency" style="color:var(--red)">
+    <span class="nav-icon">⚡</span>SOS
+  </button>
+  <button onclick="navigate('sec-reckoning')" id="nav-reckoning">
+    <span class="nav-icon">✍</span>RECKON
+  </button>
+  <button onclick="navigate('sec-bridge')" id="nav-bridge">
+    <span class="nav-icon">▦</span>BRIDGE
+  </button>
+</nav>
+
+<div class="toast" id="toast-el"></div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
 <script>
-    // VIEW CONTROLLER
-    function showView(viewId) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
-        event.target.classList.add('active');
+// ============================================================
+// UTILS
+// ============================================================
+function todayStr() {
+  const d = new Date();
+  return d.toISOString().split('T')[0];
+}
+
+function getState() {
+  const raw = localStorage.getItem('bf_v2');
+  if (!raw) return { startDate: todayStr(), days: {} };
+  try { return JSON.parse(raw); } catch(e) { return { startDate: todayStr(), days: {} }; }
+}
+
+function saveState(s) {
+  localStorage.setItem('bf_v2', JSON.stringify(s));
+}
+
+function getDayData(state, d) {
+  if (!state.days[d]) state.days[d] = { ritualDone:false, stretchDone:false, waterDone:false, reckoning:null };
+  return state.days[d];
+}
+
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast-el');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function navigate(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const navId = 'nav-' + id.replace('sec-','');
+  const nb = document.getElementById(navId);
+  if (nb) nb.classList.add('active');
+  window.scrollTo(0,0);
+  if (id==='sec-mirror') renderMirror();
+  if (id==='sec-bridge') renderBridge();
+  if (id==='sec-ritual') renderRitual();
+  if (id==='sec-reckoning') renderReckoning();
+}
+
+// ============================================================
+// MIRROR
+// ============================================================
+function renderMirror() {
+  const state = getState();
+  const today = todayStr();
+
+  // Date
+  const d = new Date();
+  document.getElementById('today-date-display').textContent = d.toDateString().toUpperCase();
+  const start = new Date(state.startDate);
+  const now = new Date(today);
+  const dayNum = Math.min(Math.floor((now - start)/86400000)+1, 66);
+  document.getElementById('day-num-display').textContent = `DAY ${dayNum} OF 66`;
+
+  // Stats
+  let clean=0, partial=0, failed=0, streak=0;
+  const allDays = Object.keys(state.days).sort();
+  for (const dd of allDays) {
+    const r = state.days[dd].reckoning;
+    if (r) {
+      if (r.spiral==='no') clean++;
+      else if (r.spiral==='partial') partial++;
+      else failed++;
     }
+  }
 
-    // LOGIC: IF-THEN SCRIPTS
-    function saveScript() {
-        const cue = document.getElementById('cueInput').value;
-        const action = document.getElementById('actionInput').value;
-        if(cue && action) {
-            const script = `IF ${cue}, THEN I will ${action}.`;
-            localStorage.setItem('habitScript', script);
-            document.getElementById('currentScript').innerText = script;
-            alert("Architecture Updated. Celebration Wire: Immediate 'Yes!' triggered.");
-            showView('dash');
-        }
-    }
+  // Streak: consecutive clean days going backward (excluding today)
+  const revDays = [...allDays].reverse();
+  for (const dd of revDays) {
+    if (dd===today) continue;
+    const r = state.days[dd]?.reckoning;
+    if (r && r.spiral==='no') streak++;
+    else break;
+  }
 
-    // LOGIC: IDENTITY
-    function editIdentity() {
-        const newID = prompt("Reframing Identity: Who are you becoming?");
-        if(newID) {
-            localStorage.setItem('identity', newID);
-            document.getElementById('identityText').innerText = `"${newID}"`;
-        }
-    }
+  const sEl = document.getElementById('streak-display');
+  sEl.textContent = streak;
+  sEl.className = 'streak-num ' + (streak>=7?'c-green':streak===0?'c-red':'');
+  document.getElementById('stat-clean').textContent = clean;
+  document.getElementById('stat-partial').textContent = partial;
+  document.getElementById('stat-failed').textContent = failed;
 
-    // LOGIC: URGE SURFER TIMER
-    let timeLeft = 600;
-    let timerId = null;
+  // Today status
+  const td = state.days[today];
+  const rEl = document.getElementById('mirror-ritual-status');
+  const cEl = document.getElementById('mirror-reckoning-status');
 
-    function toggleTimer() {
-        const btn = document.getElementById('startTimerBtn');
-        if (timerId) {
-            clearInterval(timerId);
-            timerId = null;
-            btn.innerText = "Resume Surfing";
-        } else {
-            btn.innerText = "Surfing...";
-            timerId = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay();
-                if (timeLeft <= 0) {
-                    clearInterval(timerId);
-                    alert("Wave Surfed. Identity Reinforced.");
-                    timeLeft = 600;
-                    updateTimerDisplay();
-                    btn.innerText = "Start Surfing";
-                }
-            }, 1000);
-        }
-    }
+  if (td?.ritualDone) { rEl.textContent='✓ Ritual: complete'; rEl.style.color='var(--green-bright)'; }
+  else { rEl.textContent='— Ritual: not done'; rEl.style.color='var(--muted)'; }
 
-    function updateTimerDisplay() {
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        document.getElementById('timer').innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
+  if (td?.reckoning) {
+    const lbl = {no:'CLEAN DAY',partial:'PARTIAL',yes:'SPIRAL'}[td.reckoning.spiral];
+    const col = {no:'var(--green-bright)',partial:'var(--yellow-bright)',yes:'var(--red)'}[td.reckoning.spiral];
+    cEl.textContent=`✓ Reckoning: ${lbl}`;
+    cEl.style.color=col;
+  } else { cEl.textContent='— Reckoning: not logged'; cEl.style.color='var(--muted)'; }
+}
 
-    // INITIAL LOAD
-    window.onload = () => {
-        const savedScript = localStorage.getItem('habitScript');
-        if(savedScript) document.getElementById('currentScript').innerText = savedScript;
-        
-        const savedID = localStorage.getItem('identity');
-        if(savedID) document.getElementById('identityText').innerText = `"${savedID}"`;
-    };
+// ============================================================
+// RITUAL
+// ============================================================
+let stretchInterval=null, stretchSecs=300, stretchRunning=false, stretchDone=false;
+
+function renderRitual() {
+  const state = getState();
+  const today = todayStr();
+  const td = state.days[today];
+
+  // Stretch
+  if (td?.stretchDone) {
+    stretchDone=true;
+    markStretchUI(true);
+  } else {
+    resetStretch();
+  }
+
+  // Water
+  if (td?.waterDone) markWaterUI(true);
+  else {
+    document.getElementById('water-tag').textContent='NOT DONE';
+    document.getElementById('water-tag').className='tag tag-white';
+    document.getElementById('water-btn').textContent='✓  FACE SPLASHED — DONE';
+    document.getElementById('water-btn').disabled=false;
+    document.getElementById('water-btn').className='btn';
+  }
+
+  // Complete
+  const completable = td?.stretchDone && td?.waterDone;
+  const ritBtn = document.getElementById('ritual-complete-btn');
+  if (td?.ritualDone) {
+    ritBtn.textContent='✓ RITUAL COMPLETE — GO TO WORK';
+    ritBtn.disabled=true;
+    ritBtn.className='btn btn-green';
+  } else {
+    ritBtn.textContent='RITUAL COMPLETE — START WORK';
+    ritBtn.disabled=!completable;
+    ritBtn.className='btn btn-green';
+  }
+}
+
+function toggleStretch() {
+  if (stretchDone) return;
+  if (stretchRunning) {
+    clearInterval(stretchInterval); stretchRunning=false;
+    document.getElementById('stretch-start-btn').textContent='RESUME';
+    document.getElementById('stretch-manual-btn').style.display='block';
+  } else {
+    stretchRunning=true;
+    document.getElementById('stretch-start-btn').textContent='PAUSE';
+    document.getElementById('stretch-manual-btn').style.display='none';
+    stretchInterval = setInterval(()=>{
+      stretchSecs--;
+      updateStretchDisplay();
+      if (stretchSecs<=0) { clearInterval(stretchInterval); stretchRunning=false; stretchDone=true; markStretchDone(); }
+    },1000);
+  }
+}
+
+function updateStretchDisplay() {
+  const m=Math.floor(stretchSecs/60), s=stretchSecs%60;
+  const el=document.getElementById('stretch-timer-display');
+  el.textContent=`${m}:${s.toString().padStart(2,'0')}`;
+  el.className='timer'+(stretchRunning?' running':stretchDone?' done':'');
+}
+
+function resetStretch() {
+  clearInterval(stretchInterval); stretchRunning=false; stretchDone=false; stretchSecs=300;
+  document.getElementById('stretch-start-btn').textContent='START';
+  document.getElementById('stretch-start-btn').disabled=false;
+  document.getElementById('stretch-manual-btn').style.display='none';
+  document.getElementById('stretch-tag').textContent='NOT DONE';
+  document.getElementById('stretch-tag').className='tag tag-white';
+  updateStretchDisplay();
+}
+
+function markStretchDone() {
+  const state=getState();
+  getDayData(state,todayStr()).stretchDone=true;
+  saveState(state);
+  markStretchUI(true);
+  checkCanComplete();
+  showToast('Stretch done. Splash water next.');
+}
+
+function markStretchUI(done) {
+  if (done) {
+    document.getElementById('stretch-tag').textContent='✓ DONE';
+    document.getElementById('stretch-tag').className='tag tag-green';
+    document.getElementById('stretch-start-btn').textContent='COMPLETE';
+    document.getElementById('stretch-start-btn').disabled=true;
+    document.getElementById('stretch-manual-btn').style.display='none';
+    stretchDone=true; stretchSecs=0;
+    updateStretchDisplay();
+  }
+}
+
+function markWaterDone() {
+  const state=getState();
+  getDayData(state,todayStr()).waterDone=true;
+  saveState(state);
+  markWaterUI(true);
+  checkCanComplete();
+  showToast('Good. Now say the words out loud.');
+}
+
+function markWaterUI(done) {
+  if (done) {
+    document.getElementById('water-tag').textContent='✓ DONE';
+    document.getElementById('water-tag').className='tag tag-green';
+    document.getElementById('water-btn').textContent='✓ WATER DONE';
+    document.getElementById('water-btn').disabled=true;
+    document.getElementById('water-btn').className='btn btn-green';
+  }
+}
+
+function checkCanComplete() {
+  const state=getState();
+  const td=state.days[todayStr()];
+  if (td?.stretchDone && td?.waterDone) {
+    document.getElementById('ritual-complete-btn').disabled=false;
+  }
+}
+
+function completeRitual() {
+  const state=getState();
+  getDayData(state,todayStr()).ritualDone=true;
+  saveState(state);
+  const btn=document.getElementById('ritual-complete-btn');
+  btn.textContent='✓ RITUAL COMPLETE — GO TO WORK';
+  btn.disabled=true;
+  showToast('Ritual logged. Open your work now.');
+  renderMirror();
+}
+
+// ============================================================
+// PUSH-UP COUNTER
+// ============================================================
+let pushCount=0;
+
+function tapPush() {
+  if (pushCount>=10) return;
+  pushCount++;
+  document.getElementById('push-count-display').textContent=pushCount;
+  if (pushCount>=10) {
+    document.getElementById('push-count-display').className='push-count done';
+    document.getElementById('push-label').textContent='10 DONE. DISCIPLINE CHOSEN.';
+    document.getElementById('push-done-msg').style.display='block';
+    document.getElementById('push-tap-btn').disabled=true;
+    document.getElementById('push-tap-btn').style.opacity='0.3';
+  }
+}
+
+function resetPush() {
+  pushCount=0;
+  document.getElementById('push-count-display').textContent='0';
+  document.getElementById('push-count-display').className='push-count';
+  document.getElementById('push-label').textContent='TAP EVERY TIME YOU COME UP';
+  document.getElementById('push-done-msg').style.display='none';
+  document.getElementById('push-tap-btn').disabled=false;
+  document.getElementById('push-tap-btn').style.opacity='1';
+}
+
+// ============================================================
+// RECKONING
+// ============================================================
+let chosenSpiral=null;
+
+function pickSpiral(v) {
+  chosenSpiral=v;
+  ['no','partial','yes'].forEach(opt=>{
+    document.getElementById('sopt-'+opt).className='spiral-opt'+(v===opt?' sel-'+opt:'');
+  });
+}
+
+function saveReckoning() {
+  if (!chosenSpiral) { showToast('Select No / Partial / Yes first.'); return; }
+  const trigger=document.getElementById('rec-trigger').value.trim();
+  const tomorrow=document.getElementById('rec-tomorrow').value.trim();
+  if (!trigger) { showToast('Fill in the trigger field.'); return; }
+  if (!tomorrow) { showToast('Fill in the tomorrow field.'); return; }
+
+  const state=getState();
+  getDayData(state,todayStr()).reckoning={spiral:chosenSpiral,trigger,tomorrow,ts:new Date().toISOString()};
+  saveState(state);
+  renderReckoning();
+  renderMirror();
+  showToast('Reckoning logged. See you tomorrow.');
+}
+
+function editRec() {
+  document.getElementById('rec-form').style.display='block';
+  document.getElementById('rec-saved').style.display='none';
+}
+
+function renderReckoning() {
+  const state=getState();
+  const td=state.days[todayStr()];
+  if (td?.reckoning) {
+    const r=td.reckoning;
+    chosenSpiral=r.spiral;
+    pickSpiral(r.spiral);
+    document.getElementById('rec-trigger').value=r.trigger;
+    document.getElementById('rec-tomorrow').value=r.tomorrow;
+    const labels={no:'✓ CLEAN DAY',partial:'⚡ PARTIAL',yes:'✗ SPIRAL'};
+    const colors={no:'var(--green-bright)',partial:'var(--yellow-bright)',yes:'var(--red)'};
+    document.getElementById('rec-saved-spiral').textContent=labels[r.spiral];
+    document.getElementById('rec-saved-spiral').style.color=colors[r.spiral];
+    document.getElementById('rec-saved-trigger').textContent=r.trigger;
+    document.getElementById('rec-saved-tomorrow').textContent=r.tomorrow;
+    document.getElementById('rec-form').style.display='none';
+    document.getElementById('rec-saved').style.display='block';
+    document.getElementById('rec-fail-note').style.display=r.spiral==='yes'?'block':'none';
+    document.getElementById('rec-win-note').style.display=r.spiral==='no'?'block':'none';
+  } else {
+    document.getElementById('rec-form').style.display='block';
+    document.getElementById('rec-saved').style.display='none';
+  }
+}
+
+// ============================================================
+// BRIDGE
+// ============================================================
+function renderBridge() {
+  const state=getState();
+  const today=todayStr();
+  const start=new Date(state.startDate);
+  const grid=document.getElementById('bridge-grid');
+  grid.innerHTML='';
+
+  const nowDate=new Date(today);
+  const elapsed=Math.min(Math.floor((nowDate-start)/86400000)+1,66);
+
+  for (let i=0;i<66;i++) {
+    const d=new Date(start);
+    d.setDate(d.getDate()+i);
+    const ds=d.toISOString().split('T')[0];
+    const cell=document.createElement('div');
+    cell.className='bd';
+    cell.textContent=i+1;
+    const dd=state.days[ds];
+    const rec=dd?.reckoning;
+    if (ds===today) cell.classList.add('today');
+    else if (rec) {
+      if (rec.spiral==='no') cell.classList.add('clean');
+      else if (rec.spiral==='partial') cell.classList.add('partial');
+      else cell.classList.add('failed');
+    } else if (ds<today) cell.classList.add('missed');
+    grid.appendChild(cell);
+  }
+
+  const pct=Math.round((elapsed/66)*100);
+  document.getElementById('bridge-pct').textContent=pct+'%';
+  document.getElementById('prog-bar').style.width=pct+'%';
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function doReset() {
+  if (confirm('Delete ALL data and restart from Day 1? This cannot be undone.')) {
+    localStorage.removeItem('bf_v2');
+    location.reload();
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  const state=getState();
+  if (!state.startDate) { state.startDate=todayStr(); saveState(state); }
+  renderMirror();
+  renderRitual();
+  renderReckoning();
+});
 </script>
-
 </body>
 </html>

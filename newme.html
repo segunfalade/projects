@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Architect | Systemic Change</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --text: #f8fafc;
+            --danger: #ef4444;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .container { max-width: 500px; margin: 0 auto; }
+        .card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        h1, h2 { color: var(--accent); margin-top: 0; }
+        button { 
+            background: var(--accent); color: var(--bg); border: none; 
+            padding: 12px 20px; border-radius: 8px; font-weight: bold; 
+            cursor: pointer; width: 100%; margin-top: 10px;
+        }
+        button.secondary { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        button.emergency { background: var(--danger); color: white; }
+        input, select, textarea { 
+            width: 100%; padding: 10px; margin: 8px 0; 
+            border-radius: 6px; border: 1px solid #334155;
+            background: #0f172a; color: white; box-sizing: border-box;
+        }
+        .nav { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 10px; border: 1px solid var(--accent); background: none; color: var(--accent); border-radius: 20px; white-space: nowrap; }
+        .tab-btn.active { background: var(--accent); color: var(--bg); }
+        .view { display: none; }
+        .view.active { display: block; }
+        .timer-display { font-size: 3rem; font-weight: bold; text-align: center; margin: 20px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="nav">
+        <button class="tab-btn active" onclick="showView('dash')">Dash</button>
+        <button class="tab-btn" onclick="showView('lab')">The Lab</button>
+        <button class="tab-btn" onclick="showView('mirror')">Mirror</button>
+        <button class="tab-btn" onclick="showView('emergency')">URGENT</button>
+    </div>
+
+    <div id="dash" class="view active">
+        <h1>Habit Dashboard</h1>
+        <div class="card">
+            <h2>Current If-Then Script</h2>
+            <div id="currentScript">No script set in The Lab.</div>
+        </div>
+        <div class="card">
+            <h2>Identity Statement</h2>
+            <p id="identityText">"I am the type of person who..."</p>
+            <button class="secondary" onclick="editIdentity()">Edit Identity</button>
+        </div>
+    </div>
+
+    <div id="lab" class="view">
+        <h1>The Habit Lab</h1>
+        <div class="card">
+            <h2>Implementation Intention</h2>
+            <p>Define your If-Then Horse Race logic.</p>
+            <label>If (The Cue/Urge):</label>
+            <input type="text" id="cueInput" placeholder="e.g. When I feel stressed after work...">
+            <label>Then (Replacement Routine):</label>
+            <input type="text" id="actionInput" placeholder="e.g. I will do 2 pushups and breathe.">
+            <button onclick="saveScript()">Save Architecture</button>
+        </div>
+    </div>
+
+    <div id="mirror" class="view">
+        <h1>Accountability Mirror</h1>
+        <div class="card">
+            <h2>Daily Truth Log</h2>
+            <textarea id="mirrorLog" rows="5" placeholder="List your truths, your failures, and your 'Taking Souls' wins for today."></textarea>
+            <button onclick="saveMirror()">Log to History</button>
+        </div>
+    </div>
+
+    <div id="emergency" class="view">
+        <h1>Urge Surfer</h1>
+        <div class="card">
+            <p>The wave will rise, peak, and fall. Do not fight it. Surf it for 10 minutes.</p>
+            <div class="timer-display" id="timer">10:00</div>
+            <button id="startTimerBtn" onclick="toggleTimer()">Start Surfing</button>
+            <p style="margin-top: 20px; font-style: italic;">"What you think today determines how you live tomorrow."</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // VIEW CONTROLLER
+    function showView(viewId) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // LOGIC: IF-THEN SCRIPTS
+    function saveScript() {
+        const cue = document.getElementById('cueInput').value;
+        const action = document.getElementById('actionInput').value;
+        if(cue && action) {
+            const script = `IF ${cue}, THEN I will ${action}.`;
+            localStorage.setItem('habitScript', script);
+            document.getElementById('currentScript').innerText = script;
+            alert("Architecture Updated. Celebration Wire: Immediate 'Yes!' triggered.");
+            showView('dash');
+        }
+    }
+
+    // LOGIC: IDENTITY
+    function editIdentity() {
+        const newID = prompt("Reframing Identity: Who are you becoming?");
+        if(newID) {
+            localStorage.setItem('identity', newID);
+            document.getElementById('identityText').innerText = `"${newID}"`;
+        }
+    }
+
+    // LOGIC: URGE SURFER TIMER
+    let timeLeft = 600;
+    let timerId = null;
+
+    function toggleTimer() {
+        const btn = document.getElementById('startTimerBtn');
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+            btn.innerText = "Resume Surfing";
+        } else {
+            btn.innerText = "Surfing...";
+            timerId = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    alert("Wave Surfed. Identity Reinforced.");
+                    timeLeft = 600;
+                    updateTimerDisplay();
+                    btn.innerText = "Start Surfing";
+                }
+            }, 1000);
+        }
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        document.getElementById('timer').innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // INITIAL LOAD
+    window.onload = () => {
+        const savedScript = localStorage.getItem('habitScript');
+        if(savedScript) document.getElementById('currentScript').innerText = savedScript;
+        
+        const savedID = localStorage.getItem('identity');
+        if(savedID) document.getElementById('identityText').innerText = `"${savedID}"`;
+    };
+</script>
+
+</body>
+</html>

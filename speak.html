@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C2C Comm Tracker</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --card-bg: #ffffff;
+            --text: #333333;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 24px;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 10px;
+        }
+        .task {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        .task input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+        .task label {
+            font-size: 15px;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            margin-top: 20px;
+            height: 10px;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: var(--accent);
+            border-radius: 8px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #1a252f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Communication Protocol</h1>
+        <p>Daily Behavioral Rewiring Dashboard</p>
+    </div>
+
+    <div class="card">
+        <h2>Phase 1: Inner Game & Presence</h2>
+        <div class="task">
+            <input type="checkbox" id="task1" class="tracker-box">
+            <label for="task1">Perform 2-min Charisma Myth visualization before a call/meeting.</label>
+        </div>
+        <div class="task">
+            <input type="checkbox" id="task2" class="tracker-box">
+            <label for="task2">Use "Labeling" (Never Split the Difference) in one conversation.</label>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Phase 2: Relationships & Safety</h2>
+        <div class="task">
+            <input type="checkbox" id="task3" class="tracker-box">
+            <label for="task3">Ask an open-ended question about someone's interests and just listen.</label>
+        </div>
+        <div class="task">
+            <input type="checkbox" id="task4" class="tracker-box">
+            <label for="task4">Notice when a conversation loses "Safety" and step back.</label>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Phase 3: Public Speaking</h2>
+        <div class="task">
+            <input type="checkbox" id="task5" class="tracker-box">
+            <label for="task5">Practice one brand story out loud for 3 minutes.</label>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Daily Progress</h2>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <button onclick="resetDay()">Reset for Tomorrow</button>
+    </div>
+</div>
+
+<script>
+    const checkboxes = document.querySelectorAll('.tracker-box');
+    const progressBar = document.getElementById('progressBar');
+
+    // Load saved data
+    document.addEventListener('DOMContentLoaded', () => {
+        checkboxes.forEach((box, index) => {
+            box.checked = localStorage.getItem(`task${index}`) === 'true';
+            box.addEventListener('change', updateProgress);
+        });
+        updateProgress();
+    });
+
+    function updateProgress() {
+        let checkedCount = 0;
+        checkboxes.forEach((box, index) => {
+            localStorage.setItem(`task${index}`, box.checked);
+            if (box.checked) checkedCount++;
+        });
+        const percentage = (checkedCount / checkboxes.length) * 100;
+        progressBar.style.width = percentage + '%';
+    }
+
+    function resetDay() {
+        checkboxes.forEach((box, index) => {
+            box.checked = false;
+            localStorage.setItem(`task${index}`, 'false');
+        });
+        updateProgress();
+    }
+</script>
+
+</body>
+</html>

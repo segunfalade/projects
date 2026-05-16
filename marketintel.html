@@ -80,6 +80,12 @@
                         <div id="btnLoader" class="loader hidden"></div>
                     </button>
                     
+                    <button type="button" id="aiScanBtn" 
+                        class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex justify-center items-center gap-2 cursor-pointer mt-3">
+                        <span id="aiBtnText">✨ AI Market Scan</span>
+                        <div id="aiBtnLoader" class="loader hidden" style="border-top-color: #e9d5ff;"></div>
+                    </button>
+
                     <p class="text-xs text-slate-500 mt-4 text-center">
                         This tool bypasses CORS to scrape public search engine results directly from your browser.
                     </p>
@@ -143,11 +149,47 @@
                     </div>
                 </div>
 
+                <!-- AI Differentiation Strategy -->
+                <div id="aiStrategySection" class="glass-panel p-6 rounded-2xl shadow-sm border border-purple-200 bg-purple-50/30 hidden">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-purple-900">Market Differentiation Strategy</h3>
+                            <p class="text-sm text-purple-700">Get AI-driven positioning advice against these competitors.</p>
+                        </div>
+                        <button id="generateStrategyBtn" class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl shadow-sm transition-colors flex items-center gap-2 cursor-pointer shrink-0">
+                            <span id="strategyBtnText">✨ Generate Strategy</span>
+                            <div id="strategyLoader" class="loader hidden" style="width: 16px; height: 16px; border-top-color: white;"></div>
+                        </button>
+                    </div>
+                    <div id="strategyContent" class="text-sm text-slate-800 space-y-4 hidden bg-white p-5 rounded-xl border border-purple-100 shadow-inner leading-relaxed">
+                        <!-- Content injected here -->
+                    </div>
+                    <div id="strategyError" class="hidden text-sm text-red-600 mt-2"></div>
+                </div>
+
             </div>
         </section>
     </main>
 
     <script>
+        const apiKey = "";
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        // Exponential backoff fetch
+        async function fetchWithRetry(url, options, retries = 5) {
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
+                } catch (e) {
+                    if (i === retries - 1) throw e;
+                    await new Promise(res => setTimeout(res, delays[i]));
+                }
+            }
+        }
+
         // Use Wikipedia API for Global Companies (Natively supports CORS)
         const WIKI_API = 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=5&srsearch=';
 
@@ -219,6 +261,11 @@
                 // Swap UI panels
                 document.getElementById('emptyState').classList.add('hidden');
                 document.getElementById('resultsContainer').classList.remove('hidden');
+                
+                // Show AI Strategy panel empty state
+                document.getElementById('aiStrategySection').classList.remove('hidden');
+                document.getElementById('strategyContent').classList.add('hidden');
+                document.getElementById('strategyContent').innerHTML = '';
 
             } catch (error) {
                 console.error("API error:", error);
@@ -268,19 +315,146 @@
             const btnText = document.getElementById('btnText');
             const btnLoader = document.getElementById('btnLoader');
             const submitBtn = document.getElementById('submitBtn');
+            const aiScanBtn = document.getElementById('aiScanBtn');
 
             if (isLoading) {
                 btnText.textContent = 'Scraping live data...';
                 btnLoader.classList.remove('hidden');
                 submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
                 submitBtn.disabled = true;
+                if(aiScanBtn) aiScanBtn.disabled = true;
             } else {
                 btnText.textContent = 'Scan Live Market';
                 btnLoader.classList.add('hidden');
                 submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
                 submitBtn.disabled = false;
+                if(aiScanBtn) aiScanBtn.disabled = false;
             }
         }
+
+        // --- GEMINI AI INTEGRATIONS ---
+
+        document.getElementById('aiScanBtn').addEventListener('click', async function() {
+            const brand = document.getElementById('brandInput').value.trim();
+            const desc = document.getElementById('descInput').value.trim();
+            const location = document.getElementById('locationInput').value.trim();
+
+            if (!desc || !location) {
+                alert("Please enter a Niche / Service Description and Location.");
+                return;
+            }
+
+            const btnText = document.getElementById('aiBtnText');
+            const btnLoader = document.getElementById('aiBtnLoader');
+            const btn = document.getElementById('aiScanBtn');
+
+            btnText.textContent = 'AI Analyzing...';
+            btnLoader.classList.remove('hidden');
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            btn.disabled = true;
+            document.getElementById('submitBtn').disabled = true;
+
+            document.getElementById('localSubtitle').textContent = `Targeting: ${location} (AI Sourced)`;
+            document.getElementById('globalSubtitle').textContent = `Sector: ${desc} (AI Sourced)`;
+
+            try {
+                const prompt = `Find the top 3 actual local competitors in or near ${location} and top 3 actual global competitors for a brand named "${brand}" that operates in: "${desc}". Return a structured JSON object with two arrays: 'local_competitors' and 'global_competitors'. Each object in the arrays must have a 'title' (string), 'snippet' (a 1-sentence description), and 'url' (best guess website URL, using https://). Provide realistic and accurate data.`;
+                
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                local_competitors: { type: "ARRAY", items: { type: "OBJECT", properties: { title: { type: "STRING" }, snippet: { type: "STRING" }, url: { type: "STRING" } } } },
+                                global_competitors: { type: "ARRAY", items: { type: "OBJECT", properties: { title: { type: "STRING" }, snippet: { type: "STRING" }, url: { type: "STRING" } } } }
+                            }
+                        }
+                    }
+                };
+
+                const data = await fetchWithRetry(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!resultText) throw new Error("No response from AI");
+
+                const competitors = JSON.parse(resultText);
+
+                renderList('localList', competitors.local_competitors || [], 'No local competitors found by AI.');
+                renderList('globalList', competitors.global_competitors || [], 'No global competitors found by AI.');
+
+                // Update UI panels
+                document.getElementById('deepDiveSection').classList.add('hidden'); // Hide static search vectors for AI scan
+                document.getElementById('emptyState').classList.add('hidden');
+                document.getElementById('resultsContainer').classList.remove('hidden');
+                document.getElementById('aiStrategySection').classList.remove('hidden');
+                document.getElementById('strategyContent').classList.add('hidden');
+                document.getElementById('strategyContent').innerHTML = '';
+
+            } catch (error) {
+                console.error("AI Scan Error:", error);
+                alert("The AI market scan failed. Please try again later.");
+            } finally {
+                btnText.textContent = '✨ AI Market Scan';
+                btnLoader.classList.add('hidden');
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                btn.disabled = false;
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+
+        document.getElementById('generateStrategyBtn').addEventListener('click', async function() {
+            const brand = document.getElementById('brandInput').value.trim();
+            const desc = document.getElementById('descInput').value.trim();
+            const location = document.getElementById('locationInput').value.trim();
+
+            const btnText = document.getElementById('strategyBtnText');
+            const btnLoader = document.getElementById('strategyLoader');
+            const btn = document.getElementById('generateStrategyBtn');
+            const contentDiv = document.getElementById('strategyContent');
+            const errorDiv = document.getElementById('strategyError');
+
+            btnText.textContent = 'Drafting Strategy...';
+            btnLoader.classList.remove('hidden');
+            btn.disabled = true;
+            errorDiv.classList.add('hidden');
+            contentDiv.classList.add('hidden');
+
+            try {
+                // Incorporating Segun Falade's persona into the LLM strategy generation!
+                const prompt = `Act as Segun Falade, an expert Messaging Strategist for SaaS. Write a 3-paragraph differentiation strategy for a brand named "${brand || 'the client'}" located in ${location} that does: "${desc}". How can they stand out against their top local and global competitors? Make it highly actionable, insightful, and professional. Format the output with basic HTML tags like <strong>, <em>, or <ul><li> where appropriate, but do not wrap it in a markdown code block.`;
+                
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }]
+                };
+
+                const data = await fetchWithRetry(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const strategyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!strategyText) throw new Error("No response from AI");
+
+                contentDiv.innerHTML = strategyText;
+                contentDiv.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("AI Strategy Error:", error);
+                errorDiv.textContent = "Failed to generate strategy. Please try again.";
+                errorDiv.classList.remove('hidden');
+            } finally {
+                btnText.textContent = '✨ Generate Strategy';
+                btnLoader.classList.add('hidden');
+                btn.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>

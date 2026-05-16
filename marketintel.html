@@ -131,16 +131,25 @@
                     </div>
                 </div>
 
+                <!-- Deep Dive Actions -->
+                <div id="deepDiveSection" class="glass-panel p-6 rounded-2xl shadow-sm border border-blue-200 bg-blue-50/30 hidden">
+                    <h3 class="text-lg font-bold text-blue-900 mb-3">Live Search Vectors</h3>
+                    <p class="text-sm text-slate-600 mb-4">Execute direct search queries to bypass scraping limits and view real-time SERPs (Search Engine Results Pages).</p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                         <a id="googleLocalBtn" href="#" target="_blank" class="flex-1 bg-white border border-slate-300 hover:border-blue-400 hover:shadow-md text-slate-700 font-medium py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+                            View Local Market on Google
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </section>
     </main>
 
     <script>
-        // Use AllOrigins as a free public proxy to bypass browser CORS blocking
-        const PROXY_URL = 'https://api.allorigins.win/get?url=';
-        
-        // We use DuckDuckGo's HTML-only site because it returns standard DOM elements we can parse easily
-        const SEARCH_ENGINE_BASE = 'https://html.duckduckgo.com/html/?q=';
+        // Use Wikipedia API for Global Companies (Natively supports CORS)
+        const WIKI_API = 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=5&srsearch=';
 
         document.getElementById('searchForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -151,97 +160,73 @@
 
             toggleLoadingState(true);
 
-            // Update UI Labels
             document.getElementById('localSubtitle').textContent = `Targeting: ${location}`;
             document.getElementById('globalSubtitle').textContent = `Sector: ${desc}`;
 
-            // We use specific keywords to filter out general articles and get companies/competitors
-            const localQuery = encodeURIComponent(`top ${desc} businesses OR companies in ${location} -site:yelp.com`);
-            const globalQuery = encodeURIComponent(`top global ${desc} companies OR alternatives to ${brand || desc} -site:wikipedia.org`);
-
             try {
-                // Fetch both queries concurrently to save time
-                const [localHTML, globalHTML] = await Promise.all([
-                    fetchHtmlViaProxy(localQuery),
-                    fetchHtmlViaProxy(globalQuery)
-                ]);
+                // 1. Fetch Global Competitors via Wikipedia API
+                // Searching for major companies related to the description
+                const wikiQuery = encodeURIComponent(`${desc} company OR corporation`);
+                const wikiRes = await fetch(WIKI_API + wikiQuery);
+                const wikiData = await wikiRes.json();
+                
+                const globalCompetitors = wikiData.query.search.map(item => {
+                    // Remove HTML tags from snippet
+                    const cleanSnippet = item.snippet.replace(/<\/?[^>]+(>|$)/g, "");
+                    return {
+                        title: item.title,
+                        url: `https://en.wikipedia.org/wiki/${encodeURIComponent(item.title)}`,
+                        snippet: cleanSnippet + "..."
+                    };
+                }).filter(item => {
+                    // Basic filter to try and ensure it's a company
+                    const text = (item.title + " " + item.snippet).toLowerCase();
+                    if (brand && text.includes(brand.toLowerCase())) return false;
+                    return text.includes('company') || text.includes('corporation') || text.includes('inc') || text.includes('software') || text.includes('provider') || text.includes('platform');
+                }).slice(0, 5);
 
-                // Parse the DOM strings into arrays of data objects
-                const localCompetitors = extractCompetitorsFromDOM(localHTML, brand);
-                const globalCompetitors = extractCompetitorsFromDOM(globalHTML, brand);
+                renderList('globalList', globalCompetitors, 'No major global competitors found in Wikipedia database. Try simplifying the description.');
 
-                // Render lists to the screen
-                renderList('localList', localCompetitors, 'No specific local competitors found. Try broadening the city or description.');
-                renderList('globalList', globalCompetitors, 'No global competitors found. Try refining the niche description.');
+                // 2. Generate Local Competitors (Simulated logic based on Google Maps queries)
+                // Since local business scraping is actively blocked by Google/Yelp without paid APIs,
+                // we generate highly specific, actionable Google Search links for the user, and show simulated local structures.
+                
+                const localCompetitors = [
+                    {
+                        title: `Top Rated ${desc.split(' ')[0] || 'Agency'} in ${location}`,
+                        url: `https://www.google.com/search?q=${encodeURIComponent(`top rated ${desc} in ${location}`)}`,
+                        snippet: `Direct Google Maps search vector for highest-rated local alternatives.`
+                    },
+                    {
+                        title: `Local ${desc} Specialists`,
+                        url: `https://www.google.com/search?q=${encodeURIComponent(`best ${desc} specialists near ${location}`)}`,
+                        snippet: `Targeted search for specialized local service providers.`
+                    },
+                    {
+                        title: `Nearby ${brand ? brand + ' Alternatives' : 'Competitors'}`,
+                        url: `https://www.google.com/search?q=${encodeURIComponent(`companies like ${brand || 'major brands'} in ${location}`)}`,
+                        snippet: `Query designed to find direct local alternatives to your specific brand.`
+                    }
+                ];
+                
+                renderList('localList', localCompetitors, 'No local vectors generated.');
+
+                // 3. Update Deep Dive Links
+                const googleLocalQuery = `top ${desc} companies in ${location}`;
+                document.getElementById('googleLocalBtn').href = `https://www.google.com/search?q=${encodeURIComponent(googleLocalQuery)}`;
+                document.getElementById('deepDiveSection').classList.remove('hidden');
 
                 // Swap UI panels
                 document.getElementById('emptyState').classList.add('hidden');
                 document.getElementById('resultsContainer').classList.remove('hidden');
 
             } catch (error) {
-                console.error("Scraping error:", error);
-                alert("The proxy server was unable to fetch live data. Please try again in a moment.");
+                console.error("API error:", error);
+                alert("There was an error fetching the data. Please check your internet connection.");
             } finally {
                 toggleLoadingState(false);
             }
         });
-
-        async function fetchHtmlViaProxy(encodedQuery) {
-            const targetUrl = SEARCH_ENGINE_BASE + encodedQuery;
-            const res = await fetch(PROXY_URL + encodeURIComponent(targetUrl));
-            
-            if (!res.ok) throw new Error('Network response was not ok');
-            
-            const data = await res.json();
-            return data.contents; // AllOrigins returns the HTML string inside the 'contents' key
-        }
-
-        function extractCompetitorsFromDOM(htmlString, userBrand) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlString, 'text/html');
-            const results = [];
-            
-            // DuckDuckGo's HTML structure relies on the .result class
-            const resultNodes = doc.querySelectorAll('.result');
-            
-            for (let i = 0; i < resultNodes.length; i++) {
-                const node = resultNodes[i];
-                
-                // Exclude ads to get pure organic competitors
-                if (node.classList.contains('result--ad')) continue;
-
-                const titleNode = node.querySelector('.result__title .result__a');
-                const snippetNode = node.querySelector('.result__snippet');
-                
-                if (titleNode && snippetNode) {
-                    let title = titleNode.textContent.trim();
-                    let rawUrl = titleNode.getAttribute('href');
-                    let cleanUrl = rawUrl;
-                    let snippet = snippetNode.textContent.trim();
-                    
-                    // DDG obfuscates actual URLs behind a redirect. We extract the 'uddg' parameter to get the real domain.
-                    if (rawUrl.includes('uddg=')) {
-                        try {
-                            const params = new URLSearchParams(rawUrl.split('?')[1]);
-                            cleanUrl = decodeURIComponent(params.get('uddg'));
-                        } catch(e) {}
-                    }
-
-                    // Skip the user's own brand if it shows up in the results
-                    if (userBrand && title.toLowerCase().includes(userBrand.toLowerCase())) continue;
-                    
-                    // Skip directory sites like Facebook or LinkedIn to focus on actual company websites
-                    if (cleanUrl.includes('facebook.com') || cleanUrl.includes('linkedin.com') || cleanUrl.includes('instagram.com')) continue;
-
-                    results.push({ title, url: cleanUrl, snippet });
-                }
-
-                // Stop once we have 5 solid organic results
-                if (results.length >= 5) break;
-            }
-
-            return results;
-        }
 
         function renderList(elementId, items, emptyMessage) {
             const ul = document.getElementById(elementId);

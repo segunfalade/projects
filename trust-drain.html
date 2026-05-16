@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust Drain Scanner — Segun Falade</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #141414;
+    --surface2: #1c1c1c;
+    --border: #2a2a2a;
+    --border-light: #333;
+    --text: #e8e4dc;
+    --text-muted: #777;
+    --text-dim: #444;
+    --accent: #c8a96e;
+    --accent-dim: rgba(200, 169, 110, 0.12);
+    --accent-mid: rgba(200, 169, 110, 0.25);
+    --red: #e05c5c;
+    --red-dim: rgba(224, 92, 92, 0.12);
+    --green: #6fcf97;
+    --green-dim: rgba(111, 207, 151, 0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* --- HEADER --- */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: rgba(13,13,13,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--accent);
+    letter-spacing: 0.01em;
+  }
+
+  .logo span {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 14px;
+    margin-left: 10px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 300;
+  }
+
+  .header-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 2px;
+  }
+
+  /* --- HERO --- */
+  .hero {
+    padding: 72px 40px 56px;
+    max-width: 860px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .hero h1 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .hero p {
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 300;
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  /* --- MAIN LAYOUT --- */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    min-height: calc(100vh - 280px);
+  }
+
+  /* --- LEFT PANEL --- */
+  .left-panel {
+    border-right: 1px solid var(--border);
+    padding: 36px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .panel-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .input-area {
+    position: relative;
+    flex: 1;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 320px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.75;
+    padding: 20px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea::placeholder {
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  textarea:focus {
+    border-color: var(--border-light);
+  }
+
+  .output-area {
+    min-height: 320px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.85;
+    display: none;
+  }
+
+  .output-area mark {
+    background: rgba(224, 92, 92, 0.25);
+    color: #f09090;
+    border-radius: 2px;
+    padding: 1px 3px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(224, 92, 92, 0.5);
+    transition: background 0.15s;
+  }
+
+  .output-area mark:hover {
+    background: rgba(224, 92, 92, 0.4);
+  }
+
+  .output-area mark.active {
+    background: rgba(224, 92, 92, 0.55);
+    outline: 1px solid var(--red);
+  }
+
+  .action-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .btn-scan {
+    background: var(--accent);
+    color: #0d0d0d;
+    border: none;
+    padding: 12px 28px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .btn-scan:hover { opacity: 0.88; }
+  .btn-scan:active { transform: scale(0.98); }
+
+  .btn-reset {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 12px 20px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: border-color 0.2s, color 0.2s;
+    display: none;
+  }
+
+  .btn-reset:hover { border-color: var(--text-dim); color: var(--text); }
+
+  .word-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-left: auto;
+  }
+
+  /* --- RIGHT PANEL --- */
+  .right-panel {
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* --- SCORE BLOCK --- */
+  .score-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    display: none;
+  }
+
+  .score-block.visible { display: block; }
+
+  .score-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .score-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .score-number.clean { color: var(--green); }
+  .score-number.warning { color: var(--accent); }
+  .score-number.danger { color: var(--red); }
+
+  .score-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.5;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .score-bar-wrap {
+    margin-top: 14px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .score-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+
+  .score-bar.clean { background: var(--green); }
+  .score-bar.warning { background: var(--accent); }
+  .score-bar.danger { background: var(--red); }
+
+  /* --- FINDINGS --- */
+  .findings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .findings-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .findings-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .findings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+
+  .findings-list.visible { display: flex; }
+
+  .finding-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    border-left: 3px solid var(--red);
+  }
+
+  .finding-card:hover { border-color: var(--border-light); }
+  .finding-card.active { border-color: var(--red); background: var(--red-dim); }
+
+  .finding-word {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--red);
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .finding-word .hit-count {
+    font-size: 10px;
+    color: var(--text-dim);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+
+  .finding-why {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .finding-alt {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 400;
+    background: var(--green-dim);
+    border-radius: 3px;
+    padding: 6px 10px;
+    line-height: 1.5;
+    border-left: 2px solid var(--green);
+  }
+
+  .finding-alt::before {
+    content: 'Try instead → ';
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--green);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  /* --- EMPTY STATE --- */
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-dim);
+  }
+
+  .empty-state .icon {
+    font-size: 32px;
+    margin-bottom: 14px;
+    opacity: 0.4;
+  }
+
+  .empty-state p {
+    font-size: 13px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* --- CLEAN STATE --- */
+  .clean-state {
+    text-align: center;
+    padding: 40px 20px;
+    display: none;
+  }
+
+  .clean-state .icon {
+    font-size: 32px;
+    margin-bottom: 14px;
+  }
+
+  .clean-state p {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* --- FOOTER --- */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  footer a:hover { text-decoration: underline; }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 900px) {
+    header { padding: 20px 24px; }
+    .hero { padding: 48px 24px 40px; }
+    .main { grid-template-columns: 1fr; }
+    .left-panel { border-right: none; border-bottom: 1px solid var(--border); padding: 28px 24px; }
+    .right-panel { padding: 28px 24px; }
+    footer { padding: 20px 24px; flex-direction: column; gap: 8px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Trust Drain Scanner <span>by Segun Falade</span></div>
+  <div class="header-tag">PropTech & FinTech Messaging</div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Messaging Diagnostic</div>
+  <h1>Your copy might be leaking<br><em>trust you haven't earned yet.</em></h1>
+  <p>Paste your homepage hero, tagline, or any messaging asset. The scanner identifies every trust drain word — the language that makes buyers look past you without knowing why.</p>
+</div>
+
+<div class="main">
+
+  <!-- LEFT: INPUT / OUTPUT -->
+  <div class="left-panel">
+    <div>
+      <div class="panel-label">Your Copy</div>
+      <div class="input-area">
+        <textarea id="copyInput" placeholder="Paste your homepage hero, tagline, LinkedIn bio, pitch deck intro, or any copy you want scanned…" rows="14"></textarea>
+        <div id="outputArea" class="output-area"></div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-scan" onclick="runScan()">Scan for Trust Drains</button>
+      <button class="btn-reset" id="resetBtn" onclick="resetTool()">Start Over</button>
+      <span class="word-count" id="wordCount"></span>
+    </div>
+  </div>
+
+  <!-- RIGHT: RESULTS -->
+  <div class="right-panel">
+
+    <div class="score-block" id="scoreBlock">
+      <div class="score-label">Trust Drain Score</div>
+      <div class="score-number" id="scoreNumber">0</div>
+      <div class="score-bar-wrap"><div class="score-bar" id="scoreBar" style="width:0%"></div></div>
+      <div class="score-desc" id="scoreDesc"></div>
+    </div>
+
+    <div>
+      <div class="findings-header">
+        <div class="findings-title">Flagged Words</div>
+        <div class="findings-count" id="findingsCount"></div>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <div class="icon">◎</div>
+        <p>Paste your copy and hit<br>Scan to see what's leaking trust.</p>
+      </div>
+
+      <div class="clean-state" id="cleanState">
+        <div class="icon">✦</div>
+        <p style="color: var(--green);">No trust drain words found.</p>
+        <p>Your copy passed the scan. That's a strong baseline — but trust also lives in what's missing. Consider whether your proof architecture is solid.</p>
+      </div>
+
+      <div class="findings-list" id="findingsList"></div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <p>Built by <a href="https://linkedin.com/in/segunfalade" target="_blank">Segun Falade</a> — Copy Strategist, Trust-First Industries</p>
+  <p>Want a full messaging audit? <a href="https://calendly.com/segunfalade/messaging-audit" target="_blank">Book here →</a></p>
+</footer>
+
+<script>
+// ─────────────────────────────────────────────
+// TRUST DRAIN WORD LIST
+// Each entry: { root (regex pattern), label, why, alt }
+// Root uses regex — catches all word variations
+// ─────────────────────────────────────────────
+const TRUST_DRAINS = [
+  {
+    root: /\binnovati(ve|on|ng|ons)\b/gi,
+    label: "Innovative / Innovation",
+    why: "Every brand claims this. It stopped meaning anything the moment it became the default adjective for tech companies.",
+    alt: "Show what specifically is new: \"The first platform that [does X].\" If you can't name the first, don't claim innovation."
+  },
+  {
+    root: /\bseamless(ly)?\b/gi,
+    label: "Seamless",
+    why: "Buyers have been burned by \"seamless\" too many times. It now signals broken onboarding more than smooth experience.",
+    alt: "\"Set up in 48 hours. No IT team needed.\" Make the experience tangible and time-bound."
+  },
+  {
+    root: /\bcutting.?edge\b/gi,
+    label: "Cutting-edge",
+    why: "Vague technology claim with no proof attached. It says nothing about what the technology actually does.",
+    alt: "Name the specific technology and its measurable impact on the user's problem."
+  },
+  {
+    root: /\btransform(s|ed|ing|ation|ational)?\b/gi,
+    label: "Transform / Transforming",
+    why: "Abstract, overused, creates no picture in the reader's mind. The word has been stripped of meaning through repetition.",
+    alt: "\"Go from 12 hours of admin per week to 2.\" Describe the specific before and after."
+  },
+  {
+    root: /\brevolution(ise|ize|ary|ising|izing|ised|ized)?\b/gi,
+    label: "Revolutionise / Revolutionary",
+    why: "The most overused word in PropTech and FinTech. When every brand is revolutionary, none of them are.",
+    alt: "Describe the specific change you're creating. Let journalists call it revolutionary later."
+  },
+  {
+    root: /\bend.to.end\b/gi,
+    label: "End-to-end",
+    why: "Sounds comprehensive on paper. Reads as complicated in practice. Buyers hear \"long setup\" and \"expensive integration.\"",
+    alt: "\"One platform for listings, payments, and maintenance.\" Name the specific capabilities."
+  },
+  {
+    root: /\bstreamline[sd]?\b/gi,
+    label: "Streamline / Streamlined",
+    why: "Used by every SaaS company in existence. Carries no specific meaning for any specific buyer.",
+    alt: "\"Eliminate the back-and-forth.\" Or name what specifically gets cut: \"No more chasing rent on WhatsApp.\""
+  },
+  {
+    root: /\bempowers?\b/gi,
+    label: "Empower / Empowers",
+    why: "Corporate buzzword that creates no image. Doesn't tell the buyer what they can actually do that they couldn't before.",
+    alt: "\"Gives you full control over [specific thing].\" Make the power transfer concrete."
+  },
+  {
+    root: /\bbest.in.class\b/gi,
+    label: "Best-in-class",
+    why: "Self-declared superlative. Zero credibility. Buyers know you wrote it about yourself.",
+    alt: "Use a third-party comparison, a named award, or a specific client quote that makes the same point."
+  },
+  {
+    root: /\brobust\b/gi,
+    label: "Robust",
+    why: "Engineering language imported into marketing copy. Buyers don't think in terms of robustness — they think in terms of reliability.",
+    alt: "\"Handles 10,000 transactions without breaking.\" Give the stress test, not the adjective."
+  },
+  {
+    root: /\bholistic\b/gi,
+    label: "Holistic",
+    why: "Often signals that a brand hasn't decided what it's actually selling. Holistic everything = specific nothing.",
+    alt: "Pick your core value and name it clearly. Breadth is not a positioning strategy."
+  },
+  {
+    root: /\becosystem\b/gi,
+    label: "Ecosystem",
+    why: "Jargon that creates confusion, not clarity. Buyers don't want to join an ecosystem. They want to solve a problem.",
+    alt: "\"Everything connects — your listings, your payments, your tenants.\" Show the connection, not the concept."
+  },
+  {
+    root: /\b(smart|intelligent)\b/gi,
+    label: "Smart / Intelligent",
+    why: "Applied to every product with any AI feature. The word has been devalued to near-zero by overuse.",
+    alt: "\"Learns your pricing patterns and adjusts in real time.\" Name the specific intelligent behaviour."
+  },
+  {
+    root: /\btrusted by\b/gi,
+    label: "Trusted by [thousands]",
+    why: "Claimed trust is not earned trust. Saying it without showing who, what results, and why only triggers more scepticism.",
+    alt: "\"47 property firms in Lagos switched from [X] to us in 2025.\" Specific, named, verifiable."
+  },
+  {
+    root: /\bfuture.proof(ed|ing)?\b/gi,
+    label: "Future-proof",
+    why: "Promises something no brand can guarantee. Buyers know this. It reads as a filler claim.",
+    alt: "\"Built to integrate with tools you don't have yet.\" Ground the forward-looking claim in a specific capability."
+  },
+  {
+    root: /\bscalable\b/gi,
+    label: "Scalable",
+    why: "Means nothing to a buyer managing 5 properties today. It's a VC pitch word that landed in consumer copy and never left.",
+    alt: "\"Works for 1 property or 1,000.\" Show the range, not the concept."
+  },
+  {
+    root: /\bdisrupt(s|ed|ing|ion|ive)?\b/gi,
+    label: "Disrupt / Disruption",
+    why: "Overused and sounds arrogant to buyers who just want their problem solved. It positions the brand, not the buyer.",
+    alt: "Describe the problem you're solving. Let analysts write the disruption narrative."
+  },
+  {
+    root: /\bplug.and.play\b/gi,
+    label: "Plug-and-play",
+    why: "Customers have been lied to by this claim too many times. It now triggers the opposite of reassurance.",
+    alt: "\"Up and running in one afternoon. We walk you through every step.\" Make the ease specific and supported."
+  },
+  {
+    root: /\bone.stop.shop\b/gi,
+    label: "One-stop-shop",
+    why: "Dilutes your positioning by trying to claim everything. The brand that is everything to everyone is memorable to no one.",
+    alt: "Lead with your single strongest capability. Own one thing completely."
+  },
+  {
+    root: /\bnext.gen(eration)?\b/gi,
+    label: "Next-generation",
+    why: "Vague generational claim with no substance behind it. Every company in the category is calling itself next-generation.",
+    alt: "\"The first platform to use [specific technology] for [specific outcome].\" Name what makes it actually different."
+  },
+  {
+    root: /\bvalue.added\b/gi,
+    label: "Value-added",
+    why: "Jargon that adds no value. Ironically self-defeating: the phrase itself is the problem it claims to solve.",
+    alt: "Describe the specific additional value with a concrete number or outcome."
+  },
+  {
+    root: /\bdata.driven\b/gi,
+    label: "Data-driven",
+    why: "Every tech company is data-driven now. The phrase signals nothing because it describes everyone.",
+    alt: "\"Pulls from 3 million property transactions to price your listing.\" Name the data and what it enables."
+  },
+  {
+    root: /\bfrictionless\b/gi,
+    label: "Frictionless",
+    why: "A UX promise that buyers have heard broken many times. It triggers scepticism before the demo even begins.",
+    alt: "\"No contracts. Cancel any month.\" Make the frictionless nature tangible and specific."
+  },
+  {
+    root: /\bleverag(e|es|ed|ing)\b/gi,
+    label: "Leverage",
+    why: "Corporate filler imported from consulting decks. It adds syllables without adding meaning.",
+    alt: "Just say \"use.\" Simple, direct language is almost always more powerful."
+  },
+  {
+    root: /\bgame.changer\b/gi,
+    label: "Game-changer",
+    why: "Hyperbole that triggers scepticism, not excitement. The more extreme the claim, the more proof the reader demands.",
+    alt: "Let your customer's results speak: \"Reduced vacancies by 34%.\" Let the number do what the adjective can't."
+  }
+];
+
+// ─────────────────────────────────────────────
+// CORE SCAN LOGIC
+// ─────────────────────────────────────────────
+
+let activeCard = null;
+let activeMarks = [];
+
+function updateWordCount() {
+  const text = document.getElementById('copyInput').value;
+  const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+  const wc = document.getElementById('wordCount');
+  wc.textContent = words.length > 0 ? `${words.length} words` : '';
+}
+
+document.getElementById('copyInput').addEventListener('input', updateWordCount);
+
+function runScan() {
+  const raw = document.getElementById('copyInput').value.trim();
+  if (!raw) return;
+
+  // Find all matches
+  const findings = [];
+  TRUST_DRAINS.forEach(drain => {
+    drain.root.lastIndex = 0;
+    const matches = [...raw.matchAll(drain.root)];
+    if (matches.length > 0) {
+      findings.push({ ...drain, matches, count: matches.length });
+    }
+  });
+
+  // Build highlighted HTML
+  let html = raw;
+  // We need to replace in reverse order to preserve indices
+  const allMatches = [];
+  findings.forEach((f, fi) => {
+    f.root.lastIndex = 0;
+    let m;
+    const re = new RegExp(f.root.source, f.root.flags);
+    while ((m = re.exec(raw)) !== null) {
+      allMatches.push({ index: m.index, length: m[0].length, word: m[0], fi });
+    }
+  });
+
+  allMatches.sort((a, b) => b.index - a.index);
+  let chars = raw.split('');
+  allMatches.forEach(m => {
+    const tag = `<mark data-fi="${m.fi}" onclick="highlightCard(${m.fi})">${m.word}</mark>`;
+    chars.splice(m.index, m.length, tag);
+  });
+  html = chars.join('').replace(/\n/g, '<br>');
+
+  // Show output
+  const textarea = document.getElementById('copyInput');
+  const output = document.getElementById('outputArea');
+  textarea.style.display = 'none';
+  output.innerHTML = html;
+  output.style.display = 'block';
+  document.getElementById('resetBtn').style.display = 'inline-block';
+
+  // Score
+  const totalDrains = findings.reduce((sum, f) => sum + f.count, 0);
+  renderScore(totalDrains, findings.length);
+  renderFindings(findings);
+}
+
+function renderScore(total, uniqueCount) {
+  const block = document.getElementById('scoreBlock');
+  const num = document.getElementById('scoreNumber');
+  const bar = document.getElementById('scoreBar');
+  const desc = document.getElementById('scoreDesc');
+
+  block.classList.add('visible');
+  num.textContent = total;
+
+  const pct = Math.min(100, (total / 10) * 100);
+  bar.style.width = pct + '%';
+
+  if (total === 0) {
+    num.className = 'score-number clean';
+    bar.className = 'score-bar clean';
+    desc.textContent = 'No trust drain words detected. Strong baseline. Now audit your proof architecture.';
+  } else if (total <= 3) {
+    num.className = 'score-number warning';
+    bar.className = 'score-bar warning';
+    desc.textContent = `${total} drain${total > 1 ? 's' : ''} found across ${uniqueCount} word type${uniqueCount > 1 ? 's' : ''}. Fixable with targeted rewrites.`;
+  } else {
+    num.className = 'score-number danger';
+    bar.className = 'score-bar danger';
+    desc.textContent = `${total} drain${total > 1 ? 's' : ''} found across ${uniqueCount} word type${uniqueCount > 1 ? 's' : ''}. Your messaging is leaking trust at multiple points. Start with the highest-frequency hits.`;
+  }
+}
+
+function renderFindings(findings) {
+  const list = document.getElementById('findingsList');
+  const empty = document.getElementById('emptyState');
+  const clean = document.getElementById('cleanState');
+  const count = document.getElementById('findingsCount');
+
+  empty.style.display = 'none';
+
+  if (findings.length === 0) {
+    clean.style.display = 'block';
+    list.classList.remove('visible');
+    count.textContent = '';
+    return;
+  }
+
+  clean.style.display = 'none';
+  count.textContent = `${findings.length} type${findings.length > 1 ? 's' : ''} flagged`;
+
+  // Sort by frequency
+  findings.sort((a, b) => b.count - a.count);
+
+  list.innerHTML = '';
+  findings.forEach((f, i) => {
+    const card = document.createElement('div');
+    card.className = 'finding-card';
+    card.dataset.fi = i;
+    card.innerHTML = `
+      <div class="finding-word">
+        ${f.label}
+        <span class="hit-count">${f.count}×</span>
+      </div>
+      <div class="finding-why">${f.why}</div>
+      <div class="finding-alt">${f.alt}</div>
+    `;
+    card.addEventListener('click', () => highlightCard(i));
+    list.appendChild(card);
+  });
+
+  list.classList.add('visible');
+}
+
+function highlightCard(fi) {
+  // Toggle active state on cards
+  document.querySelectorAll('.finding-card').forEach((c, i) => {
+    c.classList.toggle('active', i === fi);
+  });
+
+  // Highlight marks
+  document.querySelectorAll('mark').forEach(m => {
+    m.classList.toggle('active', parseInt(m.dataset.fi) === fi);
+  });
+
+  // Scroll first mark into view
+  const first = document.querySelector(`mark[data-fi="${fi}"]`);
+  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetTool() {
+  const textarea = document.getElementById('copyInput');
+  const output = document.getElementById('outputArea');
+  textarea.style.display = 'block';
+  textarea.value = '';
+  output.style.display = 'none';
+  output.innerHTML = '';
+  document.getElementById('resetBtn').style.display = 'none';
+  document.getElementById('scoreBlock').classList.remove('visible');
+  document.getElementById('findingsList').classList.remove('visible');
+  document.getElementById('findingsList').innerHTML = '';
+  document.getElementById('emptyState').style.display = 'block';
+  document.getElementById('cleanState').style.display = 'none';
+  document.getElementById('scoreNumber').textContent = '0';
+  document.getElementById('wordCount').textContent = '';
+  document.getElementById('findingsCount').textContent = '';
+}
+</script>
+</body>
+</html>

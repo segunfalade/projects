@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <!-- Playables SDK -->
-<script>// Playables SDK v1.0.0
+<script>
+// Playables SDK v1.0.0
 // Game lifecycle bridge: rAF-based game-ready detection + event communication
 (function() {
   'use strict';
 
-  // Idempotency: skip if already initialized (e.g., server-side injection
-  // followed by client-side inject-javascript via the Bloks webview component).
+  // Idempotency: skip if already initialized
   if (window.playablesSDK) return;
 
   var HANDLER_NAME = 'playablesGameEventHandler';
@@ -22,16 +22,12 @@
   var originalRAF = window.requestAnimationFrame;
 
   // --- Transport Layer ---
-
   function hasIOSBridge() {
-    return !!(window.webkit &&
-              window.webkit.messageHandlers &&
-              window.webkit.messageHandlers[HANDLER_NAME]);
+    return !!(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers[HANDLER_NAME]);
   }
 
   function hasAndroidBridge() {
-    return !!(window[ANDROID_BRIDGE_NAME] &&
-              typeof window[ANDROID_BRIDGE_NAME].postEvent === 'function');
+    return !!(window[ANDROID_BRIDGE_NAME] && typeof window[ANDROID_BRIDGE_NAME].postEvent === 'function');
   }
 
   function isInIframe() {
@@ -46,48 +42,35 @@
     };
 
     if (hasIOSBridge()) {
-      try {
-        window.webkit.messageHandlers[HANDLER_NAME].postMessage(message);
-      } catch (e) { /* ignore */ }
+      try { window.webkit.messageHandlers[HANDLER_NAME].postMessage(message); } catch (e) { }
       return;
     }
 
     if (hasAndroidBridge()) {
-    try {
-      var p = payload || {};
-      p._secureToken = window._fbAndroidBridgeAuthToken || '';
-      p.timestamp = message.timestamp;
-      window[ANDROID_BRIDGE_NAME].postEvent(
-        eventName,
-        JSON.stringify(p)
-      );
-    } catch (e) { /* ignore */ }
-    return;
-  }
+      try {
+        var p = payload || {};
+        p._secureToken = window._fbAndroidBridgeAuthToken || '';
+        p.timestamp = message.timestamp;
+        window[ANDROID_BRIDGE_NAME].postEvent(eventName, JSON.stringify(p));
+      } catch (e) { }
+      return;
+    }
 
     if (isInIframe()) {
-      try {
-        window.parent.postMessage(message, '*');
-      } catch (e) { /* ignore */ }
+      try { window.parent.postMessage(message, '*'); } catch (e) { }
       return;
     }
   }
 
   // --- rAF Game-Ready Detection ---
-
   function onFrame() {
     if (gameReadySent) return;
-
     frameCount++;
     if (frameCount >= RAF_FRAME_THRESHOLD) {
       gameReadySent = true;
-      sendEvent('game_ready', {
-        frame_count: frameCount,
-        detected_at: Date.now()
-      });
+      sendEvent('game_ready', { frame_count: frameCount, detected_at: Date.now() });
       return;
     }
-
     originalRAF.call(window, onFrame);
   }
 
@@ -98,10 +81,7 @@
           frameCount++;
           if (frameCount >= RAF_FRAME_THRESHOLD && !gameReadySent) {
             gameReadySent = true;
-            sendEvent('game_ready', {
-              frame_count: frameCount,
-              detected_at: Date.now()
-            });
+            sendEvent('game_ready', { frame_count: frameCount, detected_at: Date.now() });
           }
           callback(timestamp);
         });
@@ -111,20 +91,16 @@
   }
 
   // --- First User Interaction Detection ---
-
   function setupFirstInteractionDetection() {
     var events = ['touchstart', 'mousedown', 'keydown'];
-
     function onFirstInteraction() {
       if (firstInteractionSent) return;
       firstInteractionSent = true;
       sendEvent('user_interaction_start', null);
-
       for (var i = 0; i < events.length; i++) {
         document.removeEventListener(events[i], onFirstInteraction, true);
       }
     }
-
     for (var i = 0; i < events.length; i++) {
       document.addEventListener(events[i], onFirstInteraction, true);
     }
@@ -137,7 +113,6 @@
   }
 
   // --- Auto Error Capture ---
-
   window.addEventListener('error', function(event) {
     if (errorSent) return;
     errorSent = true;
@@ -162,36 +137,27 @@
   });
 
   // --- Public API ---
-
   window.playablesSDK = {
-    complete: function(score) {
-      sendEvent('game_ended', {
-        score: score,
-        completed: true
-      });
-    },
-
+    complete: function(score) { sendEvent('game_ended', { score: score, completed: true }); },
     error: function(message) {
       if (errorSent) return;
       errorSent = true;
-      sendEvent('error', {
-        message: message || 'Unknown error',
-        auto_captured: false
-      });
+      sendEvent('error', { message: message || 'Unknown error', auto_captured: false });
     },
-
     sendEvent: function(eventName, payload) {
       if (!eventName || typeof eventName !== 'string') return;
       sendEvent(eventName, payload);
     }
   };
 
-  // Kick off rAF detection in case no game code calls rAF immediately
   if (originalRAF) {
     originalRAF.call(window, onFrame);
   }
-})();</script>
-<!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+})();
+</script>
+
+<!-- PLAYABLE_TOUCH_PATCH_V1 -->
+<script>
 (function() {
   if (window.__playableTouchPatchInstalled) return;
   window.__playableTouchPatchInstalled = true;
@@ -210,14 +176,16 @@
     return origAdd.call(this, type, listener, options);
   };
 })();
-</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+</script>
+<script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0d1b2a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Foundation-First | Communication Coach</title>
 <style>
-,::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+/* Fixed CSS syntax error below */
+*, *::before, *::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#0d1b2a;--bg2:#111f30;--card:#162234;--card2:#1a2a3d;--border:#243347;
   --gold:#c9a84c;--gold2:rgba(201,168,76,.12);
@@ -307,24 +275,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .je-sub{font-size:11px;color:var(--muted);margin-top:2px}
 .je-body{display:none;padding:13px 15px;font-size:13.5px;color:var(--text2);line-height:1.7;background:var(--card);border-top:1px solid var(--border);white-space:pre-wrap}
 .jentry.open .je-body{display:block}
-.aitem{margin-bottom:20px}
-.a-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.a-name{font-size:14px;font-weight:700}
-.a-val{font-size:22px;font-weight:900;color:var(--gold)}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:100px;background:var(--border);outline:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--gold);cursor:pointer;box-shadow:0 2px 10px rgba(201,168,76,.35)}
-input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--gold);cursor:pointer;border:none}
-.bars{display:flex;align-items:flex-end;gap:5px;height:90px;margin-bottom:7px}
-.bwrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end}
-.bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .6s ease}
-.bl{font-size:9px;color:var(--muted)}
-.bg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.bg-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:16px;text-align:center}
-.bg-card.earned{border-color:var(--gold);background:var(--gold2)}
-.bg-card.locked{opacity:.3}
-.bg-em{font-size:32px;margin-bottom:8px;display:block}
-.bg-nm{font-size:12px;font-weight:900;margin-bottom:3px}
-.bg-ds{font-size:10px;color:var(--muted)}
 .tool{border:1px solid var(--border);border-radius:15px;margin-bottom:9px;overflow:hidden}
 .tool-hd{padding:14px;background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:space-between}
 .tool-hd:active{background:var(--card2)}
@@ -336,41 +286,209 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 .tool.open .tool-body{display:block}
 .ts{font-size:13.5px;color:var(--text2);line-height:1.65;margin-bottom:9px;padding-left:16px;position:relative}
 .ts::before{content:'→';position:absolute;left:0;color:var(--gold);font-weight:900;top:0}
-.qcard{border-left:3px solid var(--gold);border-radius:0 13px 13px 0;background:var(--card);padding:14px;margin-bottom:13px}
-.qt{font-size:13px;color:var(--text2);line-height:1.65;font-style:italic;margin-bottom:5px}
-.qs{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.5px}
-.stat-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
-.stat-c{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px;text-align:center}
-.stat-v{font-size:30px;font-weight:900;color:var(--gold);line-height:1;margin-bottom:3px}
-.stat-l{font-size:11px;color:var(--muted);font-weight:700}
 #nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--nav);background:rgba(13,27,42,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:none;z-index:1000}
 #nav.show{display:flex}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);transition:color .18s;padding:6px 0;position:relative}
 .ni.on{color:var(--gold)}
 .ni-icon{font-size:20px;line-height:1}
 .ni-lbl{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
-.ni-dot{position:absolute;top:8px;right:calc(50% - 16px);width:6px;height:6px;background:var(--gold);border-radius:50%;display:none}
-.ni-dot.show{display:block}
-.done-banner{background:var(--green2);border:1px solid rgba(60,179,113,.3);border-radius:12px;padding:14px;text-align:center;color:var(--green);font-weight:800;font-size:14px;margin-top:8px}
-.prompt-box{background:var(--card2);border-radius:11px;padding:13px;margin-bottom:11px;border-left:3px solid var(--teal)}
-.prompt-text{font-size:13.5px;color:var(--text2);line-height:1.65;font-style:italic}
-.sec-title{font-size:15px;font-weight:900;margin-bottom:13px;margin-top:4px}
-.row{display:flex;gap:9px}
-.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:14px;font-weight:700;z-index:9999;animation:tin .22s ease,tout .22s ease 2.2s forwards;white-space:nowrap;pointer-events:none;max-width:90%}
-@keyframes tin{from{transform:translateX(-50%) translateY(-14px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
-@keyframes tout{to{opacity:0}}
-.empty{text-align:center;padding:36px 20px;color:var(--muted);font-size:13px;line-height:1.6}
-.empty-icon{font-size:36px;display:block;margin-bottom:10px}
 </style>
 </head>
 <body>
+
+<!-- Onboarding Screen -->
 <div id="ob" class="active">
   <div class="ob-logo">Foundation-First</div>
   <div class="ob-tag">12-Week Communication System</div>
   <div class="ob-h">Fix the inside first. Everything else follows.</div>
   <div class="ob-p">You don't have a speaking problem. You have a safety problem. This system rebuilds your communication from the root up — 20 minutes a day, no partner needed.</div>
   <input type="text" class="ob-input" id="name-in" placeholder="Your first name">
-  <button class="btn btn-gold" onclick="alert('App loaded')">Start My 12-Week Journey →</button>
+  <button class="btn btn-gold" onclick="startApp()">Start My 12-Week Journey →</button>
 </div>
+
+<!-- Main App Wrapper (Hidden at start) -->
+<div id="main-app" style="display:none;">
+  
+  <!-- Global Header -->
+  <div class="hd">
+    <div>
+      <div class="hd-logo">Foundation-First</div>
+      <div class="hd-sub">Communication Coach</div>
+    </div>
+  </div>
+
+  <!-- Dashboard / Home Screen -->
+  <div id="home" class="screen active">
+    <div class="cx">
+      <div class="streak-wrap">
+        <div class="s-row">
+          <div>
+            <div class="s-num">1</div>
+            <div class="s-lbl">Current Streak</div>
+            <div class="s-sub">Days practicing safely</div>
+          </div>
+          <div class="s-right">
+             <div class="s-total">12</div>
+             <div class="s-tl">Week Journey</div>
+          </div>
+        </div>
+        <div class="pbar-track"><div class="pbar-fill" style="width: 8%"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Today's Practice</div>
+        
+        <!-- Accordion Module -->
+        <div class="seg" onclick="this.classList.toggle('open')">
+          <div class="seg-hd">
+            <div class="seg-left">
+              <div class="seg-icon">🎯</div>
+              <div>
+                <div class="seg-t">The Pause Method</div>
+                <div class="seg-d">Foundation Week 1</div>
+              </div>
+            </div>
+            <div class="chev">▼</div>
+          </div>
+          <div class="seg-body">
+            <div class="step">
+              <div class="step-n">1</div>
+              <div class="step-t">When triggered, take a full physical step back.</div>
+            </div>
+            <div class="step">
+              <div class="step-n">2</div>
+              <div class="step-t">Inhale for 4 seconds, feeling your feet on the ground.</div>
+            </div>
+            <div class="step">
+              <div class="step-n">3</div>
+              <div class="step-t">Wait until your heart rate lowers before responding.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer-box">
+          <div class="t-display">02:00</div>
+          <div class="t-btns">
+            <button class="t-btn go">Start</button>
+            <button class="t-btn pause">Pause</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tools Screen -->
+  <div id="tools" class="screen">
+    <div class="cx">
+      <div class="card-label">Communication Frameworks</div>
+      
+      <div class="tool" onclick="this.classList.toggle('open')">
+        <div class="tool-hd">
+          <div class="tool-left">
+            <div class="tool-em">🛡️</div>
+            <div>
+              <div class="tool-t">I-Statements</div>
+              <div class="tool-src">Conflict Resolution</div>
+            </div>
+          </div>
+          <div class="chev">▼</div>
+        </div>
+        <div class="tool-body">
+          <div class="ts">I feel [emotion]</div>
+          <div class="ts">When [specific behavior] happens</div>
+          <div class="ts">Because [impact on you]</div>
+        </div>
+      </div>
+
+      <div class="tool" onclick="this.classList.toggle('open')">
+        <div class="tool-hd">
+          <div class="tool-left">
+            <div class="tool-em">👂</div>
+            <div>
+              <div class="tool-t">Active Mirroring</div>
+              <div class="tool-src">De-escalation</div>
+            </div>
+          </div>
+          <div class="chev">▼</div>
+        </div>
+        <div class="tool-body">
+          <div class="ts">Listen without interrupting</div>
+          <div class="ts">"What I'm hearing you say is..."</div>
+          <div class="ts">"Did I get that right?"</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Journal Screen -->
+  <div id="journal" class="screen">
+    <div class="cx">
+      <div class="card-label">Daily Reflection</div>
+      <textarea class="jarea" placeholder="What triggered you today? How did you manage to respond?"></textarea>
+      <button class="btn btn-gold" style="margin-top: 12px;" onclick="saveJournal(this)">Save Entry</button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div id="nav">
+    <div class="ni on" onclick="switchTab('home', this)">
+      <div class="ni-icon">🏠</div>
+      <div class="ni-lbl">Home</div>
+    </div>
+    <div class="ni" onclick="switchTab('tools', this)">
+      <div class="ni-icon">🛠️</div>
+      <div class="ni-lbl">Tools</div>
+    </div>
+    <div class="ni" onclick="switchTab('journal', this)">
+      <div class="ni-icon">📝</div>
+      <div class="ni-lbl">Journal</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Logic to make it all work -->
+<script>
+  // Transitions from Onboarding to the main App
+  function startApp() {
+    document.getElementById('ob').classList.remove('active');
+    document.getElementById('main-app').style.display = 'block';
+    document.getElementById('nav').classList.add('show');
+  }
+
+  // Switches between Home, Tools, and Journal tabs
+  function switchTab(tabId, element) {
+    // Hide all screens
+    document.querySelectorAll('.screen').forEach(function(screen) {
+      screen.classList.remove('active');
+    });
+    // Remove "on" class from all nav items
+    document.querySelectorAll('.ni').forEach(function(navItem) {
+      navItem.classList.remove('on');
+    });
+    
+    // Show active screen and highlight nav item
+    document.getElementById(tabId).classList.add('active');
+    element.classList.add('on');
+  }
+
+  // Simple visual feedback for the Journal
+  function saveJournal(btn) {
+    var originalText = btn.innerText;
+    btn.innerText = "Saved ✓";
+    btn.style.background = "var(--green)";
+    btn.style.color = "#fff";
+    
+    setTimeout(function() {
+      btn.innerText = originalText;
+      btn.style.background = "var(--gold)";
+      btn.style.color = "#0d1b2a";
+      document.querySelector('.jarea').value = ""; // clear text
+    }, 2000);
+  }
+</script>
+
 </body>
 </html>

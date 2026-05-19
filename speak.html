@@ -1,185 +1,376 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C2C Comm Tracker</title>
-    <style>
-        :root {
-            --bg-color: #f4f4f9;
-            --primary: #2c3e50;
-            --accent: #e74c3c;
-            --card-bg: #ffffff;
-            --text: #333333;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            max-width: 600px;
-            width: 100%;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            color: var(--primary);
-            margin: 0;
-            font-size: 24px;
-        }
-        .header p {
-            color: #7f8c8d;
-            font-size: 14px;
-        }
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .card h2 {
-            margin-top: 0;
-            font-size: 18px;
-            color: var(--primary);
-            border-bottom: 2px solid var(--bg-color);
-            padding-bottom: 10px;
-        }
-        .task {
-            display: flex;
-            align-items: center;
-            margin: 15px 0;
-        }
-        .task input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 15px;
-            accent-color: var(--accent);
-            cursor: pointer;
-        }
-        .task label {
-            font-size: 15px;
-            cursor: pointer;
-            line-height: 1.4;
-        }
-        .progress-container {
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 8px;
-            margin-top: 20px;
-            height: 10px;
-        }
-        .progress-bar {
-            height: 10px;
-            background-color: var(--accent);
-            border-radius: 8px;
-            width: 0%;
-            transition: width 0.4s ease;
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #1a252f;
-        }
-    </style>
+<!-- Playables SDK -->
+<script>// Playables SDK v1.0.0
+// Game lifecycle bridge: rAF-based game-ready detection + event communication
+(function() {
+  'use strict';
+
+  // Idempotency: skip if already initialized (e.g., server-side injection
+  // followed by client-side inject-javascript via the Bloks webview component).
+  if (window.playablesSDK) return;
+
+  var HANDLER_NAME = 'playablesGameEventHandler';
+  var ANDROID_BRIDGE_NAME = '_MetaPlayablesBridge';
+  var RAF_FRAME_THRESHOLD = 3;
+
+  var gameReadySent = false;
+  var firstInteractionSent = false;
+  var errorSent = false;
+  var frameCount = 0;
+  var originalRAF = window.requestAnimationFrame;
+
+  // --- Transport Layer ---
+
+  function hasIOSBridge() {
+    return !!(window.webkit &&
+              window.webkit.messageHandlers &&
+              window.webkit.messageHandlers[HANDLER_NAME]);
+  }
+
+  function hasAndroidBridge() {
+    return !!(window[ANDROID_BRIDGE_NAME] &&
+              typeof window[ANDROID_BRIDGE_NAME].postEvent === 'function');
+  }
+
+  function isInIframe() {
+    return !!(window.parent && window.parent !== window);
+  }
+
+  function sendEvent(eventName, payload) {
+    var message = {
+      type: eventName,
+      payload: payload || {},
+      timestamp: Date.now()
+    };
+
+    if (hasIOSBridge()) {
+      try {
+        window.webkit.messageHandlers[HANDLER_NAME].postMessage(message);
+      } catch (e) { /* ignore */ }
+      return;
+    }
+
+    if (hasAndroidBridge()) {
+    try {
+      var p = payload || {};
+      p._secureToken = window._fbAndroidBridgeAuthToken || '';
+      p.timestamp = message.timestamp;
+      window[ANDROID_BRIDGE_NAME].postEvent(
+        eventName,
+        JSON.stringify(p)
+      );
+    } catch (e) { /* ignore */ }
+    return;
+  }
+
+    if (isInIframe()) {
+      try {
+        window.parent.postMessage(message, '*');
+      } catch (e) { /* ignore */ }
+      return;
+    }
+  }
+
+  // --- rAF Game-Ready Detection ---
+
+  function onFrame() {
+    if (gameReadySent) return;
+
+    frameCount++;
+    if (frameCount >= RAF_FRAME_THRESHOLD) {
+      gameReadySent = true;
+      sendEvent('game_ready', {
+        frame_count: frameCount,
+        detected_at: Date.now()
+      });
+      return;
+    }
+
+    originalRAF.call(window, onFrame);
+  }
+
+  if (originalRAF) {
+    window.requestAnimationFrame = function(callback) {
+      if (!gameReadySent) {
+        return originalRAF.call(window, function(timestamp) {
+          frameCount++;
+          if (frameCount >= RAF_FRAME_THRESHOLD && !gameReadySent) {
+            gameReadySent = true;
+            sendEvent('game_ready', {
+              frame_count: frameCount,
+              detected_at: Date.now()
+            });
+          }
+          callback(timestamp);
+        });
+      }
+      return originalRAF.call(window, callback);
+    };
+  }
+
+  // --- First User Interaction Detection ---
+
+  function setupFirstInteractionDetection() {
+    var events = ['touchstart', 'mousedown', 'keydown'];
+
+    function onFirstInteraction() {
+      if (firstInteractionSent) return;
+      firstInteractionSent = true;
+      sendEvent('user_interaction_start', null);
+
+      for (var i = 0; i < events.length; i++) {
+        document.removeEventListener(events[i], onFirstInteraction, true);
+      }
+    }
+
+    for (var i = 0; i < events.length; i++) {
+      document.addEventListener(events[i], onFirstInteraction, true);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupFirstInteractionDetection);
+  } else {
+    setupFirstInteractionDetection();
+  }
+
+  // --- Auto Error Capture ---
+
+  window.addEventListener('error', function(event) {
+    if (errorSent) return;
+    errorSent = true;
+    sendEvent('error', {
+      message: event.message || 'Unknown error',
+      source: event.filename || '',
+      lineno: event.lineno || 0,
+      colno: event.colno || 0,
+      auto_captured: true
+    });
+  });
+
+  window.addEventListener('unhandledrejection', function(event) {
+    if (errorSent) return;
+    errorSent = true;
+    var reason = event.reason;
+    sendEvent('error', {
+      message: (reason instanceof Error) ? reason.message : String(reason),
+      type: 'unhandled_promise_rejection',
+      auto_captured: true
+    });
+  });
+
+  // --- Public API ---
+
+  window.playablesSDK = {
+    complete: function(score) {
+      sendEvent('game_ended', {
+        score: score,
+        completed: true
+      });
+    },
+
+    error: function(message) {
+      if (errorSent) return;
+      errorSent = true;
+      sendEvent('error', {
+        message: message || 'Unknown error',
+        auto_captured: false
+      });
+    },
+
+    sendEvent: function(eventName, payload) {
+      if (!eventName || typeof eventName !== 'string') return;
+      sendEvent(eventName, payload);
+    }
+  };
+
+  // Kick off rAF detection in case no game code calls rAF immediately
+  if (originalRAF) {
+    originalRAF.call(window, onFrame);
+  }
+})();</script>
+<!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0d1b2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Foundation-First | Communication Coach</title>
+<style>
+,::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0d1b2a;--bg2:#111f30;--card:#162234;--card2:#1a2a3d;--border:#243347;
+  --gold:#c9a84c;--gold2:rgba(201,168,76,.12);
+  --teal:#2d8fa8;--teal2:rgba(45,143,168,.12);
+  --purple:#8b5cf6;--purple2:rgba(139,92,246,.12);
+  --green:#3cb371;--green2:rgba(60,179,113,.12);
+  --red:#e05c5c;
+  --text:#e2eaf4;--text2:#aabbd0;--muted:#6b849a;
+  --nav:68px;
+}
+html,body{height:100%;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;position:relative}
+.screen{display:none;min-height:100vh;padding-bottom:calc(var(--nav) + 20px);animation:fadeUp .22s ease}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+#ob{display:none;min-height:100vh;padding:48px 24px 40px;flex-direction:column;background:var(--bg)}
+#ob.active{display:flex}
+.ob-logo{font-size:10px;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.ob-tag{display:inline-block;background:var(--gold2);color:var(--gold);border-radius:20px;font-size:11px;font-weight:700;padding:4px 12px;margin-bottom:28px;letter-spacing:.5px}
+.ob-h{font-size:28px;font-weight:900;line-height:1.2;margin-bottom:14px}
+.ob-p{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:28px}
+.ob-features{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:28px}
+.ob-feat{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.ob-feat:last-child{border-bottom:none;padding-bottom:0}
+.ob-feat:first-child{padding-top:0}
+.ob-fi{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ob-ft{font-size:13px;font-weight:700}
+.ob-fs{font-size:11px;color:var(--muted);margin-top:1px}
+.ob-input{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:16px;padding:14px 16px;outline:none;margin-bottom:12px;transition:border-color .2s}
+.ob-input:focus{border-color:var(--gold)}
+.ob-input::placeholder{color:var(--muted)}
+.ob-note{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5}
+.hd{position:sticky;top:0;z-index:200;background:rgba(13,27,42,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:13px 20px;display:flex;align-items:center;justify-content:space-between}
+.hd-logo{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.hd-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.cx{padding:18px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:13px;font-size:15px;font-weight:800;border:none;cursor:pointer;width:100%;transition:all .15s;letter-spacing:.3px;font-family:inherit}
+.btn:active{transform:scale(.97);opacity:.9}
+.btn-gold{background:var(--gold);color:#0d1b2a}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-ghost{background:var(--card2);color:var(--text);border:1px solid var(--border)}
+.btn-green{background:var(--green);color:#0d1b2a}
+.btn-sm{padding:10px 16px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:13px}
+.card-label{font-size:10px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.streak-wrap{background:linear-gradient(145deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:13px;position:relative;overflow:hidden}
+.streak-wrap::after{content:'';position:absolute;top:-30%;right:-10%;width:160px;height:160px;background:var(--gold2);border-radius:50%;pointer-events:none}
+.s-row{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
+.s-num{font-size:56px;font-weight:900;color:var(--gold);line-height:1}
+.s-lbl{font-size:14px;font-weight:700;color:var(--text2);margin-top:2px}
+.s-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.s-right{text-align:right}
+.s-total{font-size:28px;font-weight:900;color:var(--text2)}
+.s-tl{font-size:10px;color:var(--muted)}
+.pbar-track{background:var(--border);border-radius:100px;height:5px;margin-top:14px;overflow:hidden;position:relative;z-index:1}
+.pbar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gold),#e8c05a);transition:width .7s cubic-bezier(.4,0,.2,1)}
+.pbadge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.3px;margin-bottom:14px}
+.pdot{width:7px;height:7px;border-radius:50%}
+.seg{border:1px solid var(--border);border-radius:15px;margin-bottom:10px;overflow:hidden}
+.seg-hd{display:flex;align-items:center;justify-content:space-between;padding:15px 15px;cursor:pointer;background:var(--card);user-select:none}
+.seg-hd:active{background:var(--card2)}
+.seg-left{display:flex;align-items:center;gap:12px}
+.seg-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.seg-t{font-size:14px;font-weight:800}
+.seg-d{font-size:11px;color:var(--muted);margin-top:2px}
+.chev{color:var(--muted);font-size:11px;transition:transform .2s}
+.seg.open .chev{transform:rotate(180deg)}
+.seg-body{display:none;padding:15px;background:var(--card);border-top:1px solid var(--border)}
+.seg.open .seg-body{display:block}
+.step{display:flex;gap:11px;margin-bottom:10px}
+.step-n{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--muted);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-t{font-size:13.5px;color:var(--text2);line-height:1.65}
+.timer-box{background:var(--card2);border-radius:12px;padding:12px 15px;margin-top:12px;display:flex;align-items:center;justify-content:space-between}
+.t-display{font-size:28px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:2px;color:var(--gold)}
+.t-btns{display:flex;gap:8px}
+.t-btn{padding:9px 15px;border-radius:9px;font-size:12px;font-weight:800;border:none;cursor:pointer;background:var(--border);color:var(--text);transition:all .12s;font-family:inherit}
+.t-btn:active{transform:scale(.95)}
+.t-btn.go{background:var(--gold);color:#0d1b2a}
+.t-btn.pause{background:var(--teal);color:#fff}
+.jarea{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:15px;line-height:1.7;padding:14px;resize:none;min-height:130px;outline:none;transition:border-color .2s}
+.jarea:focus{border-color:var(--gold)}
+.jarea::placeholder{color:var(--muted)}
+.jentry{border:1px solid var(--border);border-radius:12px;margin-bottom:9px;overflow:hidden}
+.je-hd{padding:13px 15px;background:var(--card);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.je-hd:active{background:var(--card2)}
+.je-title{font-size:13px;font-weight:800}
+.je-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.je-body{display:none;padding:13px 15px;font-size:13.5px;color:var(--text2);line-height:1.7;background:var(--card);border-top:1px solid var(--border);white-space:pre-wrap}
+.jentry.open .je-body{display:block}
+.aitem{margin-bottom:20px}
+.a-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.a-name{font-size:14px;font-weight:700}
+.a-val{font-size:22px;font-weight:900;color:var(--gold)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:100px;background:var(--border);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--gold);cursor:pointer;box-shadow:0 2px 10px rgba(201,168,76,.35)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--gold);cursor:pointer;border:none}
+.bars{display:flex;align-items:flex-end;gap:5px;height:90px;margin-bottom:7px}
+.bwrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .6s ease}
+.bl{font-size:9px;color:var(--muted)}
+.bg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bg-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:16px;text-align:center}
+.bg-card.earned{border-color:var(--gold);background:var(--gold2)}
+.bg-card.locked{opacity:.3}
+.bg-em{font-size:32px;margin-bottom:8px;display:block}
+.bg-nm{font-size:12px;font-weight:900;margin-bottom:3px}
+.bg-ds{font-size:10px;color:var(--muted)}
+.tool{border:1px solid var(--border);border-radius:15px;margin-bottom:9px;overflow:hidden}
+.tool-hd{padding:14px;background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.tool-hd:active{background:var(--card2)}
+.tool-left{display:flex;align-items:center;gap:12px}
+.tool-em{width:38px;height:38px;background:var(--card2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.tool-t{font-size:14px;font-weight:800}
+.tool-src{font-size:10px;color:var(--muted);margin-top:2px}
+.tool-body{display:none;padding:14px;background:var(--card);border-top:1px solid var(--border)}
+.tool.open .tool-body{display:block}
+.ts{font-size:13.5px;color:var(--text2);line-height:1.65;margin-bottom:9px;padding-left:16px;position:relative}
+.ts::before{content:'→';position:absolute;left:0;color:var(--gold);font-weight:900;top:0}
+.qcard{border-left:3px solid var(--gold);border-radius:0 13px 13px 0;background:var(--card);padding:14px;margin-bottom:13px}
+.qt{font-size:13px;color:var(--text2);line-height:1.65;font-style:italic;margin-bottom:5px}
+.qs{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.5px}
+.stat-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+.stat-c{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px;text-align:center}
+.stat-v{font-size:30px;font-weight:900;color:var(--gold);line-height:1;margin-bottom:3px}
+.stat-l{font-size:11px;color:var(--muted);font-weight:700}
+#nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--nav);background:rgba(13,27,42,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:none;z-index:1000}
+#nav.show{display:flex}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);transition:color .18s;padding:6px 0;position:relative}
+.ni.on{color:var(--gold)}
+.ni-icon{font-size:20px;line-height:1}
+.ni-lbl{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.ni-dot{position:absolute;top:8px;right:calc(50% - 16px);width:6px;height:6px;background:var(--gold);border-radius:50%;display:none}
+.ni-dot.show{display:block}
+.done-banner{background:var(--green2);border:1px solid rgba(60,179,113,.3);border-radius:12px;padding:14px;text-align:center;color:var(--green);font-weight:800;font-size:14px;margin-top:8px}
+.prompt-box{background:var(--card2);border-radius:11px;padding:13px;margin-bottom:11px;border-left:3px solid var(--teal)}
+.prompt-text{font-size:13.5px;color:var(--text2);line-height:1.65;font-style:italic}
+.sec-title{font-size:15px;font-weight:900;margin-bottom:13px;margin-top:4px}
+.row{display:flex;gap:9px}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:14px;font-weight:700;z-index:9999;animation:tin .22s ease,tout .22s ease 2.2s forwards;white-space:nowrap;pointer-events:none;max-width:90%}
+@keyframes tin{from{transform:translateX(-50%) translateY(-14px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+@keyframes tout{to{opacity:0}}
+.empty{text-align:center;padding:36px 20px;color:var(--muted);font-size:13px;line-height:1.6}
+.empty-icon{font-size:36px;display:block;margin-bottom:10px}
+</style>
 </head>
 <body>
-
-<div class="container">
-    <div class="header">
-        <h1>Communication Protocol</h1>
-        <p>Daily Behavioral Rewiring Dashboard</p>
-    </div>
-
-    <div class="card">
-        <h2>Phase 1: Inner Game & Presence</h2>
-        <div class="task">
-            <input type="checkbox" id="task1" class="tracker-box">
-            <label for="task1">Perform 2-min Charisma Myth visualization before a call/meeting.</label>
-        </div>
-        <div class="task">
-            <input type="checkbox" id="task2" class="tracker-box">
-            <label for="task2">Use "Labeling" (Never Split the Difference) in one conversation.</label>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>Phase 2: Relationships & Safety</h2>
-        <div class="task">
-            <input type="checkbox" id="task3" class="tracker-box">
-            <label for="task3">Ask an open-ended question about someone's interests and just listen.</label>
-        </div>
-        <div class="task">
-            <input type="checkbox" id="task4" class="tracker-box">
-            <label for="task4">Notice when a conversation loses "Safety" and step back.</label>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>Phase 3: Public Speaking</h2>
-        <div class="task">
-            <input type="checkbox" id="task5" class="tracker-box">
-            <label for="task5">Practice one brand story out loud for 3 minutes.</label>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>Daily Progress</h2>
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <button onclick="resetDay()">Reset for Tomorrow</button>
-    </div>
+<div id="ob" class="active">
+  <div class="ob-logo">Foundation-First</div>
+  <div class="ob-tag">12-Week Communication System</div>
+  <div class="ob-h">Fix the inside first. Everything else follows.</div>
+  <div class="ob-p">You don't have a speaking problem. You have a safety problem. This system rebuilds your communication from the root up — 20 minutes a day, no partner needed.</div>
+  <input type="text" class="ob-input" id="name-in" placeholder="Your first name">
+  <button class="btn btn-gold" onclick="alert('App loaded')">Start My 12-Week Journey →</button>
 </div>
-
-<script>
-    const checkboxes = document.querySelectorAll('.tracker-box');
-    const progressBar = document.getElementById('progressBar');
-
-    // Load saved data
-    document.addEventListener('DOMContentLoaded', () => {
-        checkboxes.forEach((box, index) => {
-            box.checked = localStorage.getItem(`task${index}`) === 'true';
-            box.addEventListener('change', updateProgress);
-        });
-        updateProgress();
-    });
-
-    function updateProgress() {
-        let checkedCount = 0;
-        checkboxes.forEach((box, index) => {
-            localStorage.setItem(`task${index}`, box.checked);
-            if (box.checked) checkedCount++;
-        });
-        const percentage = (checkedCount / checkboxes.length) * 100;
-        progressBar.style.width = percentage + '%';
-    }
-
-    function resetDay() {
-        checkboxes.forEach((box, index) => {
-            box.checked = false;
-            localStorage.setItem(`task${index}`, 'false');
-        });
-        updateProgress();
-    }
-</script>
-
 </body>
 </html>

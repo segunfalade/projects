@@ -1,191 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Playables SDK -->
-<script>
-// Playables SDK v1.0.0
-// Game lifecycle bridge: rAF-based game-ready detection + event communication
-(function() {
-  'use strict';
-
-  // Idempotency: skip if already initialized
-  if (window.playablesSDK) return;
-
-  var HANDLER_NAME = 'playablesGameEventHandler';
-  var ANDROID_BRIDGE_NAME = '_MetaPlayablesBridge';
-  var RAF_FRAME_THRESHOLD = 3;
-
-  var gameReadySent = false;
-  var firstInteractionSent = false;
-  var errorSent = false;
-  var frameCount = 0;
-  var originalRAF = window.requestAnimationFrame;
-
-  // --- Transport Layer ---
-  function hasIOSBridge() {
-    return !!(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers[HANDLER_NAME]);
-  }
-
-  function hasAndroidBridge() {
-    return !!(window[ANDROID_BRIDGE_NAME] && typeof window[ANDROID_BRIDGE_NAME].postEvent === 'function');
-  }
-
-  function isInIframe() {
-    return !!(window.parent && window.parent !== window);
-  }
-
-  function sendEvent(eventName, payload) {
-    var message = {
-      type: eventName,
-      payload: payload || {},
-      timestamp: Date.now()
-    };
-
-    if (hasIOSBridge()) {
-      try { window.webkit.messageHandlers[HANDLER_NAME].postMessage(message); } catch (e) { }
-      return;
-    }
-
-    if (hasAndroidBridge()) {
-      try {
-        var p = payload || {};
-        p._secureToken = window._fbAndroidBridgeAuthToken || '';
-        p.timestamp = message.timestamp;
-        window[ANDROID_BRIDGE_NAME].postEvent(eventName, JSON.stringify(p));
-      } catch (e) { }
-      return;
-    }
-
-    if (isInIframe()) {
-      try { window.parent.postMessage(message, '*'); } catch (e) { }
-      return;
-    }
-  }
-
-  // --- rAF Game-Ready Detection ---
-  function onFrame() {
-    if (gameReadySent) return;
-    frameCount++;
-    if (frameCount >= RAF_FRAME_THRESHOLD) {
-      gameReadySent = true;
-      sendEvent('game_ready', { frame_count: frameCount, detected_at: Date.now() });
-      return;
-    }
-    originalRAF.call(window, onFrame);
-  }
-
-  if (originalRAF) {
-    window.requestAnimationFrame = function(callback) {
-      if (!gameReadySent) {
-        return originalRAF.call(window, function(timestamp) {
-          frameCount++;
-          if (frameCount >= RAF_FRAME_THRESHOLD && !gameReadySent) {
-            gameReadySent = true;
-            sendEvent('game_ready', { frame_count: frameCount, detected_at: Date.now() });
-          }
-          callback(timestamp);
-        });
-      }
-      return originalRAF.call(window, callback);
-    };
-  }
-
-  // --- First User Interaction Detection ---
-  function setupFirstInteractionDetection() {
-    var events = ['touchstart', 'mousedown', 'keydown'];
-    function onFirstInteraction() {
-      if (firstInteractionSent) return;
-      firstInteractionSent = true;
-      sendEvent('user_interaction_start', null);
-      for (var i = 0; i < events.length; i++) {
-        document.removeEventListener(events[i], onFirstInteraction, true);
-      }
-    }
-    for (var i = 0; i < events.length; i++) {
-      document.addEventListener(events[i], onFirstInteraction, true);
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupFirstInteractionDetection);
-  } else {
-    setupFirstInteractionDetection();
-  }
-
-  // --- Auto Error Capture ---
-  window.addEventListener('error', function(event) {
-    if (errorSent) return;
-    errorSent = true;
-    sendEvent('error', {
-      message: event.message || 'Unknown error',
-      source: event.filename || '',
-      lineno: event.lineno || 0,
-      colno: event.colno || 0,
-      auto_captured: true
-    });
-  });
-
-  window.addEventListener('unhandledrejection', function(event) {
-    if (errorSent) return;
-    errorSent = true;
-    var reason = event.reason;
-    sendEvent('error', {
-      message: (reason instanceof Error) ? reason.message : String(reason),
-      type: 'unhandled_promise_rejection',
-      auto_captured: true
-    });
-  });
-
-  // --- Public API ---
-  window.playablesSDK = {
-    complete: function(score) { sendEvent('game_ended', { score: score, completed: true }); },
-    error: function(message) {
-      if (errorSent) return;
-      errorSent = true;
-      sendEvent('error', { message: message || 'Unknown error', auto_captured: false });
-    },
-    sendEvent: function(eventName, payload) {
-      if (!eventName || typeof eventName !== 'string') return;
-      sendEvent(eventName, payload);
-    }
-  };
-
-  if (originalRAF) {
-    originalRAF.call(window, onFrame);
-  }
-})();
-</script>
-
-<!-- PLAYABLE_TOUCH_PATCH_V1 -->
-<script>
-(function() {
-  if (window.__playableTouchPatchInstalled) return;
-  window.__playableTouchPatchInstalled = true;
-  var origAdd = EventTarget.prototype.addEventListener;
-  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
-  EventTarget.prototype.addEventListener = function(type, listener, options) {
-    if (blockedTypes[type]) {
-      if (options === undefined || options === null) {
-        options = { passive: true };
-      } else if (typeof options === 'boolean') {
-        options = { capture: options, passive: true };
-      } else {
-        options = Object.assign({}, options, { passive: true });
-      }
-    }
-    return origAdd.call(this, type, listener, options);
-  };
-})();
-</script>
-<script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0d1b2a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Foundation-First | Communication Coach</title>
 <style>
-/* Fixed CSS syntax error below */
-*, *::before, *::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#0d1b2a;--bg2:#111f30;--card:#162234;--card2:#1a2a3d;--border:#243347;
   --gold:#c9a84c;--gold2:rgba(201,168,76,.12);
@@ -198,9 +20,11 @@
 }
 html,body{height:100%;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;position:relative}
+/* SCREENS */
 .screen{display:none;min-height:100vh;padding-bottom:calc(var(--nav) + 20px);animation:fadeUp .22s ease}
 .screen.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* ONBOARDING */
 #ob{display:none;min-height:100vh;padding:48px 24px 40px;flex-direction:column;background:var(--bg)}
 #ob.active{display:flex}
 .ob-logo{font-size:10px;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
@@ -218,10 +42,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .ob-input:focus{border-color:var(--gold)}
 .ob-input::placeholder{color:var(--muted)}
 .ob-note{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5}
+/* HEADER */
 .hd{position:sticky;top:0;z-index:200;background:rgba(13,27,42,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:13px 20px;display:flex;align-items:center;justify-content:space-between}
 .hd-logo{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
 .hd-sub{font-size:11px;color:var(--muted);margin-top:1px}
+/* CONTENT */
 .cx{padding:18px}
+/* BUTTONS */
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:13px;font-size:15px;font-weight:800;border:none;cursor:pointer;width:100%;transition:all .15s;letter-spacing:.3px;font-family:inherit}
 .btn:active{transform:scale(.97);opacity:.9}
 .btn-gold{background:var(--gold);color:#0d1b2a}
@@ -229,8 +56,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .btn-ghost{background:var(--card2);color:var(--text);border:1px solid var(--border)}
 .btn-green{background:var(--green);color:#0d1b2a}
 .btn-sm{padding:10px 16px;font-size:13px}
+/* CARDS */
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:13px}
 .card-label{font-size:10px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+/* STREAK */
 .streak-wrap{background:linear-gradient(145deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:13px;position:relative;overflow:hidden}
 .streak-wrap::after{content:'';position:absolute;top:-30%;right:-10%;width:160px;height:160px;background:var(--gold2);border-radius:50%;pointer-events:none}
 .s-row{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
@@ -242,8 +71,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .s-tl{font-size:10px;color:var(--muted)}
 .pbar-track{background:var(--border);border-radius:100px;height:5px;margin-top:14px;overflow:hidden;position:relative;z-index:1}
 .pbar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gold),#e8c05a);transition:width .7s cubic-bezier(.4,0,.2,1)}
+/* PHASE BADGE */
 .pbadge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.3px;margin-bottom:14px}
 .pdot{width:7px;height:7px;border-radius:50%}
+/* SEGMENTS */
 .seg{border:1px solid var(--border);border-radius:15px;margin-bottom:10px;overflow:hidden}
 .seg-hd{display:flex;align-items:center;justify-content:space-between;padding:15px 15px;cursor:pointer;background:var(--card);user-select:none}
 .seg-hd:active{background:var(--card2)}
@@ -255,9 +86,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .seg.open .chev{transform:rotate(180deg)}
 .seg-body{display:none;padding:15px;background:var(--card);border-top:1px solid var(--border)}
 .seg.open .seg-body{display:block}
+/* STEPS */
 .step{display:flex;gap:11px;margin-bottom:10px}
 .step-n{width:22px;height:22px;border-radius:50%;background:var(--border);color:var(--muted);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 .step-t{font-size:13.5px;color:var(--text2);line-height:1.65}
+/* TIMER */
 .timer-box{background:var(--card2);border-radius:12px;padding:12px 15px;margin-top:12px;display:flex;align-items:center;justify-content:space-between}
 .t-display{font-size:28px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:2px;color:var(--gold)}
 .t-btns{display:flex;gap:8px}
@@ -265,6 +98,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .t-btn:active{transform:scale(.95)}
 .t-btn.go{background:var(--gold);color:#0d1b2a}
 .t-btn.pause{background:var(--teal);color:#fff}
+/* JOURNAL */
 .jarea{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:15px;line-height:1.7;padding:14px;resize:none;min-height:130px;outline:none;transition:border-color .2s}
 .jarea:focus{border-color:var(--gold)}
 .jarea::placeholder{color:var(--muted)}
@@ -275,6 +109,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .je-sub{font-size:11px;color:var(--muted);margin-top:2px}
 .je-body{display:none;padding:13px 15px;font-size:13.5px;color:var(--text2);line-height:1.7;background:var(--card);border-top:1px solid var(--border);white-space:pre-wrap}
 .jentry.open .je-body{display:block}
+/* ASSESS */
+.aitem{margin-bottom:20px}
+.a-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.a-name{font-size:14px;font-weight:700}
+.a-val{font-size:22px;font-weight:900;color:var(--gold)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:100px;background:var(--border);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--gold);cursor:pointer;box-shadow:0 2px 10px rgba(201,168,76,.35)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--gold);cursor:pointer;border:none}
+/* CHART */
+.bars{display:flex;align-items:flex-end;gap:5px;height:90px;margin-bottom:7px}
+.bwrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .6s ease}
+.bl{font-size:9px;color:var(--muted)}
+/* BADGES */
+.bg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bg-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:16px;text-align:center}
+.bg-card.earned{border-color:var(--gold);background:var(--gold2)}
+.bg-card.locked{opacity:.3}
+.bg-em{font-size:32px;margin-bottom:8px;display:block}
+.bg-nm{font-size:12px;font-weight:900;margin-bottom:3px}
+.bg-ds{font-size:10px;color:var(--muted)}
+/* TOOLS */
 .tool{border:1px solid var(--border);border-radius:15px;margin-bottom:9px;overflow:hidden}
 .tool-hd{padding:14px;background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:space-between}
 .tool-hd:active{background:var(--card2)}
@@ -286,209 +142,852 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tool.open .tool-body{display:block}
 .ts{font-size:13.5px;color:var(--text2);line-height:1.65;margin-bottom:9px;padding-left:16px;position:relative}
 .ts::before{content:'→';position:absolute;left:0;color:var(--gold);font-weight:900;top:0}
+/* QUOTE */
+.qcard{border-left:3px solid var(--gold);border-radius:0 13px 13px 0;background:var(--card);padding:14px;margin-bottom:13px}
+.qt{font-size:13px;color:var(--text2);line-height:1.65;font-style:italic;margin-bottom:5px}
+.qs{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.5px}
+/* STATS */
+.stat-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+.stat-c{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px;text-align:center}
+.stat-v{font-size:30px;font-weight:900;color:var(--gold);line-height:1;margin-bottom:3px}
+.stat-l{font-size:11px;color:var(--muted);font-weight:700}
+/* NAV */
 #nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--nav);background:rgba(13,27,42,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:none;z-index:1000}
 #nav.show{display:flex}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);transition:color .18s;padding:6px 0;position:relative}
 .ni.on{color:var(--gold)}
 .ni-icon{font-size:20px;line-height:1}
 .ni-lbl{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.ni-dot{position:absolute;top:8px;right:calc(50% - 16px);width:6px;height:6px;background:var(--gold);border-radius:50%;display:none}
+.ni-dot.show{display:block}
+/* MISC */
+.done-banner{background:var(--green2);border:1px solid rgba(60,179,113,.3);border-radius:12px;padding:14px;text-align:center;color:var(--green);font-weight:800;font-size:14px;margin-top:8px}
+.prompt-box{background:var(--card2);border-radius:11px;padding:13px;margin-bottom:11px;border-left:3px solid var(--teal)}
+.prompt-text{font-size:13.5px;color:var(--text2);line-height:1.65;font-style:italic}
+.sec-title{font-size:15px;font-weight:900;margin-bottom:13px;margin-top:4px}
+.row{display:flex;gap:9px}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:11px 20px;font-size:14px;font-weight:700;z-index:9999;animation:tin .22s ease,tout .22s ease 2.2s forwards;white-space:nowrap;pointer-events:none;max-width:90%}
+@keyframes tin{from{transform:translateX(-50%) translateY(-14px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+@keyframes tout{to{opacity:0}}
+.empty{text-align:center;padding:36px 20px;color:var(--muted);font-size:13px;line-height:1.6}
+.empty-icon{font-size:36px;display:block;margin-bottom:10px}
 </style>
 </head>
 <body>
 
-<!-- Onboarding Screen -->
-<div id="ob" class="active">
+<!-- ONBOARDING -->
+<div id="ob">
   <div class="ob-logo">Foundation-First</div>
   <div class="ob-tag">12-Week Communication System</div>
   <div class="ob-h">Fix the inside first. Everything else follows.</div>
   <div class="ob-p">You don't have a speaking problem. You have a safety problem. This system rebuilds your communication from the root up — 20 minutes a day, no partner needed.</div>
-  <input type="text" class="ob-input" id="name-in" placeholder="Your first name">
+  <div class="ob-features">
+    <div class="ob-feat"><div class="ob-fi" style="background:rgba(201,168,76,.15)">🛡️</div><div><div class="ob-ft">Phase 1: Building Inner Safety</div><div class="ob-fs">Weeks 1–3 · The internal foundation</div></div></div>
+    <div class="ob-feat"><div class="ob-fi" style="background:rgba(45,143,168,.15)">🤝</div><div><div class="ob-ft">Phase 2: The Connection Layer</div><div class="ob-fs">Weeks 4–6 · Make people feel seen</div></div></div>
+    <div class="ob-feat"><div class="ob-fi" style="background:rgba(139,92,246,.15)">✨</div><div><div class="ob-ft">Phase 3: Voice, Body & Presence</div><div class="ob-fs">Weeks 7–9 · Command attention</div></div></div>
+    <div class="ob-feat"><div class="ob-fi" style="background:rgba(60,179,113,.15)">🔥</div><div><div class="ob-ft">Phase 4: Application Under Pressure</div><div class="ob-fs">Weeks 10–12 · Perform when it counts</div></div></div>
+  </div>
+  <input type="text" class="ob-input" id="name-in" placeholder="Your first name (optional — personalises the app)">
   <button class="btn btn-gold" onclick="startApp()">Start My 12-Week Journey →</button>
+  <div class="ob-note">All data stays on your device. Nothing is sent anywhere.</div>
 </div>
 
-<!-- Main App Wrapper (Hidden at start) -->
-<div id="main-app" style="display:none;">
-  
-  <!-- Global Header -->
-  <div class="hd">
-    <div>
-      <div class="hd-logo">Foundation-First</div>
-      <div class="hd-sub">Communication Coach</div>
-    </div>
-  </div>
-
-  <!-- Dashboard / Home Screen -->
-  <div id="home" class="screen active">
-    <div class="cx">
-      <div class="streak-wrap">
-        <div class="s-row">
-          <div>
-            <div class="s-num">1</div>
-            <div class="s-lbl">Current Streak</div>
-            <div class="s-sub">Days practicing safely</div>
-          </div>
-          <div class="s-right">
-             <div class="s-total">12</div>
-             <div class="s-tl">Week Journey</div>
-          </div>
-        </div>
-        <div class="pbar-track"><div class="pbar-fill" style="width: 8%"></div></div>
+<!-- HOME -->
+<div id="sc-home" class="screen">
+  <div class="hd"><div><div class="hd-logo">Foundation-First</div><div class="hd-sub">Communication Coach</div></div><div id="hm-day-badge"></div></div>
+  <div class="cx">
+    <div id="hm-greet" style="font-size:22px;font-weight:900;margin-bottom:3px"></div>
+    <div id="hm-sub" style="font-size:13px;color:var(--text2);margin-bottom:18px"></div>
+    <div class="streak-wrap">
+      <div class="s-row">
+        <div><div id="hm-streak" class="s-num">0</div><div class="s-lbl">Day Streak 🔥</div><div id="hm-streak-sub" class="s-sub"></div></div>
+        <div class="s-right"><div class="s-tl">TOTAL DAYS</div><div id="hm-total" class="s-total">0/84</div></div>
       </div>
-
-      <div class="card">
-        <div class="card-label">Today's Practice</div>
-        
-        <!-- Accordion Module -->
-        <div class="seg" onclick="this.classList.toggle('open')">
-          <div class="seg-hd">
-            <div class="seg-left">
-              <div class="seg-icon">🎯</div>
-              <div>
-                <div class="seg-t">The Pause Method</div>
-                <div class="seg-d">Foundation Week 1</div>
-              </div>
-            </div>
-            <div class="chev">▼</div>
-          </div>
-          <div class="seg-body">
-            <div class="step">
-              <div class="step-n">1</div>
-              <div class="step-t">When triggered, take a full physical step back.</div>
-            </div>
-            <div class="step">
-              <div class="step-n">2</div>
-              <div class="step-t">Inhale for 4 seconds, feeling your feet on the ground.</div>
-            </div>
-            <div class="step">
-              <div class="step-n">3</div>
-              <div class="step-t">Wait until your heart rate lowers before responding.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Timer -->
-        <div class="timer-box">
-          <div class="t-display">02:00</div>
-          <div class="t-btns">
-            <button class="t-btn go">Start</button>
-            <button class="t-btn pause">Pause</button>
-          </div>
-        </div>
-      </div>
+      <div class="pbar-track"><div id="hm-prog" class="pbar-fill" style="width:0%"></div></div>
     </div>
+    <div id="hm-phase"></div>
+    <div id="hm-today" class="card" style="cursor:pointer" onclick="go('today')"></div>
+    <div id="hm-quote" class="qcard"></div>
   </div>
-
-  <!-- Tools Screen -->
-  <div id="tools" class="screen">
-    <div class="cx">
-      <div class="card-label">Communication Frameworks</div>
-      
-      <div class="tool" onclick="this.classList.toggle('open')">
-        <div class="tool-hd">
-          <div class="tool-left">
-            <div class="tool-em">🛡️</div>
-            <div>
-              <div class="tool-t">I-Statements</div>
-              <div class="tool-src">Conflict Resolution</div>
-            </div>
-          </div>
-          <div class="chev">▼</div>
-        </div>
-        <div class="tool-body">
-          <div class="ts">I feel [emotion]</div>
-          <div class="ts">When [specific behavior] happens</div>
-          <div class="ts">Because [impact on you]</div>
-        </div>
-      </div>
-
-      <div class="tool" onclick="this.classList.toggle('open')">
-        <div class="tool-hd">
-          <div class="tool-left">
-            <div class="tool-em">👂</div>
-            <div>
-              <div class="tool-t">Active Mirroring</div>
-              <div class="tool-src">De-escalation</div>
-            </div>
-          </div>
-          <div class="chev">▼</div>
-        </div>
-        <div class="tool-body">
-          <div class="ts">Listen without interrupting</div>
-          <div class="ts">"What I'm hearing you say is..."</div>
-          <div class="ts">"Did I get that right?"</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Journal Screen -->
-  <div id="journal" class="screen">
-    <div class="cx">
-      <div class="card-label">Daily Reflection</div>
-      <textarea class="jarea" placeholder="What triggered you today? How did you manage to respond?"></textarea>
-      <button class="btn btn-gold" style="margin-top: 12px;" onclick="saveJournal(this)">Save Entry</button>
-    </div>
-  </div>
-
-  <!-- Bottom Navigation -->
-  <div id="nav">
-    <div class="ni on" onclick="switchTab('home', this)">
-      <div class="ni-icon">🏠</div>
-      <div class="ni-lbl">Home</div>
-    </div>
-    <div class="ni" onclick="switchTab('tools', this)">
-      <div class="ni-icon">🛠️</div>
-      <div class="ni-lbl">Tools</div>
-    </div>
-    <div class="ni" onclick="switchTab('journal', this)">
-      <div class="ni-icon">📝</div>
-      <div class="ni-lbl">Journal</div>
-    </div>
-  </div>
-
 </div>
 
-<!-- Logic to make it all work -->
+<!-- TODAY -->
+<div id="sc-today" class="screen">
+  <div class="hd"><div><div class="hd-logo">Today's Practice</div><div id="td-hd-sub" class="hd-sub"></div></div><div id="td-done-badge"></div></div>
+  <div class="cx">
+    <div id="td-pbadge" class="pbadge"></div>
+    <div id="td-week-title" style="font-size:20px;font-weight:900;margin-bottom:3px"></div>
+    <div id="td-theme" style="font-size:13px;color:var(--muted);margin-bottom:18px"></div>
+    <!-- MORNING -->
+    <div class="seg" id="seg-m">
+      <div class="seg-hd" onclick="togSeg('m')">
+        <div class="seg-left"><div class="seg-icon" style="background:rgba(201,168,76,.12)">🌅</div><div><div class="seg-t" id="m-title">Morning Reset</div><div class="seg-d">5 minutes</div></div></div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="seg-body"><div id="m-steps"></div><div class="timer-box"><div class="t-display" id="t-m">5:00</div><div class="t-btns"><button class="t-btn go" id="btn-m" onclick="togTimer('m',300)">▶ Start</button><button class="t-btn" onclick="rstTimer('m',300)">↺</button></div></div></div>
+    </div>
+    <!-- CORE -->
+    <div class="seg" id="seg-c">
+      <div class="seg-hd" onclick="togSeg('c')">
+        <div class="seg-left"><div class="seg-icon" style="background:rgba(45,143,168,.12)">⚡</div><div><div class="seg-t" id="c-title">Core Practice</div><div class="seg-d">10 minutes</div></div></div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="seg-body"><div id="c-steps"></div><div class="timer-box"><div class="t-display" id="t-c">10:00</div><div class="t-btns"><button class="t-btn go" id="btn-c" onclick="togTimer('c',600)">▶ Start</button><button class="t-btn" onclick="rstTimer('c',600)">↺</button></div></div></div>
+    </div>
+    <!-- EVENING -->
+    <div class="seg" id="seg-e">
+      <div class="seg-hd" onclick="togSeg('e')">
+        <div class="seg-left"><div class="seg-icon" style="background:rgba(60,179,113,.12)">🌙</div><div><div class="seg-t">Evening Reflection</div><div class="seg-d">5 minutes</div></div></div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="seg-body">
+        <div class="prompt-box"><div class="prompt-text" id="e-prompt"></div></div>
+        <textarea class="jarea" id="e-journal" placeholder="Write your reflection here. Be honest and specific. No one is watching." rows="5"></textarea>
+        <div class="row" style="margin-top:9px">
+          <button class="btn btn-ghost btn-sm" style="flex:1" onclick="saveJ('e-journal')">💾 Save</button>
+          <div class="timer-box" style="flex:1;margin:0;padding:10px 13px">
+            <div class="t-display" id="t-e" style="font-size:22px">5:00</div>
+            <div class="t-btns"><button class="t-btn go" id="btn-e" onclick="togTimer('e',300)">▶</button><button class="t-btn" onclick="rstTimer('e',300)">↺</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button id="comp-btn" class="btn btn-green" style="margin-top:6px" onclick="completeDay()">✓ Mark Today Complete</button>
+    <div id="done-msg" class="done-banner" style="display:none">🎉 Day complete! You showed up. That's everything.</div>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div id="sc-journal" class="screen">
+  <div class="hd"><div><div class="hd-logo">Journal</div><div class="hd-sub">Your private reflection space</div></div></div>
+  <div class="cx">
+    <div class="card">
+      <div class="card-label">TODAY'S REFLECTION PROMPT</div>
+      <div id="j-prompt" style="font-size:13.5px;color:var(--text2);line-height:1.65;font-style:italic;margin-bottom:13px"></div>
+      <textarea class="jarea" id="j-main" placeholder="Write freely. This space belongs to you." rows="8"></textarea>
+      <div style="margin-top:10px"><button class="btn btn-gold btn-sm" onclick="saveJ('j-main')">Save Entry</button></div>
+    </div>
+    <div class="sec-title">Past Entries</div>
+    <div id="j-past"></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div id="sc-progress" class="screen">
+  <div class="hd"><div><div class="hd-logo">Progress</div><div class="hd-sub">Your transformation, tracked</div></div></div>
+  <div class="cx">
+    <div class="stat-g">
+      <div class="stat-c"><div id="pg-streak" class="stat-v">0</div><div class="stat-l">Day Streak 🔥</div></div>
+      <div class="stat-c"><div id="pg-done" class="stat-v">0</div><div class="stat-l">Days Complete</div></div>
+      <div class="stat-c"><div id="pg-week" class="stat-v">1</div><div class="stat-l">Current Week</div></div>
+      <div class="stat-c"><div id="pg-phase" class="stat-v">1</div><div class="stat-l">Current Phase</div></div>
+    </div>
+    <div class="card">
+      <div class="card-label">WEEKLY SELF-ASSESSMENT</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5">Rate yourself honestly each week. Watching the numbers rise over 12 weeks is your mirror.</div>
+      <div class="aitem"><div class="a-row"><div class="a-name">🎯 Presence</div><div class="a-val" id="v-pres">5</div></div><input type="range" min="1" max="10" value="5" id="s-pres" oninput="updSlider('pres')"></div>
+      <div class="aitem"><div class="a-row"><div class="a-name">💪 Confidence</div><div class="a-val" id="v-conf">5</div></div><input type="range" min="1" max="10" value="5" id="s-conf" oninput="updSlider('conf')"></div>
+      <div class="aitem"><div class="a-row"><div class="a-name">❤️ Warmth / Connection</div><div class="a-val" id="v-warm">5</div></div><input type="range" min="1" max="10" value="5" id="s-warm" oninput="updSlider('warm')"></div>
+      <div class="aitem"><div class="a-row"><div class="a-name">🗣️ Ease in Conversation</div><div class="a-val" id="v-ease">5</div></div><input type="range" min="1" max="10" value="5" id="s-ease" oninput="updSlider('ease')"></div>
+      <button class="btn btn-gold btn-sm" onclick="saveAssess()">Save Week's Assessment</button>
+    </div>
+    <div class="card">
+      <div class="card-label">PROGRESS CHART — ALL WEEKS</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:13px">Average score per week — builds as you save assessments</div>
+      <div class="bars" id="pg-chart"></div>
+    </div>
+    <div class="sec-title">Phase Badges</div>
+    <div class="bg-grid" id="pg-badges"></div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="sc-tools" class="screen">
+  <div class="hd"><div><div class="hd-logo">Toolbox</div><div class="hd-sub">Your permanent arsenal — use any time</div></div></div>
+  <div class="cx">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:15px;line-height:1.6">These 12 tools are yours forever. Tap to expand. Use them before any high-stakes moment — not just during your daily session.</div>
+    <div id="tools-list"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav id="nav">
+  <div class="ni on" data-s="home" onclick="go('home')"><div class="ni-icon">🏠</div><div class="ni-lbl">Home</div></div>
+  <div class="ni" data-s="today" onclick="go('today')"><div class="ni-icon">⚡</div><div class="ni-lbl">Today</div><div class="ni-dot" id="nd-today"></div></div>
+  <div class="ni" data-s="journal" onclick="go('journal')"><div class="ni-icon">📓</div><div class="ni-lbl">Journal</div></div>
+  <div class="ni" data-s="progress" onclick="go('progress')"><div class="ni-icon">📊</div><div class="ni-lbl">Progress</div></div>
+  <div class="ni" data-s="tools" onclick="go('tools')"><div class="ni-icon">🛠️</div><div class="ni-lbl">Tools</div></div>
+</nav>
+
 <script>
-  // Transitions from Onboarding to the main App
-  function startApp() {
-    document.getElementById('ob').classList.remove('active');
-    document.getElementById('main-app').style.display = 'block';
+// ─── DATA STORE ───────────────────────────────────────────────
+const S={
+  get(k){try{const v=localStorage.getItem('ff_'+k);return v?JSON.parse(v):null}catch{return null}},
+  set(k,v){try{localStorage.setItem('ff_'+k,JSON.stringify(v))}catch{}}
+};
+
+// ─── QUOTES ───────────────────────────────────────────────────
+const QUOTES=[
+  {t:"The single biggest problem in communication is the illusion that it has taken place.",a:"George Bernard Shaw"},
+  {t:"Before you open your mouth, 70% of the success of a crucial conversation has already happened — in your head.",a:"Crucial Conversations"},
+  {t:"Charisma is not something you have. It's something you create — through presence, power, and warmth.",a:"The Charisma Myth"},
+  {t:"You can make more friends in two months by becoming genuinely interested in other people than in two years trying to get people interested in you.",a:"Dale Carnegie"},
+  {t:"Your internal state is everything. Get that right, and the right words will pour forth naturally.",a:"The Charisma Myth"},
+  {t:"The most important thing in communication is hearing what isn't said.",a:"Peter Drucker"},
+  {t:"People don't remember what you said. They remember how you made them feel.",a:"Maya Angelou"},
+  {t:"Speak when you are angry, and you will make the best speech you will ever regret.",a:"Ambrose Bierce"},
+  {t:"At the heart of almost all chronic relationship problems is a crucial conversation people are not holding or not holding well.",a:"Crucial Conversations"},
+  {t:"Our lives begin to end the day we become silent about things that matter.",a:"Martin Luther King Jr."},
+  {t:"Any fool can criticize, condemn, and complain — and most fools do. It takes character to be understanding.",a:"Dale Carnegie"},
+  {t:"When you're fully present, even a five-minute conversation can create a wow effect and a lasting connection.",a:"The Charisma Myth"}
+];
+
+// ─── TOOLS ────────────────────────────────────────────────────
+const TOOLS=[
+  {em:"🫁",t:"Responsibility Transfer",src:"The Charisma Myth",steps:["Close your eyes. Take 3 slow, deep breaths.","Choose a benevolent entity — the Universe, God, Fate — anything that resonates.","Visualise lifting everything you're anxious about off your shoulders and placing it on theirs.","Feel the weight leave. Say: 'The outcome is not mine to carry. My job is only to show up.'","Sit in that lightness for 60 seconds before any high-stakes moment."]},
+  {em:"🏆",t:"Victory Visualization",src:"The Charisma Myth",steps:["Close your eyes. Breathe deeply.","Remember one moment in your life when you felt genuinely confident — any domain of life.","Replay it in full sensory detail: what you heard, felt, and saw around you.","Let that feeling of confidence physically expand in your chest.","At the peak feeling, press your dominant fist firmly for 3 seconds. This is your anchor. Use it before any conversation."]},
+  {em:"🧠",t:"Neutralise the Inner Critic",src:"The Charisma Myth",steps:["When a negative thought about your communication arrives, pause.","Label it: say 'There is anxiety arising' — NOT 'I am anxious.'","See the thought as graffiti on a wall. You don't have to believe what graffiti says.","Ask: 'Is this thought a fact — or is it a story I'm telling myself?'","Return to the present. Your thoughts are electrical impulses. They are not verdicts."]},
+  {em:"🔄",t:"The Story Audit",src:"Crucial Conversations",steps:["Think of a recent conversation that felt bad or made you anxious.","Draw a line down a page. Left: FACTS (only what you physically saw/heard). Right: STORY (your interpretations, fears, conclusions).","Be brutally honest about which column is larger.","Ask: 'What story am I telling myself — and what's actually true?'","This single habit ends most communication suffering. Your story is not the situation."]},
+  {em:"📣",t:"STATE My Path",src:"Crucial Conversations",steps:["Share your facts first — the actual observable events, not your conclusions.","Tell your story tentatively: 'I'm beginning to think...' or 'It seems to me...'","Ask for the other person's path: 'How do you see it? Am I missing something?'","Talk tentatively — your story is a story, not a proven fact.","Encourage testing — make it safe for them to disagree. You want truth, not agreement."]},
+  {em:"👂",t:"The Listening Revolution",src:"How to Win Friends",steps:["Never interrupt — not even when you're excited about what they just said.","Let them finish every sentence completely before you respond.","Pause 2 full seconds after they finish. Let your face absorb before you speak.","Ask one open-ended follow-up question before sharing anything about yourself.","Remember: people don't want an impressive companion. They want to feel impressive themselves."]},
+  {em:"💛",t:"Metta — Self-Compassion Reset",src:"The Charisma Myth",steps:["Close your eyes. Think of one good thing you've ever done — however small.","Picture someone who loves you or has warmth for you — real or ideal.","See their affection wrapping around you completely. Feel it physically.","Hear them say: 'You are enough. You are in process. You are doing hard work.'","Let that warmth sit in your chest. This is the antidote to the inner critic."]},
+  {em:"🦍",t:"The Gorilla Posture",src:"The Charisma Myth",steps:["Stand up. Shake out your body briefly.","Take the widest, most stable stance you can — feet shoulder-width apart, planted firmly.","Stretch your arms upward, then outward — take up as much space as possible.","Puff your chest slightly, roll your shoulders back and down.","Hold this for 30 seconds. Your biochemistry shifts — confidence hormones rise 19%, anxiety hormones fall 25%. Do this before every high-stakes conversation."]},
+  {em:"✍️",t:"The Rewrite Drill",src:"The Charisma Myth",steps:["Think of a recent conversation that went badly. Write it out as it happened, raw and honest.","Now write a second version in past tense: 'The conversation went brilliantly...'","Make the rewrite specific and sensory — what you said, how they responded, how you felt.","Read the rewrite slowly. Your brain cannot fully distinguish imagination from reality.","This is not denial. It's neurological training. Your body responds to the rewrite as if it's real."]},
+  {em:"😇",t:"Angel Wings Practice",src:"The Charisma Myth",steps:["Before any difficult conversation, briefly imagine the other person with invisible angel wings.","See them as a fundamentally good person doing their best, carrying their own struggles.","If you know them: consider what their childhood or current pressures might have been like.","Notice how your body softens when you genuinely see their humanity.","You cannot be warm through technique. This practice creates genuine warmth. That's the difference."]},
+  {em:"🎙️",t:"Voice Power Training",src:"The Charisma Myth",steps:["Record 90 seconds of yourself speaking on any topic. Listen back once.","Focus on: pace (slow it by 20%), intonation (drop at end of statements — not rise), warmth (smile while speaking — it's audible).","Practice dropping your voice at the end of declarative sentences — this signals confidence.","Breathe from your belly, not your chest. Shallow breathing makes you sound anxious.","Do this recording drill once per week minimum. The difference in 8 weeks will shock you."]},
+  {em:"💎",t:"Sincere Specific Appreciation",src:"How to Win Friends",steps:["Think of someone in your life — colleague, contact, community member, family.","Find one genuinely specific thing to appreciate about them — not generic praise.","Say or write it directly: not 'Good job' but 'The way you handled X was impressive because Y.'","Watch what happens: people remember specific appreciation for years. It creates bonds.","Do this once per day. Not as a tactic — as a practice. Your warmth becomes real through use."]}
+];
+
+// ─── 12-WEEK CURRICULUM ───────────────────────────────────────
+const CUR=[
+// PHASE 1 ─────────────────────────────────────────────────────
+// Week 1
+{w:1,ph:1,theme:"Awareness — Seeing Yourself Clearly",days:[
+{m:"Deep Breathing + Body Scan: Sit comfortably. Take 5 slow breaths — in for 4, hold for 2, out for 6. Scan your body head to toe. Notice where tension lives. Don't fix it. Just observe with curiosity.",
+c:"Write Your Honest Truth: In your journal, complete this sentence 5 different ways: 'When I have to speak or communicate, I feel...' — Don't edit. Don't judge. Just write what's true. Then: 'The hardest situation for me is...'",
+e:"What triggered any discomfort in communication today — even something small? Write it without judging it."},
+{m:"Responsibility Transfer: Close your eyes. Take 3 deep breaths. Picture your communication anxieties as physical weight on your shoulders. Visualise lifting it all and placing it on the Universe's shoulders. Feel the difference. Sit in the lightness for 2 minutes.",
+c:"The Discomfort Drill — Mirror Work: Stand in front of a mirror. Hold soft, warm eye contact with your own reflection for 2 full minutes. When it feels awkward — and it will — resist looking away. Notice where the discomfort lives in your body. Label it: 'There is awkwardness. There is self-consciousness.' Name it. Don't fight it.",
+e:"What story did you tell yourself today about a communication moment? Write the story — then write only the bare facts of what actually happened."},
+{m:"Gratitude Scan: Before you get up, find 3 physical things to appreciate: your breath, your working hands, the sounds around you. Hold each one for a full breath. This is not toxic positivity — it's anchoring you to what's actually real.",
+c:"Find When You Were Okay: Write 3 moments in your past when communication felt at least okay — however briefly. For each: What was different? Who were you with? What was the setting? Look for the pattern. Write one honest insight about yourself.",
+e:"Rate your presence in conversations today from 1–10. When were you most present? When did your mind drift to what you'd say next?"},
+{m:"Victory Visualization: Close your eyes. Remember one moment in your life when you felt genuinely confident — any area. Replay it with full sensory detail. Let that feeling expand in your chest. Press your fist at the peak. Carry the feeling.",
+c:"Voice Recording — Honest Listen-Back: Set a 90-second timer. Record yourself speaking about anything: your day, a problem, something you find interesting. Don't prepare. Just talk. Listen back once. Write: one thing you noticed, one thing you didn't expect.",
+e:"What emotion came up when you listened to your recording? Write it without judging it. Curiosity, not criticism."},
+{m:"Deep Breathing + Face Soften: 5 slow breaths. Then focus on your face: Is your jaw clenched? Forehead tight? Eyes narrowed? Soften each area deliberately. A relaxed face communicates warmth before you say a single word. Hold a soft, open expression for 30 seconds.",
+c:"Destigmatize Your Fear: Write your communication fear as specifically as you can. Then write: 'Millions of people feel this exact thing right now.' Write 3 people you respect who likely feel or felt this too. Then write: 'This fear is not a character flaw. It is a survival instinct. I thank it and choose to move forward anyway.'",
+e:"What shifted — even slightly — after destigmatizing your fear? Write honestly, even if nothing moved yet."},
+{m:"Responsibility Transfer: Full visualization today. Specifically hand over: the fear of being judged, the fear of going blank, the fear of saying the wrong thing. Name each one. See it lifting. Say: 'My only job today is to show up. The outcome is taken care of.'",
+c:"Week 1 Review: Read back through your journal entries. Write: What one pattern do I notice about when I struggle? What one moment, however small, did I show up? What surprised me about myself this week? Set one intention for Week 2 in one clear sentence.",
+e:"Write your Week 2 intention as if it's already happening: 'By the end of next week, I will...'"},
+{m:"Rest Day — Natural Breathing: No technique today. Just 5 minutes of breathing naturally. Notice your baseline state without any performance pressure. You earned this.",
+c:"Rest — Reread and Absorb: Scroll through your Week 1 journal entries. Don't analyse. Just read. Notice the person who wrote on Day 1 versus today. Let the insights land without forcing them.",
+e:"What surprised you most about Week 1? What do you want to feel different in Week 2?"}
+]},
+// Week 2
+{w:2,ph:1,theme:"Neutralising the Inner Critic",days:[
+{m:"Inner Critic Awareness: 5 slow breaths. Say to yourself: 'My thoughts are not facts. They are impulses. I choose which ones I follow.' Sit with that for 2 full minutes before beginning your day.",
+c:"The Story Audit: Think of a recent conversation that felt off. Draw a line: FACTS | STORY. Under Facts: only what you physically observed. Under Story: your interpretations, fears, assumptions. How much suffering lives in the Story column?",
+e:"What was your inner critic's loudest complaint about your communication today? Write it exactly. Then write: 'This is a thought, not a fact.'"},
+{m:"Gratitude Scan: Three things you appreciate before your feet hit the floor. Keep them physical and present. This interrupts the critic's morning broadcast before it begins.",
+c:"Label, Don't Become: For 10 minutes, sit quietly and watch your thoughts about communication. Every time one arrives, label it: 'There is anxiety arising' — never 'I am anxious.' The distance that one shift creates is profound.",
+e:"What was the most frequent thought you caught today about your communication? Write it in third person: 'There is a thought that...'"},
+{m:"Responsibility Transfer: Full visualization. Today specifically transfer: the need to be perfect, the need for everyone's approval, the fear of pausing or going blank. Each one — name it, see it lifting.",
+c:"The Worst Case Reset: Write your biggest communication fear in specific detail. Then complete 3 times: 'Even if this happened, I would survive because...' Then: 'The actual likelihood of this happening is...' The fear shrinks when given honest examination.",
+e:"Did the Worst Case Reset make the fear bigger or smaller? What does that tell you about how you've been relating to it?"},
+{m:"Victory Visualization — Extended: Spend all 5 minutes here today. See yourself in your most important communication context — online, in community, in a key relationship. Make it fully real. Let your body soak in the confidence.",
+c:"The Gratitude Anchor — 10 Things: Write 10 specific things your communication ability — even imperfect — has already given you in your life. Relationships, experiences, knowledge, moments. Read the list slowly. Even imperfect communication has created real value.",
+e:"When you genuinely feel grateful (not forced), what happens to the inner critic's volume? Write what you actually observe."},
+{m:"Deep Breathing + Face Soften: 5 breaths. Soften your jaw, your eyes, your forehead. Then practice your warmest natural expression in the mirror for 30 seconds. This is not performance — it's calibration.",
+c:"Mirror Work — Compassionate Eye Contact: Look into your own eyes in the mirror for 2 minutes. See yourself as a caring friend would — not as a critic. When the inner critic comments, label it and return to warmth. End by saying to your reflection: 'I see you. You are doing hard work.'",
+e:"What felt awkward about the mirror work? What felt unexpectedly okay? Be specific about both."},
+{m:"Responsibility Transfer: Today specifically: the pressure to always know what to say, the fear of pausing too long, the weight of never having done this before. Name each. See it leave. Say: 'I am allowed to still be learning.'",
+c:"The Neutral Observer: Think of a recent communication moment that went badly. Write about it as if you're a scientist observing a subject: 'The subject appeared to experience anxiety when...' Remove all judgment from your language. What does the neutral observer see that you were too close to notice?",
+e:"What pattern in your communication would a neutral scientist flag as most worth studying? Write it without judgment."},
+{m:"Rest Day: Rest fully. Your brain is literally rewiring. Sleep is part of the practice.",
+c:"Week 2 Review: Read your Week 2 entries. Write: What is the loudest lie my inner critic tells me? What is the most honest counter-truth to that lie? What small shift have I noticed in how I think about myself as a communicator?",
+e:"What is the most useful thing you learned about your inner critic this week?"}
+]},
+// Week 3
+{w:3,ph:1,theme:"Rewriting Reality",days:[
+{m:"The Pre-Conversation Ritual: This is your new permanent ritual. Practice it right now: Three deep breaths → 'I am safe. I am enough. I am here.' → Responsibility transfer. Make this muscle memory before every significant interaction.",
+c:"Practice the Ritual All Day: Before every interaction today — even small ones — use the ritual. After any interaction where you used it: write what felt different. Be specific about posture, voice presence, anxiety level. Build the evidence that this works.",
+e:"Did the pre-conversation ritual change anything about how you felt entering a conversation? Even a 5% shift counts."},
+{m:"Victory Visualization — Full 5 Minutes: See yourself specifically in your online business context, or in your community, or in a key relationship. Make the success fully sensory. Let your body believe it.",
+c:"The Rewrite Drill: Write one recent conversation that went badly. Write it raw. Then write the same conversation in past tense going well: 'The conversation was brilliant...' Make it detailed and sensory. Your nervous system responds to the rewrite as if it's real.",
+e:"After doing the rewrite, how did your body feel compared to after writing the original version? Describe the physical difference."},
+{m:"Gratitude + Body Appreciation: Three things to appreciate. Then add: find 3 things your body already does well to support communication — your voice works, your ears hear, your mind forms sentences. You are already equipped.",
+c:"Angel Wings in Action: In your next real interaction today, briefly imagine the person with invisible angel wings — fundamentally good, doing their best. Notice how your body softens. Notice how that changes your voice and your face.",
+e:"What effect did the Angel Wings practice have on a real interaction today? Write what you noticed, even if it was subtle."},
+{m:"Responsibility Transfer: Full visualization. Today: your online business fears, your community presence fears, your relationship communication fears. Each one — see it lifting from your shoulders.",
+c:"The Metta Reset: Close your eyes. Think of one good thing you've done. Picture someone with warm affection for you — real or imagined. Feel their warmth wrapping around you completely. Hear them say: 'You are enough. You are in process.' Let that warmth sit in your chest for the full 10 minutes.",
+e:"Write about one moment this week where you felt genuinely safe in a conversation — even for a few seconds. What created that safety?"},
+{m:"Deep Breathing + Face Soften: 5 breaths. Soften. Then hold a warm, open expression while thinking about someone you genuinely care about. Notice that warmth is visible on your face without you having to perform it.",
+c:"Voice Record — Compare: Record 90 seconds speaking on any topic. Listen back. Compare this recording to your Day 4 recording from Week 1. Write: What has changed? What do you notice that's different? What still needs work?",
+e:"What is one specific thing about your voice or delivery that you want to focus on in Phase 2?"},
+{m:"Full Ritual Practice: Morning reset, extended responsibility transfer, and a full 3-minute victory visualization. This is your new pre-game warmup. Make it yours.",
+c:"Phase 1 Review — Your Full Story: Read every journal entry from Weeks 1, 2, and 3. Write: What is the most important thing I've learned about myself? What has shifted internally, even slightly? What am I taking into Phase 2?",
+e:"Write a letter to yourself — as the communicator you want to become — welcoming you into Phase 2. Make it specific."},
+{m:"Phase 1 Rest Day: Rest. You just completed 3 weeks of internal work. Most people never do this. You did.",
+c:"Phase 1 Complete: Read your Phase 1 Review journal entry. Read the letter you wrote to yourself yesterday. Let it land. You earned the next phase.",
+e:"How do you feel about your communication at the end of Phase 1 compared to Day 1? Write honestly — not what you think you should feel, but what is actually true."}
+]},
+// PHASE 2 ─────────────────────────────────────────────────────
+// Week 4
+{w:4,ph:2,theme:"The Listening Revolution",days:[
+{m:"Connection Intention: Before your day begins, set an intention: 'Today I will focus more on how others feel than on how I appear.' Say it aloud. This one shift changes everything in Phase 2.",
+c:"The 2-Second Pause Drill: In every conversation today, pause 2 full seconds after they finish speaking before you respond. Let your face visibly absorb what they said. Don't rush to fill silence. Do this even in text conversations — read fully before replying. Write about one moment it changed the quality of an exchange.",
+e:"Who did you make feel genuinely heard today? How do you know they felt heard? What did they do or say?"},
+{m:"Gratitude + Connection Focus: Three things you appreciate. Then: one person you want to genuinely connect with today. What do you know about what matters to them?",
+c:"Never Interrupt Training: Today your one rule is simple: Do not interrupt anyone. Not once. Not even when you're excited. Not even when you know the answer. Let every sentence finish fully. Write: How many times did you feel the urge to interrupt? What did you notice when you resisted?",
+e:"What is the difference between listening and waiting for your turn to speak? Write what you're discovering about yourself."},
+{m:"Responsibility Transfer: Your specific transfer today: the fear of silence, the need to always have the right response, the pressure to sound smart. Hand each one over.",
+c:"The Bounce-Back Formula: In 3 conversations today, practice this formula: Answer the question with a fact → add a personal note → redirect to them. Example: 'I'm from Lagos [fact]. I love the energy there [personal]. How about you — where did you grow up? [redirect]' Write about one conversation where you used it.",
+e:"When you redirected conversations back to others today, what happened? How did they respond?"},
+{m:"Victory Visualization — Listening: Visualize yourself as a masterful listener. See the person across from you feeling deeply heard. See the ease and warmth in the interaction. See them leaning in, opening up, smiling.",
+c:"The Spotlight Drill: In every conversation today, ask 2 open-ended questions before making one statement about yourself. Open-ended means it cannot be answered with yes or no. Write the questions you asked and what you discovered about the people you talked to.",
+e:"What happened when you asked more questions and shared less? What did people do differently?"},
+{m:"Deep Breathing + Presence Focus: 5 breaths. Then: set the intention to be fully present in every interaction today — meaning no preparing your response while they speak. Your only job while they talk: understand what they mean.",
+c:"Online Listening Practice: Go to one online community relevant to your business or interests. Read 10 posts or comments without responding. For each, ask: What does this person actually want? What are they really feeling? What do they need to hear? Then write one response that shows you genuinely understood them.",
+e:"What did you learn about people's actual needs and feelings from today's online observation exercise?"},
+{m:"Full Ritual: Morning reset, responsibility transfer, victory visualization (listening focus). You are building a new identity as a communicator. Each ritual reinforces it.",
+c:"Week 4 Review: Read your entries. Write: What is the most important thing I've discovered about how I listen? What conversation this week felt most alive and connected? What created that?",
+e:"Who in your life would be most surprised to learn you've been working on listening? What would they notice that's different?"},
+{m:"Rest Day: Rest. Notice how you feel in conversations today without any agenda. Just be with people.",
+c:"Rest — Appreciate: Think of 3 people who have ever listened well to you. What did they do? What did it feel like? Let that inform how you want to show up.",
+e:"Describe the feeling of being truly listened to. That is what you are now learning to give other people."}
+]},
+// Week 5
+{w:5,ph:2,theme:"Making People Feel Seen",days:[
+{m:"Connection Intention: Today's intention: 'Every person I interact with will feel at least slightly better about themselves after talking to me.' Say it. Mean it. Begin.",
+c:"Specific Appreciation Practice: Give one genuinely specific compliment today — to anyone. Not 'good job' but 'The way you handled X was impressive because Y.' Write what you said, how they responded, and how it felt to give it.",
+e:"What was the person's reaction to specific appreciation? What does that reaction tell you about how rarely people receive it?"},
+{m:"Gratitude + Name Awareness: Three things to appreciate. Then: try to use one person's name naturally in conversation today — once, warmly, not robotically. Names are the sweetest sound in any language.",
+c:"The Memory Practice: In one conversation today, actively listen for a detail the person mentions — a project, a worry, a name, a plan. Write it down afterward. Then in your next conversation with that person, reference it naturally. This one habit alone changes relationships.",
+e:"What detail did you remember from someone today? How does remembering details about people make them feel?"},
+{m:"Responsibility Transfer: Your transfer today: the pressure to impress people, the fear of not being interesting enough, the need to perform well. Hand each one over. Your job is not to impress. Your job is to make them feel impressive.",
+c:"The 'Let Them Impress You' Practice: In your next conversation, approach it with this single thought: 'I am here to discover what's interesting about this person.' Do not share anything impressive about yourself unless directly asked. Write what you discovered.",
+e:"What's genuinely interesting or impressive about someone you talked to today that you might have missed if you'd been trying to impress them?"},
+{m:"Victory Visualization — Connection: See yourself in a conversation where the other person is leaning in, opening up, feeling genuinely connected. See the warmth between you. See them saying later: 'I always feel good after talking to them.'",
+c:"Online Presence — Show You Care: In your online business community today, respond to 3 posts or messages. In each response, show that you genuinely read what they wrote. Reference something specific. Ask one follow-up question. Write about the difference between a generic response and a genuinely seen one.",
+e:"What response did you send online today that showed someone you actually understood what they meant?"},
+{m:"Deep Breathing + Warmth Activation: 5 breaths. Then think about someone you genuinely care about. Let that warm feeling expand in your chest. Then walk into your first interaction today carrying that warmth.",
+c:"The 'You' Word Count: Review your last 5 online posts or messages. Count how many times 'I' appears versus 'you.' Rewrite one piece of content so that 'you' appears at least twice as often as 'I.' Notice how the entire tone shifts.",
+e:"How does content written with 'you' focus feel different — to write and to read? What does this tell you about effective communication?"},
+{m:"Full Ritual: Morning reset, responsibility transfer, victory visualization (feeling genuinely connected).",
+c:"Week 5 Review: What is the most important thing I've learned about making people feel seen? What specific act this week created the most genuine connection? What will I keep doing?",
+e:"Describe a moment this week where someone felt genuinely seen by you. What did you do? What happened as a result?"},
+{m:"Rest Day.",
+c:"Rest — Community Observation: Spend 10 minutes reading in an online community without posting. Notice what posts get the most engagement. What do they have in common? What do they give the reader?",
+e:"Based on your observation, what do people online most want to feel or experience? Write your insight."}
+]},
+// Week 6
+{w:6,ph:2,theme:"Online & Community Connection",days:[
+{m:"Online Presence Intention: Before touching your phone or computer, set this intention: 'Everything I put online today will be primarily about what my reader or viewer experiences — not about me.'",
+c:"Content Audit: Look at your last 10 online posts, messages, or pieces of content. For each one, write: Does this give or does this take? Does it make the reader feel something useful? Rewrite the worst one so it serves the reader first.",
+e:"What was the most common problem you found in your existing content? What was the fix?"},
+{m:"Responsibility Transfer: Today: the fear of posting and being ignored, the fear of being judged online, the pressure to get it right immediately. Hand each one over.",
+c:"Storytelling Structure Practice: Write one piece of content — a post, a message, a response — using this structure: Problem (something they recognise) → Tension (why it matters) → Insight (what you've learned) → Invitation (a question or next step). Keep it short. Write about how this structure changed the piece.",
+e:"Read the piece you wrote today out loud. Does it make you want to keep reading? What would make it even more alive?"},
+{m:"Gratitude + Contribution Focus: Three things. Then: How can I contribute genuine value to one person in my community today — not for return, but because it's the right thing?",
+c:"Community Presence — Real Engagement: In your most important online space today, do not post anything about yourself. Only respond to others' content. In 5 responses, show that you genuinely understood what they shared. Write about what happened.",
+e:"What happened when you spent a full session serving others online without promoting yourself?"},
+{m:"Victory Visualization — Online Authority: See yourself as a trusted, respected voice in your community. See people sharing your content, responding warmly, asking for your perspective. See it as genuinely earned through years of showing up.",
+c:"Your Voice Practice: Write a 150-word piece in your authentic voice on something you genuinely believe about communication, life, or your field. Don't perform. Don't impress. Just say something true. Read it back. Does it sound like you?",
+e:"What does 'your authentic voice' actually sound like? How is it different from how you write when you're trying to impress?"},
+{m:"Deep Breathing + Boldness Focus: 5 breaths. Then set this intention: 'I have something worth saying. I will say it clearly and without apology today.'",
+c:"The Reply System: Build a simple system for engaging online. For 30 minutes, respond to every comment or message in your spaces. In each response: acknowledge what they said specifically → relate to it → add value or ask one question. Write about what this feels like as a practice.",
+e:"What does it feel like to be consistently responsive and engaged online? What resistance came up?"},
+{m:"Full Ritual: Morning reset, responsibility transfer, vision visualization (online business success).",
+c:"Phase 2 Complete — Review: Read all Phase 2 journal entries. Write: How has my relationship to other people shifted? What connection skill am I most proud of? What do I want to deepen in Phase 3?",
+e:"Write a paragraph about the communicator you are becoming — in the present tense, as if it's already true."},
+{m:"Rest Day.",
+c:"Rest — Read: Go back and reread the Phase 1 letter you wrote to yourself. Then read your Phase 2 review. See the arc. You are becoming someone new.",
+e:"What feels most different about you as a communicator compared to 6 weeks ago? Write the honest answer."}
+]},
+// PHASE 3 ─────────────────────────────────────────────────────
+// Week 7
+{w:7,ph:3,theme:"The Power of Your Voice",days:[
+{m:"Voice Intention: Before your day, say 5 sentences aloud slowly. Drop the intonation at the end of each statement. Feel the difference between a voice that rises (question, seeking approval) and one that drops (certainty, confidence).",
+c:"Voice Recording — Week 7 Baseline: Record 90 seconds on any topic. Listen back. Score yourself 1–10 on: pace, warmth, clarity, confidence. Write your scores. You'll compare these in Week 9.",
+e:"What did you hear in today's recording that surprised you? What do you most want to change?"},
+{m:"Responsibility Transfer: Transfer today: the fear of your voice being judged, the self-consciousness about how you sound, the worry about saying something wrong. Hand each one over.",
+c:"Pace Practice: Record 60 seconds reading any paragraph — at your normal pace. Record again at 20% slower. Listen to both. The slow version will feel unbearably slow to you and perfectly confident to everyone else. Practice talking at what feels 'too slow.'",
+e:"What emotions came up when you deliberately slowed your speaking pace? What do those emotions tell you about your relationship with silence?"},
+{m:"Gratitude + Voice Appreciation: Five breaths. Appreciate that your voice exists, that it carries your thoughts, that it has already created real moments with real people.",
+c:"The Warmth Switch: Have any phone or video conversation today. For the first half, speak normally. In the second half, smile while you speak — even if the topic doesn't warrant smiling. Listen back if possible. Write about the audible difference warmth makes.",
+e:"What feedback — verbal or nonverbal — did you get today when your voice carried warmth? What changed in the other person?"},
+{m:"Victory Visualization — Voice: See yourself speaking with a voice that is slow, warm, and certain. See people leaning in to listen. See them remembering what you said because of how you said it.",
+c:"Intonation Drop Drill: Record yourself making 10 statements. After each one, deliberately lower your pitch slightly on the final word. Listen back. This one habit signals confidence more than almost anything else you can do with your voice.",
+e:"What conversations or content recordings do you have coming up where you want to apply this? Write your plan."},
+{m:"Deep Breathing — Belly Breathing: Place your hand on your belly. As you breathe in, your belly should push out. As you breathe out, your belly falls. This is diaphragmatic breathing — the breathing of confident, grounded speakers.",
+c:"Voice + Content: Record a 2-minute piece of content speaking directly to one person in your target audience. Speak slowly, warmly, as if they're in the room. Write about what felt different when you spoke to one person rather than to an abstract audience.",
+e:"What did you notice about your voice when speaking intimately to one person versus speaking to a crowd?"},
+{m:"Full Ritual: Morning reset, responsibility transfer, visualization (voice and presence).",
+c:"Week 7 Review: What has changed about your relationship to your voice? What specific technique has made the most difference? What do you need to practice more?",
+e:"Record one sentence the way you used to speak it. Then record the same sentence with all Week 7 skills applied. Write about the difference."},
+{m:"Rest Day.",
+c:"Rest — Consume Great Voices: Listen to one piece of audio or video from someone whose speaking you admire. Write 3 specific things they do with their voice that you want to adopt.",
+e:"What is the one vocal quality you most want to develop by the end of Phase 3?"}
+]},
+// Week 8
+{w:8,ph:3,theme:"Body Language & Presence",days:[
+{m:"Gorilla Posture Practice: Before anything else — stand up. Wide stance. Arms up and out. Chest open. Hold 30 seconds. Notice the biochemical shift. This is not metaphorical — your hormones actually change. Do this every single morning this week.",
+c:"Fidgeting Audit: Set a timer for 30 minutes during any task. Every time you fidget — tapping, touching your face, shifting unnecessarily, rearranging things — make a tally. Write your count. Awareness is the first step. Stillness is the goal.",
+e:"What was your fidget count? What situations or feelings triggered the most unnecessary movement?"},
+{m:"Responsibility Transfer: Transfer: the self-consciousness about how you look when you talk, the worry about your body language, the anxiety about being watched. Hand each one over. Confidence in body comes from confidence in mind.",
+c:"The Stillness Practice: In every conversation today, practice containing your movements. No bobbing head, no excessive nodding, no fidgeting. Move with purpose or don't move at all. Write about what came up when you tried to be still.",
+e:"What did stillness feel like in your body during conversations? What resistance or discomfort came up?"},
+{m:"Gratitude + Physicality: Three things. Then: 2 minutes of the gorilla posture, followed by 1 minute of standing completely still — hands at sides, weight even, breathing deeply. Practice occupying space without apology.",
+c:"Eye Contact Practice: In every interaction today, hold eye contact 1–2 seconds longer than you normally would before looking away. In video calls, look at the camera — not the screen — when you're speaking. Write about what changed in the quality of the connection.",
+e:"What was the most challenging moment of sustained eye contact today? What happened when you held it?"},
+{m:"Victory Visualization — Body: See yourself walking into a room with calm, open posture. See people noticing you before you say a word. See your body communicating confidence and warmth simultaneously. Let your nervous system experience it.",
+c:"Soft Eye Contact Practice: The difference between intense eye contact (intimidating) and soft eye contact (warm) is the tension around your eyes. Practice in the mirror: tense eyes (notice what that broadcasts), then soften them completely (notice the warmth that appears). Use soft eyes in all conversations today.",
+e:"What happened when you practiced soft versus tense eye contact in the mirror? What did each broadcast to you?"},
+{m:"Deep Breathing — On Camera: If you do any video today, check: Are you breathing from your belly? Are your shoulders down? Is your chin level — not tilted up (arrogant) or down (submissive)? Run through this quick check before every video or call.",
+c:"Video Recording — Full Body Review: Record yourself for 3 minutes having a mock conversation or giving a short talk. Watch it back with the sound off. Only watch body language. Write what you see. Then write what you want to see instead.",
+e:"What is the single most important body language change you want to make based on today's video review?"},
+{m:"Full Ritual: Morning reset, gorilla posture, responsibility transfer, victory visualization (full body confidence).",
+c:"Week 8 Review: What has shifted in how you occupy physical space? What body language habit has been hardest to change? What has surprised you?",
+e:"How does your body feel different in conversations after 2 weeks of Phase 3 work? Write the honest physical experience."},
+{m:"Rest Day.",
+c:"Rest — Observation: Today, watch how people carry themselves — in person or in videos. Notice what confident, grounded body language looks like. Write 5 specific things you observe.",
+e:"What did you learn about body language from observing others today that you want to apply?"}
+]},
+// Week 9
+{w:9,ph:3,theme:"Charisma Styles & Integration",days:[
+{m:"Charisma Style Intention: The 4 styles are Focus (deep listening), Kindness (warmth and acceptance), Visionary (conviction and inspiration), Authority (power and status). Today, identify which feels most natural to you. There is no wrong answer.",
+c:"Identify Your Natural Style: Write about which of the 4 charisma styles you default to in comfortable situations. Then: which do you avoid? Then: write one real-life situation where each style would serve you. Which do you want to develop most?",
+e:"When you're at your best communicatively, what are you doing? Which charisma style does that most resemble?"},
+{m:"Responsibility Transfer: Transfer: the belief that you have to be one type of communicator, the fear that you don't have 'it', the comparison to others who seem naturally charismatic. Hand each over. Your style is yours.",
+c:"Practice Your Secondary Style: Choose the charisma style that's least natural to you. In one interaction today, deliberately lean into it. If it's Authority: take up more space and speak more slowly. If it's Kindness: imagine angel wings. Write about what it felt like to stretch.",
+e:"What did it feel like to practice your secondary charisma style? What resistance came up?"},
+{m:"Gratitude + Identity Shift: Three things. Then complete this sentence honestly: 'The communicator I am becoming is someone who...' Write it as truth, not aspiration.",
+c:"The Green Room Ritual — Full Practice: 5 minutes before any important call, meeting, or recording today, do the full Green Room Ritual: your energy music (or silence) → gorilla posture 30 sec → responsibility transfer → victory visualization. Write about what was different about the interaction that followed.",
+e:"How did the full Green Room Ritual affect your state going into the interaction? What would you change about the ritual to make it more effective for you?"},
+{m:"Victory Visualization — Full Charisma: See yourself in your most important communication situation — online, in community, in business. See you projecting presence, warmth, and confidence simultaneously. See people responding. Make it fully real.",
+c:"Voice Recording — Week 9 Final: Record 90 seconds on the same topic as Week 7. Listen to both recordings back to back. Score yourself on the same dimensions: pace, warmth, clarity, confidence. Write what has changed. The difference will be real.",
+e:"Write your scores from Week 7 and Week 9 side by side. What changed? What drove the change?"},
+{m:"Deep Breathing + Full Presence: 5 breaths. Today's intention: In every interaction, be so fully present that the other person feels like the only person who matters. This is the fullest expression of charisma.",
+c:"Phase 3 Full Integration: In one interaction today, bring all of Phase 3 together: gorilla posture, soft eye contact, slowed voice with dropped intonation, stillness, your natural charisma style, and full presence. Write about what it felt like to be in that conversation.",
+e:"Write a paragraph about your presence as a communicator right now — not what you want it to be, but what it actually is today. How far have you come?"},
+{m:"Full Ritual: Morning reset, gorilla posture, responsibility transfer, full victory visualization. This is the most important ritual of your week.",
+c:"Phase 3 Complete — Review: Read all Phase 3 entries. Write: What has changed about my body and voice? What moment this phase showed me I can genuinely do this? What am I taking into Phase 4?",
+e:"Write a letter to someone starting Phase 1 today. Tell them what they'll discover about themselves if they do the work. Make it real."},
+{m:"Rest Day.",
+c:"Rest — Full Celebration: You have completed 9 weeks. Read your Day 1 journal entry. Read your Phase 3 completion review. See the full arc. You are not the same person who started this.",
+e:"What is the most important single thing that has changed since Week 1? Write it clearly and keep it."}
+]},
+// PHASE 4 ─────────────────────────────────────────────────────
+// Week 10
+{w:10,ph:4,theme:"Crucial Conversations",days:[
+{m:"Application Intention: Phase 4 is where everything gets tested in real conditions. Today's intention: 'I will not avoid any important conversation this week. I will use my tools instead.'",
+c:"Map Your Avoided Conversations: Write down 3 conversations you have been avoiding — in your business, community, or relationships. For each: What are you afraid will happen? What is the actual cost of continuing to avoid it? Which one will you practice this week?",
+e:"Which of the 3 avoided conversations costs you the most by remaining unspoken? What does that cost look like in your daily life?"},
+{m:"Responsibility Transfer: Transfer specifically: the fear of the avoided conversation going badly, the need to control its outcome, the worry about the other person's reaction. Hand each one over.",
+c:"STATE My Path — Written Practice: Take the avoided conversation you identified yesterday. Write out what you would say using STATE: Facts (what you observed) → Story (what you concluded — tentatively) → Ask (what you want to understand from them) → Talk tentatively → Encourage their response. Read it back. Is it honest AND respectful?",
+e:"After writing the STATE script, how did your anxiety about the conversation shift? Write what changed."},
+{m:"Gratitude + Courage Focus: Three things. Then: 'Having this conversation is an act of respect — for them and for me. Avoiding it is what disrespects us both.' Say this before your day.",
+c:"Hold One Crucial Conversation: Have the conversation you've been avoiding — or at least begin it. Use STATE, use the pre-conversation ritual, use the responsibility transfer. Write about what actually happened versus what you feared would happen.",
+e:"Write: What was the actual outcome of the crucial conversation? How did reality compare to the story you'd told yourself about it?"},
+{m:"Victory Visualization — Crucial Conversation: See yourself in a difficult conversation handling it with complete calm, honesty, and warmth. See the other person feeling respected. See resolution or at least deeper understanding. Make it real.",
+c:"The Pool of Shared Meaning Practice: Think of a disagreement or tension in any relationship. Write: What do I think I want? What do they think they want? What would a genuine shared outcome look like for both of us? Start the conversation from that shared place.",
+e:"What happens to your approach to conflict when you start by genuinely trying to understand what the other person wants?"},
+{m:"Deep Breathing + Boldness: 5 breaths. Set this intention: 'I am capable of handling difficult conversations. I have the tools. I will not flinch.'",
+c:"Online Crucial Moment: Write one piece of content that says something true that you've been afraid to say publicly — your genuine perspective on something that matters to your audience. Not inflammatory — honest. Write it. Then post it, or write about why you chose not to.",
+e:"What was it like to consider saying something publicly that you've been holding back? What happened when you did (or why did you choose not to)?"},
+{m:"Full Ritual: Morning reset, responsibility transfer, victory visualization (handling difficulty with grace).",
+c:"Week 10 Review: What crucial conversation changed something? What did you learn about yourself under real pressure? What do you now know about your communication that you didn't know in Week 1?",
+e:"Write the most important thing you've learned about how to handle difficult conversations."},
+{m:"Rest Day.",
+c:"Rest — Reflect on Relationships: Think about 3 relationships in your life. For each: How has your communication changed? What would they say is different about you?",
+e:"What relationship has improved most since you began this program? What specifically changed?"}
+]},
+// Week 11
+{w:11,ph:4,theme:"Public Speaking & Business Presence",days:[
+{m:"Presence Intention: 'When I speak publicly — in any context — I give my full presence to the people I'm speaking to. I make them feel like the most important people in the room.'",
+c:"Storytelling Structure Practice: Write a 3-minute talk or piece of content using this structure: Problem (something your audience recognises) → Conflict (why it matters, what's at stake) → Insight (what you've learned or discovered) → Invitation (what you want them to feel or do). Keep every sentence earning its place.",
+e:"Read your talk or content aloud. Where does it feel alive? Where does it feel performed or forced? Write what you notice."},
+{m:"Responsibility Transfer: Transfer specifically: the fear of being judged while presenting, the fear of going blank, the pressure to be perfect the first time. Hand each one over. Your job is not to be perfect. Your job is to be present.",
+c:"Record Your First Real Talk: Record a 3-minute video or audio of yourself delivering the piece you wrote yesterday. Use all Phase 3 skills: gorilla posture beforehand, slow pace, dropped intonation, warmth, stillness. Watch it back. Write honestly about what you see.",
+e:"What is the 1 thing you would most want to improve in your next recording? Set a specific, actionable goal."},
+{m:"Gratitude + Platform Focus: Three things. Then: 'Every person who reads or watches what I create deserves my full effort and genuine presence. I will give it.'",
+c:"The Pause Practice — On Camera: Record 90 seconds deliberately inserting pauses. Pause after key statements. Pause before you move to the next point. Pause at the end of a thought and hold the camera before continuing. Watch it back. Write about the effect pauses have on perceived confidence.",
+e:"What does it feel like in your body to pause on camera? What resistance do you notice?"},
+{m:"Victory Visualization — Platform: See yourself delivering your message to your online audience. See them engaged, commenting, sharing, feeling understood. See yourself as the trusted voice in your space. Make it fully real and sensory.",
+c:"Content Critique — One Full Piece: Write, record, or create one full piece of content for your online business. Apply everything: story structure, your authentic voice, you-focused language, warmth, a specific invitation at the end. Write about the process.",
+e:"What made today's piece of content feel most authentic? What part felt most like you?"},
+{m:"Deep Breathing + On-Camera Presence: Before any recording today: gorilla posture 30 sec → full belly breaths → smile and let warmth arrive in your eyes → begin. Do not begin recording before this sequence.",
+c:"Community Leadership Moment: In your most important community space today, offer something generous — answer a question thoroughly, share a hard-won insight, give feedback that's specific and genuinely useful. Be the person who raises the quality of the room. Write about what you contributed.",
+e:"What did it feel like to show up as a leader in your community today rather than as someone seeking approval?"},
+{m:"Full Ritual: Morning reset, gorilla posture, responsibility transfer, full platform visualization.",
+c:"Week 11 Review: What has changed about your relationship to public speaking and business presence? What content or interaction this week felt most like the communicator you're becoming?",
+e:"Write a description of your business communication presence as it exists right now. Be specific and honest about both strengths and what's still developing."},
+{m:"Rest Day.",
+c:"Rest — Watch with Study: Watch one excellent communicator — video, talk, podcast. Write 3 specific techniques they use that you want to make your own.",
+e:"Which of the 3 techniques you observed today will you practice first? Why that one?"}
+]},
+// Week 12
+{w:12,ph:4,theme:"Integration, Identity & What's Next",days:[
+{m:"Final Phase Intention: 'I am not the person who started this program. I have done the internal work. I have built the skills. I now claim the identity of the communicator I've become.'",
+c:"Full Program Review — Part 1: Read your journal entries from Weeks 1–4. Write: What was I struggling with then that is genuinely different now? What surprised me about the journey? Write with honesty and without false modesty.",
+e:"What is the single most important internal shift that happened during this program? When did it happen?"},
+{m:"Responsibility Transfer: Your final major transfer: any remaining fear, any lingering self-doubt, any old stories about who you are as a communicator. Name them all. See every single one lifting from your shoulders. Feel the space that creates.",
+c:"Full Program Review — Part 2: Read Weeks 5–8. Write: What connection or presence skill has become most natural? What would the people in my life say is different about me? What evidence have I seen that this work is real?",
+e:"Write about a real relationship or interaction in your life that is genuinely different because of who you've become in this program."},
+{m:"Gratitude + Identity: Three things. Then complete this with full honesty: 'The communicator I have become is someone who...' Write 10 specifics. Not what you want to be — what you now actually are.",
+c:"Full Program Review — Part 3: Read Weeks 9–12. Write: What application of these skills under real pressure showed me I've genuinely changed? What crucial conversation, public moment, or connection would not have gone the way it did before this program?",
+e:"Write the most compelling piece of evidence that this program worked — something that actually happened that proves the skills are real."},
+{m:"Victory Visualization — Full Life: Today's visualization is bigger. See yourself 1 year from now. Your business has grown because of how you show up. Your relationships are deeper. Your community respects and trusts you. Your voice carries weight. Make it fully real.",
+c:"Your 3 Permanent Habits: Of all the practices in this program, choose the 3 you will keep doing forever. Write why those 3, what they do for you, and when specifically you will do them each day. These are your maintenance plan.",
+e:"Write your permanent 3 habits as a commitment — in first person, present tense, specific and binding."},
+{m:"Deep Breathing + Full Presence: Your final morning ritual as a program participant. Do it fully. Feel it completely. This is no longer a practice — this is who you are.",
+c:"Create Your Personal Communication Manifesto: Write a one-page personal statement about who you are as a communicator. Include: What you believe about communication. How you show up. What you commit to. What you will not do. Write it as your truth. Keep it forever.",
+e:"Read your manifesto aloud. Write about how it feels to say those words as truth rather than aspiration."},
+{m:"Final Ritual: Morning reset, gorilla posture, extended responsibility transfer, the biggest victory visualization of the full program. You have earned this.",
+c:"Write a Letter to Your Week 1 Self: Tell them what they're about to go through. What it will require. What it will give them. Be specific. Be honest. Be the person they needed on Day 1.",
+e:"Read the letter you wrote to your Week 1 self. Write about what it feels like to be the person writing that letter."},
+{m:"Program Complete: Rest today. You completed 84 days of internal and external communication work. Most people never begin. You finished.",
+c:"Day 84 — What's Next: The work doesn't stop here. Write your communication goals for the next 90 days. What do you want to achieve in your business? What conversations do you want to have? What presence do you want to build? Your 12-week foundation makes all of it possible.",
+e:"Day 84: Who are you as a communicator today compared to Day 1? Write the full, honest answer. Then read it whenever you forget how far you've come."}
+]}
+];
+
+// ─── TIMERS ───────────────────────────────────────────────────
+let timers={};
+function togTimer(id,total){
+  const d=document.getElementById('t-'+id);
+  const b=document.getElementById('btn-'+id);
+  if(!timers[id]){
+    let left=total;
+    const existing=d.textContent;
+    if(existing&&existing!==fmt(total)){
+      const parts=existing.split(':');
+      if(parts.length===2) left=parseInt(parts[0])*60+parseInt(parts[1]);
+    }
+    timers[id]=setInterval(()=>{
+      left--;
+      d.textContent=fmt(left);
+      if(left<=0){clearInterval(timers[id]);delete timers[id];b.textContent='Done ✓';b.className='t-btn go';toast('Section complete! 🎯')}
+    },1000);
+    b.textContent='⏸ Pause';b.className='t-btn pause';
+  } else {
+    clearInterval(timers[id]);delete timers[id];
+    b.textContent='▶ Resume';b.className='t-btn go';
+  }
+}
+function rstTimer(id,total){
+  if(timers[id]){clearInterval(timers[id]);delete timers[id];}
+  document.getElementById('t-'+id).textContent=fmt(total);
+  const b=document.getElementById('btn-'+id);
+  b.textContent=id==='e'?'▶':'▶ Start';b.className='t-btn go';
+}
+function fmt(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60}
+function togSeg(id){
+  const el=document.getElementById('seg-'+id);
+  el.classList.toggle('open');
+}
+
+// ─── NAVIGATION ───────────────────────────────────────────────
+let curScreen='home';
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  const sc=document.getElementById('sc-'+name);
+  if(sc){sc.classList.add('active');sc.scrollTop=0;}
+  const ni=document.querySelector(`.ni[data-s="${name}"]`);
+  if(ni) ni.classList.add('on');
+  curScreen=name;
+  if(name==='home') renderHome();
+  if(name==='today') renderToday();
+  if(name==='journal') renderJournal();
+  if(name==='progress') renderProgress();
+  if(name==='tools') renderTools();
+}
+
+// ─── CORE LOGIC ───────────────────────────────────────────────
+function getData(){return S.get('state')||{name:'',started:null,completedDays:[],streak:0,lastDone:null,journals:[],assessments:{},totalDays:0};}
+function saveData(d){S.set('state',d);}
+
+function getDayInfo(d){
+  const dayNum=(d.completedDays||[]).length;
+  const programDay=Math.min(dayNum,83);
+  const weekIdx=Math.floor(programDay/7);
+  const dayIdx=programDay%7;
+  const wk=CUR[Math.min(weekIdx,11)];
+  const phase=PHASES.find(p=>p.num===wk.ph);
+  return{programDay,weekIdx,dayIdx,wk,phase,isCompleted:(d.completedDays||[]).includes(programDay)};
+}
+
+const PHASES=[
+  {num:1,title:"Building Inner Safety",color:"#c9a84c"},
+  {num:2,title:"The Connection Layer",color:"#2d8fa8"},
+  {num:3,title:"Voice, Body & Presence",color:"#8b5cf6"},
+  {num:4,title:"Application Under Pressure",color:"#3cb371"}
+];
+
+function calcStreak(d){
+  const today=new Date().toDateString();
+  const yesterday=new Date(Date.now()-864e5).toDateString();
+  if(!d.lastDone) return 0;
+  if(d.lastDone===today) return d.streak||1;
+  if(d.lastDone===yesterday) return d.streak||1;
+  return 0;
+}
+
+// ─── ONBOARDING ───────────────────────────────────────────────
+function startApp(){
+  const name=document.getElementById('name-in').value.trim();
+  const d=getData();
+  d.name=name;
+  d.started=new Date().toISOString();
+  d.completedDays=[];d.streak=0;d.lastDone=null;d.journals=[];d.assessments={};d.totalDays=0;
+  saveData(d);
+  document.getElementById('ob').classList.remove('active');
+  document.getElementById('nav').classList.add('show');
+  go('home');
+}
+
+// ─── HOME ─────────────────────────────────────────────────────
+function renderHome(){
+  const d=getData();
+  const {wk,phase,programDay,isCompleted}=getDayInfo(d);
+  const streak=calcStreak(d);
+  const done=(d.completedDays||[]).length;
+  const pct=Math.round((done/84)*100);
+  const hr=new Date().getHours();
+  const greet=d.name?(hr<12?`Good morning, ${d.name}.`:hr<17?`Good afternoon, ${d.name}.`:`Good evening, ${d.name}.`):(hr<12?'Good morning.':hr<17?'Good afternoon.':'Good evening.');
+  const subs=['Today is another step forward.','Presence before performance.','Small steps build permanent change.','You chose to show up. That matters.','One day at a time, one habit at a time.'];
+  document.getElementById('hm-greet').textContent=greet;
+  document.getElementById('hm-sub').textContent=subs[done%subs.length];
+  document.getElementById('hm-streak').textContent=streak;
+  document.getElementById('hm-streak-sub').textContent=streak===0?'Complete today to start your streak':streak===1?'1 day strong — keep going!':streak+' consecutive days 💪';
+  document.getElementById('hm-total').textContent=done+'/84';
+  document.getElementById('hm-prog').style.width=pct+'%';
+  const badge=document.getElementById('hm-day-badge');
+  badge.innerHTML=`<span class="pbadge" style="background:${phase.color}22;color:${phase.color};border:1px solid ${phase.color}44">Day ${programDay+1}</span>`;
+  const phCard=document.getElementById('hm-phase');
+  phCard.innerHTML=`<div class="card"><div class="card-label">CURRENT PHASE & WEEK</div><div style="display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:12px;background:${phase.color}22;display:flex;align-items:center;justify-content:center;font-size:22px">${['🛡️','🤝','✨','🔥'][phase.num-1]}</div><div><div style="font-size:15px;font-weight:900">Phase ${phase.num}: ${phase.title}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Week ${wk.w} — ${wk.theme}</div></div></div><div class="pbar-track" style="margin-top:12px"><div class="pbar-fill" style="background:${phase.color};width:${((wk.w-1)%3/3*100+0)}%"></div></div></div>`;
+  const todayCard=document.getElementById('hm-today');
+  todayCard.innerHTML=isCompleted?`<div class="card-label">TODAY'S SESSION</div><div style="display:flex;align-items:center;gap:11px"><div style="font-size:28px">✅</div><div><div style="font-size:15px;font-weight:800">Day ${programDay+1} Complete!</div><div style="font-size:12px;color:var(--muted);margin-top:2px">You showed up today. That's everything.</div></div></div>`:`<div class="card-label">TODAY'S SESSION — 20 MINUTES</div><div style="display:flex;align-items:center;gap:11px"><div style="font-size:28px">⚡</div><div><div style="font-size:15px;font-weight:800">${wk.days[getDayInfo(d).dayIdx]?wk.theme:'Day Practice'}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Tap to begin your daily session →</div></div></div>`;
+  const q=QUOTES[done%QUOTES.length];
+  document.getElementById('hm-quote').innerHTML=`<div class="qt">"${q.t}"</div><div class="qs">— ${q.a}</div>`;
+  document.getElementById('nd-today').className='ni-dot'+(isCompleted?'':' show');
+}
+
+// ─── TODAY ────────────────────────────────────────────────────
+function renderToday(){
+  const d=getData();
+  const {wk,phase,programDay,dayIdx,isCompleted}=getDayInfo(d);
+  const day=wk.days[dayIdx];
+  const pbadge=document.getElementById('td-pbadge');
+  pbadge.innerHTML='';
+  pbadge.className='pbadge';
+  pbadge.style.cssText=`background:${phase.color}22;color:${phase.color};border:1px solid ${phase.color}44;margin-bottom:14px`;
+  pbadge.textContent=`Phase ${phase.num} · Week ${wk.w}`;
+  document.getElementById('td-week-title').textContent=`Week ${wk.w}: ${wk.theme}`;
+  document.getElementById('td-theme').textContent=`Day ${programDay+1} of 84 · ${['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][dayIdx]}`;
+  document.getElementById('td-hd-sub').textContent=`Week ${wk.w}, Day ${dayIdx+1}`;
+  if(isCompleted){
+    document.getElementById('done-msg').style.display='block';
+    document.getElementById('comp-btn').style.display='none';
+    document.getElementById('td-done-badge').innerHTML='<span style="background:var(--green2);color:var(--green);border-radius:20px;padding:5px 11px;font-size:11px;font-weight:800;border:1px solid rgba(60,179,113,.3)">✓ Done</span>';
+  } else {
+    document.getElementById('done-msg').style.display='none';
+    document.getElementById('comp-btn').style.display='flex';
+    document.getElementById('td-done-badge').innerHTML='';
+  }
+  // Morning steps
+  document.getElementById('m-title').textContent=day.m.split(':')[0]||'Morning Reset';
+  const mSteps=document.getElementById('m-steps');
+  mSteps.innerHTML='';
+  day.m.split(':').slice(1).join(':').split('.').filter(s=>s.trim()).forEach((s,i)=>{
+    mSteps.innerHTML+=`<div class="step"><div class="step-n">${i+1}</div><div class="step-t">${s.trim()}</div></div>`;
+  });
+  if(!mSteps.innerHTML){
+    day.m.split('. ').filter(s=>s.trim()).forEach((s,i)=>{
+      mSteps.innerHTML+=`<div class="step"><div class="step-n">${i+1}</div><div class="step-t">${s.trim()}</div></div>`;
+    });
+  }
+  // Core steps
+  document.getElementById('c-title').textContent=day.c.split(':')[0]||'Core Practice';
+  const cSteps=document.getElementById('c-steps');
+  cSteps.innerHTML='';
+  const cParts=day.c.split(':');
+  const cContent=cParts.slice(1).join(':').trim()||day.c;
+  cContent.split('. ').filter(s=>s.trim()).forEach((s,i)=>{
+    cSteps.innerHTML+=`<div class="step"><div class="step-n">${i+1}</div><div class="step-t">${s.trim()}</div></div>`;
+  });
+  // Evening
+  document.getElementById('e-prompt').textContent=day.e;
+  document.getElementById('j-prompt').textContent=day.e;
+  // Reset timers display
+  ['m','c','e'].forEach(id=>{
+    if(timers[id]){clearInterval(timers[id]);delete timers[id];}
+    const el=document.getElementById('t-'+id);
+    if(el) el.textContent=id==='c'?'10:00':'5:00';
+    const btn=document.getElementById('btn-'+id);
+    if(btn){btn.textContent=id==='e'?'▶':'▶ Start';btn.className='t-btn go';}
+  });
+}
+
+// ─── COMPLETE DAY ─────────────────────────────────────────────
+function completeDay(){
+  const d=getData();
+  const {programDay}=getDayInfo(d);
+  if(!d.completedDays) d.completedDays=[];
+  if(!d.completedDays.includes(programDay)){
+    d.completedDays.push(programDay);
+    const today=new Date().toDateString();
+    const yesterday=new Date(Date.now()-864e5).toDateString();
+    if(d.lastDone===yesterday){d.streak=(d.streak||0)+1;}
+    else if(d.lastDone===today){/* same day */}
+    else{d.streak=1;}
+    d.lastDone=today;
+    saveData(d);
+    document.getElementById('done-msg').style.display='block';
+    document.getElementById('comp-btn').style.display='none';
+    toast('Day '+( programDay+1)+' complete! 🎉');
+    renderHome();
+  }
+}
+
+// ─── JOURNAL ─────────────────────────────────────────────────
+function saveJ(id){
+  const el=document.getElementById(id);
+  const text=el.value.trim();
+  if(!text){toast('Nothing to save yet.');return;}
+  const d=getData();
+  if(!d.journals) d.journals=[];
+  const {programDay,wk,dayIdx}=getDayInfo(d);
+  const day=wk.days[dayIdx];
+  d.journals.unshift({id:Date.now(),day:programDay+1,prompt:day.e,text,date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),time:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})});
+  saveData(d);
+  el.value='';
+  toast('Entry saved 📓');
+  if(curScreen==='journal') renderJournal();
+}
+
+function renderJournal(){
+  const d=getData();
+  const {wk,dayIdx}=getDayInfo(d);
+  const day=wk.days[dayIdx];
+  document.getElementById('j-prompt').textContent=day.e;
+  const past=document.getElementById('j-past');
+  if(!d.journals||!d.journals.length){past.innerHTML='<div class="empty"><span class="empty-icon">📓</span>Your reflections will appear here after you save them.<br><br>Consistent journaling is the mirror that shows you how far you\'ve come.</div>';return;}
+  past.innerHTML=d.journals.map((j,i)=>`<div class="jentry" id="je-${i}"><div class="je-hd" onclick="togJe(${i})"><div><div class="je-title">Day ${j.day} · ${j.date}</div><div class="je-sub">${j.prompt.substring(0,60)}...</div></div><div class="chev">▼</div></div><div class="je-body">${j.text}</div></div>`).join('');
+}
+
+function togJe(i){
+  const el=document.getElementById('je-'+i);
+  el.classList.toggle('open');
+}
+
+// ─── PROGRESS ─────────────────────────────────────────────────
+function renderProgress(){
+  const d=getData();
+  const {programDay,phase,wk}=getDayInfo(d);
+  const streak=calcStreak(d);
+  const done=(d.completedDays||[]).length;
+  document.getElementById('pg-streak').textContent=streak;
+  document.getElementById('pg-done').textContent=done;
+  document.getElementById('pg-week').textContent=wk.w;
+  document.getElementById('pg-phase').textContent=phase.num;
+  // Sliders
+  const saved=d.assessments&&d.assessments['w'+wk.w];
+  if(saved){
+    ['pres','conf','warm','ease'].forEach(k=>{
+      const v=saved[k]||5;
+      document.getElementById('s-'+k).value=v;
+      document.getElementById('v-'+k).textContent=v;
+    });
+  }
+  // Chart
+  const chart=document.getElementById('pg-chart');
+  const hasData=d.assessments&&Object.keys(d.assessments).length>0;
+  if(!hasData){chart.innerHTML='<div style="color:var(--muted);font-size:12px;align-self:center;text-align:center;width:100%">Save your first assessment above to see your chart.</div>';return;}
+  chart.innerHTML='';
+  const colors=['#c9a84c','#2d8fa8','#8b5cf6','#3cb371','#c9a84c','#2d8fa8','#8b5cf6','#3cb371','#c9a84c','#2d8fa8','#8b5cf6','#3cb371'];
+  for(let w=1;w<=12;w++){
+    const key='w'+w;
+    const aData=d.assessments&&d.assessments[key];
+    const avg=aData?Math.round((aData.pres+aData.conf+aData.warm+aData.ease)/4):0;
+    const h=avg?Math.round((avg/10)*80):4;
+    const color=colors[w-1];
+    chart.innerHTML+=`<div class="bwrap"><div class="bar" style="height:${h}px;background:${avg?color:'var(--border)'};opacity:${avg?1:.4}"></div><div class="bl">W${w}</div></div>`;
+  }
+  // Badges
+  const bg=document.getElementById('pg-badges');
+  const phases=[
+    {num:1,em:'🛡️',name:'Inner Safety',desc:'Complete Phase 1 (Weeks 1–3)',req:21},
+    {num:2,em:'🤝',name:'Connection',desc:'Complete Phase 2 (Weeks 4–6)',req:42},
+    {num:3,em:'✨',name:'Presence',desc:'Complete Phase 3 (Weeks 7–9)',req:63},
+    {num:4,em:'🔥',name:'Full Mastery',desc:'Complete all 84 days',req:84}
+  ];
+  bg.innerHTML=phases.map(p=>{
+    const earned=done>=p.req;
+    return`<div class="bg-card ${earned?'earned':'locked'}"><span class="bg-em">${p.em}</span><div class="bg-nm">${p.name}</div><div class="bg-ds">${earned?'✓ Earned':''+p.desc}</div></div>`;
+  }).join('');
+}
+
+function updSlider(k){
+  const v=document.getElementById('s-'+k).value;
+  document.getElementById('v-'+k).textContent=v;
+}
+
+function saveAssess(){
+  const d=getData();
+  const {wk}=getDayInfo(d);
+  if(!d.assessments) d.assessments={};
+  d.assessments['w'+wk.w]={
+    pres:+document.getElementById('s-pres').value,
+    conf:+document.getElementById('s-conf').value,
+    warm:+document.getElementById('s-warm').value,
+    ease:+document.getElementById('s-ease').value
+  };
+  saveData(d);
+  toast('Week '+wk.w+' assessment saved! 📊');
+  renderProgress();
+}
+
+// ─── TOOLS ────────────────────────────────────────────────────
+function renderTools(){
+  const list=document.getElementById('tools-list');
+  if(list.innerHTML) return;
+  list.innerHTML=TOOLS.map((t,i)=>`
+    <div class="tool" id="tool-${i}">
+      <div class="tool-hd" onclick="togTool(${i})">
+        <div class="tool-left"><div class="tool-em">${t.em}</div><div><div class="tool-t">${t.t}</div><div class="tool-src">${t.src}</div></div></div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="tool-body">${t.steps.map(s=>`<div class="ts">${s}</div>`).join('')}</div>
+    </div>`).join('');
+}
+
+function togTool(i){
+  const el=document.getElementById('tool-'+i);
+  el.classList.toggle('open');
+}
+
+// ─── TOAST ────────────────────────────────────────────────────
+function toast(msg){
+  const t=document.createElement('div');
+  t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2500);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  const d=getData();
+  if(d.started){
     document.getElementById('nav').classList.add('show');
+    go('home');
+  } else {
+    document.getElementById('ob').classList.add('active');
   }
-
-  // Switches between Home, Tools, and Journal tabs
-  function switchTab(tabId, element) {
-    // Hide all screens
-    document.querySelectorAll('.screen').forEach(function(screen) {
-      screen.classList.remove('active');
-    });
-    // Remove "on" class from all nav items
-    document.querySelectorAll('.ni').forEach(function(navItem) {
-      navItem.classList.remove('on');
-    });
-    
-    // Show active screen and highlight nav item
-    document.getElementById(tabId).classList.add('active');
-    element.classList.add('on');
-  }
-
-  // Simple visual feedback for the Journal
-  function saveJournal(btn) {
-    var originalText = btn.innerText;
-    btn.innerText = "Saved ✓";
-    btn.style.background = "var(--green)";
-    btn.style.color = "#fff";
-    
-    setTimeout(function() {
-      btn.innerText = originalText;
-      btn.style.background = "var(--gold)";
-      btn.style.color = "#0d1b2a";
-      document.querySelector('.jarea').value = ""; // clear text
-    }, 2000);
-  }
+});
 </script>
-
 </body>
 </html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QP Command</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--void:#070604;--base:#0e0c09;--s1:#171410;--s2:#1e1b16;--s3:#26231c;--s4:#302c22;--gold:#c8a24a;--gl:#e0c068;--gd:#6e5820;--chalk:#ede0be;--cd:#a09070;--ink:#635e4a;--muted:#3a3626;--ok:#5c9460;--err:#b05040;--bd:rgba(200,162,74,0.10);--bd2:rgba(200,162,74,0.22);}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--base);color:var(--chalk);font-family:'Lora',Georgia,serif;font-size:15px;line-height:1.65;min-height:100vh;}
+#loading{position:fixed;inset:0;background:var(--base);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:9999;transition:opacity 0.5s;}
+#loading.out{opacity:0;pointer-events:none;}
+.ld-word{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;}
+.ld-line{width:160px;height:1px;background:var(--muted);position:relative;overflow:hidden;}
+.ld-fill{position:absolute;left:0;top:0;height:100%;width:0;background:var(--gold);animation:ldfill 1.2s ease forwards;}
+@keyframes ldfill{to{width:100%;}}
+#hdr{padding:20px 28px 0;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--bd);}
+.brand{padding-bottom:16px;}
+.brand-name{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--chalk);letter-spacing:-0.02em;}
+.brand-name em{color:var(--gold);font-style:italic;}
+.brand-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink);margin-top:2px;}
+.hdr-meta{display:flex;align-items:center;gap:20px;padding-bottom:16px;}
+.day-ctr{font-family:'DM Mono',monospace;font-size:11px;color:var(--cd);letter-spacing:0.08em;}
+.streak{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--bd);padding:5px 12px;}
+.streak-n{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--gold);}
+.streak-l{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink);}
+#tabs{display:flex;padding:0 28px;border-bottom:1px solid var(--bd);background:var(--base);}
+.tb{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink);background:none;border:none;border-bottom:2px solid transparent;padding:13px 18px;cursor:pointer;margin-bottom:-1px;transition:all 0.2s;}
+.tb:hover{color:var(--cd);}
+.tb.on{color:var(--gold);border-bottom-color:var(--gold);}
+#wrap{max-width:940px;margin:0 auto;padding:28px;}
+.panel{display:none;animation:fadeIn 0.2s ease;}
+.panel.on{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.pt{font-family:'Playfair Display',serif;font-size:21px;font-weight:600;color:var(--chalk);margin-bottom:4px;}
+.ps{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;}
+.card{background:var(--s1);border:1px solid var(--bd);padding:18px 22px;margin-bottom:10px;}
+.pcard{background:var(--s1);border:1px solid var(--bd2);border-left:3px solid var(--gold);padding:22px 26px;margin-bottom:22px;}
+.plabel{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:9px;}
+.ptext{font-family:'Playfair Display',serif;font-size:16px;font-style:italic;color:var(--chalk);line-height:1.5;margin-bottom:11px;}
+.psaas{font-size:13px;color:var(--cd);line-height:1.55;}
+.gline{width:36px;height:1px;background:var(--gold);margin:18px 0;}
+.row{display:flex;align-items:center;justify-content:space-between;}
+.mi{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--bd);}
+.mi:last-child{border-bottom:none;}
+.mck{width:19px;height:19px;border:1px solid var(--bd2);background:var(--s2);cursor:pointer;flex-shrink:0;margin-top:3px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.mck.done{background:var(--gold);border-color:var(--gold);}
+.mck.done::after{content:'✓';color:var(--void);font-size:10px;font-weight:700;}
+.mt{flex:1;font-size:13.5px;color:var(--cd);line-height:1.5;}
+.mt.done{text-decoration:line-through;color:var(--ink);}
+.mcat{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;padding:2px 7px;border:1px solid;flex-shrink:0;margin-top:2px;}
+.cr{color:#5f8faf;border-color:rgba(95,143,175,0.28);background:rgba(95,143,175,0.06);}
+.cc{color:#a89055;border-color:rgba(168,144,85,0.28);background:rgba(168,144,85,0.06);}
+.cn{color:#5f9465;border-color:rgba(95,148,101,0.28);background:rgba(95,148,101,0.06);}
+.wl{display:flex;gap:8px;margin-top:14px;}
+.wi{flex:1;background:var(--s2);border:1px solid var(--bd);color:var(--chalk);font-family:'Lora',serif;font-size:14px;padding:9px 13px;outline:none;transition:border-color 0.2s;}
+.wi:focus{border-color:var(--gold);}
+.wi::placeholder{color:var(--ink);}
+.btn{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;padding:9px 16px;border:none;cursor:pointer;transition:all 0.15s;}
+.bg{background:var(--gold);color:var(--void);}
+.bg:hover{background:var(--gl);}
+.bo{background:transparent;border:1px solid var(--bd2);color:var(--cd);}
+.bo:hover{border-color:var(--gold);color:var(--gold);}
+.bd2{background:transparent;border:1px solid rgba(176,80,64,0.3);color:var(--err);}
+.bd2:hover{background:rgba(176,80,64,0.1);}
+.dry-btn{width:100%;background:var(--s2);border:1px dashed var(--gd);color:var(--ink);padding:13px;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;margin-top:22px;}
+.dry-btn:hover{border-color:var(--gold);color:var(--gold);}
+.lgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px;}
+.li{background:var(--s1);border:1px solid var(--bd);padding:16px 18px;}
+.lnum{font-family:'DM Mono',monospace;font-size:34px;font-weight:500;color:var(--gold);line-height:1;margin-bottom:5px;transition:all 0.2s;}
+.llbl{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--cd);margin-bottom:10px;}
+.lctrl{display:flex;gap:5px;}
+.bnum{width:26px;height:26px;background:var(--s2);border:1px solid var(--bd);color:var(--cd);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.12s;user-select:none;}
+.bnum:hover{border-color:var(--gold);color:var(--gold);background:var(--s3);}
+.sbar{background:var(--s1);border:1px solid var(--bd);padding:18px 22px;}
+.sn{font-family:'DM Mono',monospace;font-size:38px;font-weight:500;color:var(--gold);line-height:1;}
+.str{width:100%;height:2px;background:var(--s3);margin:10px 0 7px;}
+.sfill{height:100%;background:var(--gold);transition:width 0.6s ease;}
+.pgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px;overflow-x:auto;}
+.pcol{background:var(--s1);border:1px solid var(--bd);min-height:180px;}
+.pch{padding:9px 11px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;}
+.pct{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--cd);}
+.pc-n{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);background:var(--s2);width:19px;height:19px;display:flex;align-items:center;justify-content:center;}
+.pcards{padding:7px;min-height:100px;}
+.prc{background:var(--s2);border:1px solid var(--bd);border-left:2px solid var(--gd);padding:9px 11px;margin-bottom:5px;cursor:pointer;transition:border-left-color 0.15s;}
+.prc:hover{border-left-color:var(--gold);}
+.prcname{font-size:13px;color:var(--chalk);font-weight:400;margin-bottom:2px;}
+.prccont{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--cd);margin-bottom:5px;}
+.prcd{font-family:'DM Mono',monospace;font-size:8.5px;color:var(--ink);}
+.agrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.acard{background:var(--s1);border:1px solid var(--bd);border-top:2px solid var(--gd);padding:16px 18px;}
+.an{font-family:'DM Mono',monospace;font-size:10px;color:var(--gd);margin-bottom:7px;}
+.ap{font-family:'Playfair Display',serif;font-size:14.5px;font-style:italic;color:var(--chalk);margin-bottom:9px;line-height:1.45;}
+.as{font-size:12px;color:var(--cd);line-height:1.5;border-top:1px solid var(--bd);padding-top:9px;}
+.as strong{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:3px;margin-top:7px;}
+.wlist{margin-bottom:22px;}
+.witem{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);}
+.wdot{width:5px;height:5px;background:var(--gold);border-radius:50%;margin-top:8px;flex-shrink:0;}
+.wtxt{font-size:13.5px;color:var(--chalk);}
+.wdt{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--ink);margin-top:2px;}
+.jarea{background:var(--s1);border:1px solid var(--bd);padding:18px;margin-bottom:10px;}
+.jprompt{font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:var(--gold);margin-bottom:11px;line-height:1.5;}
+.jtxt{width:100%;background:var(--s2);border:1px solid var(--bd);color:var(--chalk);font-family:'Lora',serif;font-size:14px;padding:11px 13px;outline:none;resize:vertical;min-height:90px;transition:border-color 0.2s;display:block;}
+.jtxt:focus{border-color:var(--gold);}
+.jtxt::placeholder{color:var(--ink);}
+.empty{text-align:center;padding:28px 12px;color:var(--ink);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;}
+.ovl{position:fixed;inset:0;background:rgba(7,6,4,0.88);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity 0.22s;padding:16px;}
+.ovl.on{opacity:1;pointer-events:all;}
+.modal{background:var(--s1);border:1px solid var(--bd2);padding:28px;max-width:460px;width:100%;transform:translateY(10px);transition:transform 0.22s;max-height:90vh;overflow-y:auto;}
+.ovl.on .modal{transform:translateY(0);}
+.mtitle{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--chalk);margin-bottom:18px;}
+.fg{margin-bottom:14px;}
+.fl{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--cd);display:block;margin-bottom:5px;}
+.fi{width:100%;background:var(--s2);border:1px solid var(--bd);color:var(--chalk);font-family:'Lora',serif;font-size:14px;padding:9px 13px;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--gold);}
+select.fi{cursor:pointer;}
+.facts{display:flex;gap:7px;justify-content:flex-end;margin-top:18px;}
+.ds{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bd);}
+.dsl{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.1em;color:var(--cd);}
+.dsv{font-family:'DM Mono',monospace;font-size:15px;color:var(--gold);font-weight:500;}
+.dmsg{font-family:'Playfair Display',serif;font-style:italic;font-size:14.5px;color:var(--chalk);line-height:1.6;padding:14px 0;border-bottom:1px solid var(--bd);margin-bottom:14px;}
+.dact{background:var(--s2);border:1px solid var(--bd2);border-left:3px solid var(--gold);padding:13px 15px;margin-bottom:14px;}
+.dact-l{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:5px;}
+.dact-t{font-size:13.5px;color:var(--cd);line-height:1.5;}
+.flash{animation:flash 0.5s ease;}
+@keyframes flash{0%,100%{border-color:var(--bd);}50%{border-color:var(--ok);}}
+@media(max-width:700px){.lgrid{grid-template-columns:repeat(2,1fr);}.agrid{grid-template-columns:1fr;}.pgrid{grid-template-columns:repeat(2,1fr);}.hdr-meta{gap:12px;}#wrap{padding:18px 14px;}#hdr{padding:14px;}.tb{padding:11px 12px;}}
+</style>
+</head>
+<body>
+
+<div id="loading">
+<div class="ld-word">Initializing command</div>
+<div class="ld-line"><div class="ld-fill"></div></div>
+</div>
+
+<div id="hdr">
+<div class="brand">
+<div class="brand-name">QP <em>Command</em></div>
+<div class="brand-sub">The Quiet Persuasionist — Practice</div>
+</div>
+<div class="hdr-meta">
+<div class="day-ctr">Day <span id="day-n">1</span></div>
+<div class="streak"><span class="streak-n" id="str-n">0</span><span class="streak-l">Day Streak</span></div>
+</div>
+</div>
+
+<div id="tabs">
+<button class="tb on" onclick="ST('brief')">The Brief</button>
+<button class="tb" onclick="ST('pipeline')">Pipeline</button>
+<button class="tb" onclick="ST('ledger')">Ledger</button>
+<button class="tb" onclick="ST('arsenal')">Arsenal</button>
+<button class="tb" onclick="ST('wins')">Wins</button>
+</div>
+
+<div id="wrap">
+
+<div class="panel on" id="tab-brief">
+<div id="today-p"></div>
+<div class="pt">Today's Missions</div>
+<div class="ps">Three moves. Make them count.</div>
+<div class="card" style="padding:4px 0;">
+<div id="mlist" style="padding:0 22px;"></div>
+</div>
+<div class="gline"></div>
+<div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--cd);margin-bottom:9px;">Log a Win</div>
+<div class="wl">
+<input class="wi" id="win-in" type="text" placeholder="Something you did, learned, or noticed today…">
+<button class="btn bg" onclick="logWin()">Log It</button>
+</div>
+<button class="dry-btn" onclick="openDry()">⚡ Surviving a dry spell? — Hit this.</button>
+</div>
+
+<div class="panel" id="tab-pipeline">
+<div class="row" style="margin-bottom:22px;">
+<div><div class="pt">The Pipeline</div><div class="ps">SaaS prospects in motion</div></div>
+<button class="btn bg" onclick="openAddP()">+ Add Prospect</button>
+</div>
+<div class="pgrid" id="pgrid"></div>
+<div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.09em;color:var(--ink);margin-top:8px;">Click any card to advance its stage or add a note.</div>
+</div>
+
+<div class="panel" id="tab-ledger">
+<div class="pt">The Authority Ledger</div>
+<div class="ps">Every entry builds the case</div>
+<div class="lgrid" id="lgrid"></div>
+<div id="lscore"></div>
+<div class="card" style="margin-top:14px;">
+<div style="font-family:'Playfair Display',serif;font-style:italic;font-size:13.5px;color:var(--cd);line-height:1.6;">"Past results are the single most effective driver of credibility — they show reproducibility. Before you have client results, every sample written, every insight published, every rewrite completed is a result. Track them all."</div>
+</div>
+</div>
+
+<div class="panel" id="tab-arsenal">
+<div class="pt">The Principles Arsenal</div>
+<div class="ps">15 laws of quiet persuasion, applied to SaaS copy</div>
+<div class="agrid" id="agrid"></div>
+</div>
+
+<div class="panel" id="tab-wins">
+<div class="pt">The Wins Log</div>
+<div class="ps">Evidence that you showed up</div>
+<div id="wlist"></div>
+<div class="gline"></div>
+<div class="pt" style="font-size:17px;margin-bottom:5px;">Daily Reflection</div>
+<div id="j-area"></div>
+<div id="j-hist"></div>
+</div>
+
+</div>
+
+<div class="ovl" id="ovl-p">
+<div class="modal">
+<div class="mtitle">Add to Pipeline</div>
+<div class="fg"><label class="fl">Company Name</label><input class="fi" id="p-co" type="text" placeholder="e.g. Notion, Linear, Framer"></div>
+<div class="fg"><label class="fl">Contact / Role (optional)</label><input class="fi" id="p-cx" type="text" placeholder="e.g. Head of Marketing"></div>
+<div class="fg"><label class="fl">Stage</label><select class="fi" id="p-st"><option value="research">Research</option><option value="contacted">Contacted</option><option value="responded">Responded</option><option value="proposal">Proposal</option><option value="won">Won</option></select></div>
+<div class="fg"><label class="fl">Notes / Angle</label><input class="fi" id="p-no" type="text" placeholder="Key pain, entry point, or context"></div>
+<div class="facts"><button class="btn bo" onclick="CM('ovl-p')">Cancel</button><button class="btn bg" onclick="addP()">Add to Pipeline</button></div>
+</div>
+</div>
+
+<div class="ovl" id="ovl-d">
+<div class="modal">
+<div class="mtitle" id="d-title"></div>
+<div id="d-body"></div>
+<div class="facts"><button class="btn bd2" onclick="delP()">Remove</button><button class="btn bo" onclick="CM('ovl-d')">Close</button><button class="btn bg" id="adv-btn" onclick="advP()">Advance Stage →</button></div>
+</div>
+</div>
+
+<div class="ovl" id="ovl-dry">
+<div class="modal" style="max-width:500px;">
+<div class="mtitle">⚡ Reality Check</div>
+<div id="dry-stats"></div>
+<div id="dry-msg"></div>
+<div id="dry-act"></div>
+<div class="facts"><button class="btn bg" onclick="CM('ovl-dry')">Close &amp; Act</button></div>
+</div>
+</div>
+
+<script>
+const MISSIONS={
+research:[
+"Deep-read one SaaS homepage. Map it to the 8 pillars: desire, projection, solution, action, cost — where does the copy break down?",
+"Find 10 reviews on G2 or Capterra for a SaaS product you want to target. Copy the exact words customers use to name their pain.",
+"Study a SaaS competitor comparison page. What desire is driving the search? What projection wins the click?",
+"Pick one SaaS product you use daily. Write down 3 specific frustrations. Those frustrations are copy gold.",
+"Read a SaaS onboarding email sequence from start to finish. Where does the projection collapse into feature-listing?",
+"Find a SaaS with visibly weak copy. Break it down: which of the 8 pillars is missing? Which desire goes unnamed?",
+"Study one SaaS pricing page. What world is being sold at each tier? What North Star value does the upgrade speak to?",
+"Search '[SaaS category] vs [competitor]' and read the top comparison article. Find the unspoken desire behind the comparison.",
+],
+create:[
+"Rewrite a real SaaS hero section: lead with the desire, build the projection, then offer the solution. Save it as a sample.",
+"Write a 3-email sequence: email 1 opens the wound, email 2 reveals the mechanism, email 3 closes with a single action.",
+"Take a weak SaaS headline and rewrite it five different ways. Keep your best version as a portfolio piece.",
+"Write a 250-word 'before state' — the exact inner world of a SaaS buyer before your solution. Make it feel painfully accurate.",
+"Analyze a great email from your inbox. Label each sentence with its function: hook / pain / projection / mechanism / CTA.",
+"Write one LinkedIn post — a sharp observation about SaaS copy you noticed this week. No pitch. Pure insight.",
+"Draft a 'unique mechanism' explanation for any SaaS product. What specifically does it do differently — and why does that matter?",
+"Write a trigger event opening for a cold email. One specific, datable moment that makes the prospect's pain undeniable.",
+],
+connect:[
+"Identify 3 SaaS companies whose copy is visibly weak. Add each to your pipeline under Research.",
+"Send one hyper-personalized LinkedIn message to a SaaS founder or marketing lead. Reference something specific they wrote.",
+"Draft one cold outreach email using desire → projection → action structure. Don't send yet — just draft and review.",
+"Follow 5 SaaS founders or marketers on LinkedIn. Read their last 3 posts. Start understanding their world from inside.",
+"Leave a genuine, sharp comment on a SaaS marketer's post. No pitch. Add a real observation or reframe.",
+"Research one pipeline prospect for 20 minutes. Read their customer reviews. What do their users actually want?",
+"Send a one-sentence follow-up to a prospect you haven't heard from in over a week. Pure curiosity, no pressure.",
+]
+};
+
+const PRINCIPLES=[
+{n:"The Projection Principle",t:"People don't buy products. They buy the world they imagine inhabiting after the purchase.",s:"Your SaaS clients are almost certainly listing features. Your job is to replace features with futures — what does life look like after the software removes the friction?",a:"Find a SaaS that leads with features. Rewrite the hero section leading with projection."},
+{n:"The Cherry Principle",t:"A quick partial win will almost always outperform a slow complete transformation. Make them taste the result before they finish reading.",s:"SaaS emails that promise 'massive growth in 90 days' convert far less than those that promise one visible result tonight. Find the cherry. Lead with it every time.",a:"Find the fastest measurable result your target SaaS can promise. Make that the headline."},
+{n:"The North Star Principle",t:"You cannot convince anyone to abandon their North Star values. Align with them — or fail quietly.",s:"A SaaS founder who believes in product-led growth will not hire a copywriter who talks about manipulation. Know their philosophy before you approach them.",a:"For your next outreach, read the founder's last 5 posts. What do they believe? Start there."},
+{n:"The Kairos Principle",t:"Even a perfect message fails at the wrong moment. Timing is not a detail — it is the deal.",s:"SaaS companies have moments of maximum receptivity: after a funding round, after a competitor stumbles, after a growth plateau becomes undeniable. Watch for these windows.",a:"Check the news for one pipeline company. Is there a recent event that makes your message more urgent today?"},
+{n:"The Desire Ownership Principle",t:"The desire you manufacture will be resisted. The desire they claim as their own will be defended with their life.",s:"Don't tell SaaS founders they need better copy. Ask questions that make them discover it. When they voice the problem themselves, they already want the solution.",a:"Write 3 open questions that would lead a SaaS founder to identify their own copy problem — without you naming it."},
+{n:"The Causality Principle",t:"A projection without a clear causal chain is magical thinking. Show every step from where they are to where they want to be.",s:"Weak SaaS copy says 'grow 10x.' Strong SaaS copy says: here is the specific mechanism, here is why it works, here is the first result you will see in 48 hours.",a:"Map the causal chain of one SaaS product from signup to first 'aha moment'. Write it in 3 clear steps."},
+{n:"The Proximity Principle",t:"The most effective proof is not the most impressive — it is the most similar. A story that mirrors the reader's situation converts more than a famous name.",s:"Without client results yet, use deep case analyses. Show you understand a specific SaaS problem with surgical precision. That is proof of a different kind — and most copywriters don't have it.",a:"Write a 200-word 'before state' for a specific SaaS buyer persona. Make it so accurate it feels personal."},
+{n:"The Cost of Inaction Principle",t:"The cost of not acting must always feel greater than the cost of acting. Winter is always coming.",s:"For B2B SaaS, weak copy compounds: every week of poor conversion is churn, lost revenue, and runway pressure. Make this visible and quantifiable. Make inaction look expensive.",a:"For one pipeline prospect, estimate what poor conversion costs them per month. Make that number the anchor of your approach."},
+{n:"The Bleeding Wound Principle",t:"People don't move on slow burns. They move at trigger events — one specific moment that makes the pain undeniable. Find it. Name it.",s:"SaaS buyers have trigger events: a funding round that demands growth, a quarter where trial-to-paid collapsed, a competitor who just launched. These are your entry points.",a:"Write 3 trigger-event opening lines for a SaaS cold email. Each one names a specific, datable pain moment."},
+{n:"The Bad Guy Principle",t:"Every problem needs an external cause. When you give the reader a villain to blame, you free them to act — and position your solution as the only weapon that works.",s:"In SaaS copy, the villain is usually legacy thinking, an outdated tool, or a market that has gotten noisy. Identify it. Name it. Make your mechanism its specific kryptonite.",a:"For one SaaS product, write a 'villain paragraph' — 3 sentences naming the external cause of the user's pain."},
+{n:"The Specificity Principle",t:"Vague projections dissolve. 'Better productivity' means nothing. 'Closing your laptop at 5pm on Friday' means everything.",s:"Every SaaS sells efficiency and growth. Nobody sells the specific, sensory moment those things create. That gap is your entire competitive advantage as a QP copywriter.",a:"Take one vague SaaS value proposition and rewrite it as a specific, sensory, emotional moment."},
+{n:"The Feedback Loop Principle",t:"Create conditions where every small action produces a visible result. People don't abandon solutions that keep proving themselves.",s:"The best SaaS onboarding copy doesn't explain features — it engineers a series of micro-wins. Map these wins into the copy. Make every step feel like progress.",a:"Sketch a 5-step onboarding copy sequence: each step must deliver one visible result before asking for the next action."},
+{n:"The Horizon Principle",t:"Quiet persuasion doesn't impose a new reality — it reveals a hidden one already there. Like a blind-spot mirror at a tight intersection.",s:"The best SaaS copy doesn't feel like an ad. It feels like someone finally articulated a truth you were already living. Chase that feeling in everything you write.",a:"Write a SaaS opening paragraph that makes the reader think: 'yes, exactly — how did they know that?'"},
+{n:"The Influence Principle",t:"The final form of persuasion is influence: the ability to affect change without any visible attempt. Like gravity — you never feel it pulling.",s:"Every sample you write, every post you publish, every insight you share without pitching accumulates into a gravitational field. Loud persuasionists burn bright and vanish. You are building something that outlasts them.",a:"Write one LinkedIn post today — a sharp observation about SaaS copy. Pure signal. No mention of your services."},
+{n:"The Ethos Principle",t:"Authority without similarity creates resistance. Add similarity — shared values, shared vocabulary, shared frustrations — and the same authority creates willing compliance.",s:"You are not pitching as an outside expert. You are pitching as someone who has spent time in their world and sees what they see — only more clearly. Signal that similarity before you signal your capability.",a:"In your next outreach, open with one thing you genuinely respect about the company or the founder's philosophy."}
+];
+
+const PROMPTS=[
+"What's the one thing you did today that would be hard for any AI to replicate?",
+"Which SaaS company's problem do you understand better than their own team does? Why?",
+"What did you learn about desire today — yours or someone else's?",
+"If someone read your work from the last seven days, what would they conclude about what you believe?",
+"What's the hardest part of building this practice right now? What would quiet persuasion say about that obstacle?",
+"Describe the projection — the specific world — that a SaaS buyer in your target niche wants to inhabit.",
+"What's one belief your ideal SaaS client holds that you could build your message around?",
+"Where did you resist the work today? What was really underneath that resistance?",
+"What's one thing you understand about copywriting now that you didn't understand 30 days ago?",
+"What would the next six months look like if you showed up at this level every day?",
+"What does a SaaS company that needs you most actually look like right now? Be specific.",
+"What's the difference between the copy you could write and the copy you've been writing?",
+];
+
+const STAGES=['research','contacted','responded','proposal','won'];
+const SLBL={research:'Research',contacted:'Contacted',responded:'Responded',proposal:'Proposal',won:'Won'};
+
+let S={startDate:null,streak:{count:0,last:null},pipeline:[],ledger:{samples:0,content:0,outreach:0,replies:0,casestudies:0,testimonials:0},wins:[],journal:[],today:{date:null,missions:[],pidx:0}};
+let selId=null;
+
+async function save(){try{await window.storage.set('qpc_v2',JSON.stringify(S));}catch(e){}}
+async function load(){try{const r=await window.storage.get('qpc_v2');if(r&&r.value)S=JSON.parse(r.value);}catch(e){}}
+
+function today(){return new Date().toISOString().split('T')[0];}
+function dAgo(d){return Math.floor((new Date()-new Date(d))/(864e5));}
+function fDate(d){return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function dayN(){return S.startDate?dAgo(S.startDate)+1:1;}
+function rnd(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function initDay(){
+const td=today();
+if(!S.startDate)S.startDate=td;
+if(!S.streak.last){S.streak.count=1;S.streak.last=td;}
+else if(S.streak.last!==td){const d=dAgo(S.streak.last);S.streak.count=d===1?S.streak.count+1:1;S.streak.last=td;}
+if(S.today.date!==td){
+S.today.date=td;
+S.today.pidx=Math.floor(Math.random()*PRINCIPLES.length);
+S.today.missions=[
+{cat:'research',text:rnd(MISSIONS.research),done:false},
+{cat:'create',text:rnd(MISSIONS.create),done:false},
+{cat:'connect',text:rnd(MISSIONS.connect),done:false}
+];}}
+
+function renderAll(){
+document.getElementById('day-n').textContent=dayN();
+document.getElementById('str-n').textContent=S.streak.count;
+rBrief();rPipeline();rLedger();rArsenal();rWins();
+}
+
+function rBrief(){
+const p=PRINCIPLES[S.today.pidx];
+document.getElementById('today-p').innerHTML=`<div class="pcard"><div class="plabel">Today's Principle — ${p.n}</div><div class="ptext">"${p.t}"</div><div class="psaas">${p.s}</div></div>`;
+const lbl={research:'Know Them',create:'Build Authority',connect:'Work the Room'};
+const cls={research:'cr',create:'cc',connect:'cn'};
+document.getElementById('mlist').innerHTML=S.today.missions.map((m,i)=>`<div class="mi"><div class="mck ${m.done?'done':''}" onclick="tM(${i})"></div><div class="mt ${m.done?'done':''}">${m.text}</div><div class="mcat ${cls[m.cat]}">${lbl[m.cat]}</div></div>`).join('');
+}
+
+function tM(i){S.today.missions[i].done=!S.today.missions[i].done;save();rBrief();}
+
+function rPipeline(){
+document.getElementById('pgrid').innerHTML=STAGES.map(st=>{
+const cards=S.pipeline.filter(p=>p.stage===st);
+const ch=cards.length===0?`<div class="empty">No prospects</div>`:cards.map(p=>`<div class="prc" onclick="openD('${p.id}')"><div class="prcname">${p.company}</div>${p.contact?`<div class="prccont">${p.contact}</div>`:''}<div class="prcd">${dAgo(p.sd)===0?'Added today':`${dAgo(p.sd)}d in stage`}</div></div>`).join('');
+return`<div class="pcol"><div class="pch"><span class="pct">${SLBL[st]}</span><span class="pc-n">${cards.length}</span></div><div class="pcards">${ch}</div></div>`;
+}).join('');
+}
+
+function calcScore(){
+const l=S.ledger;
+const s=Math.min(l.samples,10)*2+Math.min(l.content,5)*3+Math.min(l.outreach,50)*0.5+Math.min(l.replies,5)*3+Math.min(l.casestudies,2)*8+Math.min(l.testimonials,1)*15;
+return Math.min(100,Math.round(s));
+}
+
+function scoreText(n){
+if(n<10)return"The seed is planted. The roots are invisible right now. That's the process working.";
+if(n<25)return"The foundation is forming. You can't see it yet, but you're building below the surface.";
+if(n<45)return"Real evidence accumulating. A thoughtful SaaS buyer can start to see your track record.";
+if(n<65)return"A genuine portfolio. You can start showing this to the right people with confidence.";
+if(n<80)return"Strong signal. This is the kind of body of work that earns introductions.";
+return"This speaks for itself. Now protect it.";
+}
+
+function rLedger(){
+const items=[{k:'samples',l:'Portfolio Samples',h:'rewrites, spec work'},{k:'content',l:'Published Pieces',h:'posts, articles'},{k:'outreach',l:'Outreaches Sent',h:'emails, DMs'},{k:'replies',l:'Replies Received',h:'any response'},{k:'casestudies',l:'Case Studies',h:'full analyses'},{k:'testimonials',l:'Testimonials',h:'references, reviews'}];
+document.getElementById('lgrid').innerHTML=items.map(it=>`<div class="li"><div class="lnum" id="ln-${it.k}">${S.ledger[it.k]}</div><div class="llbl">${it.l}<br><span style="font-size:8px;color:var(--ink);">${it.h}</span></div><div class="lctrl"><div class="bnum" onclick="aL('${it.k}',1)">+</div><div class="bnum" onclick="aL('${it.k}',-1)">−</div></div></div>`).join('');
+const rr=S.ledger.outreach>0?Math.round((S.ledger.replies/S.ledger.outreach)*100)+'%':'—';
+const sc=calcScore();
+document.getElementById('lscore').innerHTML=`<div class="sbar"><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--cd);margin-bottom:7px;">Authority Score</div><div style="display:flex;align-items:baseline;gap:10px;"><span class="sn">${sc}</span><span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--ink);">/ 100</span><span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink);margin-left:8px;">Response rate: ${rr}</span></div><div class="str"><div class="sfill" style="width:${sc}%"></div></div><div style="font-size:13px;color:var(--cd);font-style:italic;">${scoreText(sc)}</div></div>`;
+}
+
+function aL(k,d){
+S.ledger[k]=Math.max(0,S.ledger[k]+d);
+const el=document.getElementById('ln-'+k);
+if(el){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),500);}
+save();rLedger();
+}
+
+function rArsenal(){
+document.getElementById('agrid').innerHTML=PRINCIPLES.map((p,i)=>`<div class="acard"><div class="an">${String(i+1).padStart(2,'0')} — ${p.n}</div><div class="ap">"${p.t}"</div><div class="as"><strong>In SaaS Copy</strong>${p.s}<strong>Quick Move</strong>${p.a}</div></div>`).join('');
+}
+
+function rWins(){
+const wl=document.getElementById('wlist');
+wl.innerHTML=S.wins.length===0?`<div class="empty">No wins logged yet. Return to The Brief and log your first one.</div>`:`<div class="wlist">${[...S.wins].reverse().slice(0,40).map(w=>`<div class="witem"><div class="wdot"></div><div><div class="wtxt">${w.text}</div><div class="wdt">${fDate(w.date)}</div></div></div>`).join('')}</div>`;
+const pi=dayN()%PROMPTS.length;
+document.getElementById('j-area').innerHTML=`<div class="jarea"><div class="jprompt">${PROMPTS[pi]}</div><textarea class="jtxt" id="jent" placeholder="Write freely. No one's watching."></textarea><div style="display:flex;justify-content:flex-end;margin-top:9px;"><button class="btn bg" onclick="saveJ()">Save Entry</button></div></div>`;
+if(S.journal.length>0){const jh=[...S.journal].reverse().slice(0,5).map(j=>`<div class="card" style="margin-bottom:8px;"><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--gold);margin-bottom:7px;">${fDate(j.date)}</div><div style="font-size:12.5px;color:var(--cd);font-style:italic;margin-bottom:5px;">↳ ${j.prompt}</div><div style="font-size:13.5px;color:var(--chalk);line-height:1.6;">${j.entry}</div></div>`).join('');document.getElementById('j-hist').innerHTML=`<div class="gline"></div><div style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:0.14em;color:var(--cd);text-transform:uppercase;margin-bottom:14px;">Past Entries</div>${jh}`;}
+else document.getElementById('j-hist').innerHTML='';
+}
+
+function saveJ(){
+const e=document.getElementById('jent');if(!e||!e.value.trim())return;
+const pi=dayN()%PROMPTS.length;
+S.journal.push({id:Date.now().toString(),prompt:PROMPTS[pi],entry:e.value.trim(),date:today()});
+save();rWins();
+}
+
+function logWin(){
+const inp=document.getElementById('win-in');
+const t=inp.value.trim();if(!t)return;
+S.wins.push({id:Date.now().toString(),text:t,date:today()});
+inp.value='';save();rWins();
+inp.style.borderColor='var(--ok)';setTimeout(()=>{inp.style.borderColor='';},800);
+}
+document.getElementById('win-in').addEventListener('keydown',e=>{if(e.key==='Enter')logWin();});
+
+function openAddP(){document.getElementById('p-co').value='';document.getElementById('p-cx').value='';document.getElementById('p-st').value='research';document.getElementById('p-no').value='';OM('ovl-p');}
+
+function addP(){
+const co=document.getElementById('p-co').value.trim();if(!co)return;
+S.pipeline.push({id:Date.now().toString(),company:co,contact:document.getElementById('p-cx').value.trim(),stage:document.getElementById('p-st').value,notes:document.getElementById('p-no').value.trim(),ad:today(),sd:today()});
+save();rPipeline();CM('ovl-p');
+}
+
+function openD(id){
+selId=id;
+const p=S.pipeline.find(x=>x.id===id);if(!p)return;
+const si=STAGES.indexOf(p.stage);const last=si===STAGES.length-1;
+document.getElementById('d-title').textContent=p.company;
+document.getElementById('d-body').innerHTML=`<div class="ds"><span class="dsl">Contact</span><span class="dsv" style="font-size:13px;color:var(--chalk);">${p.contact||'—'}</span></div><div class="ds"><span class="dsl">Current Stage</span><span class="dsv">${SLBL[p.stage]}</span></div><div class="ds"><span class="dsl">Days in Stage</span><span class="dsv">${dAgo(p.sd)}</span></div><div class="ds"><span class="dsl">Added</span><span class="dsv" style="font-size:12px;">${fDate(p.ad)}</span></div>${p.notes?`<div style="margin-top:12px;font-size:13px;color:var(--cd);font-style:italic;">${p.notes}</div>`:''}`+(last?`<div style="margin-top:11px;font-family:'DM Mono',monospace;font-size:9.5px;color:var(--ok);letter-spacing:0.1em;">✓ WON — Add a testimonial to your Ledger. This is evidence.</div>`:'');
+document.getElementById('adv-btn').style.display=last?'none':'';
+OM('ovl-d');
+}
+
+function advP(){
+const p=S.pipeline.find(x=>x.id===selId);if(!p)return;
+const si=STAGES.indexOf(p.stage);
+if(si<STAGES.length-1){p.stage=STAGES[si+1];p.sd=today();save();rPipeline();openD(selId);}
+}
+
+function delP(){S.pipeline=S.pipeline.filter(p=>p.id!==selId);save();rPipeline();CM('ovl-d');}
+
+function openDry(){
+const d=dayN(),pc=S.pipeline.length,wc=S.wins.length,sc=calcScore();
+document.getElementById('dry-stats').innerHTML=`<div class="ds"><span class="dsl">Days Building</span><span class="dsv">${d}</span></div><div class="ds"><span class="dsl">Pipeline Total</span><span class="dsv">${pc}</span></div><div class="ds"><span class="dsl">Wins Logged</span><span class="dsv">${wc}</span></div><div class="ds"><span class="dsl">Authority Score</span><span class="dsv">${sc}/100</span></div>`;
+let msg,act;
+if(d<14){msg="You are fewer than 14 days into building this practice. No tree shows fruit in two weeks. You are in the root phase — the most important and least visible phase. The fact that nothing has landed yet is not evidence that nothing is working. It is the process working exactly as it should.";act="Open your pipeline. Add one SaaS company you've been meaning to research. That's it. One name.";}
+else if(pc===0){msg="You have been building in isolation. A practice without names in the pipeline is a garden with no seeds. The work you've done on your craft means nothing until it reaches a real company with a real problem. That is the only gap right now.";act="Right now: find one SaaS product whose homepage you immediately felt could be sharper. Add them to the Pipeline under Research.";}
+else if(wc<5){msg="The wins you haven't logged are making you feel like nothing is happening. But absence of logged evidence is not absence of progress. What did you actually do in the last three days? It counts. Even reading a review page, rewriting a headline in your notes, or sending one message. Log it.";act="Go to The Brief. Log two wins from the past three days — something you learned, created, or sent. Evidence matters even when it's small.";}
+else if(sc<20){msg="Your ledger is underfilled. This means you are building privately — which is necessary — but the authority it creates stays invisible to everyone, including you. One published piece changes the equation. Not because of the audience size. Because it makes your thinking real and examinable.";act="Write one LinkedIn post right now. Not a pitch. One sharp observation about something broken in SaaS copy you noticed this week. Publish it before you close this.";}
+else{msg="The dry feeling is part of the process. Quiet persuasion is by definition slower and more deliberate than loud persuasion. You are building something that lasts, which means it builds slowly. The compound interest on consistent, deliberate work is real — even when you cannot see it accumulating.";act="Go back to your pipeline. Pick one prospect. Spend 20 minutes understanding their world better than they do. Read their customers' reviews. That is your work for today.";}
+document.getElementById('dry-msg').innerHTML=`<div class="dmsg">${msg}</div>`;
+document.getElementById('dry-act').innerHTML=`<div class="dact"><div class="dact-l">Do This Right Now</div><div class="dact-t">${act}</div></div>`;
+OM('ovl-dry');
+}
+
+function OM(id){document.getElementById(id).classList.add('on');}
+function CM(id){document.getElementById(id).classList.remove('on');}
+document.querySelectorAll('.ovl').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)CM(o.id);}));
+
+function ST(t){
+const ts=['brief','pipeline','ledger','arsenal','wins'];
+document.querySelectorAll('.tb').forEach((b,i)=>b.classList.toggle('on',ts[i]===t));
+document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===`tab-${t}`));
+}
+
+async function init(){
+await load();
+initDay();
+await save();
+renderAll();
+const ld=document.getElementById('loading');
+setTimeout(()=>{ld.classList.add('out');setTimeout(()=>ld.style.display='none',500);},900);
+}
+init();
+</script>
+</body>
+</html>

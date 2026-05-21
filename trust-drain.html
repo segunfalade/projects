@@ -4,887 +4,825 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trust Drain Scanner — Segun Falade</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0d0d;
-    --surface: #141414;
-    --surface2: #1c1c1c;
-    --border: #2a2a2a;
-    --border-light: #333;
-    --text: #e8e4dc;
-    --text-muted: #777;
-    --text-dim: #444;
-    --accent: #c8a96e;
-    --accent-dim: rgba(200, 169, 110, 0.12);
-    --accent-mid: rgba(200, 169, 110, 0.25);
-    --red: #e05c5c;
-    --red-dim: rgba(224, 92, 92, 0.12);
-    --green: #6fcf97;
-    --green-dim: rgba(111, 207, 151, 0.1);
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: rgba(255,255,255,0.07);
+    --border-active: rgba(201,168,76,0.35);
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --gold-dim: rgba(201,168,76,0.12);
+    --white: #f0ede8;
+    --muted: rgba(240,237,232,0.45);
+    --muted2: rgba(240,237,232,0.25);
+    --red: #e05252;
+    --red-dim: rgba(224,82,82,0.12);
+    --amber: #e09952;
+    --amber-dim: rgba(224,153,82,0.12);
+    --green: #52c4a0;
+    --green-dim: rgba(82,196,160,0.12);
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
 
   body {
     background: var(--bg);
-    color: var(--text);
-    font-family: 'Sora', sans-serif;
-    font-size: 15px;
-    line-height: 1.6;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
     min-height: 100vh;
+    line-height: 1.6;
   }
 
-  /* --- HEADER --- */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 28px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    background: rgba(13,13,13,0.95);
-    backdrop-filter: blur(10px);
-    z-index: 100;
-  }
-
-  .logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 20px;
-    color: var(--accent);
-    letter-spacing: 0.01em;
-  }
-
-  .logo span {
-    color: var(--text-muted);
-    font-style: italic;
-    font-size: 14px;
-    margin-left: 10px;
-    font-family: 'Sora', sans-serif;
-    font-weight: 300;
-  }
-
-  .header-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border: 1px solid var(--border);
-    padding: 5px 12px;
-    border-radius: 2px;
-  }
-
-  /* --- HERO --- */
-  .hero {
-    padding: 72px 40px 56px;
-    max-width: 860px;
-  }
-
-  .hero-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .hero-eyebrow::before {
+  /* Grain */
+  body::before {
     content: '';
-    display: block;
-    width: 24px;
-    height: 1px;
-    background: var(--accent);
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
   }
 
-  .hero h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(34px, 5vw, 52px);
-    line-height: 1.1;
-    color: var(--text);
-    margin-bottom: 20px;
-    letter-spacing: -0.01em;
-  }
+  /* Layout */
+  .page { max-width: 780px; margin: 0 auto; padding: 60px 24px 80px; }
 
-  .hero h1 em {
-    color: var(--accent);
-    font-style: italic;
-  }
-
-  .hero p {
-    color: var(--text-muted);
-    font-size: 15px;
-    font-weight: 300;
-    max-width: 560px;
-    line-height: 1.7;
-  }
-
-  /* --- MAIN LAYOUT --- */
-  .main {
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 0;
-    border-top: 1px solid var(--border);
-    min-height: calc(100vh - 280px);
-  }
-
-  /* --- LEFT PANEL --- */
-  .left-panel {
-    border-right: 1px solid var(--border);
-    padding: 36px 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .panel-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.1em;
+  /* Header */
+  .header { margin-bottom: 56px; }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 8px;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  .title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .title em { font-style: italic; color: var(--gold); }
+  .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 32px;
+  }
+  .divider {
+    width: 48px;
+    height: 2px;
+    background: var(--gold);
   }
 
-  .input-area {
-    position: relative;
-    flex: 1;
+  /* Input area */
+  .input-section { margin-bottom: 32px; }
+  .input-label {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: block;
   }
-
   textarea {
     width: 100%;
-    min-height: 320px;
+    min-height: 220px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text);
-    font-family: 'Sora', sans-serif;
-    font-size: 14px;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
     font-weight: 300;
-    line-height: 1.75;
+    line-height: 1.7;
     padding: 20px;
     resize: vertical;
     outline: none;
     transition: border-color 0.2s;
   }
+  textarea:focus { border-color: var(--border-active); }
+  textarea::placeholder { color: var(--muted2); }
 
-  textarea::placeholder {
-    color: var(--text-dim);
-    font-style: italic;
+  .input-hint {
+    font-size: 12px;
+    color: var(--muted2);
+    margin-top: 8px;
   }
 
-  textarea:focus {
-    border-color: var(--border-light);
-  }
-
-  .output-area {
-    min-height: 320px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 20px;
-    font-size: 14px;
-    font-weight: 300;
-    line-height: 1.85;
-    display: none;
-  }
-
-  .output-area mark {
-    background: rgba(224, 92, 92, 0.25);
-    color: #f09090;
-    border-radius: 2px;
-    padding: 1px 3px;
-    font-weight: 500;
-    cursor: pointer;
-    border-bottom: 1px solid rgba(224, 92, 92, 0.5);
-    transition: background 0.15s;
-  }
-
-  .output-area mark:hover {
-    background: rgba(224, 92, 92, 0.4);
-  }
-
-  .output-area mark.active {
-    background: rgba(224, 92, 92, 0.55);
-    outline: 1px solid var(--red);
-  }
-
-  .action-row {
-    display: flex;
-    gap: 12px;
+  /* Scan button */
+  .scan-btn {
+    display: inline-flex;
     align-items: center;
-  }
-
-  .btn-scan {
-    background: var(--accent);
-    color: #0d0d0d;
+    gap: 12px;
+    background: var(--gold);
+    color: #0a0a0f;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 16px 32px;
     border: none;
-    padding: 12px 28px;
-    font-family: 'Sora', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
     cursor: pointer;
-    border-radius: 3px;
-    transition: opacity 0.2s, transform 0.1s;
+    transition: all 0.2s;
+    margin-top: 20px;
   }
+  .scan-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .scan-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-  .btn-scan:hover { opacity: 0.88; }
-  .btn-scan:active { transform: scale(0.98); }
-
-  .btn-reset {
+  .clear-btn {
+    display: inline-flex;
+    align-items: center;
     background: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-    padding: 12px 20px;
-    font-family: 'Sora', sans-serif;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
     font-size: 13px;
+    font-weight: 400;
+    padding: 16px 20px;
+    border: none;
     cursor: pointer;
-    border-radius: 3px;
-    transition: border-color 0.2s, color 0.2s;
-    display: none;
+    transition: color 0.2s;
+    margin-top: 20px;
+    margin-left: 8px;
+  }
+  .clear-btn:hover { color: var(--white); }
+
+  /* Results */
+  #results { display: none; margin-top: 48px; }
+  #results.visible { display: block; }
+
+  .results-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
   }
 
-  .btn-reset:hover { border-color: var(--text-dim); color: var(--text); }
+  .score-block { display: flex; align-items: center; gap: 20px; }
 
-  .word-count {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-left: auto;
-  }
-
-  /* --- RIGHT PANEL --- */
-  .right-panel {
-    padding: 36px 32px;
+  .score-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid;
+    flex-shrink: 0;
   }
-
-  /* --- SCORE BLOCK --- */
-  .score-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 24px;
-    display: none;
-  }
-
-  .score-block.visible { display: block; }
-
-  .score-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 12px;
-  }
-
-  .score-number {
+  .score-num {
     font-family: 'DM Serif Display', serif;
-    font-size: 56px;
+    font-size: 24px;
     line-height: 1;
+  }
+  .score-sub {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+
+  .score-verdict h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
     margin-bottom: 4px;
   }
-
-  .score-number.clean { color: var(--green); }
-  .score-number.warning { color: var(--accent); }
-  .score-number.danger { color: var(--red); }
-
-  .score-desc {
+  .score-verdict p {
     font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 300;
-    line-height: 1.5;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
+    color: var(--muted);
+    max-width: 340px;
+    line-height: 1.6;
   }
 
-  .score-bar-wrap {
-    margin-top: 14px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .score-bar {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.6s ease;
-  }
-
-  .score-bar.clean { background: var(--green); }
-  .score-bar.warning { background: var(--accent); }
-  .score-bar.danger { background: var(--red); }
-
-  /* --- FINDINGS --- */
-  .findings-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-
-  .findings-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.1em;
+  /* Highlighted copy */
+  .copy-preview-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--text-dim);
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  #highlighted-copy {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--white);
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-bottom: 40px;
+  }
+  .drain-highlight {
+    background: rgba(224,82,82,0.2);
+    color: #ff8080;
+    border-bottom: 2px solid var(--red);
+    cursor: pointer;
+    border-radius: 2px;
+    padding: 1px 2px;
+    transition: background 0.15s;
+  }
+  .drain-highlight:hover { background: rgba(224,82,82,0.35); }
+
+  /* Findings */
+  .findings-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 16px;
   }
 
   .findings-count {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--red);
+    margin-bottom: 4px;
   }
-
-  .findings-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    display: none;
-  }
-
-  .findings-list.visible { display: flex; }
+  .findings-count.amber { color: var(--amber); }
+  .findings-count.green { color: var(--green); }
 
   .finding-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 14px 16px;
-    cursor: pointer;
-    transition: border-color 0.15s;
     border-left: 3px solid var(--red);
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
   }
-
-  .finding-card:hover { border-color: var(--border-light); }
-  .finding-card.active { border-color: var(--red); background: var(--red-dim); }
+  .finding-card:hover { border-left-color: var(--gold); }
 
   .finding-word {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--red);
-    font-weight: 500;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--white);
+    margin-bottom: 2px;
   }
-
-  .finding-word .hit-count {
+  .finding-count-badge {
+    display: inline-block;
     font-size: 10px;
-    color: var(--text-dim);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 2px 7px;
-    border-radius: 10px;
+    font-weight: 600;
+    color: var(--red);
+    background: var(--red-dim);
+    padding: 2px 8px;
+    letter-spacing: 0.08em;
+    margin-left: 8px;
+    vertical-align: middle;
+    text-transform: uppercase;
+  }
+  .finding-why {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 10px 0 12px;
+    line-height: 1.6;
+  }
+  .finding-fix-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .finding-fix {
+    font-size: 14px;
+    color: var(--white);
+    font-style: italic;
+    line-height: 1.6;
+    padding: 12px 16px;
+    background: var(--gold-dim);
+    border-left: 2px solid var(--gold);
   }
 
-  .finding-why {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 300;
-    line-height: 1.5;
+  /* Clean result */
+  .clean-result {
+    background: var(--green-dim);
+    border: 1px solid rgba(82,196,160,0.25);
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .clean-result h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--green);
     margin-bottom: 8px;
   }
-
-  .finding-alt {
-    font-size: 12px;
-    color: var(--green);
-    font-weight: 400;
-    background: var(--green-dim);
-    border-radius: 3px;
-    padding: 6px 10px;
-    line-height: 1.5;
-    border-left: 2px solid var(--green);
+  .clean-result p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
   }
 
-  .finding-alt::before {
-    content: 'Try instead → ';
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.05em;
+  /* CTA block */
+  .cta-block {
+    margin-top: 48px;
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border-active);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+  .cta-block h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  .cta-block p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    max-width: 480px;
+  }
+  .cta-block p strong { color: var(--white); font-weight: 500; }
+  .cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--gold);
+    color: #0a0a0f;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--green);
-    display: block;
-    margin-bottom: 3px;
+    padding: 15px 28px;
+    text-decoration: none;
+    transition: all 0.2s;
   }
+  .cta-link:hover { background: var(--gold-light); transform: translateY(-1px); }
 
-  /* --- EMPTY STATE --- */
-  .empty-state {
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--text-dim);
-  }
-
-  .empty-state .icon {
-    font-size: 32px;
-    margin-bottom: 14px;
-    opacity: 0.4;
-  }
-
-  .empty-state p {
-    font-size: 13px;
-    line-height: 1.6;
-    font-weight: 300;
-  }
-
-  /* --- CLEAN STATE --- */
-  .clean-state {
-    text-align: center;
-    padding: 40px 20px;
-    display: none;
-  }
-
-  .clean-state .icon {
-    font-size: 32px;
-    margin-bottom: 14px;
-  }
-
-  .clean-state p {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 300;
-    line-height: 1.6;
-  }
-
-  /* --- FOOTER --- */
-  footer {
+  /* Signature */
+  .sig {
+    margin-top: 48px;
+    padding-top: 24px;
     border-top: 1px solid var(--border);
-    padding: 24px 40px;
+    font-size: 12px;
+    color: var(--muted2);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
   }
+  .sig-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
 
-  footer p {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
+  /* Anim */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
   }
+  #results.visible { animation: fadeUp 0.4s ease forwards; }
 
-  footer a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  footer a:hover { text-decoration: underline; }
-
-  /* --- RESPONSIVE --- */
-  @media (max-width: 900px) {
-    header { padding: 20px 24px; }
-    .hero { padding: 48px 24px 40px; }
-    .main { grid-template-columns: 1fr; }
-    .left-panel { border-right: none; border-bottom: 1px solid var(--border); padding: 28px 24px; }
-    .right-panel { padding: 28px 24px; }
-    footer { padding: 20px 24px; flex-direction: column; gap: 8px; align-items: flex-start; }
+  @media (max-width: 520px) {
+    .page { padding: 48px 18px 64px; }
+    .results-header { flex-direction: column; }
   }
 </style>
 </head>
 <body>
+<div class="page">
 
-<header>
-  <div class="logo">Trust Drain Scanner <span>by Segun Falade</span></div>
-  <div class="header-tag">PropTech & FinTech Messaging</div>
-</header>
+  <!-- HEADER -->
+  <div class="header">
+    <p class="eyebrow">Segun Falade · Copy Strategist for PropTech & FinTech</p>
+    <h1 class="title">The Trust Drain <em>Scanner</em></h1>
+    <p class="subtitle">Paste your homepage copy, pitch deck, or any brand messaging below. The scanner will find every word that is quietly costing you trust — and tell you exactly what to use instead.</p>
+    <div class="divider"></div>
+  </div>
 
-<div class="hero">
-  <div class="hero-eyebrow">Messaging Diagnostic</div>
-  <h1>Your copy might be leaking<br><em>trust you haven't earned yet.</em></h1>
-  <p>Paste your homepage hero, tagline, or any messaging asset. The scanner identifies every trust drain word — the language that makes buyers look past you without knowing why.</p>
-</div>
+  <!-- INPUT -->
+  <div class="input-section">
+    <label class="input-label" for="copy-input">Paste your copy here</label>
+    <textarea id="copy-input" placeholder="Paste your homepage hero, tagline, about section, pitch deck copy, or any brand messaging you want scanned..."></textarea>
+    <p class="input-hint">Works best with homepage copy, hero sections, or pitch deck messaging. Minimum 20 words for a meaningful scan.</p>
+    <button class="scan-btn" onclick="runScan()">Scan for trust drains →</button>
+    <button class="clear-btn" onclick="clearAll()">Clear</button>
+  </div>
 
-<div class="main">
-
-  <!-- LEFT: INPUT / OUTPUT -->
-  <div class="left-panel">
-    <div>
-      <div class="panel-label">Your Copy</div>
-      <div class="input-area">
-        <textarea id="copyInput" placeholder="Paste your homepage hero, tagline, LinkedIn bio, pitch deck intro, or any copy you want scanned…" rows="14"></textarea>
-        <div id="outputArea" class="output-area"></div>
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="results-header">
+      <div class="score-block">
+        <div class="score-circle" id="score-circle">
+          <span class="score-num" id="score-num">0</span>
+          <span class="score-sub">drains</span>
+        </div>
+        <div class="score-verdict">
+          <h3 id="verdict-title"></h3>
+          <p id="verdict-body"></p>
+        </div>
       </div>
     </div>
 
-    <div class="action-row">
-      <button class="btn-scan" onclick="runScan()">Scan for Trust Drains</button>
-      <button class="btn-reset" id="resetBtn" onclick="resetTool()">Start Over</button>
-      <span class="word-count" id="wordCount"></span>
+    <div id="clean-block" style="display:none">
+      <div class="clean-result">
+        <h3>No trust drain words found.</h3>
+        <p>Your copy passed the scan. That said, the absence of trust drain words doesn't guarantee your messaging is building trust — it means the most common offenders aren't present. A deeper audit looks at specificity, proof architecture, and buyer psychology.</p>
+      </div>
+    </div>
+
+    <div id="findings-block" style="display:none">
+      <p class="copy-preview-label">Your copy — flagged instances highlighted</p>
+      <div id="highlighted-copy"></div>
+      <p class="findings-label">What was found</p>
+      <div id="findings-list"></div>
+    </div>
+
+    <div class="cta-block">
+      <h3>Want a deeper diagnosis?</h3>
+      <p>The Trust Drain Scanner finds the words. A <strong>personalised messaging audit</strong> goes further — reviewing your homepage, pitch deck, and core messaging flows to show exactly where trust is leaking, what it's costing you in pipeline, and the specific rewrites that close the gap.</p>
+      <a class="cta-link" href="https://calendly.com/segunfalade/messaging-audit" target="_blank">Book a free audit call →</a>
+    </div>
+
+    <div class="sig">
+      <span class="sig-dot"></span>
+      <span>Segun Falade &nbsp;·&nbsp; Copy Strategist for PropTech & FinTech &nbsp;·&nbsp; segunfalade.com</span>
     </div>
   </div>
 
-  <!-- RIGHT: RESULTS -->
-  <div class="right-panel">
-
-    <div class="score-block" id="scoreBlock">
-      <div class="score-label">Trust Drain Score</div>
-      <div class="score-number" id="scoreNumber">0</div>
-      <div class="score-bar-wrap"><div class="score-bar" id="scoreBar" style="width:0%"></div></div>
-      <div class="score-desc" id="scoreDesc"></div>
-    </div>
-
-    <div>
-      <div class="findings-header">
-        <div class="findings-title">Flagged Words</div>
-        <div class="findings-count" id="findingsCount"></div>
-      </div>
-
-      <div class="empty-state" id="emptyState">
-        <div class="icon">◎</div>
-        <p>Paste your copy and hit<br>Scan to see what's leaking trust.</p>
-      </div>
-
-      <div class="clean-state" id="cleanState">
-        <div class="icon">✦</div>
-        <p style="color: var(--green);">No trust drain words found.</p>
-        <p>Your copy passed the scan. That's a strong baseline — but trust also lives in what's missing. Consider whether your proof architecture is solid.</p>
-      </div>
-
-      <div class="findings-list" id="findingsList"></div>
-    </div>
-
-  </div>
 </div>
-
-<footer>
-  <p>Built by <a href="https://linkedin.com/in/segunfalade" target="_blank">Segun Falade</a> — Copy Strategist, Trust-First Industries</p>
-  <p>Want a full messaging audit? <a href="https://calendly.com/segunfalade/messaging-audit" target="_blank">Book here →</a></p>
-</footer>
 
 <script>
-// ─────────────────────────────────────────────
-// TRUST DRAIN WORD LIST
-// Each entry: { root (regex pattern), label, why, alt }
-// Root uses regex — catches all word variations
-// ─────────────────────────────────────────────
-const TRUST_DRAINS = [
+const DRAIN_WORDS = [
   {
-    root: /\binnovati(ve|on|ng|ons)\b/gi,
-    label: "Innovative / Innovation",
-    why: "Every brand claims this. It stopped meaning anything the moment it became the default adjective for tech companies.",
-    alt: "Show what specifically is new: \"The first platform that [does X].\" If you can't name the first, don't claim innovation."
+    word: "innovative",
+    why: "Everyone in tech is 'innovative.' The word carries zero information and signals that the brand hasn't thought specifically about what makes it different.",
+    fix: "Show what's specifically new: \"The first platform that [specific mechanism or outcome].\""
   },
   {
-    root: /\bseamless(ly)?\b/gi,
-    label: "Seamless",
-    why: "Buyers have been burned by \"seamless\" too many times. It now signals broken onboarding more than smooth experience.",
-    alt: "\"Set up in 48 hours. No IT team needed.\" Make the experience tangible and time-bound."
+    word: "innovation",
+    why: "Same problem as 'innovative' — broad, overused, and meaningless without a specific claim attached.",
+    fix: "Name the specific innovation: what it does, how it works, what it changes for the buyer."
   },
   {
-    root: /\bcutting.?edge\b/gi,
-    label: "Cutting-edge",
-    why: "Vague technology claim with no proof attached. It says nothing about what the technology actually does.",
-    alt: "Name the specific technology and its measurable impact on the user's problem."
+    word: "seamless",
+    why: "Buyers have been burned by 'seamless' before. It's become the default promise of every platform that made onboarding painful.",
+    fix: "\"Set up in 48 hours. No IT team needed. Your first [outcome] happens automatically on day one.\""
   },
   {
-    root: /\btransform(s|ed|ing|ation|ational)?\b/gi,
-    label: "Transform / Transforming",
-    why: "Abstract, overused, creates no picture in the reader's mind. The word has been stripped of meaning through repetition.",
-    alt: "\"Go from 12 hours of admin per week to 2.\" Describe the specific before and after."
+    word: "cutting-edge",
+    why: "A vague technology claim with nothing behind it. The buyer can't verify it and has no reason to believe it.",
+    fix: "Name the specific technology and its specific impact on the buyer's outcome."
   },
   {
-    root: /\brevolution(ise|ize|ary|ising|izing|ised|ized)?\b/gi,
-    label: "Revolutionise / Revolutionary",
-    why: "The most overused word in PropTech and FinTech. When every brand is revolutionary, none of them are.",
-    alt: "Describe the specific change you're creating. Let journalists call it revolutionary later."
+    word: "transform",
+    why: "Abstract, overused, creates no picture. 'Transform' has appeared on thousands of PropTech and FinTech homepages without delivering the promised transformation.",
+    fix: "\"Go from [specific before] to [specific after].\""
   },
   {
-    root: /\bend.to.end\b/gi,
-    label: "End-to-end",
-    why: "Sounds comprehensive on paper. Reads as complicated in practice. Buyers hear \"long setup\" and \"expensive integration.\"",
-    alt: "\"One platform for listings, payments, and maintenance.\" Name the specific capabilities."
+    word: "transforming",
+    why: "Same problem — abstract claim that creates no picture and makes no verifiable promise.",
+    fix: "Describe the specific change: what stops happening, what starts happening, and when."
   },
   {
-    root: /\bstreamline[sd]?\b/gi,
-    label: "Streamline / Streamlined",
-    why: "Used by every SaaS company in existence. Carries no specific meaning for any specific buyer.",
-    alt: "\"Eliminate the back-and-forth.\" Or name what specifically gets cut: \"No more chasing rent on WhatsApp.\""
+    word: "transformation",
+    why: "Overused abstraction that buyers have learned to discount automatically.",
+    fix: "Show the before and after in concrete, specific terms."
   },
   {
-    root: /\bempowers?\b/gi,
-    label: "Empower / Empowers",
-    why: "Corporate buzzword that creates no image. Doesn't tell the buyer what they can actually do that they couldn't before.",
-    alt: "\"Gives you full control over [specific thing].\" Make the power transfer concrete."
+    word: "revolutionise",
+    why: "The most overused word in PropTech. Has lost all meaning through repetition.",
+    fix: "Describe the specific change you're creating. Let journalists call it a revolution."
   },
   {
-    root: /\bbest.in.class\b/gi,
-    label: "Best-in-class",
-    why: "Self-declared superlative. Zero credibility. Buyers know you wrote it about yourself.",
-    alt: "Use a third-party comparison, a named award, or a specific client quote that makes the same point."
+    word: "revolutionize",
+    why: "Same as 'revolutionise' — the claim is empty without evidence of what specifically changes.",
+    fix: "Name the problem, name the solution, name the result. That's more revolutionary than the word itself."
   },
   {
-    root: /\brobust\b/gi,
-    label: "Robust",
-    why: "Engineering language imported into marketing copy. Buyers don't think in terms of robustness — they think in terms of reliability.",
-    alt: "\"Handles 10,000 transactions without breaking.\" Give the stress test, not the adjective."
+    word: "end-to-end",
+    why: "Sounds comprehensive, but makes the buyer wonder what complexity they're committing to.",
+    fix: "\"One platform for [specific thing 1], [specific thing 2], and [specific thing 3].\""
   },
   {
-    root: /\bholistic\b/gi,
-    label: "Holistic",
-    why: "Often signals that a brand hasn't decided what it's actually selling. Holistic everything = specific nothing.",
-    alt: "Pick your core value and name it clearly. Breadth is not a positioning strategy."
+    word: "streamline",
+    why: "Used by every SaaS company in existence. Has stopped meaning anything specific.",
+    fix: "\"Eliminate the back-and-forth.\" Or name the specific time saved: \"Cuts the process from 4 days to 6 hours.\""
   },
   {
-    root: /\becosystem\b/gi,
-    label: "Ecosystem",
-    why: "Jargon that creates confusion, not clarity. Buyers don't want to join an ecosystem. They want to solve a problem.",
-    alt: "\"Everything connects — your listings, your payments, your tenants.\" Show the connection, not the concept."
+    word: "streamlined",
+    why: "Same problem — the word describes a feeling, not a result the buyer can hold you to.",
+    fix: "Name what specifically gets faster, easier, or simpler — with a number where possible."
   },
   {
-    root: /\b(smart|intelligent)\b/gi,
-    label: "Smart / Intelligent",
-    why: "Applied to every product with any AI feature. The word has been devalued to near-zero by overuse.",
-    alt: "\"Learns your pricing patterns and adjusts in real time.\" Name the specific intelligent behaviour."
+    word: "empower",
+    why: "Corporate buzzword that creates no image and makes no promise.",
+    fix: "\"Gives you control over [specific thing].\" Or show the capability directly."
   },
   {
-    root: /\btrusted by\b/gi,
-    label: "Trusted by [thousands]",
-    why: "Claimed trust is not earned trust. Saying it without showing who, what results, and why only triggers more scepticism.",
-    alt: "\"47 property firms in Lagos switched from [X] to us in 2025.\" Specific, named, verifiable."
+    word: "empowering",
+    why: "Same problem — emotional language with no specific claim attached.",
+    fix: "Show what the buyer can do after using your product that they couldn't do before."
   },
   {
-    root: /\bfuture.proof(ed|ing)?\b/gi,
-    label: "Future-proof",
-    why: "Promises something no brand can guarantee. Buyers know this. It reads as a filler claim.",
-    alt: "\"Built to integrate with tools you don't have yet.\" Ground the forward-looking claim in a specific capability."
+    word: "best-in-class",
+    why: "Self-declared superlative. No third party said it. No evidence supports it. Skeptical buyers treat it as noise.",
+    fix: "Use a verified third-party comparison, an industry award, or a specific client result instead."
   },
   {
-    root: /\bscalable\b/gi,
-    label: "Scalable",
-    why: "Means nothing to a buyer managing 5 properties today. It's a VC pitch word that landed in consumer copy and never left.",
-    alt: "\"Works for 1 property or 1,000.\" Show the range, not the concept."
+    word: "robust",
+    why: "Engineering language, not buyer language. Describes the product from the inside.",
+    fix: "\"Handles 10,000 transactions without breaking.\" Name what the robustness actually means in practice."
   },
   {
-    root: /\bdisrupt(s|ed|ing|ion|ive)?\b/gi,
-    label: "Disrupt / Disruption",
-    why: "Overused and sounds arrogant to buyers who just want their problem solved. It positions the brand, not the buyer.",
-    alt: "Describe the problem you're solving. Let analysts write the disruption narrative."
+    word: "holistic",
+    why: "Usually signals that the brand hasn't decided what it's actually selling.",
+    fix: "Pick your core value and name it clearly. Holistic is a placeholder for a positioning decision not yet made."
   },
   {
-    root: /\bplug.and.play\b/gi,
-    label: "Plug-and-play",
-    why: "Customers have been lied to by this claim too many times. It now triggers the opposite of reassurance.",
-    alt: "\"Up and running in one afternoon. We walk you through every step.\" Make the ease specific and supported."
+    word: "ecosystem",
+    why: "Jargon that creates confusion, not clarity.",
+    fix: "\"Everything connects — your [thing 1], your [thing 2], your [thing 3].\""
   },
   {
-    root: /\bone.stop.shop\b/gi,
-    label: "One-stop-shop",
-    why: "Dilutes your positioning by trying to claim everything. The brand that is everything to everyone is memorable to no one.",
-    alt: "Lead with your single strongest capability. Own one thing completely."
+    word: "smart",
+    why: "Applied to every product with any AI feature whatsoever. Means nothing anymore.",
+    fix: "\"Learns your [specific pattern] and adjusts [specific outcome] in real time.\""
   },
   {
-    root: /\bnext.gen(eration)?\b/gi,
-    label: "Next-generation",
-    why: "Vague generational claim with no substance behind it. Every company in the category is calling itself next-generation.",
-    alt: "\"The first platform to use [specific technology] for [specific outcome].\" Name what makes it actually different."
+    word: "intelligent",
+    why: "Same problem — the word describes a category, not a specific capability with a specific result.",
+    fix: "Name what the intelligence actually does: what it learns, what it adjusts, what it prevents."
   },
   {
-    root: /\bvalue.added\b/gi,
-    label: "Value-added",
-    why: "Jargon that adds no value. Ironically self-defeating: the phrase itself is the problem it claims to solve.",
-    alt: "Describe the specific additional value with a concrete number or outcome."
+    word: "trusted by thousands",
+    why: "Claimed credibility without evidence. No names, no results, no reason to believe the number is real.",
+    fix: "\"[Specific number] [specific type of client] in [specific market] switched from [X] to us in [year].\""
   },
   {
-    root: /\bdata.driven\b/gi,
-    label: "Data-driven",
-    why: "Every tech company is data-driven now. The phrase signals nothing because it describes everyone.",
-    alt: "\"Pulls from 3 million property transactions to price your listing.\" Name the data and what it enables."
+    word: "trusted by",
+    why: "Scale claims without specifics trigger skepticism in burned buyers — especially in PropTech and FinTech.",
+    fix: "Name a real client, their specific situation, and the specific result they got."
   },
   {
-    root: /\bfrictionless\b/gi,
-    label: "Frictionless",
-    why: "A UX promise that buyers have heard broken many times. It triggers scepticism before the demo even begins.",
-    alt: "\"No contracts. Cancel any month.\" Make the frictionless nature tangible and specific."
+    word: "future-proof",
+    why: "Promises something no brand can guarantee. Buyers know this, which makes the claim work against you.",
+    fix: "\"Built to integrate with tools you don't have yet.\" Describe the specific flexibility, not the promise of permanence."
   },
   {
-    root: /\bleverag(e|es|ed|ing)\b/gi,
-    label: "Leverage",
-    why: "Corporate filler imported from consulting decks. It adds syllables without adding meaning.",
-    alt: "Just say \"use.\" Simple, direct language is almost always more powerful."
+    word: "scalable",
+    why: "Means nothing to a buyer managing 10 properties or a small FinTech portfolio.",
+    fix: "\"Works for 1 property or 1,000.\" Name the actual range your platform serves."
   },
   {
-    root: /\bgame.changer\b/gi,
-    label: "Game-changer",
-    why: "Hyperbole that triggers scepticism, not excitement. The more extreme the claim, the more proof the reader demands.",
-    alt: "Let your customer's results speak: \"Reduced vacancies by 34%.\" Let the number do what the adjective can't."
+    word: "disrupting",
+    why: "Overused and sounds arrogant to buyers. The market doesn't want to be disrupted — it wants its specific problem solved.",
+    fix: "Describe the problem you're solving. Let journalists say you're disrupting."
+  },
+  {
+    word: "disruptive",
+    why: "Same problem — describes the brand's self-image, not the buyer's outcome.",
+    fix: "Lead with the problem. The disruption is implied by the solution."
+  },
+  {
+    word: "plug-and-play",
+    why: "Buyers don't believe this anymore. Too many 'plug-and-play' products required months of implementation.",
+    fix: "\"Up and running in one afternoon. We walk you through every step.\""
+  },
+  {
+    word: "one-stop-shop",
+    why: "Dilutes positioning. Trying to be everything signals you haven't decided what you're best at.",
+    fix: "Lead with your single strongest capability. The breadth becomes supporting evidence, not the headline."
+  },
+  {
+    word: "next-generation",
+    why: "Vague generational claim with nothing specific behind it.",
+    fix: "\"The first platform to use [specific technology] for [specific outcome].\""
+  },
+  {
+    word: "next generation",
+    why: "Same — the claim only lands if you name what specifically is generationally different.",
+    fix: "Name the specific mechanism that makes this generation of the product different from the last."
+  },
+  {
+    word: "value-added",
+    why: "Jargon that adds no value. A self-referential claim with nothing concrete inside it.",
+    fix: "Describe the specific additional value in plain terms: what it is, what it does, what it prevents."
+  },
+  {
+    word: "data-driven",
+    why: "Every tech company claims to be data-driven. The phrase has lost all differentiating power.",
+    fix: "\"Pulls from [specific number] [specific data source] to [specific outcome].\""
+  },
+  {
+    word: "frictionless",
+    why: "Another UX promise that buyers have heard broken too many times.",
+    fix: "\"No contracts. Cancel any month.\" Or: \"Your first [outcome] in under [specific time].\""
+  },
+  {
+    word: "leverage",
+    why: "Corporate filler word that delays the real point.",
+    fix: "Just say 'use.' Or name the specific advantage being applied."
+  },
+  {
+    word: "game-changer",
+    why: "Hyperbole that triggers skepticism. The bigger the claim, the more proof it needs.",
+    fix: "Let your customer's results speak: \"Reduced vacancies by 34%.\" That's a game-changer without saying it."
+  },
+  {
+    word: "world-class",
+    why: "Self-declared superlative with no evidence. Buyers have learned to ignore it.",
+    fix: "Show what 'world-class' looks like in practice: a specific result, a named client, a verified comparison."
+  },
+  {
+    word: "state-of-the-art",
+    why: "Vague technology claim. Means the brand is describing its own perception of itself.",
+    fix: "Name the specific technology. Show what it produces that competitors can't."
+  },
+  {
+    word: "comprehensive",
+    why: "Signals complexity to skeptical buyers. 'Comprehensive' often means 'hard to use' in their experience.",
+    fix: "Name what's included that matters to the buyer. Specifics beat scope claims."
+  },
+  {
+    word: "powerful",
+    why: "Every platform is 'powerful.' The word has no weight left.",
+    fix: "Show the power: \"Processes 10,000 transactions in under 3 seconds.\""
+  },
+  {
+    word: "easy to use",
+    why: "A claim that requires proof, not assertion. Buyers have been burned by 'easy' platforms that weren't.",
+    fix: "\"Your team is live in one afternoon. No training required.\""
+  },
+  {
+    word: "user-friendly",
+    why: "Same problem — the friendliness needs to be demonstrated, not claimed.",
+    fix: "Show the onboarding timeline or the support structure. Let the simplicity be visible."
+  },
+  {
+    word: "cutting edge",
+    why: "Vague technology claim with nothing verifiable behind it.",
+    fix: "Name the specific technology and its specific impact on what the buyer cares about."
+  },
+  {
+    word: "industry-leading",
+    why: "Self-declared leadership. No source. No evidence. No reason to believe it.",
+    fix: "\"#1 rated by [specific source] for [specific outcome].\" Or use a specific market share or client number."
+  },
+  {
+    word: "best in class",
+    why: "Same as 'best-in-class' — a superlative the brand assigned to itself.",
+    fix: "Let a third party say it. Or show the specific comparison that earns the claim."
+  },
+  {
+    word: "reimagine",
+    why: "Abstract aspiration language that creates no picture and makes no promise.",
+    fix: "Show what the reimagined version specifically looks like for the buyer."
+  },
+  {
+    word: "reimagining",
+    why: "Same — the word describes an intention, not an outcome.",
+    fix: "Describe the specific change: what stops happening, what starts happening."
+  },
+  {
+    word: "redefine",
+    why: "Overused in PropTech and FinTech. The market has stopped believing in brand-declared redefinitions.",
+    fix: "Show the specific difference. If it genuinely redefines something, the evidence will say so."
+  },
+  {
+    word: "redefining",
+    why: "Same problem — abstract claim that needs specific proof to land.",
+    fix: "Name what specifically is being changed and show the before-and-after."
   }
 ];
 
-// ─────────────────────────────────────────────
-// CORE SCAN LOGIC
-// ─────────────────────────────────────────────
-
-let activeCard = null;
-let activeMarks = [];
-
-function updateWordCount() {
-  const text = document.getElementById('copyInput').value;
-  const words = text.trim().split(/\s+/).filter(w => w.length > 0);
-  const wc = document.getElementById('wordCount');
-  wc.textContent = words.length > 0 ? `${words.length} words` : '';
-}
-
-document.getElementById('copyInput').addEventListener('input', updateWordCount);
-
 function runScan() {
-  const raw = document.getElementById('copyInput').value.trim();
-  if (!raw) return;
-
-  // Find all matches
-  const findings = [];
-  TRUST_DRAINS.forEach(drain => {
-    drain.root.lastIndex = 0;
-    const matches = [...raw.matchAll(drain.root)];
-    if (matches.length > 0) {
-      findings.push({ ...drain, matches, count: matches.length });
-    }
-  });
-
-  // Build highlighted HTML
-  let html = raw;
-  // We need to replace in reverse order to preserve indices
-  const allMatches = [];
-  findings.forEach((f, fi) => {
-    f.root.lastIndex = 0;
-    let m;
-    const re = new RegExp(f.root.source, f.root.flags);
-    while ((m = re.exec(raw)) !== null) {
-      allMatches.push({ index: m.index, length: m[0].length, word: m[0], fi });
-    }
-  });
-
-  allMatches.sort((a, b) => b.index - a.index);
-  let chars = raw.split('');
-  allMatches.forEach(m => {
-    const tag = `<mark data-fi="${m.fi}" onclick="highlightCard(${m.fi})">${m.word}</mark>`;
-    chars.splice(m.index, m.length, tag);
-  });
-  html = chars.join('').replace(/\n/g, '<br>');
-
-  // Show output
-  const textarea = document.getElementById('copyInput');
-  const output = document.getElementById('outputArea');
-  textarea.style.display = 'none';
-  output.innerHTML = html;
-  output.style.display = 'block';
-  document.getElementById('resetBtn').style.display = 'inline-block';
-
-  // Score
-  const totalDrains = findings.reduce((sum, f) => sum + f.count, 0);
-  renderScore(totalDrains, findings.length);
-  renderFindings(findings);
-}
-
-function renderScore(total, uniqueCount) {
-  const block = document.getElementById('scoreBlock');
-  const num = document.getElementById('scoreNumber');
-  const bar = document.getElementById('scoreBar');
-  const desc = document.getElementById('scoreDesc');
-
-  block.classList.add('visible');
-  num.textContent = total;
-
-  const pct = Math.min(100, (total / 10) * 100);
-  bar.style.width = pct + '%';
-
-  if (total === 0) {
-    num.className = 'score-number clean';
-    bar.className = 'score-bar clean';
-    desc.textContent = 'No trust drain words detected. Strong baseline. Now audit your proof architecture.';
-  } else if (total <= 3) {
-    num.className = 'score-number warning';
-    bar.className = 'score-bar warning';
-    desc.textContent = `${total} drain${total > 1 ? 's' : ''} found across ${uniqueCount} word type${uniqueCount > 1 ? 's' : ''}. Fixable with targeted rewrites.`;
-  } else {
-    num.className = 'score-number danger';
-    bar.className = 'score-bar danger';
-    desc.textContent = `${total} drain${total > 1 ? 's' : ''} found across ${uniqueCount} word type${uniqueCount > 1 ? 's' : ''}. Your messaging is leaking trust at multiple points. Start with the highest-frequency hits.`;
-  }
-}
-
-function renderFindings(findings) {
-  const list = document.getElementById('findingsList');
-  const empty = document.getElementById('emptyState');
-  const clean = document.getElementById('cleanState');
-  const count = document.getElementById('findingsCount');
-
-  empty.style.display = 'none';
-
-  if (findings.length === 0) {
-    clean.style.display = 'block';
-    list.classList.remove('visible');
-    count.textContent = '';
+  const raw = document.getElementById('copy-input').value.trim();
+  if (raw.length < 20) {
+    alert('Please paste at least 20 words of copy to scan.');
     return;
   }
 
-  clean.style.display = 'none';
-  count.textContent = `${findings.length} type${findings.length > 1 ? 's' : ''} flagged`;
+  const findings = [];
+  const lowerCopy = raw.toLowerCase();
 
-  // Sort by frequency
-  findings.sort((a, b) => b.count - a.count);
-
-  list.innerHTML = '';
-  findings.forEach((f, i) => {
-    const card = document.createElement('div');
-    card.className = 'finding-card';
-    card.dataset.fi = i;
-    card.innerHTML = `
-      <div class="finding-word">
-        ${f.label}
-        <span class="hit-count">${f.count}×</span>
-      </div>
-      <div class="finding-why">${f.why}</div>
-      <div class="finding-alt">${f.alt}</div>
-    `;
-    card.addEventListener('click', () => highlightCard(i));
-    list.appendChild(card);
+  DRAIN_WORDS.forEach(drain => {
+    const regex = new RegExp('\\b' + drain.word.replace(/-/g, '[\\s-]') + '\\b', 'gi');
+    const matches = raw.match(regex);
+    if (matches) {
+      findings.push({ ...drain, count: matches.length });
+    }
   });
 
-  list.classList.add('visible');
+  // De-duplicate (catch both "best-in-class" and "best in class" etc)
+  const seen = new Set();
+  const uniqueFindings = findings.filter(f => {
+    if (seen.has(f.word)) return false;
+    seen.add(f.word);
+    return true;
+  });
+
+  renderResults(raw, uniqueFindings);
 }
 
-function highlightCard(fi) {
-  // Toggle active state on cards
-  document.querySelectorAll('.finding-card').forEach((c, i) => {
-    c.classList.toggle('active', i === fi);
-  });
+function renderResults(original, findings) {
+  const resultsEl = document.getElementById('results');
+  const scoreCircle = document.getElementById('score-circle');
+  const scoreNum = document.getElementById('score-num');
+  const verdictTitle = document.getElementById('verdict-title');
+  const verdictBody = document.getElementById('verdict-body');
+  const cleanBlock = document.getElementById('clean-block');
+  const findingsBlock = document.getElementById('findings-block');
+  const findingsList = document.getElementById('findings-list');
+  const highlightedCopy = document.getElementById('highlighted-copy');
 
-  // Highlight marks
-  document.querySelectorAll('mark').forEach(m => {
-    m.classList.toggle('active', parseInt(m.dataset.fi) === fi);
-  });
+  const count = findings.length;
+  scoreNum.textContent = count;
 
-  // Scroll first mark into view
-  const first = document.querySelector(`mark[data-fi="${fi}"]`);
-  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  let color, title, body;
+  if (count === 0) {
+    color = '#52c4a0';
+    title = 'No trust drain words detected.';
+    body = 'Your copy passed this scan. Consider a deeper audit for specificity and proof architecture.';
+    scoreCircle.style.borderColor = color;
+    scoreNum.style.color = color;
+    cleanBlock.style.display = 'block';
+    findingsBlock.style.display = 'none';
+  } else if (count <= 3) {
+    color = '#e09952';
+    title = count === 1 ? '1 trust drain word found.' : `${count} trust drain words found.`;
+    body = 'A small number of trust drain words. Each one is a signal to a burned buyer that you\'re the same as what came before. Fix these and your copy will land harder.';
+    scoreCircle.style.borderColor = color;
+    scoreNum.style.color = color;
+    cleanBlock.style.display = 'none';
+    findingsBlock.style.display = 'block';
+  } else {
+    color = '#e05252';
+    title = `${count} trust drain words found.`;
+    body = 'Your copy contains multiple trust drain words — each one quietly signalling to a skeptical buyer that they\'ve heard this before. This is costing you conversions you should be winning.';
+    scoreCircle.style.borderColor = color;
+    scoreNum.style.color = color;
+    cleanBlock.style.display = 'none';
+    findingsBlock.style.display = 'block';
+  }
+
+  verdictTitle.textContent = title;
+  verdictBody.textContent = body;
+
+  // Highlight copy
+  if (findings.length > 0) {
+    let highlighted = escapeHtml(original);
+    findings.forEach(f => {
+      const regex = new RegExp('\\b(' + f.word.replace(/-/g, '[\\s\\-]') + ')\\b', 'gi');
+      highlighted = highlighted.replace(regex, `<span class="drain-highlight" title="${escapeHtml(f.why)}">$1</span>`);
+    });
+    highlightedCopy.innerHTML = highlighted;
+
+    // Render finding cards
+    findingsList.innerHTML = '';
+    findings.forEach(f => {
+      const card = document.createElement('div');
+      card.className = 'finding-card';
+      card.innerHTML = `
+        <div class="finding-word">"${f.word}"<span class="finding-count-badge">Found ${f.count}×</span></div>
+        <p class="finding-why">${f.why}</p>
+        <p class="finding-fix-label">Use this instead</p>
+        <div class="finding-fix">${f.fix}</div>
+      `;
+      findingsList.appendChild(card);
+    });
+  }
+
+  resultsEl.classList.add('visible');
+  setTimeout(() => resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
 
-function resetTool() {
-  const textarea = document.getElementById('copyInput');
-  const output = document.getElementById('outputArea');
-  textarea.style.display = 'block';
-  textarea.value = '';
-  output.style.display = 'none';
-  output.innerHTML = '';
-  document.getElementById('resetBtn').style.display = 'none';
-  document.getElementById('scoreBlock').classList.remove('visible');
-  document.getElementById('findingsList').classList.remove('visible');
-  document.getElementById('findingsList').innerHTML = '';
-  document.getElementById('emptyState').style.display = 'block';
-  document.getElementById('cleanState').style.display = 'none';
-  document.getElementById('scoreNumber').textContent = '0';
-  document.getElementById('wordCount').textContent = '';
-  document.getElementById('findingsCount').textContent = '';
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function clearAll() {
+  document.getElementById('copy-input').value = '';
+  const r = document.getElementById('results');
+  r.classList.remove('visible');
+  setTimeout(() => { r.style.display = 'none'; r.style.display = ''; }, 300);
 }
 </script>
 </body>

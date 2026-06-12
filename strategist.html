@@ -312,8 +312,15 @@ const SLBL={research:'Research',contacted:'Contacted',responded:'Responded',prop
 let S={startDate:null,streak:{count:0,last:null},pipeline:[],ledger:{samples:0,content:0,outreach:0,replies:0,casestudies:0,testimonials:0},wins:[],journal:[],today:{date:null,missions:[],pidx:0}};
 let selId=null;
 
-async function save(){try{await window.storage.set('qpc_v2',JSON.stringify(S));}catch(e){}}
-async function load(){try{const r=await window.storage.get('qpc_v2');if(r&&r.value)S=JSON.parse(r.value);}catch(e){}}
+async function save(){
+const d=JSON.stringify(S);
+if(typeof window.storage!=='undefined'){try{await window.storage.set('qpc_v2',d);return;}catch(e){}}
+try{localStorage.setItem('qpc_v2',d);}catch(e){}
+}
+async function load(){
+if(typeof window.storage!=='undefined'){try{const r=await window.storage.get('qpc_v2');if(r&&r.value){S=JSON.parse(r.value);return;}}catch(e){}}
+try{const d=localStorage.getItem('qpc_v2');if(d)S=JSON.parse(d);}catch(e){}
+}
 
 function today(){return new Date().toISOString().split('T')[0];}
 function dAgo(d){return Math.floor((new Date()-new Date(d))/(864e5));}

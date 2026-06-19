@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marcus Bello Coaching — For the 45-year-old who's done starting over the wrong way</title>
+<meta name="description" content="You don't need another course. You need someone who's made the pivot you're trying to make — and can tell you which problem to solve first.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+  :root{
+    --navy:#1B2430;
+    --parchment:#F2ECE2;
+    --brass:#B8893E;
+    --charcoal:#2A2E35;
+  }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--parchment);
+    color:var(--charcoal);
+    font-family:"Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:-0.005em;
+  }
+  .serif{ font-family:"Source Serif 4", Georgia, "Times New Roman", serif; }
+  .brass{ color:var(--brass); }
+  .navy-bg{ background:var(--navy); }
+
+  /* Field note — hand-marked margin annotation */
+  .fieldnote{
+    font-family:"Source Serif 4", Georgia, serif;
+    font-style:italic;
+    color:var(--brass);
+    font-size:1.05rem;
+    line-height:1.6;
+    position:relative;
+    padding-left:1.4rem;
+  }
+  .fieldnote:before{
+    content:"";
+    position:absolute; left:0; top:.35em; bottom:.35em;
+    width:2px;
+    background:var(--brass);
+    opacity:.55;
+    transform:rotate(.6deg);
+    border-radius:2px;
+  }
+  .fieldnote .label{
+    display:block;
+    font-style:normal;
+    font-family:"Inter",sans-serif;
+    font-size:.7rem;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    opacity:.65;
+    margin-bottom:.4rem;
+  }
+
+  .reveal{ opacity:0; transform:translateY(20px); transition:opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1); }
+  .reveal.in{ opacity:1; transform:none; }
+
+  .btn{ transition:transform .25s ease, box-shadow .25s ease, background .25s ease; }
+  .btn-brass{ background:var(--brass); color:var(--navy); }
+  .btn-brass:hover{ transform:translateY(-2px); box-shadow:0 14px 30px -12px rgba(184,137,62,.65); }
+  .btn-outline:hover{ transform:translateY(-2px); }
+
+  .rule{ border-color:rgba(42,46,53,.16); }
+  .rule-light{ border-color:rgba(242,236,226,.18); }
+  ::selection{ background:var(--brass); color:var(--navy); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="max-w-5xl mx-auto px-6 sm:px-8 pt-8 flex items-center justify-between">
+  <a href="#top" class="flex items-baseline gap-2.5">
+    <span class="serif text-xl font-700 tracking-tight" style="font-weight:700;">Marcus Bello</span>
+    <span class="text-xs uppercase tracking-[.22em] text-charcoal/55" style="color:rgba(42,46,53,.55)">Coaching</span>
+  </a>
+  <a href="#close" class="hidden sm:inline-block text-sm font-medium brass hover:opacity-70 transition">Book a conversation →</a>
+</header>
+
+<!-- SECTION 1 — HERO (text only, lots of air) -->
+<section id="top" class="max-w-5xl mx-auto px-6 sm:px-8 pt-24 sm:pt-36 pb-28 sm:pb-40">
+  <div class="max-w-4xl">
+    <p class="reveal text-sm font-medium uppercase tracking-[.2em]" style="color:rgba(42,46,53,.55)">For the second act, done deliberately</p>
+    <h1 class="reveal serif mt-8 text-[2.6rem] leading-[1.08] sm:text-6xl lg:text-[4.6rem] lg:leading-[1.05]" style="font-weight:700; letter-spacing:-0.02em;">
+      You don't need another course.<br>
+      You need someone who's <span class="brass">already made the turn.</span>
+    </h1>
+    <p class="reveal mt-9 text-lg sm:text-xl leading-relaxed max-w-2xl" style="color:rgba(42,46,53,.78)">
+      Most people in their forties don't pivot badly because they lack drive. They stall because no one ever showed them which problem to solve first. That's the whole work I do — and I've done the turn myself.
+    </p>
+    <div class="reveal mt-11 flex flex-col sm:flex-row gap-4 sm:items-center">
+      <a href="#close" class="btn btn-brass inline-flex items-center justify-center gap-2 font-semibold px-7 py-4 rounded-full text-base">
+        Book a 30-minute conversation
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#gap" class="btn btn-outline inline-flex items-center justify-center text-base font-medium px-2 py-2 underline underline-offset-4" style="text-decoration-color:rgba(184,137,62,.5)">
+        See how the work actually goes
+      </a>
+    </div>
+  </div>
+
+  <!-- signature field note -->
+  <div class="reveal mt-20 sm:mt-28 max-w-md">
+    <p class="fieldnote">
+      <span class="label">Field note</span>
+      Nobody over forty is short on advice. They're short on the right order.
+    </p>
+  </div>
+</section>
+
+<!-- SECTION 2 — THE GAP THEY FEEL -->
+<section id="gap" class="navy-bg border-y rule-light" style="color:var(--parchment)">
+  <div class="max-w-4xl mx-auto px-6 sm:px-8 py-24 sm:py-36">
+    <div class="space-y-10 sm:space-y-12">
+      <p class="reveal serif text-2xl sm:text-4xl leading-snug" style="font-weight:500;">
+        You've read the books. You've saved the threads. You could probably teach the morning routine.
+      </p>
+      <p class="reveal serif text-2xl sm:text-4xl leading-snug" style="font-weight:500; color:rgba(242,236,226,.65)">
+        And still — three years in, the certificate is half-finished, the side project never shipped, and the calendar keeps refilling with everything except the thing that matters.
+      </p>
+      <p class="reveal serif text-2xl sm:text-4xl leading-snug" style="font-weight:500;">
+        It was never a willpower problem. It was a sequencing problem — and that one is fixable.
+      </p>
+    </div>
+
+    <div class="reveal mt-16 max-w-lg">
+      <p class="fieldnote" style="color:var(--brass)">
+        <span class="label" style="color:rgba(184,137,62,.85)">Field note</span>
+        Burnout at this age is usually just twelve good ideas with no first step agreed on.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3 — PROOF / MECHANISM -->
+<section class="max-w-5xl mx-auto px-6 sm:px-8 py-24 sm:py-32">
+  <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+    <div class="lg:col-span-5">
+      <p class="reveal text-sm font-medium uppercase tracking-[.2em] brass mb-5">The method</p>
+      <h2 class="reveal serif text-3xl sm:text-[2.6rem] leading-tight" style="font-weight:700; letter-spacing:-0.015em;">The First-Problem Map</h2>
+      <p class="reveal mt-6 text-lg leading-relaxed" style="color:rgba(42,46,53,.78)">
+        We don't build a five-year plan in the first session. We find the single decision that, once made, makes a dozen others fall away — and we make that one. Then the next, in the order your own situation demands rather than the order a generic program assumes.
+      </p>
+      <p class="reveal mt-6 text-base leading-relaxed" style="color:rgba(42,46,53,.6)">
+        It works the same whether you're leaving a twenty-year career or finally starting the one you postponed — only the first problem changes.
+      </p>
+    </div>
+
+    <div class="lg:col-span-7 grid sm:grid-cols-3 gap-5">
+      <div class="reveal border rule rounded-2xl p-7" style="background:rgba(27,36,48,.03)">
+        <span class="serif text-4xl brass block" style="font-weight:700;">1</span>
+        <p class="mt-3 font-semibold">decision at a time</p>
+        <p class="mt-2 text-sm leading-relaxed" style="color:rgba(42,46,53,.62)">We refuse the long to-do list. Clarity comes from sequence, not from doing more at once.</p>
+      </div>
+      <div class="reveal border rule rounded-2xl p-7" style="background:rgba(27,36,48,.03)">
+        <span class="serif text-4xl brass block" style="font-weight:700;">30</span>
+        <p class="mt-3 font-semibold">minutes to your first map</p>
+        <p class="mt-2 text-sm leading-relaxed" style="color:rgba(42,46,53,.62)">You leave the very first call knowing the one problem to solve — before committing to anything further.</p>
+      </div>
+      <div class="reveal border rule rounded-2xl p-7" style="background:rgba(27,36,48,.03)">
+        <span class="serif text-4xl brass block" style="font-weight:700;">0</span>
+        <p class="mt-3 font-semibold">scripts or worksheets</p>
+        <p class="mt-2 text-sm leading-relaxed" style="color:rgba(42,46,53,.62)">No funnel, no twelve-module program. The work is one real conversation, then the next right move.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal mt-16 max-w-lg">
+    <p class="fieldnote">
+      <span class="label">Field note</span>
+      The right first move is almost never the loudest one on your list.
+    </p>
+  </div>
+</section>
+
+<!-- SECTION 4 — CLOSE / CTA -->
+<section id="close" class="border-t rule">
+  <div class="max-w-4xl mx-auto px-6 sm:px-8 py-24 sm:py-36 text-center">
+    <h2 class="reveal serif text-3xl sm:text-5xl leading-tight max-w-3xl mx-auto" style="font-weight:700; letter-spacing:-0.015em;">
+      Most coaches sell you a system before they've heard your situation.
+    </h2>
+    <p class="reveal mt-7 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed" style="color:rgba(42,46,53,.75)">
+      Find out which problem to solve first before you commit to anything — book a 30-minute conversation, no slides, no pitch.
+    </p>
+    <div class="reveal mt-11">
+      <a href="#top" onclick="return false;" class="btn btn-brass inline-flex items-center justify-center gap-2 font-semibold px-8 py-4 rounded-full text-base">
+        Book the conversation
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <p class="mt-5 text-sm" style="color:rgba(42,46,53,.55)">30 minutes · a handful of slots each month</p>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t rule">
+  <div class="max-w-5xl mx-auto px-6 sm:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm" style="color:rgba(42,46,53,.55)">
+    <span>© 2026 Marcus Bello Coaching · Illustrative mock</span>
+    <span class="serif italic brass">Right problem, right order.</span>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach((e)=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold:0.12 });
+  document.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.style.transitionDelay = (Math.min(i%5,4)*90)+'ms';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>

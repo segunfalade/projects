@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JSS 3 Mathematics Examination</title>
+    <style>
+        /* PREMIUM MOBILE-OPTIMIZED OFFLINE STYLES */
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --indigo-light: #f5f7ff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* MATH RENDERING - ROCK SOLID VERTICAL STACKING */
+        .math-container { display: inline-flex; align-items: center; vertical-align: middle; }
+        .math-frac { 
+            display: inline-flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            line-height: 1; 
+            margin: 0 0.25em; 
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+        }
+        .math-num { 
+            display: block;
+            border-bottom: 1.5px solid var(--text-main); 
+            padding: 0 4px; 
+            font-size: 0.9em; 
+            font-weight: 700; 
+        }
+        .math-den { 
+            display: block;
+            padding: 0 4px; 
+            font-size: 0.9em; 
+            font-weight: 700; 
+        }
+        .math-whole { 
+            font-size: 1.4em; 
+            margin-right: 1px; 
+            font-weight: 800; 
+            font-style: normal;
+            vertical-align: middle;
+        }
+        .math-pow { vertical-align: super; font-size: 0.7em; font-weight: 800; color: var(--primary-dark); }
+        .math-root { font-size: 1.1em; border-top: 1.5px solid var(--text-main); padding-top: 1px; }
+
+        /* UI ELEMENTS */
+        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 15px; flex-grow: 1; }
+        .card { background: var(--card-bg); border-radius: 1.5rem; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); width: 100%; }
+        
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 16px 24px; border-radius: 1rem; font-weight: 800; font-size: 1rem;
+            cursor: pointer; transition: all 0.2s; border: none;
+            color: white; background: var(--primary); width: 100%;
+            touch-action: manipulation;
+        }
+        .btn:active { transform: scale(0.96); opacity: 0.9; }
+
+        input { 
+            width: 100%; padding: 16px; border-radius: 1rem; border: 2px solid var(--border);
+            background: #f8fafc; font-size: 1rem; outline: none; font-weight: 600;
+        }
+        input:focus { border-color: var(--primary); background: white; }
+
+        .screen { display: none; width: 100%; }
+        .screen.active { display: block; }
+        .flex-center { display: flex; align-items: center; justify-content: center; min-height: 85vh; }
+
+        /* LOGO */
+        .logo-img { height: 80px; width: auto; margin-bottom: 20px; border-radius: 10px; }
+
+        /* TEST UI - RESPONSIVE GRID */
+        .test-wrapper { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 900px) { .test-wrapper { grid-template-columns: 1fr 300px; } }
+
+        .main-test-pane { background: white; border-radius: 1.5rem; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border); }
+        .test-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        
+        .q-badge { background: var(--primary); color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem; }
+        .timer-container { background: var(--indigo-light); color: var(--primary); padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 1rem; border: 1.5px solid #c7d2fe; }
+        .timer-warning { background: var(--danger) !important; color: white !important; border-color: var(--danger) !important; }
+
+        .progress-bar { height: 6px; background: var(--primary); width: 0%; transition: width 0.3s; }
+
+        .question-content { padding: 25px; flex-grow: 1; }
+        .question-text { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 30px; line-height: 1.4; }
+        
+        .option-card {
+            border: 2px solid #f1f5f9; padding: 18px 20px; border-radius: 1rem; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 15px; cursor: pointer; background: white;
+            transition: border-color 0.2s;
+        }
+        .option-card.selected { border-color: var(--primary); background: #f5f3ff; }
+        .opt-letter { width: 38px; height: 38px; border-radius: 8px; background: #f1f5f9; color: var(--text-muted); font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .selected .opt-letter { background: var(--primary); color: white; }
+        .opt-text { font-size: 1.2rem; font-weight: 700; color: #334155; }
+
+        .test-footer { padding: 20px; background: #f8fafc; border-top: 1px solid var(--border); display: flex; justify-content: space-between; gap: 10px; }
+        .nav-btn { width: auto; flex: 1; padding: 14px; }
+
+        /* NAVIGATOR */
+        .sidebar-card { background: white; border-radius: 1.5rem; padding: 20px; border: 1px solid var(--border); align-self: start; }
+        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .nav-item { 
+            aspect-ratio: 1; border-radius: 8px; border: 1.5px solid var(--border); 
+            display: flex; align-items: center; justify-content: center; font-weight: 800; 
+            font-size: 0.85rem; cursor: pointer; background: white; color: var(--text-muted);
+            width: 100%; min-height: 40px;
+        }
+        .nav-item.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.05); }
+        .nav-item.answered { background: var(--indigo-light); color: var(--primary); border-color: var(--primary); }
+
+        /* RESULT */
+        .result-container { background: var(--primary); border-radius: 2rem; padding: 40px 20px; color: white; margin: 20px 0; text-align: center; }
+        .score-circle { font-size: 4.5rem; font-weight: 950; line-height: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- LOGIN SCREEN -->
+        <div id="login-screen" class="screen active">
+            <div class="flex-center">
+                <div class="card" style="max-width: 450px; text-align: center;">
+                    <img src="logo.png" alt="School Logo" class="logo-img" id="school-logo">
+                    <h1 style="font-size: 1.5rem; font-weight: 900; margin-bottom: 5px;">STUDENT LOGIN</h1>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">Mathematics Final Assessment</p>
+                    
+                    <div style="text-align: left;">
+                        <div class="input-group" style="margin-bottom: 15px;">
+                            <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 5px; display: block;">EXAM NUMBER</label>
+                            <input type="text" id="login-id" placeholder="GHC/23/24/...">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 25px;">
+                            <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 5px; display: block;">PASSWORD</label>
+                            <input type="password" id="login-pass" placeholder="••••••••">
+                        </div>
+                    </div>
+                    
+                    <button onclick="handleLogin()" class="btn">Login to System</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- WELCOME SCREEN -->
+        <div id="welcome-screen" class="screen">
+            <div class="flex-center">
+                <div class="card" style="max-width: 500px; text-align: center;">
+                    <h1 style="font-size: 2rem; font-weight: 900;">Welcome,</h1>
+                    <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 35px; font-size: 1.8rem; font-weight: 950; text-transform: uppercase;"></h2>
+                    
+                    <div style="background: var(--indigo-light); padding: 25px; border-radius: 1.2rem; text-align: left; margin-bottom: 35px; border: 1.5px solid #c7d2fe; font-size: 0.95rem;">
+                        <p style="font-weight: 800; color: #3730a3; margin-bottom: 8px;">• 50 Mathematics Questions</p>
+                        <p style="font-weight: 800; color: #3730a3; margin-bottom: 8px;">• 60 Minutes Time Allowed</p>
+                        <p style="font-weight: 800; color: #3730a3; margin-bottom: 8px;">• Script will download automatically</p>
+                    </div>
+
+                    <button onclick="startExam()" class="btn">Begin Examination</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEST INTERFACE -->
+        <div id="test-screen" class="screen">
+            <div class="test-wrapper">
+                <div class="main-test-pane">
+                    <header class="test-header">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div id="q-number-box" class="q-badge">1</div>
+                            <div>
+                                <p style="font-weight: 800; font-size: 1rem;" id="q-header">Question 1/50</p>
+                                <p style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;" id="display-id-header"></p>
+                                <!-- HIDDEN HELPER FOR ERROR FIX -->
+                                <span id="display-name" style="display:none"></span>
+                            </div>
+                        </div>
+                        <div class="timer-container" id="timer-box">
+                            <span id="timer-val">60:00</span>
+                        </div>
+                    </header>
+
+                    <div style="height: 6px; background: #eee;"><div id="progress-bar" class="progress-bar"></div></div>
+
+                    <main class="question-content">
+                        <div id="question-text" class="question-text"></div>
+                        <div id="options-container" class="options-list"></div>
+                    </main>
+
+                    <footer class="test-footer">
+                        <button id="prev-btn" onclick="prevQuestion()" class="btn nav-btn" style="background: #f1f5f9; color: #64748b;">Previous</button>
+                        <button id="next-btn" onclick="nextQuestion()" class="btn nav-btn">Next</button>
+                        <button id="submit-btn" onclick="confirmFinish()" class="btn nav-btn" style="display:none; background: var(--success);">Submit Exam</button>
+                    </footer>
+                </div>
+
+                <aside class="sidebar-card">
+                    <span style="font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; display: block; text-align: center;">Navigator</span>
+                    <div id="progress-grid" class="nav-grid"></div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="result-screen" class="screen">
+            <div class="flex-center">
+                <div class="card" style="max-width: 450px; text-align: center;">
+                    <h1 style="font-size: 2rem; font-weight: 900;">Exam Finished</h1>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px;">Your script has been saved to the device.</p>
+                    <div class="result-container">
+                        <div id="final-score-display" class="score-circle">0/50</div>
+                        <div id="final-percent" style="font-weight: 900; font-size: 1.5rem; margin-top: 10px;">0%</div>
+                    </div>
+                    <button onclick="location.reload()" class="btn" style="background: #0f172a;">Logout Student</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const AUTHORIZED_STUDENTS = [
+            { examNumber: "GHC/23/24/012", password: "oyerindef", name: "Oyerinde Folarin" },
+            { examNumber: "GHC/23/24/006", password: "oladipoo", name: "Oladipo Setemi" },
+            { examNumber: "GHC/23/24/003", password: "odemejakpord", name: "Odemejakpor Dunamis" },
+            { examNumber: "GHC/23/24/015", password: "allia", name: "Alli Aisha" },
+            { examNumber: "GHC/23/24/008", password: "aouizeratem", name: "Aouizerate Mirabel" },
+            { examNumber: "GHC/23/24/007", password: "ganiyub", name: "Ganiyu Blossom" },
+            { examNumber: "GHC/23/24/013", password: "akintolao", name: "Akintola Adeoluwa" },
+            { examNumber: "GHC/23/24/022", password: "abioyed", name: "Abioye David" },
+            { examNumber: "GHC/23/24/002", password: "olarinref", name: "Olarinre Fehintola" },
+        ];
+
+        // UPDATED POOL OF 50 QUESTIONS (Tricky ones replaced with simpler ones)
+        const MASTER_POOL = [
+            { q: "Evaluate [F:0/1/2] of ([F:0/3/4] - [F:0/1/3]) + [F:0/1/6].", options: ["[F:0/3/8]", "[F:0/5/8]", "[F:0/5/12]", "[F:0/1/4]"], correct: "[F:0/3/8]" },
+            { q: "Evaluate [F:0/0.042 x 0.05/0.007] and leave the answer in standard form.", options: ["3.0 x 10[P: /-1]", "3.0 x 10[P: /-2]", "3.0 x 10[P: /1]", "3.0 x 10[P: /2]"], correct: "3.0 x 10[P: /-1]" },
+            { q: "A man leaves [F:0/1/3] of his estate to his wife, [F:0/1/4] to his son, and the remainder to his daughter. What fraction did the daughter receive?", options: ["[F:0/5/12]", "[F:0/7/12]", "[F:0/1/2]", "[F:0/5/7]"], correct: "[F:0/5/12]" },
+            { q: "Approximate 0.04953 to 2 significant figures.", options: ["0.050", "0.049", "0.05", "0.0495"], correct: "0.050" },
+            { q: "Simplify: [F:2/1/2] x [F:1/1/5] divided by [F:1/3/4].", options: ["[F:1/5/7]", "[F:2/1/7]", "[F:1/2/7]", "[F:3/5/7]"], correct: "[F:1/5/7]" },
+            { q: "Evaluate 1011[P:2/ ] + 1101[P:2/ ], leaving your answer in base two.", options: ["11000[P:2/ ]", "10100[P:2/ ]", "11100[P:2/ ]", "10010[P:2/ ]"], correct: "11000[P:2/ ]" },
+            { q: "Convert 43[P:5/ ] to a number in base 3.", options: ["212[P:3/ ]", "122[P:3/ ]", "221[P:3/ ]", "202[P:3/ ]"], correct: "212[P:3/ ]" },
+            { q: "What is the place value of 5 in the number 2543?", options: ["Hundreds", "Tens", "Thousands", "Units"], correct: "Hundreds" },
+            { q: "Express 4500 in standard form.", options: ["4.5 x 10[P: /3]", "45 x 10[P: /2]", "4.5 x 10[P: /4]", "0.45 x 10[P: /3]"], correct: "4.5 x 10[P: /3]" },
+            { q: "If the speed of light is 3 x 10[P: /8] m/s, how far does it travel in 2 x 10[P: /3] seconds?", options: ["6.0 x 10[P: /11] m", "6.0 x 10[P: /5] m", "1.5 x 10[P: /5] m", "5.0 x 10[P: /11] m"], correct: "6.0 x 10[P: /11] m" },
+            { q: "A trader marks a television at N45,000. If she allows a discount of 12%, calculate the selling price.", options: ["N39,600", "N40,400", "N50,400", "N38,500"], correct: "N39,600" },
+            { q: "Find the principal that will yield a simple interest of N4,500 in 3 years at 5% per annum.", options: ["N30,000", "N25,000", "N45,000", "N60,000"], correct: "N30,000" },
+            { q: "By selling an article for N3,600, a merchant makes a loss of 10%. Find the cost price.", options: ["N4,000", "N3,240", "N3,960", "N4,200"], correct: "N4,000" },
+            { q: "Calculate the compound interest on N20,000 for 2 years at 10% per annum.", options: ["N4,200", "N4,000", "N24,200", "N2,000"], correct: "N4,200" },
+            { q: "Factorize completely: 4x[P: /2] - 25y[P: /2].", options: ["[2x - 5y][2x + 5y]", "[4x - 5y][x + 5y]", "[2x - 25y][2x + y]", "[2x - 5y][P: /2]"], correct: "[2x - 5y][2x + 5y]" },
+            { q: "Simplify: 5x + 3y - 2x + y.", options: ["3x + 4y", "7x + 4y", "3x + 2y", "7x + 2y"], correct: "3x + 4y" },
+            { q: "Expand: (2a - 3b)(a + 2b).", options: ["2a[P: /2] + ab - 6b[P: /2]", "2a[P: /2] - ab - 6b[P: /2]", "2a[P: /2] + 7ab - 6b[P: /2]", "2a[P: /2] - 6b[P: /2]"], correct: "2a[P: /2] + ab - 6b[P: /2]" },
+            { q: "Make x the subject of the formula: T = [R:x-y/z].", options: ["x = zT[P: /2] + y", "x = zT[P: /2] - y", "x = [F:0/T[P: /2] + y/z]", "x = z(T[P: /2] + y)"], correct: "x = zT[P: /2] + y" },
+            { q: "Subtract (2x - 3y) from the sum of (x + 2y) and (3x - y).", options: ["2x + 4y", "6x - 2y", "2x - 2y", "6x - 4y"], correct: "2x + 4y" },
+            { q: "Factorize: ax - ay + bx - by.", options: ["[a + b][x - y]", "[a - b][x + y]", "[a - b][x - y]", "[a + b][x + y]"], correct: "[a + b][x - y]" },
+            { q: "If x = 3 and y = 4, evaluate 2x + y.", options: ["10", "14", "11", "7"], correct: "10" },
+            { q: "Solve the equation: [F:0/2x-1/3] - [F:0/x+2/4] = 1.", options: ["[F:4/2/5]", "[F:3/1/5]", "4", "5"], correct: "[F:4/2/5]" },
+            { q: "Solve the inequality: 3(x - 2) < 5x + 4.", options: ["x > -5", "x < -5", "x > 5", "x < 5"], correct: "x > -5" },
+            { q: "Solve the simultaneous equations: 3x + 2y = 12 and 5x - 3y = 1.", options: ["x = 2, y = 3", "x = 3, y = 2", "x = 4, y = 0", "x = 1, y = 4.5"], correct: "x = 2, y = 3" },
+            { q: "If twice a number is added to 5, the result is equal to the number decreased by 2. Find the number.", options: ["-7", "7", "-3", "3"], correct: "-7" },
+            { q: "The sum of two numbers is 15. If one number is twice the other, find the larger number.", options: ["10", "5", "12", "8"], correct: "10" },
+            { q: "Divide N10,500 in the ratio 2:3:5. What is the difference between the largest and the smallest shares?", options: ["N3,150", "N5,250", "N2,100", "N4,200"], correct: "N3,150" },
+            { q: "If 8 workers can paint a house in 6 days, how many days will 12 workers take working at the same rate?", options: ["4 days", "9 days", "3 days", "5 days"], correct: "4 days" },
+            { q: "A car covers a distance of 150 km in 2 hours 30 minutes. Calculate its average speed in km/h.", options: ["60 km/h", "75 km/h", "50 km/h", "100 km/h"], correct: "60 km/h" },
+            { q: "The interior angle of a regular polygon is 144°. How many sides does the polygon have?", options: ["10 sides", "8 sides", "12 sides", "9 sides"], correct: "10 sides" },
+            { q: "The sum of the interior angles of an n-sided polygon is 1080°. Find n.", options: ["8", "6", "10", "12"], correct: "8" },
+            { q: "In a right-angled triangle, the hypotenuse is 13cm and one leg is 5cm. Find the length of the other leg.", options: ["12cm", "144cm", "8cm", "18cm"], correct: "12cm" },
+            { q: "Calculate the area of a trapezium with parallel sides 8cm and 12cm, and a perpendicular height of 6cm.", options: ["60cm[P: /2]", "120cm[P: /2]", "48cm[P: /2]", "30cm[P: /2]"], correct: "60cm[P: /2]" },
+            { q: "A ladder 10m long leans against a vertical wall. If the foot of the ladder is 6m from the base of the wall, how high up the wall does it reach?", options: ["8m", "4m", "16m", "11.7m"], correct: "8m" },
+            { q: "An isosceles triangle has a vertical angle of 40°. Find the size of each of the base angles.", options: ["70°", "140°", "40°", "50°"], correct: "70°" },
+            { q: "Calculate the circumference of a circle with radius 14cm. (Take π = [F:0/22/7]).", options: ["88cm", "44cm", "616cm", "176cm"], correct: "88cm" },
+            { q: "Find the volume of a cylinder of radius 7cm and height 10cm. (Take π = [F:0/22/7]).", options: ["1540cm[P: /3]", "154cm[P: /3]", "440cm[P: /3]", "3080cm[P: /3]"], correct: "1540cm[P: /3]" },
+            { q: "In a right-angled triangle ABC with hypotenuse AB, sin(A) = 0.6. Find cos(A).", options: ["0.8", "0.4", "0.75", "1.33"], correct: "0.8" },
+            { q: "A tree casts a shadow of 15m. If the angle of elevation of the sun is 45°, what is the height of the tree?", options: ["15m", "30m", "7.5m", "15[R:2]m"], correct: "15m" },
+            { q: "The mean of the numbers 2, 5, 2x, 7, and 9 is 5. Find the value of x.", options: ["1", "2", "3", "0.5"], correct: "1" },
+            { q: "Find the median of the data: 12, 15, 13, 11, 14, 17, 16.", options: ["14", "13", "15", "11"], correct: "14" },
+            { q: "A coin is tossed once. What is the probability of getting a Head?", options: ["[F:0/1/2]", "[F:0/1/4]", "1", "0"], correct: "[F:0/1/2]" },
+            { q: "A box contains 4 red, 5 green, and 6 blue identical balls. If a ball is picked at random, what is the probability that it is NOT green?", options: ["[F:0/2/3]", "[F:0/1/3]", "[F:0/2/5]", "[F:0/3/5]"], correct: "[F:0/2/3]" },
+            { q: "If the probability that a student passes an exam is 0.75, what is the probability that he fails?", options: ["0.25", "0.15", "0.50", "0.05"], correct: "0.25" },
+            { q: "In a class of 40 students, 24 study French and 16 study Arabic. If a student is chosen at random, find the probability that the student studies Arabic.", options: ["[F:0/2/5]", "[F:0/3/5]", "[F:0/1/2]", "[F:0/4/5]"], correct: "[F:0/2/5]" },
+            { q: "In a pie chart, if the total expenditure is N72,000 and the sector for food is 120°, how much is spent on food?", options: ["N24,000", "N36,000", "N18,000", "N12,000"], correct: "N24,000" },
+            { q: "Evaluate 5[P: /2] - 3[P: /2].", options: ["16", "4", "34", "8"], correct: "16" },
+            { q: "Simplify a[P: /4] x a[P: /3].", options: ["a[P: /7]", "a[P: /12]", "a", "a[P: /1]"], correct: "a[P: /7]" },
+            { q: "List the first four multiples of 3.", options: ["3, 6, 9, 12", "1, 2, 3, 4", "3, 5, 7, 9", "6, 9, 12, 15"], correct: "3, 6, 9, 12" },
+            { q: "Calculate the perimeter of a square with side 6cm.", options: ["24cm", "36cm", "12cm", "18cm"], correct: "24cm" }
+        ];
+
+        let questions = [];
+        let currentIdx = 0;
+        let studentData = null;
+        let answers = {};
+        let timeLeft = 3600; // Updated to 60 Minutes (3600s)
+        let timerInterval = null;
+
+        function renderMath(text) {
+            if (!text) return "";
+            // Fractions [F:whole/num/den]
+            text = text.replace(/\[F:(\d+)\/([^\/]+)\/([^\/]+)\]/g, (m, w, n, d) => {
+                const whole = w !== '0' ? `<span class="math-whole">${w}</span>` : '';
+                return `<span class="math-container">${whole}<span class="math-frac"><span class="math-num">${n}</span><span class="math-den">${d}</span></span></span>`;
+            });
+            // Powers [P:base/exp]
+            text = text.replace(/\[P:([^\/]*)\/([^\/]+)\]/g, '$1<span class="math-pow">$2</span>');
+            // Roots [R:val]
+            text = text.replace(/\[R:([^\]]+)\]/g, '&radic;<span class="math-root">$1</span>');
+            return text;
+        }
+
+        function shuffle(a) {
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function handleLogin() {
+            const idInput = document.getElementById('login-id');
+            const passInput = document.getElementById('login-pass');
+            if (!idInput || !passInput) return;
+
+            const id = idInput.value.trim().toUpperCase();
+            const pass = passInput.value.trim();
+            const student = AUTHORIZED_STUDENTS.find(s => s.examNumber === id && s.password === pass);
+            
+            if (!student) { alert("Invalid Credentials."); return; }
+            studentData = student;
+
+            document.getElementById('login-screen').classList.remove('active');
+            document.getElementById('welcome-screen').classList.add('active');
+            document.getElementById('welcome-name').innerText = student.name;
+        }
+
+        function startExam() {
+            // Pick 50 questions
+            const pool = shuffle([...MASTER_POOL]);
+            questions = pool.slice(0, 50).map(q => {
+                // Ensure the correct answer is always present but shuffle option order
+                const options = shuffle([...q.options]);
+                return { ...q, options };
+            });
+
+            document.getElementById('welcome-screen').classList.remove('active');
+            document.getElementById('test-screen').classList.add('active');
+            
+            // Fixed the display errors here
+            const nameEl = document.getElementById('display-name');
+            const idEl = document.getElementById('display-id-header');
+            if (nameEl) nameEl.innerText = studentData.name;
+            if (idEl) idEl.innerText = studentData.examNumber;
+            
+            initNav();
+            render();
+            
+            // Timer logic
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                const timerValEl = document.getElementById('timer-val');
+                if (timerValEl) timerValEl.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                
+                if (timeLeft <= 300) { // Warning at 5 minutes left
+                    const timerBox = document.getElementById('timer-box');
+                    if (timerBox) timerBox.classList.add('timer-warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishExam();
+                }
+            }, 1000);
+        }
+
+        function initNav() {
+            const grid = document.getElementById('progress-grid');
+            if (!grid) return;
+            grid.innerHTML = "";
+            questions.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.className = "nav-item";
+                btn.id = "nav-dot-" + i;
+                btn.innerText = i + 1;
+                btn.onclick = () => { currentIdx = i; render(); };
+                grid.appendChild(btn);
+            });
+        }
+
+        function render() {
+            const q = questions[currentIdx];
+            const qNumBox = document.getElementById('q-number-box');
+            const qHeader = document.getElementById('q-header');
+            const qText = document.getElementById('question-text');
+            const pBar = document.getElementById('progress-bar');
+            
+            if (qNumBox) qNumBox.innerText = currentIdx + 1;
+            if (qHeader) qHeader.innerText = `Question ${currentIdx + 1}/50`;
+            if (qText) qText.innerHTML = renderMath(q.q);
+            if (pBar) pBar.style.width = ((currentIdx + 1) / 50 * 100) + "%";
+            
+            const container = document.getElementById('options-container');
+            if (container) {
+                container.innerHTML = "";
+                q.options.forEach((opt, i) => {
+                    const sel = answers[currentIdx] === i;
+                    const card = document.createElement('div');
+                    card.className = "option-card" + (sel ? " selected" : "");
+                    card.onclick = () => { answers[currentIdx] = i; render(); };
+                    card.innerHTML = `<div class="opt-letter">${String.fromCharCode(65 + i)}</div><span class="opt-text">${renderMath(opt)}</span>`;
+                    container.appendChild(card);
+                });
+            }
+
+            const prevBtn = document.getElementById('prev-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (prevBtn) prevBtn.style.visibility = currentIdx === 0 ? "hidden" : "visible";
+            if (submitBtn) submitBtn.style.display = currentIdx === 49 ? "flex" : "none";
+            if (nextBtn) nextBtn.style.display = currentIdx === 49 ? "none" : "flex";
+
+            // Update Tracker
+            questions.forEach((_, i) => {
+                const dot = document.getElementById("nav-dot-" + i);
+                if (dot) {
+                    dot.className = "nav-item";
+                    if (currentIdx === i) dot.classList.add('active');
+                    else if (answers[i] !== undefined) dot.classList.add('answered');
+                }
+            });
+        }
+
+        function nextQuestion() { if(currentIdx < 49) { currentIdx++; render(); } }
+        function prevQuestion() { if(currentIdx > 0) { currentIdx--; render(); } }
+        function confirmFinish() { if(confirm("Submit and download result?")) finishExam(); }
+
+        function finishExam() {
+            clearInterval(timerInterval);
+            let score = 0;
+            let report = `STUDENT: ${studentData.name.toUpperCase()}\nID: ${studentData.examNumber}\nDATE: ${new Date().toLocaleString()}\nSCORE: `;
+            
+            questions.forEach((q, i) => {
+                const choiceIdx = answers[i];
+                const choice = choiceIdx !== undefined ? q.options[choiceIdx] : "Unanswered";
+                if(choice === q.correct) score++;
+            });
+
+            const percent = Math.round(score/50*100);
+            report += `${score}/50 (${percent}%)\n\nDETAILED SCRIPT:\n`;
+
+            questions.forEach((q, i) => {
+                const choiceIdx = answers[i];
+                const choice = choiceIdx !== undefined ? q.options[choiceIdx] : "No Answer";
+                const mark = (choice === q.correct) ? "CORRECT" : `WRONG (Correct: ${q.correct})`;
+                
+                // Clean tags for report readability
+                const cleanQ = q.q.replace(/\[F:(\d+)\/([^\/]+)\/([^\/]+)\]/g, '$1 $2/$3').replace(/\[P:([^\/]*)\/([^\/]+)\]/g, '$1^$2').replace(/\[R:([^\]]+)\]/g, '√$1');
+                
+                report += `${i+1}. ${cleanQ}\n   Result: ${mark}\n\n`;
+            });
+
+            document.getElementById('test-screen').style.display = 'none';
+            document.getElementById('result-screen').classList.add('active');
+            
+            const scoreDisp = document.getElementById('final-score-display');
+            const percentDisp = document.getElementById('final-percent');
+            if (scoreDisp) scoreDisp.innerText = `${score}/50`;
+            if (percentDisp) percentDisp.innerText = `${percent}%`;
+
+            const blob = new Blob([report], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `RESULT_${studentData.name.replace(/\s+/g, '_')}.txt`;
+            link.click();
+        }
+
+        window.onload = () => {
+            const logo = document.getElementById('school-logo');
+            if (logo) {
+                logo.onerror = () => {
+                    if (logo.src.includes('logo.png')) logo.src = 'logo.jpg';
+                    else logo.src = 'https://placehold.co/100x100?text=LOGO';
+                };
+            }
+        };
+    </script>
+</body>
+</html>

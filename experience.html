@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Second Becoming | Interactive Homepage Clarity Experience</title>
-  <meta name="description" content="An interactive guided homepage experience for coaches: recognition, reflection, revelation, and personalized invitation." />
+  <title>The Second Becoming | Guided Reflection</title>
+  <meta name="description" content="A single-flow interactive coaching homepage experience for women in a quiet life transition." />
   <style>
     :root {
       --ivory: #fbf6ee;
@@ -14,36 +14,35 @@
       --rose-soft: #f3ddda;
       --clay: #b86f5c;
       --clay-dark: #8e4f43;
-      --taupe: #8f7b6a;
       --sage: #a7afa0;
       --sage-dark: #65705f;
       --plum: #3e2638;
       --plum-soft: #6b4b62;
       --charcoal: #302b2a;
-      --muted: #746760;
+      --muted: #776962;
       --line: rgba(62, 38, 56, 0.14);
-      --shadow: 0 26px 70px rgba(62, 38, 56, 0.14);
-      --shadow-soft: 0 18px 50px rgba(62, 38, 56, 0.09);
-      --radius-xl: 34px;
+      --shadow: 0 30px 90px rgba(62, 38, 56, 0.16);
+      --shadow-soft: 0 18px 48px rgba(62, 38, 56, 0.1);
+      --radius-xl: 36px;
       --radius-lg: 24px;
-      --radius-md: 16px;
-      --max: 1120px;
       --serif: Georgia, "Times New Roman", Times, serif;
       --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     * { box-sizing: border-box; }
+
     html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
+      min-height: 100vh;
       font-family: var(--sans);
       color: var(--charcoal);
       background:
-        radial-gradient(circle at 8% 0%, rgba(217, 166, 160, 0.32), transparent 32rem),
-        radial-gradient(circle at 88% 14%, rgba(167, 175, 160, 0.3), transparent 28rem),
-        linear-gradient(180deg, var(--ivory), #f7eee4 45%, var(--cream));
-      line-height: 1.55;
+        radial-gradient(circle at 8% 0%, rgba(217, 166, 160, 0.34), transparent 34rem),
+        radial-gradient(circle at 88% 10%, rgba(167, 175, 160, 0.34), transparent 31rem),
+        radial-gradient(circle at 50% 100%, rgba(234, 219, 197, 0.8), transparent 34rem),
+        linear-gradient(180deg, var(--ivory), #f7eee4 52%, var(--cream));
       overflow-x: hidden;
     }
 
@@ -52,35 +51,39 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: 0.22;
+      opacity: 0.2;
       background-image:
-        linear-gradient(rgba(62,38,56,0.045) 1px, transparent 1px),
+        linear-gradient(rgba(62,38,56,0.04) 1px, transparent 1px),
         linear-gradient(90deg, rgba(62,38,56,0.035) 1px, transparent 1px);
-      background-size: 46px 46px;
+      background-size: 48px 48px;
       mask-image: linear-gradient(to bottom, black, transparent 72%);
-      z-index: -1;
+      z-index: -2;
     }
 
-    a { color: inherit; text-decoration: none; }
     button, input { font: inherit; }
-    button { cursor: pointer; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; text-decoration: none; }
 
-    .site-header {
-      width: min(calc(100% - 28px), 1220px);
-      margin: 16px auto 0;
-      padding: 14px 16px 14px 22px;
-      position: sticky;
-      top: 14px;
-      z-index: 50;
+    .page-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 18px;
+    }
+
+    .topbar {
+      width: min(100%, 1180px);
+      margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 18px;
-      border: 1px solid rgba(62, 38, 56, 0.12);
-      background: rgba(255, 250, 243, 0.78);
+      gap: 16px;
+      padding: 14px 16px 14px 20px;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 243, 0.72);
       backdrop-filter: blur(18px);
       border-radius: 999px;
-      box-shadow: 0 10px 32px rgba(62, 38, 56, 0.08);
+      box-shadow: 0 14px 34px rgba(62, 38, 56, 0.08);
     }
 
     .brand {
@@ -89,1250 +92,1234 @@
       gap: 10px;
       font-family: var(--serif);
       color: var(--plum);
-      font-size: 1.08rem;
+      font-weight: 700;
       letter-spacing: -0.02em;
       white-space: nowrap;
-      font-weight: 700;
     }
 
     .brand-mark {
-      width: 30px;
-      height: 30px;
-      border-radius: 999px;
+      width: 32px;
+      height: 32px;
       display: inline-grid;
       place-items: center;
+      border-radius: 50%;
       background: linear-gradient(135deg, var(--plum), var(--clay));
-      color: var(--cream);
-      font-family: var(--serif);
-      font-size: 0.95rem;
-      box-shadow: 0 10px 20px rgba(184, 111, 92, 0.2);
+      color: #fff;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 22px rgba(184, 111, 92, 0.22);
     }
 
-    .nav {
+    .top-actions {
       display: flex;
-      gap: 22px;
       align-items: center;
-      color: var(--muted);
-      font-size: 0.92rem;
+      gap: 10px;
     }
 
-    .nav a:hover { color: var(--plum); }
+    .progress-word {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
 
-    .header-cta,
+    .ghost-link,
+    .ghost-button {
+      border: 1px solid rgba(62,38,56,0.13);
+      background: rgba(255,255,255,0.48);
+      color: var(--plum);
+      border-radius: 999px;
+      padding: 10px 13px;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 850;
+    }
+
+    .experience-wrap {
+      width: min(100%, 1180px);
+      margin: 22px auto;
+      display: grid;
+      align-items: center;
+    }
+
+    .experience-card {
+      min-height: calc(100vh - 180px);
+      border: 1px solid rgba(62, 38, 56, 0.13);
+      background: rgba(255, 250, 243, 0.78);
+      backdrop-filter: blur(22px);
+      border-radius: clamp(28px, 4vw, 48px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .experience-card::before {
+      content: "";
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      right: -190px;
+      top: -210px;
+      background: radial-gradient(circle, rgba(217,166,160,0.44), transparent 70%);
+      pointer-events: none;
+    }
+
+    .experience-card::after {
+      content: "";
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      left: -180px;
+      bottom: -210px;
+      background: radial-gradient(circle, rgba(167,175,160,0.38), transparent 70%);
+      pointer-events: none;
+    }
+
+    .progress-area {
+      position: relative;
+      z-index: 2;
+      padding: 24px clamp(22px, 4vw, 48px) 0;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 850;
+      margin-bottom: 12px;
+    }
+
+    .progress-track {
+      height: 9px;
+      background: rgba(62, 38, 56, 0.09);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--sage-dark), var(--clay), var(--plum));
+      border-radius: 999px;
+      transition: width 420ms ease;
+    }
+
+    .screen-stage {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      align-items: center;
+      padding: clamp(28px, 5vw, 64px);
+    }
+
+    .screen {
+      display: none;
+      max-width: 920px;
+      margin: 0 auto;
+      width: 100%;
+      animation: enter 420ms ease both;
+    }
+
+    .screen.active { display: block; }
+
+    .screen.center { text-align: center; }
+
+    .kicker {
+      margin: 0 0 14px;
+      color: var(--clay-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.75rem;
+      font-weight: 950;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-family: var(--serif);
+      color: var(--plum);
+      letter-spacing: -0.05em;
+      line-height: 1.04;
+      font-weight: 700;
+    }
+
+    h1 { font-size: clamp(3.2rem, 8vw, 7.1rem); }
+    h2 { font-size: clamp(2.2rem, 5.3vw, 5rem); }
+    h3 { font-size: clamp(1.7rem, 3.1vw, 3rem); }
+
+    .lead {
+      max-width: 710px;
+      margin: 22px auto 0;
+      color: #5e514c;
+      font-size: clamp(1.08rem, 1.8vw, 1.3rem);
+      line-height: 1.62;
+      font-weight: 620;
+    }
+
+    .prompt-copy {
+      max-width: 660px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.62;
+      font-weight: 620;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
     .primary-button,
-    .secondary-button,
-    .soft-button {
+    .secondary-button {
+      border-radius: 999px;
+      border: 0;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, color 180ms ease, border-color 180ms ease;
-      text-align: center;
-      line-height: 1.2;
-      font-weight: 850;
+      min-height: 52px;
+      padding: 15px 23px;
+      font-weight: 900;
+      line-height: 1.1;
+      transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease, background 180ms ease;
     }
 
-    .header-cta,
     .primary-button {
-      border: 0;
-      background: var(--plum);
       color: #fff;
-      box-shadow: 0 14px 34px rgba(62, 38, 56, 0.2);
+      background: var(--plum);
+      box-shadow: 0 16px 36px rgba(62,38,56,0.22);
     }
 
-    .header-cta { padding: 11px 16px; font-size: 0.88rem; white-space: nowrap; }
-    .primary-button { padding: 15px 22px; }
-
-    .secondary-button,
-    .soft-button {
-      background: rgba(255, 250, 243, 0.72);
+    .secondary-button {
       color: var(--plum);
-      border: 1px solid rgba(62, 38, 56, 0.16);
-      padding: 14px 20px;
-    }
-
-    .soft-button {
-      padding: 11px 15px;
-      font-size: 0.9rem;
-      background: rgba(255,255,255,0.48);
+      background: rgba(255,255,255,0.56);
+      border: 1px solid rgba(62,38,56,0.15);
     }
 
     .primary-button:hover,
-    .header-cta:hover,
     .secondary-button:hover,
-    .soft-button:hover,
-    .choice-card:hover,
-    .answer-button:hover,
-    .mini-card:hover,
-    .journey-step:hover {
+    .choice:hover,
+    .reveal-card:hover,
+    .final-choice:hover {
       transform: translateY(-2px);
     }
 
-    .section-container {
-      width: min(calc(100% - 36px), var(--max));
-      margin: 0 auto;
+    .primary-button:disabled,
+    .secondary-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
     }
 
-    .section-kicker,
-    .eyebrow,
-    .result-kicker,
-    .question-kicker {
-      margin: 0 0 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      font-size: 0.76rem;
-      font-weight: 900;
+    .choice-grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .choice {
+      width: 100%;
+      border: 1px solid rgba(62,38,56,0.13);
+      background: rgba(255,255,255,0.56);
+      color: #4e433f;
+      border-radius: 24px;
+      padding: 18px 20px;
+      text-align: left;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      box-shadow: 0 13px 30px rgba(62,38,56,0.05);
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .choice-number {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(251,246,238,0.92);
+      border: 1px solid rgba(62,38,56,0.13);
       color: var(--clay-dark);
+      font-size: 0.8rem;
+      font-weight: 950;
+      margin-top: 1px;
     }
 
-    h1, h2, h3 {
-      font-family: var(--serif);
+    .choice strong {
+      display: block;
       color: var(--plum);
-      line-height: 1.05;
-      letter-spacing: -0.045em;
-      margin: 0;
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
       font-weight: 700;
     }
 
-    h1 { font-size: clamp(3rem, 7vw, 6.7rem); }
-    h2 { font-size: clamp(2.05rem, 4.2vw, 4.1rem); }
-    h3 { font-size: clamp(1.35rem, 2.2vw, 2.1rem); }
-    p { margin: 0; }
+    .choice span:not(.choice-number) {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-weight: 650;
+      line-height: 1.42;
+    }
 
-    .hero-section {
-      width: min(calc(100% - 36px), var(--max));
-      margin: 62px auto 0;
-      min-height: calc(100vh - 120px);
+    .choice.selected {
+      background: rgba(217,166,160,0.25);
+      border-color: rgba(142,79,67,0.42);
+      box-shadow: 0 18px 42px rgba(184,111,92,0.12);
+    }
+
+    .coach-response {
+      display: none;
+      margin-top: 24px;
+      padding: 22px;
+      border-radius: 26px;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(62,38,56,0.96), rgba(107,75,98,0.94));
+      box-shadow: 0 18px 44px rgba(62,38,56,0.16);
+      animation: enter 300ms ease both;
+    }
+
+    .coach-response.show { display: block; }
+
+    .coach-response .label {
+      color: rgba(255,255,255,0.62);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.72rem;
+      font-weight: 950;
+      margin-bottom: 8px;
+    }
+
+    .coach-response p {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.58;
+      color: rgba(255,255,255,0.86);
+      font-weight: 650;
+    }
+
+    .pause-orb {
+      width: min(58vw, 280px);
+      height: min(58vw, 280px);
+      margin: 34px auto 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 42% 36%, rgba(255,255,255,0.78), transparent 22%),
+        radial-gradient(circle, rgba(217,166,160,0.68), rgba(167,175,160,0.34) 58%, rgba(62,38,56,0.12));
+      box-shadow: inset 0 0 0 1px rgba(62,38,56,0.08), 0 28px 60px rgba(62,38,56,0.14);
+      animation: breathe 4s ease-in-out infinite;
+    }
+
+    .reveal-panel {
+      max-width: 760px;
+      margin: 30px auto 0;
+      padding: clamp(24px, 4vw, 40px);
+      border-radius: 34px;
+      background: rgba(255,255,255,0.56);
+      border: 1px solid rgba(62,38,56,0.12);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .result-title-prefix {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 850;
+      margin-bottom: 10px;
+    }
+
+    .result-summary {
+      color: #5e514c;
+      line-height: 1.64;
+      font-weight: 650;
+      font-size: 1.1rem;
+      margin: 18px 0 0;
+    }
+
+    .interpret-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.72fr);
-      gap: 44px;
-      align-items: center;
-      padding: 28px 0 76px;
-    }
-
-    .hero-subtext {
-      max-width: 630px;
-      margin-top: 22px;
-      font-size: clamp(1.08rem, 1.7vw, 1.28rem);
-      color: #5f514c;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
+      grid-template-columns: repeat(3, 1fr);
       gap: 14px;
       margin-top: 30px;
     }
 
-    .experience-panel {
-      border-radius: 40px;
-      padding: 24px;
-      background: rgba(255, 250, 243, 0.74);
-      border: 1px solid rgba(62, 38, 56, 0.12);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .experience-panel::before {
-      content: "";
-      position: absolute;
-      width: 320px;
-      height: 320px;
-      border-radius: 50%;
-      right: -110px;
-      top: -110px;
-      background: radial-gradient(circle, rgba(217,166,160,0.42), transparent 70%);
-      pointer-events: none;
-    }
-
-    .panel-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 18px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .panel-pill {
-      display: inline-flex;
-      padding: 8px 11px;
-      border-radius: 999px;
-      background: rgba(167, 175, 160, 0.25);
-      color: var(--sage-dark);
-      font-weight: 900;
-      font-size: 0.78rem;
-    }
-
-    .pulse-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--clay);
-      box-shadow: 0 0 0 0 rgba(184, 111, 92, 0.5);
-      animation: pulse 1.8s infinite;
-    }
-
-    .prompt-card {
-      position: relative;
-      z-index: 1;
-      padding: 26px;
-      border-radius: 28px;
-      background: linear-gradient(150deg, rgba(62,38,56,0.92), rgba(142,79,67,0.84));
-      color: #fff;
-      min-height: 210px;
-      display: grid;
-      align-content: end;
-    }
-
-    .prompt-card p:first-child {
-      font-family: var(--serif);
-      font-size: clamp(1.8rem, 3vw, 2.65rem);
-      line-height: 1.05;
-      letter-spacing: -0.04em;
-    }
-
-    .prompt-card p:last-child {
-      margin-top: 16px;
-      color: rgba(255,255,255,0.76);
-    }
-
-    .tap-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 16px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .tap-list button {
-      width: 100%;
+    .reveal-card {
+      border: 1px solid rgba(62,38,56,0.13);
+      background: rgba(255,255,255,0.55);
+      border-radius: 26px;
+      min-height: 190px;
+      padding: 22px;
       text-align: left;
-      border: 1px solid rgba(62,38,56,0.12);
-      background: rgba(255,255,255,0.54);
-      color: var(--plum);
-      border-radius: 18px;
-      padding: 15px 16px;
-      font-weight: 850;
+      cursor: pointer;
+      box-shadow: 0 13px 30px rgba(62,38,56,0.05);
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
     }
 
-    .tap-list button.active {
-      background: rgba(217,166,160,0.3);
-      border-color: rgba(142,79,67,0.38);
-    }
-
-    .panel-reveal {
-      min-height: 70px;
-      margin-top: 14px;
-      padding: 16px;
-      border-radius: 20px;
-      background: rgba(251,246,238,0.86);
-      color: #5b4d49;
-      border: 1px solid rgba(62,38,56,0.1);
-      font-weight: 700;
-      position: relative;
-      z-index: 1;
-    }
-
-    .interactive-section,
-    .quiz-section,
-    .result-section,
-    .method-section,
-    .trust-section,
-    .final-cta-section {
-      padding: 88px 0;
-    }
-
-    .section-heading {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 30px;
-    }
-
-    .section-heading p:not(.section-kicker) {
-      max-width: 430px;
-      color: var(--muted);
-      font-weight: 650;
-    }
-
-    .journey-bar {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin-bottom: 28px;
-    }
-
-    .journey-step {
-      border: 1px solid rgba(62,38,56,0.12);
-      background: rgba(255,250,243,0.64);
-      border-radius: 18px;
-      padding: 14px;
-      color: var(--muted);
-      text-align: left;
-      transition: all 180ms ease;
-    }
-
-    .journey-step span {
+    .reveal-card .small {
       display: block;
       color: var(--clay-dark);
-      font-size: 0.72rem;
-      letter-spacing: 0.13em;
       text-transform: uppercase;
+      letter-spacing: 0.13em;
+      font-size: 0.7rem;
       font-weight: 950;
-      margin-bottom: 4px;
+      margin-bottom: 14px;
     }
 
-    .journey-step strong { color: var(--plum); }
-    .journey-step.active { background: rgba(217,166,160,0.24); border-color: rgba(142,79,67,0.34); }
-
-    .interaction-stage {
-      border-radius: var(--radius-xl);
-      background: rgba(255,250,243,0.76);
-      border: 1px solid rgba(62,38,56,0.12);
-      box-shadow: var(--shadow-soft);
-      padding: clamp(24px, 4vw, 48px);
-      min-height: 430px;
-    }
-
-    .stage-screen { display: none; animation: rise 260ms ease both; }
-    .stage-screen.active { display: block; }
-
-    .choice-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 26px;
-    }
-
-    .choice-card,
-    .mini-card,
-    .answer-button,
-    .accordion-button,
-    .testimonial-tab {
-      border: 1px solid rgba(62,38,56,0.12);
-      background: rgba(255,255,255,0.54);
-      border-radius: 24px;
-      color: var(--charcoal);
-      box-shadow: 0 12px 28px rgba(62,38,56,0.05);
-      transition: all 180ms ease;
-    }
-
-    .choice-card {
-      min-height: 170px;
-      padding: 22px;
-      text-align: left;
-      display: grid;
-      align-content: space-between;
-    }
-
-    .choice-card strong,
-    .mini-card strong {
-      display: block;
+    .reveal-card strong {
       font-family: var(--serif);
       color: var(--plum);
-      font-size: 1.42rem;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
+      font-size: 1.45rem;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
     }
 
-    .choice-card span,
-    .mini-card span {
-      display: block;
-      color: var(--muted);
-      margin-top: 10px;
-      font-weight: 650;
-    }
-
-    .choice-card.selected,
-    .mini-card.selected,
-    .answer-button.selected,
-    .testimonial-tab.active {
-      background: rgba(217,166,160,0.25);
-      border-color: rgba(142,79,67,0.38);
-      box-shadow: 0 18px 42px rgba(184,111,92,0.12);
-    }
-
-    .stage-reveal {
-      margin-top: 24px;
-      padding: 24px;
-      border-radius: 26px;
-      background: rgba(62,38,56,0.92);
-      color: #fff;
+    .reveal-card p {
       display: none;
-    }
-
-    .stage-reveal.show { display: block; animation: rise 240ms ease both; }
-    .stage-reveal h3 { color: #fff; margin-bottom: 10px; }
-    .stage-reveal p { color: rgba(255,255,255,0.78); }
-
-    .stage-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      margin-top: 26px;
-    }
-
-    .mini-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 24px;
-    }
-
-    .mini-card {
-      padding: 20px;
-      min-height: 145px;
-      text-align: left;
-    }
-
-    .reflection-meter {
-      margin-top: 28px;
-      padding: 22px;
-      border-radius: 26px;
-      background: rgba(251,246,238,0.78);
-      border: 1px solid rgba(62,38,56,0.1);
-    }
-
-    .meter-track {
-      height: 14px;
-      background: rgba(62,38,56,0.09);
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 12px;
-    }
-
-    .meter-fill {
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, var(--sage-dark), var(--clay), var(--plum));
-      border-radius: 999px;
-      transition: width 280ms ease;
-    }
-
-    .quiz-card,
-    .result-card,
-    .email-card {
-      border-radius: var(--radius-xl);
-      background: rgba(255,250,243,0.82);
-      border: 1px solid rgba(62,38,56,0.13);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      padding: clamp(24px, 5vw, 54px);
-    }
-
-    .quiz-shell,
-    .result-card,
-    .email-card { width: min(calc(100% - 36px), 960px); margin: 0 auto; }
-
-    .quiz-topline {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: center;
-      margin-bottom: 22px;
-    }
-
-    .progress-label { color: var(--muted); font-weight: 850; font-size: 0.92rem; }
-
-    .progress-bar {
-      height: 10px;
-      width: 100%;
-      border-radius: 999px;
-      overflow: hidden;
-      background: rgba(62,38,56,0.09);
-      margin-bottom: 34px;
-    }
-
-    .progress-fill {
-      width: 14.28%;
-      height: 100%;
-      background: linear-gradient(90deg, var(--clay), var(--plum));
-      border-radius: 999px;
-      transition: width 300ms ease;
-    }
-
-    .answer-list { display: grid; gap: 12px; margin-top: 26px; }
-
-    .answer-button {
-      width: 100%;
-      padding: 17px 18px;
-      text-align: left;
-      color: #4f433f;
-      font-weight: 720;
-    }
-
-    .quiz-navigation { display: flex; justify-content: space-between; gap: 14px; margin-top: 28px; }
-
-    .hidden { display: none !important; }
-
-    .result-summary {
-      margin-top: 16px;
-      max-width: 760px;
-      font-size: clamp(1.08rem, 1.8vw, 1.32rem);
-      color: #5b4d49;
+      margin: 14px 0 0;
+      color: var(--muted);
       font-weight: 650;
+      line-height: 1.48;
     }
 
-    .result-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 26px;
+    .reveal-card.open {
+      background: rgba(217,166,160,0.23);
+      border-color: rgba(142,79,67,0.35);
     }
 
-    .result-detail {
-      margin-top: 20px;
-      padding: 26px;
-      border-radius: 26px;
-      background: rgba(251,246,238,0.82);
-      border: 1px solid rgba(62,38,56,0.11);
-      min-height: 190px;
-    }
+    .reveal-card.open p { display: block; animation: enter 220ms ease both; }
 
-    .result-detail h3 { margin-bottom: 10px; }
-    .result-detail ul { margin: 12px 0 0; padding-left: 20px; }
-    .result-detail li + li { margin-top: 8px; }
-
-    .result-actions,
-    .utility-actions { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-
-    .method-grid {
-      display: grid;
-      grid-template-columns: 0.8fr 1.2fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .accordion-stack { display: grid; gap: 10px; }
-
-    .accordion-button {
-      width: 100%;
-      padding: 18px;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      font-weight: 900;
-      color: var(--plum);
-    }
-
-    .accordion-button span { color: var(--clay-dark); font-size: 0.78rem; letter-spacing: 0.13em; text-transform: uppercase; }
-
-    .method-display {
-      border-radius: var(--radius-xl);
-      background: rgba(255,250,243,0.76);
+    .invite-card,
+    .trust-card {
+      max-width: 760px;
+      margin: 30px auto 0;
+      padding: clamp(26px, 4vw, 42px);
+      border-radius: 34px;
+      background: rgba(255,255,255,0.56);
       border: 1px solid rgba(62,38,56,0.12);
       box-shadow: var(--shadow-soft);
-      padding: clamp(26px, 4vw, 46px);
-      min-height: 360px;
     }
 
-    .method-display p { margin-top: 16px; color: var(--muted); font-size: 1.08rem; font-weight: 650; }
-
-    .trust-layout {
-      display: grid;
-      grid-template-columns: 0.85fr 1.15fr;
-      gap: 18px;
-      align-items: start;
+    .invite-card p,
+    .trust-card p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.58;
+      font-weight: 650;
+      margin: 14px 0 0;
     }
 
-    .testimonial-tabs { display: grid; gap: 10px; }
-
-    .testimonial-tab {
-      padding: 16px;
-      text-align: left;
-      font-weight: 900;
-      color: var(--plum);
-    }
-
-    .testimonial-card {
-      border-radius: var(--radius-xl);
-      background: rgba(255,250,243,0.78);
-      border: 1px solid rgba(62,38,56,0.12);
-      box-shadow: var(--shadow-soft);
-      padding: clamp(26px, 4vw, 48px);
-      min-height: 310px;
-      display: grid;
-      align-content: center;
-    }
-
-    .testimonial-card blockquote {
+    .trust-card blockquote {
       margin: 0;
       font-family: var(--serif);
       color: var(--plum);
-      font-size: clamp(1.7rem, 3vw, 3rem);
+      font-size: clamp(1.8rem, 3.7vw, 3.2rem);
       line-height: 1.1;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.045em;
     }
 
-    .testimonial-card cite { margin-top: 20px; color: var(--muted); font-style: normal; font-weight: 900; }
+    .trust-card cite {
+      display: block;
+      margin-top: 18px;
+      color: var(--muted);
+      font-style: normal;
+      font-weight: 900;
+    }
 
-    .email-card { text-align: center; margin-top: 30px; }
-    .email-card p { color: var(--muted); margin: 12px auto 0; max-width: 620px; }
+    .final-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .final-choice {
+      min-height: 170px;
+      padding: 22px;
+      border-radius: 26px;
+      background: rgba(255,255,255,0.56);
+      border: 1px solid rgba(62,38,56,0.13);
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 13px 30px rgba(62,38,56,0.05);
+      transition: transform 180ms ease, background 180ms ease;
+    }
+
+    .final-choice strong {
+      display: block;
+      font-family: var(--serif);
+      color: var(--plum);
+      font-size: 1.45rem;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+    }
+
+    .final-choice span {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+      font-weight: 650;
+      line-height: 1.48;
+    }
 
     .email-form {
-      margin-top: 24px;
-      display: grid;
-      grid-template-columns: 1fr 1.2fr auto;
+      display: none;
+      max-width: 680px;
+      margin: 26px auto 0;
+      grid-template-columns: 1fr 1.25fr auto;
       gap: 12px;
       align-items: end;
       text-align: left;
+      animation: enter 260ms ease both;
     }
 
-    .field label { display: block; color: var(--plum); font-weight: 900; font-size: 0.86rem; margin-bottom: 7px; }
+    .email-form.show { display: grid; }
+
+    .field label {
+      display: block;
+      color: var(--plum);
+      font-weight: 900;
+      font-size: 0.84rem;
+      margin-bottom: 7px;
+    }
+
     .field input {
       width: 100%;
-      border: 1px solid rgba(62,38,56,0.14);
-      border-radius: 15px;
-      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(62,38,56,0.15);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.64);
       padding: 14px;
       color: var(--charcoal);
       outline: none;
     }
 
-    .final-cta-section .section-container {
-      text-align: center;
-      padding: clamp(34px, 6vw, 76px);
-      border-radius: 44px;
-      background:
-        radial-gradient(circle at 15% 10%, rgba(217,166,160,0.36), transparent 26rem),
-        radial-gradient(circle at 85% 15%, rgba(167,175,160,0.32), transparent 24rem),
-        rgba(255,250,243,0.76);
-      border: 1px solid rgba(62,38,56,0.12);
-      box-shadow: var(--shadow-soft);
+    .field input:focus {
+      border-color: rgba(142,79,67,0.46);
+      box-shadow: 0 0 0 4px rgba(217,166,160,0.18);
     }
 
-    .final-cta-section p { max-width: 680px; margin: 18px auto 0; color: var(--muted); font-size: 1.08rem; font-weight: 650; }
-    .final-cta-section .hero-actions { justify-content: center; }
-
-    .site-footer {
-      width: min(calc(100% - 36px), var(--max));
-      margin: 0 auto;
-      padding: 38px 0 48px;
-      color: var(--muted);
+    .form-message {
+      margin-top: 16px;
+      color: var(--sage-dark);
+      font-weight: 850;
+      min-height: 1.4em;
     }
 
-    .footer-content {
+    .nav-area {
+      position: relative;
+      z-index: 2;
+      padding: 0 clamp(22px, 4vw, 48px) 26px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 22px;
-      padding-top: 28px;
-      border-top: 1px solid rgba(62,38,56,0.12);
+      gap: 14px;
     }
 
-    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; font-weight: 850; font-size: 0.92rem; }
+    .nav-area .primary-button,
+    .nav-area .secondary-button { min-width: 132px; }
+
+    .footer-note {
+      width: min(100%, 1180px);
+      margin: 0 auto;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 650;
+      padding: 2px 0 8px;
+    }
 
     .toast {
       position: fixed;
       left: 50%;
-      bottom: 22px;
+      bottom: 24px;
       transform: translate(-50%, 120%);
       opacity: 0;
+      z-index: 100;
       background: var(--plum);
       color: #fff;
       border-radius: 999px;
       padding: 12px 16px;
-      box-shadow: 0 18px 38px rgba(62,38,56,0.25);
-      transition: all 240ms ease;
-      z-index: 100;
+      box-shadow: 0 18px 40px rgba(62,38,56,0.26);
       font-weight: 850;
-      font-size: 0.92rem;
+      transition: all 240ms ease;
+      text-align: center;
+      max-width: calc(100% - 30px);
     }
 
     .toast.show { transform: translate(-50%, 0); opacity: 1; }
 
-    @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(184,111,92,0.5); } 70% { box-shadow: 0 0 0 14px rgba(184,111,92,0); } 100% { box-shadow: 0 0 0 0 rgba(184,111,92,0); } }
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(0.96); filter: saturate(0.95); }
+      50% { transform: scale(1.04); filter: saturate(1.08); }
+    }
 
     @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+      *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
     }
 
-    @media (max-width: 980px) {
-      .site-header { border-radius: 28px; flex-wrap: wrap; }
-      .nav { order: 3; width: 100%; justify-content: center; gap: 16px; }
-      .hero-section { grid-template-columns: 1fr; min-height: auto; }
-      .choice-grid { grid-template-columns: 1fr; }
-      .mini-grid { grid-template-columns: 1fr 1fr; }
-      .method-grid, .trust-layout { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+      .experience-card { min-height: calc(100vh - 170px); }
+      .interpret-grid, .final-grid { grid-template-columns: 1fr; }
       .email-form { grid-template-columns: 1fr; }
       .email-form .primary-button { width: 100%; }
-      .footer-content { flex-direction: column; align-items: flex-start; }
     }
 
-    @media (max-width: 680px) {
-      .site-header { top: 8px; margin-top: 8px; width: min(calc(100% - 20px), 1220px); padding: 13px; }
-      .brand { font-size: 0.98rem; }
-      .header-cta { padding: 10px 12px; font-size: 0.8rem; }
-      .nav { display: none; }
-      .hero-section, .section-container, .quiz-shell, .result-card, .email-card, .site-footer { width: min(calc(100% - 24px), var(--max)); }
-      .hero-section { margin-top: 32px; gap: 24px; padding-bottom: 46px; }
-      h1 { font-size: clamp(2.7rem, 15vw, 4.2rem); }
-      .interactive-section, .quiz-section, .result-section, .method-section, .trust-section, .final-cta-section { padding: 58px 0; }
-      .journey-bar { grid-template-columns: 1fr; }
-      .journey-step { display: none; }
-      .journey-step.active { display: block; }
-      .section-heading { display: block; }
-      .section-heading p:not(.section-kicker) { margin-top: 14px; }
-      .mini-grid { grid-template-columns: 1fr; }
-      .stage-actions, .quiz-navigation, .result-actions, .utility-actions, .hero-actions { flex-direction: column; align-items: stretch; }
-      .primary-button, .secondary-button, .soft-button { width: 100%; }
-      .quiz-topline { flex-direction: column; align-items: flex-start; }
+    @media (max-width: 640px) {
+      .page-shell { padding: 10px; }
+      .topbar { border-radius: 24px; align-items: flex-start; }
+      .brand { font-size: 0.96rem; }
+      .brand-mark { width: 29px; height: 29px; }
+      .progress-word { display: none; }
+      .ghost-link { display: none; }
+      .experience-wrap { margin: 12px auto; }
+      .experience-card { min-height: calc(100vh - 118px); border-radius: 28px; }
+      .progress-area { padding: 18px 18px 0; }
+      .screen-stage { padding: 30px 18px; align-items: start; }
+      h1 { font-size: clamp(2.85rem, 15vw, 4.4rem); }
+      h2 { font-size: clamp(2.1rem, 11vw, 3.3rem); }
+      h3 { font-size: clamp(1.55rem, 8vw, 2.3rem); }
+      .lead, .prompt-copy { font-size: 1rem; }
+      .choice { grid-template-columns: 1fr; padding: 17px; }
+      .choice-number { display: none; }
+      .nav-area { padding: 0 18px 18px; flex-direction: column-reverse; }
+      .nav-area .primary-button, .nav-area .secondary-button { width: 100%; }
+      .action-row { flex-direction: column; align-items: stretch; }
+      .action-row .primary-button, .action-row .secondary-button { width: 100%; }
+      .top-actions { gap: 6px; }
+      .ghost-button { padding: 9px 11px; font-size: 0.8rem; }
+      .pause-orb { margin-top: 26px; }
     }
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <a href="#hero" class="brand"><span class="brand-mark">SB</span><span>The Second Becoming</span></a>
-    <nav class="nav" aria-label="Page sections">
-      <a href="#experience">Experience</a>
-      <a href="#quiz">Quiz</a>
-      <a href="#method">Method</a>
-      <a href="#stories">Stories</a>
-    </nav>
-    <a href="#experience" class="header-cta">Start the Experience</a>
-  </header>
-
-  <main>
-    <section id="hero" class="hero-section">
-      <div>
-        <p class="eyebrow">Not a quiz page. A guided self-recognition experience.</p>
-        <h1>Let your homepage feel like a conversation.</h1>
-        <p class="hero-subtext">Visitors click, choose, reveal, reflect, and receive language for the season they’re in — before they’re invited into coaching.</p>
-        <div class="hero-actions">
-          <a href="#experience" class="primary-button">Begin the Guided Experience</a>
-          <a href="#quiz" class="secondary-button">Jump to the Quiz</a>
-        </div>
+  <div class="page-shell">
+    <header class="topbar" aria-label="Experience header">
+      <a href="#" class="brand" id="brand-reset" aria-label="Restart The Second Becoming Reflection">
+        <span class="brand-mark">SB</span>
+        <span>The Second Becoming</span>
+      </a>
+      <div class="top-actions">
+        <span class="progress-word" id="progress-word">A private reflection</span>
+        <a href="/cdn-cgi/l/email-protection#b4dcd1d8d8dbf4d1ccd5d9c4d8d19ad7dbd9" class="ghost-link">Contact</a>
+        <button class="ghost-button" type="button" id="reset-top">Start over</button>
       </div>
+    </header>
 
-      <aside class="experience-panel" aria-label="Interactive preview">
-        <div class="panel-top">
-          <span class="panel-pill">Live interaction preview</span>
-          <span class="pulse-dot" aria-hidden="true"></span>
-        </div>
-        <div class="prompt-card">
-          <p id="hero-prompt">What if your restlessness is information?</p>
-          <p>Tap one of the feelings below.</p>
-        </div>
-        <div class="tap-list">
-          <button type="button" data-hero-reveal="You may be ready to redefine success from the inside out.">Successful, but not satisfied</button>
-          <button type="button" data-hero-reveal="Your exhaustion may be asking for boundaries, not more discipline.">Tired of holding everything</button>
-          <button type="button" data-hero-reveal="The in-between is not failure. It may be identity transition.">Between who I was and who I’m becoming</button>
-        </div>
-        <div class="panel-reveal" id="hero-reveal">Choose one to see how the page responds.</div>
-      </aside>
-    </section>
-
-    <section id="experience" class="interactive-section">
-      <div class="section-container">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Click-driven emotional arc</p>
-            <h2>No long blocks. One small truth at a time.</h2>
+    <main class="experience-wrap">
+      <article class="experience-card" aria-live="polite">
+        <div class="progress-area">
+          <div class="progress-meta">
+            <span id="step-label">Arrival</span>
+            <span id="step-count">Step 1 of 11</span>
           </div>
-          <p>The visitor moves through recognition, permission, reflection, revelation, and invitation by clicking through guided moments.</p>
+          <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div>
         </div>
 
-        <div class="journey-bar" aria-label="Experience steps">
-          <button class="journey-step active" type="button" data-stage="0"><span>01</span><strong>Recognition</strong></button>
-          <button class="journey-step" type="button" data-stage="1"><span>02</span><strong>Permission</strong></button>
-          <button class="journey-step" type="button" data-stage="2"><span>03</span><strong>Reflection</strong></button>
-          <button class="journey-step" type="button" data-stage="3"><span>04</span><strong>Revelation</strong></button>
-          <button class="journey-step" type="button" data-stage="4"><span>05</span><strong>Invitation</strong></button>
-        </div>
-
-        <div class="interaction-stage">
-          <div class="stage-screen active" data-screen="0">
-            <p class="section-kicker">Recognition</p>
-            <h3>Which private sentence feels closest?</h3>
-            <div class="choice-grid">
-              <button class="choice-card" type="button" data-recognition="success"><strong>I did what I was supposed to do.</strong><span>So why doesn’t it feel like enough?</span></button>
-              <button class="choice-card" type="button" data-recognition="energy"><strong>I’m tired of being needed.</strong><span>I want to feel like I belong to myself again.</span></button>
-              <button class="choice-card" type="button" data-recognition="identity"><strong>I don’t recognize this season.</strong><span>The old version of me no longer fits.</span></button>
-            </div>
-            <div class="stage-reveal" id="recognition-reveal"></div>
-          </div>
-
-          <div class="stage-screen" data-screen="1">
-            <p class="section-kicker">Permission</p>
-            <h3>Tap what you need permission to believe.</h3>
-            <div class="mini-grid">
-              <button class="mini-card" type="button" data-permission="This does not mean you are ungrateful."><strong>Not ungrateful</strong><span>You can honor what you built and still want something truer.</span></button>
-              <button class="mini-card" type="button" data-permission="Your exhaustion may be information."><strong>Not weak</strong><span>Fatigue can be a signal, not a flaw.</span></button>
-              <button class="mini-card" type="button" data-permission="The in-between can be sacred."><strong>Not behind</strong><span>Some clarity arrives after you stop rushing.</span></button>
-              <button class="mini-card" type="button" data-permission="Wanting more meaning is allowed."><strong>Not too much</strong><span>Depth is a valid desire.</span></button>
-            </div>
-            <div class="stage-reveal" id="permission-reveal"></div>
-          </div>
-
-          <div class="stage-screen" data-screen="2">
-            <p class="section-kicker">Reflection</p>
-            <h3>What is loudest right now?</h3>
-            <div class="mini-grid">
-              <button class="mini-card reflection-choice" type="button" data-weight="25"><strong>Restlessness</strong><span>I keep asking if this is all.</span></button>
-              <button class="mini-card reflection-choice" type="button" data-weight="25"><strong>Exhaustion</strong><span>I need space without guilt.</span></button>
-              <button class="mini-card reflection-choice" type="button" data-weight="25"><strong>Grief</strong><span>Something old is ending.</span></button>
-              <button class="mini-card reflection-choice" type="button" data-weight="25"><strong>Readiness</strong><span>I know something needs to change.</span></button>
-            </div>
-            <div class="reflection-meter">
-              <strong>Honesty meter</strong>
-              <div class="meter-track"><div class="meter-fill" id="honesty-meter"></div></div>
+        <section class="screen-stage">
+          <div class="screen center active" data-screen="arrival">
+            <p class="kicker">A private reflection for women in a quiet life transition</p>
+            <h1>Maybe nothing is wrong with you.</h1>
+            <p class="lead">Maybe something is ready to change. If your life looks good from the outside but feels misaligned on the inside, this reflection will help you name the season you may be in.</p>
+            <div class="action-row">
+              <button class="primary-button" type="button" data-action="begin">Begin the Reflection</button>
+              <button class="secondary-button" type="button" data-action="soft-skip">I’m just looking around</button>
             </div>
           </div>
 
-          <div class="stage-screen" data-screen="3">
-            <p class="section-kicker">Revelation</p>
-            <h3>Name the season before forcing the solution.</h3>
-            <div class="choice-grid">
-              <button class="choice-card" type="button" data-reveal-title="The Quietly Restless Achiever" data-reveal-copy="The old markers of success may no longer move you. You may need a more honest definition of enough."><strong>Success feels quiet</strong><span>Name this pattern.</span></button>
-              <button class="choice-card" type="button" data-reveal-title="The Tired Keeper" data-reveal-copy="You may not need to disappear from the people you love. You may need to return to yourself."><strong>Strength feels heavy</strong><span>Name this pattern.</span></button>
-              <button class="choice-card" type="button" data-reveal-title="The Woman Between Identities" data-reveal-copy="The old version has loosened. The new version is not fully here yet. This is a threshold."><strong>Identity feels unfinished</strong><span>Name this pattern.</span></button>
+          <div class="screen center" data-screen="pause">
+            <p class="kicker">Before we begin</p>
+            <h2>Take one honest breath.</h2>
+            <p class="lead">You do not have to explain your whole life here. Just notice what feels true.</p>
+            <div class="pause-orb" aria-hidden="true"></div>
+            <div class="coach-response" id="pause-response">
+              <div class="label">A note from the coach</div>
+              <p>Good. We’ll go one step at a time.</p>
             </div>
-            <div class="stage-reveal" id="revelation-reveal"></div>
-          </div>
-
-          <div class="stage-screen" data-screen="4">
-            <p class="section-kicker">Invitation</p>
-            <h3>Choose your next right step.</h3>
-            <div class="choice-grid">
-              <a href="#quiz" class="choice-card"><strong>Take the full quiz</strong><span>Get a personalized Reinvention Season result.</span></a>
-              <a href="#method" class="choice-card"><strong>See the method</strong><span>Understand the coaching framework behind the experience.</span></a>
-              <a href="#final-invitation" class="choice-card"><strong>Book a clarity session</strong><span>Move from insight into support.</span></a>
+            <div class="action-row">
+              <button class="primary-button" type="button" data-action="pause-ready">I’m ready to be honest</button>
             </div>
           </div>
 
-          <div class="stage-actions">
-            <button class="secondary-button" type="button" id="prev-stage">Back</button>
-            <button class="primary-button" type="button" id="next-stage">Continue</button>
+          <div class="screen" data-screen="recognition">
+            <p class="kicker">Recognition</p>
+            <h2>Which sentence feels closest to where you are right now?</h2>
+            <p class="prompt-copy">Choose the one that lands closest. It does not need to explain everything.</p>
+            <div class="choice-grid" id="recognition-options"></div>
+            <div class="coach-response" id="recognition-response"></div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section id="quiz" class="quiz-section">
-      <div class="quiz-shell">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Interactive quiz</p>
-            <h2>Answer by clicking what feels true.</h2>
+          <div class="screen" data-screen="emotion">
+            <p class="kicker">Emotional naming</p>
+            <h2>What feeling have you been carrying most quietly?</h2>
+            <p class="prompt-copy">This is not about finding the perfect answer. It is about telling the truth gently.</p>
+            <div class="choice-grid" id="emotion-options"></div>
+            <div class="coach-response" id="emotion-response"></div>
           </div>
-          <p>Short, reflective, and result-driven. No email wall before value.</p>
-        </div>
-        <div class="quiz-card" role="region" aria-label="Reinvention Season Quiz">
-          <div class="quiz-topline">
-            <span class="progress-label">Question <span id="current-question">1</span> of <span id="total-questions">7</span></span>
-            <button class="soft-button" type="button" id="top-reset">Start over</button>
+
+          <div class="screen" data-screen="pattern">
+            <p class="kicker">Pattern identification</p>
+            <h2>What pattern keeps showing up?</h2>
+            <p class="prompt-copy">Patterns often reveal what our lives have been trying to tell us.</p>
+            <div class="choice-grid" id="pattern-options"></div>
+            <div class="coach-response" id="pattern-response"></div>
           </div>
-          <div class="progress-bar" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div>
-          <div id="question-stage" aria-live="polite"></div>
-          <div class="quiz-navigation">
-            <button class="secondary-button" type="button" id="back-button">Back</button>
-            <button class="primary-button" type="button" id="next-button">Continue</button>
+
+          <div class="screen" data-screen="truth">
+            <p class="kicker">The deeper truth</p>
+            <h2>If you were completely honest, what question are you living inside?</h2>
+            <p class="prompt-copy">This is the question underneath the question.</p>
+            <div class="choice-grid" id="truth-options"></div>
+            <div class="coach-response" id="truth-response"></div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section id="result" class="result-section hidden" tabindex="-1">
-      <div class="result-card">
-        <p class="result-kicker">Your Reinvention Season</p>
-        <h2 id="result-title"></h2>
-        <p id="result-summary" class="result-summary"></p>
-
-        <div class="result-tabs" aria-label="Result details">
-          <button class="soft-button result-tab" type="button" data-tab="story">Read the reflection</button>
-          <button class="soft-button result-tab" type="button" data-tab="insight">What this is about</button>
-          <button class="soft-button result-tab" type="button" data-tab="needs">What you may need</button>
-          <button class="soft-button result-tab" type="button" data-tab="next">Next step</button>
-        </div>
-
-        <div class="result-detail" id="result-detail">
-          <h3>Choose a tab above.</h3>
-          <p>Your result will unfold in small, clickable pieces instead of a long block of text.</p>
-        </div>
-
-        <div class="result-actions">
-          <a href="#email-card" class="primary-button">Email Me This Result</a>
-          <button class="secondary-button" type="button" id="copy-result">Copy result</button>
-          <button class="secondary-button" type="button" id="retake-quiz">Retake quiz</button>
-        </div>
-
-        <div id="email-card" class="email-card">
-          <h3>Keep this reflection?</h3>
-          <p>In a live build, this sends the visitor’s result, prompts, and next-step practice.</p>
-          <form class="email-form" id="email-form">
-            <div class="field">
-              <label for="name">First name</label>
-              <input type="text" id="name" name="name" placeholder="Your first name" autocomplete="given-name" />
+          <div class="screen center" data-screen="reveal">
+            <p class="kicker">Your season may be</p>
+            <div class="reveal-panel">
+              <p class="result-title-prefix">Here is language for what you named:</p>
+              <h2 id="result-title">The Quietly Restless Achiever</h2>
+              <p class="result-summary" id="result-summary"></p>
             </div>
-            <div class="field">
-              <label for="email">Email address</label>
-              <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+            <div class="action-row">
+              <button class="primary-button" type="button" data-action="understand-result">Help me understand this</button>
             </div>
-            <input type="hidden" id="hidden-result" name="result" />
-            <button type="submit" class="primary-button">Send My Reflection</button>
-          </form>
-          <p id="form-message" aria-live="polite"></p>
-        </div>
-      </div>
-    </section>
-
-    <section id="method" class="method-section">
-      <div class="section-container">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Clickable framework</p>
-            <h2>The Second Becoming Method</h2>
           </div>
-          <p>Visitors can explore the coaching process without reading a full services page.</p>
-        </div>
-        <div class="method-grid">
-          <div class="accordion-stack">
-            <button class="accordion-button" type="button" data-method="notice"><span>01</span>Notice +</button>
-            <button class="accordion-button" type="button" data-method="release"><span>02</span>Release +</button>
-            <button class="accordion-button" type="button" data-method="reclaim"><span>03</span>Reclaim +</button>
-            <button class="accordion-button" type="button" data-method="rebuild"><span>04</span>Rebuild +</button>
+
+          <div class="screen" data-screen="interpretation">
+            <p class="kicker">Coach interpretation</p>
+            <h2>This is where we listen more closely.</h2>
+            <p class="prompt-copy">Open each card. The result unfolds in small pieces, like a conversation.</p>
+            <div class="interpret-grid" id="interpret-grid"></div>
+            <div class="coach-response" id="interpret-response">
+              <div class="label">A note from the coach</div>
+              <p>You do not have to solve this all at once. Naming it clearly is already movement.</p>
+            </div>
           </div>
-          <div class="method-display" id="method-display">
-            <p class="section-kicker">Tap a stage</p>
-            <h3>Choose a method step to reveal the coaching focus.</h3>
-            <p>This keeps the homepage active and exploratory instead of static.</p>
+
+          <div class="screen center" data-screen="invitation">
+            <p class="kicker">A possible next step</p>
+            <div class="invite-card">
+              <h2 id="invite-headline"></h2>
+              <p id="invite-copy"></p>
+              <div class="action-row">
+                <a href="/cdn-cgi/l/email-protection#dab2bfb6b6b59abfa2bbb7aab6bff4b9b5b7e5a9afb8b0bfb9aee78aa8b3acbbaebfffe8ea99b6bba8b3aea3ffe8ea89bfa9a9b3b5b4" class="primary-button" id="invite-cta">Request a Private Clarity Session</a>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section id="stories" class="trust-section">
-      <div class="section-container">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">Clickable proof</p>
-            <h2>Client stories as reveal moments.</h2>
+          <div class="screen center" data-screen="trust">
+            <p class="kicker">A matched client story</p>
+            <div class="trust-card">
+              <blockquote id="trust-quote"></blockquote>
+              <cite id="trust-cite"></cite>
+            </div>
           </div>
-          <p>Instead of stacking testimonials, visitors choose the story that matches their situation.</p>
-        </div>
-        <div class="trust-layout">
-          <div class="testimonial-tabs">
-            <button class="testimonial-tab active" type="button" data-story="success">Success felt empty</button>
-            <button class="testimonial-tab" type="button" data-story="exhaustion">Exhaustion felt personal</button>
-            <button class="testimonial-tab" type="button" data-story="identity">Identity felt unclear</button>
+
+          <div class="screen center" data-screen="final">
+            <p class="kicker">Begin where you are</p>
+            <h2>You do not have to have the whole next chapter figured out.</h2>
+            <p class="lead">You only need enough honesty to take the next right step.</p>
+            <div class="final-grid">
+              <a class="final-choice" href="/cdn-cgi/l/email-protection#4028252c2c2f002538212d302c256e232f2d7f3335222a2523347d10322936213425657270032c213229343965727013253333292f2e">
+                <strong>Request a Private Clarity Session</strong>
+                <span>Continue the conversation with the coach.</span>
+              </a>
+              <button class="final-choice" type="button" id="show-email-form">
+                <strong>Send Me My Reflection</strong>
+                <span>Keep your season, prompts, and next-step practice.</span>
+              </button>
+              <button class="final-choice" type="button" id="start-over-final">
+                <strong>Start Over</strong>
+                <span>Move through the reflection again.</span>
+              </button>
+            </div>
+            <form class="email-form" id="email-form">
+              <div class="field">
+                <label for="name">First name</label>
+                <input id="name" name="name" type="text" placeholder="Your first name" autocomplete="given-name" />
+              </div>
+              <div class="field">
+                <label for="email">Email address</label>
+                <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+              </div>
+              <input id="hidden-result" name="result" type="hidden" />
+              <button class="primary-button" type="submit">Send Reflection</button>
+            </form>
+            <p class="form-message" id="form-message" role="status"></p>
           </div>
-          <div class="testimonial-card" id="testimonial-card">
-            <blockquote>“I came in thinking I needed a career change. What I actually needed was to stop outsourcing my definition of success.”</blockquote>
-            <cite>— Private Client, 48</cite>
-          </div>
-        </div>
-      </div>
-    </section>
+        </section>
 
-    <section id="final-invitation" class="final-cta-section">
-      <div class="section-container">
-        <p class="section-kicker">Gentle final invitation</p>
-        <h2>The visitor has already participated. Now the CTA feels earned.</h2>
-        <p>After recognition, reflection, and revelation, the next step is not a cold “book now.” It is a continuation of the conversation.</p>
-        <div class="hero-actions">
-          <a href="#quiz" class="primary-button">Find My Reinvention Season</a>
-          <a href="#experience" class="secondary-button">Replay the Experience</a>
-        </div>
-      </div>
-    </section>
-  </main>
+        <nav class="nav-area" aria-label="Experience controls">
+          <button class="secondary-button" type="button" id="back-button">Back</button>
+          <button class="primary-button" type="button" id="continue-button">Continue</button>
+        </nav>
+      </article>
+    </main>
 
-  <footer class="site-footer">
-    <div class="footer-content">
-      <a href="#hero" class="brand"><span class="brand-mark">SB</span><span>The Second Becoming</span></a>
-      <div class="footer-links">
-        <a href="#experience">Experience</a>
-        <a href="#quiz">Quiz</a>
-        <a href="#method">Method</a>
-        <a href="#stories">Stories</a>
-      </div>
-    </div>
-  </footer>
+    <footer class="footer-note">A single-flow homepage experience: recognition → reflection → revelation → invitation.</footer>
+  </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite">Copied.</div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script>
-    const heroButtons = document.querySelectorAll("[data-hero-reveal]");
-    const heroReveal = document.getElementById("hero-reveal");
-    heroButtons.forEach(button => {
-      button.addEventListener("click", () => {
-        heroButtons.forEach(b => b.classList.remove("active"));
-        button.classList.add("active");
-        heroReveal.textContent = button.dataset.heroReveal;
-      });
-    });
-
-    let currentStage = 0;
-    const stageButtons = document.querySelectorAll(".journey-step");
-    const screens = document.querySelectorAll(".stage-screen");
-    const prevStage = document.getElementById("prev-stage");
-    const nextStage = document.getElementById("next-stage");
-
-    function showStage(index) {
-      currentStage = Math.max(0, Math.min(4, index));
-      screens.forEach(screen => screen.classList.toggle("active", Number(screen.dataset.screen) === currentStage));
-      stageButtons.forEach(button => button.classList.toggle("active", Number(button.dataset.stage) === currentStage));
-      prevStage.style.opacity = currentStage === 0 ? "0.45" : "1";
-      nextStage.textContent = currentStage === 4 ? "Go to Quiz" : "Continue";
-    }
-
-    stageButtons.forEach(button => button.addEventListener("click", () => showStage(Number(button.dataset.stage))));
-    prevStage.addEventListener("click", () => showStage(currentStage - 1));
-    nextStage.addEventListener("click", () => {
-      if (currentStage === 4) document.getElementById("quiz").scrollIntoView({ behavior: "smooth" });
-      else showStage(currentStage + 1);
-    });
-
-    const recognitionText = {
-      success: ["The Quietly Restless Achiever", "You may not need a bigger goal. You may need a more honest definition of success."],
-      energy: ["The Tired Keeper", "You may not need to be less loving. You may need to stop disappearing from your own life."],
-      identity: ["The Woman Between Identities", "You are not failing to know. You may be standing at a threshold."]
-    };
-
-    document.querySelectorAll("[data-recognition]").forEach(card => {
-      card.addEventListener("click", () => {
-        document.querySelectorAll("[data-recognition]").forEach(c => c.classList.remove("selected"));
-        card.classList.add("selected");
-        const [title, copy] = recognitionText[card.dataset.recognition];
-        const reveal = document.getElementById("recognition-reveal");
-        reveal.innerHTML = `<h3>${title}</h3><p>${copy}</p>`;
-        reveal.classList.add("show");
-      });
-    });
-
-    document.querySelectorAll("[data-permission]").forEach(card => {
-      card.addEventListener("click", () => {
-        document.querySelectorAll("[data-permission]").forEach(c => c.classList.remove("selected"));
-        card.classList.add("selected");
-        const reveal = document.getElementById("permission-reveal");
-        reveal.innerHTML = `<h3>Permission granted.</h3><p>${card.dataset.permission}</p>`;
-        reveal.classList.add("show");
-      });
-    });
-
-    let honesty = 0;
-    const meter = document.getElementById("honesty-meter");
-    document.querySelectorAll(".reflection-choice").forEach(card => {
-      card.addEventListener("click", () => {
-        card.classList.toggle("selected");
-        honesty = document.querySelectorAll(".reflection-choice.selected").length * 25;
-        meter.style.width = honesty + "%";
-        if (honesty === 100) showToast("That level of honesty is a beginning.");
-      });
-    });
-
-    document.querySelectorAll("[data-reveal-title]").forEach(card => {
-      card.addEventListener("click", () => {
-        document.querySelectorAll("[data-reveal-title]").forEach(c => c.classList.remove("selected"));
-        card.classList.add("selected");
-        const reveal = document.getElementById("revelation-reveal");
-        reveal.innerHTML = `<h3>${card.dataset.revealTitle}</h3><p>${card.dataset.revealCopy}</p>`;
-        reveal.classList.add("show");
-      });
-    });
-
-    const RESULT_KEYS = ["restless-achiever", "tired-keeper", "between-identities", "purpose-seeker", "ready-reinventor"];
-    const questions = [
-      { kicker: "Current truth", text: "Which sentence feels closest right now?", answers: [["restless-achiever", "I’ve achieved a lot, but I don’t feel as fulfilled as I expected."], ["tired-keeper", "I’m tired of being strong, available, responsible, and needed."], ["between-identities", "I don’t fully recognize who I used to be or who I’m becoming."], ["purpose-seeker", "I keep wondering what my life is supposed to mean now."], ["ready-reinventor", "I feel ready for change, even without every answer."]] },
-      { kicker: "Private emotion", text: "What feeling have you been carrying privately?", answers: [["restless-achiever", "Disappointment I don’t know how to explain."], ["tired-keeper", "Exhaustion from holding everything together."], ["between-identities", "Grief for a version of me I’ve outgrown."], ["purpose-seeker", "Longing for something deeper."], ["ready-reinventor", "A quiet urgency that says, ‘It’s time.’"]] },
-      { kicker: "What you crave", text: "What are you craving most?", answers: [["restless-achiever", "Success that actually feels like mine."], ["tired-keeper", "Space to breathe without guilt."], ["between-identities", "Permission to change without justifying it."], ["purpose-seeker", "Purpose that feels alive again."], ["ready-reinventor", "Courage to take the next step."]] },
-      { kicker: "Hard to admit", text: "What feels hardest to admit?", answers: [["restless-achiever", "The life I built doesn’t fully satisfy me anymore."], ["tired-keeper", "I’m resentful of how much people depend on me."], ["between-identities", "I don’t know who I am outside my roles."], ["purpose-seeker", "I’m scared I’ll waste the next chapter."], ["ready-reinventor", "I already know something needs to change."]] },
-      { kicker: "Pattern", text: "What pattern keeps repeating?", answers: [["restless-achiever", "I chase the next achievement hoping it will feel different."], ["tired-keeper", "I put myself last and call it love."], ["between-identities", "I try to return to an old version that no longer fits."], ["purpose-seeker", "I search for clarity but rarely feel certain."], ["ready-reinventor", "I delay the decision I know I need to make."]] },
-      { kicker: "Inner question", text: "What question are you living inside?", answers: [["restless-achiever", "Why doesn’t this feel like enough?"], ["tired-keeper", "When do I get to matter too?"], ["between-identities", "Who am I now?"], ["purpose-seeker", "What am I here for in this season?"], ["ready-reinventor", "What am I waiting for?"]] },
-      { kicker: "Next season", text: "What do you want the next season to feel like?", answers: [["restless-achiever", "Aligned with who I really am now."], ["tired-keeper", "Lighter, calmer, and less obligated."], ["between-identities", "Honest, spacious, and self-directed."], ["purpose-seeker", "Meaningful, purposeful, and alive."], ["ready-reinventor", "Brave, intentional, and fully chosen."]] }
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    const steps = [
+      { id: "arrival", label: "Arrival" },
+      { id: "pause", label: "Consent to pause" },
+      { id: "recognition", label: "Recognition" },
+      { id: "emotion", label: "Emotional naming" },
+      { id: "pattern", label: "Pattern" },
+      { id: "truth", label: "Deeper truth" },
+      { id: "reveal", label: "Season reveal" },
+      { id: "interpretation", label: "Interpretation" },
+      { id: "invitation", label: "Invitation" },
+      { id: "trust", label: "Trust" },
+      { id: "final", label: "Final choice" }
     ];
 
+    const resultKeys = ["restless", "keeper", "between", "purpose", "ready"];
+
+    const prompts = {
+      recognition: [
+        {
+          key: "restless",
+          title: "I’ve built a life that looks good, but something feels off.",
+          sub: "Nothing is technically wrong, but it still does not feel fully true.",
+          response: "That kind of restlessness can be confusing, especially when nothing is technically wrong. Let’s listen more closely."
+        },
+        {
+          key: "keeper",
+          title: "I’m tired of being the person everyone depends on.",
+          sub: "I want to feel like I belong to myself again.",
+          response: "Being needed can feel meaningful and exhausting at the same time. Your tiredness deserves more than dismissal."
+        },
+        {
+          key: "between",
+          title: "I don’t fully recognize who I am becoming.",
+          sub: "The old version of me no longer feels like the whole truth.",
+          response: "The in-between can feel disorienting. It can also be the place where a more honest life begins to take shape."
+        },
+        {
+          key: "purpose",
+          title: "I keep wondering what this next chapter is supposed to mean.",
+          sub: "I want depth, not just another plan.",
+          response: "That longing for meaning matters. It may be pointing toward what still feels alive."
+        },
+        {
+          key: "ready",
+          title: "I already know something needs to change.",
+          sub: "I may not have every answer, but I can feel the truth getting louder.",
+          response: "When the truth keeps returning, it may be time to stop negotiating with it and begin listening."
+        }
+      ],
+      emotion: [
+        {
+          key: "restless",
+          title: "Disappointment I don’t know how to explain",
+          sub: "Especially because I thought I would feel more fulfilled by now.",
+          response: "Unexplained disappointment often appears when the old definition of success can no longer carry your whole self."
+        },
+        {
+          key: "keeper",
+          title: "Exhaustion from holding everything together",
+          sub: "I am tired in a way rest alone does not seem to fix.",
+          response: "Exhaustion is not always a sign that you are failing. Sometimes it is the body telling the truth before the mind is ready to."
+        },
+        {
+          key: "between",
+          title: "Grief for a version of me that no longer fits",
+          sub: "Part of me misses who I was, even if I cannot go back.",
+          response: "Grief can be part of becoming. You can honor who you were without forcing yourself to stay there."
+        },
+        {
+          key: "purpose",
+          title: "Longing for something deeper",
+          sub: "I want my life to feel more connected and alive.",
+          response: "Longing is not always impractical. Sometimes it is the part of you that still remembers what matters."
+        },
+        {
+          key: "ready",
+          title: "A quiet urgency that says, “It’s time”",
+          sub: "I feel like I have waited long enough.",
+          response: "Urgency does not have to mean recklessness. It may mean your inner knowing is ready for structure."
+        }
+      ],
+      pattern: [
+        {
+          key: "restless",
+          title: "I keep chasing the next achievement, hoping it will feel different.",
+          sub: "The next milestone keeps promising more than it gives.",
+          response: "That pattern can keep you moving while quietly avoiding the deeper question: what would actually feel true now?"
+        },
+        {
+          key: "keeper",
+          title: "I keep putting myself last and calling it responsibility.",
+          sub: "I tell myself this is just what love requires.",
+          response: "That pattern can look like love from the outside. But inside, it can slowly become self-abandonment."
+        },
+        {
+          key: "between",
+          title: "I keep trying to return to an old version of me.",
+          sub: "Even though that version does not quite fit anymore.",
+          response: "Sometimes we reach backward because forward is not clear yet. That does not mean backward is where you belong."
+        },
+        {
+          key: "purpose",
+          title: "I keep searching for clarity but rarely feel certain.",
+          sub: "I want the next step to feel meaningful, not random.",
+          response: "Clarity often comes through movement and attention, not pressure. Meaning can be followed in threads."
+        },
+        {
+          key: "ready",
+          title: "I keep delaying the decision I already know I need to make.",
+          sub: "I keep circling the same truth.",
+          response: "Delay often protects us until support, timing, and courage can meet. But the truth still deserves a plan."
+        }
+      ],
+      truth: [
+        {
+          key: "restless",
+          title: "Why doesn’t this feel like enough?",
+          sub: "I thought I wanted this. Now I am not sure.",
+          response: "That question matters. Not because it needs to be solved immediately, but because it is pointing toward the part of you that wants honesty."
+        },
+        {
+          key: "keeper",
+          title: "When do I get to matter too?",
+          sub: "I want to care without disappearing.",
+          response: "That question matters. It may be the sound of your selfhood asking to be included in your own life."
+        },
+        {
+          key: "between",
+          title: "Who am I now?",
+          sub: "Outside the roles, routines, and identities I used to know.",
+          response: "That question matters. It does not need to be rushed. It needs a safe place to be heard."
+        },
+        {
+          key: "purpose",
+          title: "What am I here for in this season?",
+          sub: "I want my next chapter to mean something.",
+          response: "That question matters. It may be inviting you to listen for contribution, creativity, and aliveness."
+        },
+        {
+          key: "ready",
+          title: "What am I waiting for?",
+          sub: "I know I cannot keep doing life the same way.",
+          response: "That question matters. It may be asking for grounded action, not more self-convincing."
+        }
+      ]
+    };
+
     const results = {
-      "restless-achiever": {
+      restless: {
         title: "The Quietly Restless Achiever",
-        summary: "You have done what you were supposed to do. Now success may be asking to be redefined.",
-        story: "The old markers of success may no longer move you. This does not mean you are ungrateful. It may mean your definition of success is ready to mature.",
-        insight: "This season is about redefining success from the inside out.",
-        needs: ["Question inherited success scripts", "Reconnect with desire and values", "Make honest changes without burning everything down"],
-        next: "Explore the Success Redefined Session"
+        summary: "You have done so much of what you were supposed to do. But now some honest part of you is asking why success does not feel more satisfying.",
+        interpretation: {
+          happening: "The old markers of success may no longer move you the way they once did. This does not mean you are ungrateful. It may mean your definition of success is ready to mature.",
+          need: "You may need space to question the version of success you inherited, reconnect with desire, and separate achievement from alignment.",
+          support: "Coaching may help you make honest changes without burning down everything you built."
+        },
+        inviteHeadline: "You may not need another goal. You may need a truer definition of success.",
+        inviteCopy: "A Success Redefined Session gives you space to name what no longer fits and begin choosing from inner authority instead of old achievement scripts.",
+        inviteCta: "Explore a Success Redefined Session",
+        quote: "“I came in thinking I needed a career change. What I actually needed was to stop outsourcing my definition of success.”",
+        cite: "— Private Client, 48"
       },
-      "tired-keeper": {
+      keeper: {
         title: "The Tired Keeper of Everyone Else’s Needs",
-        summary: "You have been carrying more than people realize. Your exhaustion may be information.",
-        story: "Your strength may have become the place everyone else comes to rest. The work is not becoming less loving. It is becoming less absent from your own life.",
-        insight: "This season is about reclaiming energy, boundaries, and self-permission.",
-        needs: ["Space where you are not responsible for everyone", "Boundaries without apology", "A way back to your own desires"],
-        next: "Explore the Self-Reclamation Session"
+        summary: "You have been carrying more than people realize. Your exhaustion may not be weakness. It may be information.",
+        interpretation: {
+          happening: "Your strength may have become the place everyone else comes to rest. You may be deeply loved, but also deeply relied upon.",
+          need: "You may need boundaries, space to hear yourself think, and permission to matter without apology.",
+          support: "Coaching may give you one place where you do not have to hold everything together."
+        },
+        inviteHeadline: "You deserve one space where you do not have to hold everything.",
+        inviteCopy: "A Self-Reclamation Session helps you hear your own needs again, practice boundaries, and return to yourself without abandoning the people you love.",
+        inviteCta: "Explore a Self-Reclamation Session",
+        quote: "“For the first time in years, I could hear myself think. I stopped treating my exhaustion like a character flaw.”",
+        cite: "— Coaching Client, 52"
       },
-      "between-identities": {
+      between: {
         title: "The Woman Between Identities",
-        summary: "The old version no longer fits. The new version has not fully arrived. This in-between can be sacred.",
-        story: "You may be tempted to rush into a plan to escape not knowing. But this season may be asking you to listen before you decide.",
-        insight: "This season is about identity transition, not simply making a decision.",
-        needs: ["Name what no longer fits", "Grieve old identities", "Experiment gently with new possibilities"],
-        next: "Explore the Identity Transition Session"
+        summary: "The old version of you no longer fully fits. The new version has not fully arrived. This in-between space can feel disorienting, but it can also be sacred.",
+        interpretation: {
+          happening: "The old version of you no longer fully fits, but the new version has not fully arrived. This can feel like grief and freedom at the same time.",
+          need: "You may need a safe space to name what is ending without rushing to force clarity.",
+          support: "Coaching may help you listen for who you are becoming before you build your next plan."
+        },
+        inviteHeadline: "You do not have to rush your way out of the in-between.",
+        inviteCopy: "An Identity Transition Session helps you honor what is ending, listen for what is emerging, and move without forcing false certainty.",
+        inviteCta: "Navigate This Transition With Support",
+        quote: "“The work helped me move from panic to possibility. I didn’t blow up my life. I rebuilt my relationship with it.”",
+        cite: "— Reinvention Client, 45"
       },
-      "purpose-seeker": {
+      purpose: {
         title: "The Purpose Seeker",
-        summary: "You may be looking for meaning that feels alive enough to guide your next chapter.",
-        story: "Purpose may not arrive as one grand answer. It may return through attention, truth, creativity, and small brave choices.",
-        insight: "This season is about reconnecting with meaning and inner aliveness.",
-        needs: ["Distinguish purpose from pressure", "Follow what gives energy", "Turn longing into grounded action"],
-        next: "Explore the Purpose Clarity Session"
+        summary: "You may not be looking for a dramatic reinvention. You may be looking for meaning that feels alive enough to guide your next chapter.",
+        interpretation: {
+          happening: "Your life may be full, but not fully alive. The question may be less about what you do and more about why it matters.",
+          need: "You may need to reconnect with meaning, creativity, contribution, and what gives you energy now.",
+          support: "Coaching may help you follow the thread of what feels alive and turn it into grounded action."
+        },
+        inviteHeadline: "Your longing may be pointing toward what still feels alive.",
+        inviteCopy: "A Purpose Clarity Session helps you distinguish pressure from purpose and begin following the thread of what matters now.",
+        inviteCta: "Explore a Purpose Clarity Session",
+        quote: "“I thought purpose had to be one big answer. The work helped me notice what was already alive and build from there.”",
+        cite: "— Purpose Clarity Client, 50"
       },
-      "ready-reinventor": {
+      ready: {
         title: "The Ready Reinventor",
-        summary: "Something in you already knows the waiting season is ending.",
-        story: "You may not need a reckless leap. You may be ready for an honest one, supported by structure and courage.",
-        insight: "This season is about moving from reflection into committed action.",
-        needs: ["A decision-making framework", "A grounded reinvention plan", "Accountability for the next chapter"],
-        next: "Explore the Reinvention Intensive"
+        summary: "Something in you already knows the waiting season is ending. You may not have every answer, but you are closer to movement than you think.",
+        interpretation: {
+          happening: "Some part of you already knows the waiting season is ending. You may not have every answer, but you are closer to movement than you think.",
+          need: "You may need structure, courage, accountability, and a grounded plan.",
+          support: "Coaching may help you move from reflection into a chosen next chapter."
+        },
+        inviteHeadline: "You may be ready to turn knowing into movement.",
+        inviteCopy: "A Reinvention Intensive helps you clarify the decision, create a grounded plan, and take your next brave step with support.",
+        inviteCta: "Plan Your Next Brave Step",
+        quote: "“I stopped waiting for perfect certainty. I left with a grounded plan and the courage to begin.”",
+        cite: "— Reinvention Intensive Client, 47"
       }
     };
 
-    const quizState = { index: 0, answers: Array(questions.length).fill(null), finalKey: null };
-    const stage = document.getElementById("question-stage");
-    const currentQuestion = document.getElementById("current-question");
-    const totalQuestions = document.getElementById("total-questions");
+    const state = {
+      stepIndex: 0,
+      answers: {},
+      scores: Object.fromEntries(resultKeys.map(key => [key, 0])),
+      resultKey: null,
+      openedCards: new Set()
+    };
+
+    const screens = document.querySelectorAll(".screen");
+    const stepLabel = document.getElementById("step-label");
+    const stepCount = document.getElementById("step-count");
     const progressFill = document.getElementById("progress-fill");
     const backButton = document.getElementById("back-button");
-    const nextButton = document.getElementById("next-button");
-    const resultSection = document.getElementById("result");
-    const hiddenResult = document.getElementById("hidden-result");
-    totalQuestions.textContent = questions.length;
+    const continueButton = document.getElementById("continue-button");
+    const toast = document.getElementById("toast");
 
-    function renderQuestion() {
-      const q = questions[quizState.index];
-      currentQuestion.textContent = quizState.index + 1;
-      progressFill.style.width = `${((quizState.index + 1) / questions.length) * 100}%`;
-      backButton.disabled = quizState.index === 0;
-      backButton.style.opacity = quizState.index === 0 ? "0.45" : "1";
-      nextButton.textContent = quizState.index === questions.length - 1 ? "Reveal My Season" : "Continue";
-      const selected = quizState.answers[quizState.index];
-      stage.innerHTML = `<p class="question-kicker">${q.kicker}</p><h3>${q.text}</h3><div class="answer-list">${q.answers.map(([key, label]) => `<button type="button" class="answer-button ${selected === key ? "selected" : ""}" data-result="${key}">${label}</button>`).join("")}</div>`;
-      stage.querySelectorAll(".answer-button").forEach(button => {
-        button.addEventListener("click", () => {
-          quizState.answers[quizState.index] = button.dataset.result;
-          renderQuestion();
-          if (window.matchMedia("(min-width: 700px)").matches) setTimeout(nextQuizStep, 120);
+    function buildOptions() {
+      Object.keys(prompts).forEach(group => {
+        const container = document.getElementById(`${group}-options`);
+        container.innerHTML = prompts[group].map((item, index) => `
+          <button class="choice" type="button" data-group="${group}" data-key="${item.key}" data-response="${escapeAttribute(item.response)}">
+            <span class="choice-number">${index + 1}</span>
+            <span><strong>${item.title}</strong><span>${item.sub}</span></span>
+          </button>
+        `).join("");
+      });
+
+      document.querySelectorAll(".choice").forEach(choice => {
+        choice.addEventListener("click", () => handleChoice(choice));
+      });
+    }
+
+    function escapeAttribute(text) {
+      return text.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function handleChoice(choice) {
+      const group = choice.dataset.group;
+      const key = choice.dataset.key;
+      state.answers[group] = key;
+      const groupChoices = document.querySelectorAll(`.choice[data-group="${group}"]`);
+      groupChoices.forEach(item => item.classList.remove("selected"));
+      choice.classList.add("selected");
+
+      const response = document.getElementById(`${group}-response`);
+      response.innerHTML = `<div class="label">A note from the coach</div><p>${choice.dataset.response}</p>`;
+      response.classList.add("show");
+      updateControls();
+    }
+
+    function currentStep() {
+      return steps[state.stepIndex];
+    }
+
+    function showStep(index) {
+      state.stepIndex = Math.max(0, Math.min(steps.length - 1, index));
+      const step = currentStep();
+
+      screens.forEach(screen => screen.classList.toggle("active", screen.dataset.screen === step.id));
+      stepLabel.textContent = step.label;
+      stepCount.textContent = `Step ${state.stepIndex + 1} of ${steps.length}`;
+      progressFill.style.width = `${((state.stepIndex + 1) / steps.length) * 100}%`;
+      document.getElementById("progress-word").textContent = step.label;
+
+      if (step.id === "reveal") renderResultReveal();
+      if (step.id === "interpretation") renderInterpretation();
+      if (step.id === "invitation") renderInvitation();
+      if (step.id === "trust") renderTrust();
+
+      updateControls();
+    }
+
+    function updateControls() {
+      const id = currentStep().id;
+      const isArrival = id === "arrival";
+      const isFinal = id === "final";
+      const needsAnswer = ["recognition", "emotion", "pattern", "truth"].includes(id);
+      const hasAnswer = !needsAnswer || Boolean(state.answers[id]);
+
+      backButton.disabled = state.stepIndex === 0;
+      continueButton.disabled = !hasAnswer;
+      backButton.style.visibility = isArrival ? "hidden" : "visible";
+      continueButton.style.visibility = (isArrival || isFinal || id === "pause" || id === "reveal") ? "hidden" : "visible";
+
+      if (id === "interpretation") {
+        continueButton.style.visibility = "visible";
+        continueButton.disabled = state.openedCards.size < 3;
+        continueButton.textContent = state.openedCards.size < 3 ? `Open ${3 - state.openedCards.size} more` : "Continue";
+      } else {
+        continueButton.textContent = id === "trust" ? "Final choice" : "Continue";
+      }
+    }
+
+    function goNext() {
+      const id = currentStep().id;
+      if (["recognition", "emotion", "pattern", "truth"].includes(id) && !state.answers[id]) {
+        showToast("Choose the line that feels closest first.");
+        return;
+      }
+      if (id === "truth") calculateResult();
+      showStep(state.stepIndex + 1);
+    }
+
+    function goBack() {
+      showStep(state.stepIndex - 1);
+    }
+
+    function calculateResult() {
+      state.scores = Object.fromEntries(resultKeys.map(key => [key, 0]));
+      Object.values(state.answers).forEach(key => {
+        if (state.scores[key] !== undefined) state.scores[key] += 1;
+      });
+      let winner = resultKeys[0];
+      resultKeys.forEach(key => {
+        if (state.scores[key] > state.scores[winner]) winner = key;
+      });
+      state.resultKey = winner;
+      document.getElementById("hidden-result").value = results[winner].title;
+    }
+
+    function renderResultReveal() {
+      if (!state.resultKey) calculateResult();
+      const result = results[state.resultKey];
+      document.getElementById("result-title").textContent = result.title;
+      document.getElementById("result-summary").textContent = result.summary;
+    }
+
+    function renderInterpretation() {
+      if (!state.resultKey) calculateResult();
+      state.openedCards = new Set();
+      const result = results[state.resultKey];
+      const cards = [
+        ["happening", "What may be happening", result.interpretation.happening],
+        ["need", "What you may need", result.interpretation.need],
+        ["support", "What support could look like", result.interpretation.support]
+      ];
+      const grid = document.getElementById("interpret-grid");
+      grid.innerHTML = cards.map(([key, title, copy], index) => `
+        <button class="reveal-card" type="button" data-card="${key}">
+          <span class="small">Card ${index + 1}</span>
+          <strong>${title}</strong>
+          <p>${copy}</p>
+        </button>
+      `).join("");
+
+      document.getElementById("interpret-response").classList.remove("show");
+      grid.querySelectorAll(".reveal-card").forEach(card => {
+        card.addEventListener("click", () => {
+          card.classList.add("open");
+          state.openedCards.add(card.dataset.card);
+          if (state.openedCards.size === 3) {
+            document.getElementById("interpret-response").classList.add("show");
+          }
+          updateControls();
         });
       });
     }
 
-    function nextQuizStep() {
-      if (!quizState.answers[quizState.index]) return showToast("Choose the answer that feels closest first.");
-      if (quizState.index < questions.length - 1) { quizState.index++; renderQuestion(); }
-      else calculateResult();
+    function renderInvitation() {
+      const result = results[state.resultKey];
+      document.getElementById("invite-headline").textContent = result.inviteHeadline;
+      document.getElementById("invite-copy").textContent = result.inviteCopy;
+      document.getElementById("invite-cta").textContent = result.inviteCta;
     }
 
-    function calculateResult() {
-      const scores = Object.fromEntries(RESULT_KEYS.map(key => [key, 0]));
-      quizState.answers.forEach(key => { if (key) scores[key]++; });
-      let winner = RESULT_KEYS[0];
-      RESULT_KEYS.forEach(key => { if (scores[key] > scores[winner]) winner = key; });
-      quizState.finalKey = winner;
-      displayResult(winner);
+    function renderTrust() {
+      const result = results[state.resultKey];
+      document.getElementById("trust-quote").textContent = result.quote;
+      document.getElementById("trust-cite").textContent = result.cite;
     }
 
-    function displayResult(key) {
-      const data = results[key];
-      document.getElementById("result-title").textContent = data.title;
-      document.getElementById("result-summary").textContent = data.summary;
-      hiddenResult.value = data.title;
-      resultSection.classList.remove("hidden");
-      setResultTab("story");
-      resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    function resetExperience() {
+      state.stepIndex = 0;
+      state.answers = {};
+      state.scores = Object.fromEntries(resultKeys.map(key => [key, 0]));
+      state.resultKey = null;
+      state.openedCards = new Set();
+      document.querySelectorAll(".choice").forEach(choice => choice.classList.remove("selected"));
+      document.querySelectorAll(".coach-response").forEach(response => response.classList.remove("show"));
+      document.getElementById("email-form").classList.remove("show");
+      document.getElementById("form-message").textContent = "";
+      document.getElementById("email-form").reset();
+      showStep(0);
     }
 
-    function setResultTab(tab) {
-      if (!quizState.finalKey) return;
-      const data = results[quizState.finalKey];
-      const detail = document.getElementById("result-detail");
-      document.querySelectorAll(".result-tab").forEach(button => button.classList.toggle("selected", button.dataset.tab === tab));
-      if (tab === "story") detail.innerHTML = `<h3>Reflection</h3><p>${data.story}</p>`;
-      if (tab === "insight") detail.innerHTML = `<h3>What this may really be about</h3><p>${data.insight}</p>`;
-      if (tab === "needs") detail.innerHTML = `<h3>What you may need next</h3><ul>${data.needs.map(n => `<li>${n}</li>`).join("")}</ul>`;
-      if (tab === "next") detail.innerHTML = `<h3>Your next right step</h3><p>${data.next}</p><p style="margin-top:12px;color:#746760;">This is where the coaching invitation becomes personalized instead of generic.</p>`;
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 2300);
     }
 
-    document.querySelectorAll(".result-tab").forEach(button => button.addEventListener("click", () => setResultTab(button.dataset.tab)));
-    backButton.addEventListener("click", () => { if (quizState.index > 0) { quizState.index--; renderQuestion(); } });
-    nextButton.addEventListener("click", nextQuizStep);
-    document.getElementById("top-reset").addEventListener("click", resetQuiz);
-    document.getElementById("retake-quiz").addEventListener("click", resetQuiz);
+    document.querySelectorAll("[data-action='begin']").forEach(button => button.addEventListener("click", () => showStep(1)));
+    document.querySelectorAll("[data-action='soft-skip']").forEach(button => button.addEventListener("click", () => showToast("This experience is meant to be felt, not browsed. Begin when you are ready.")));
+    document.querySelectorAll("[data-action='pause-ready']").forEach(button => button.addEventListener("click", () => {
+      document.getElementById("pause-response").classList.add("show");
+      setTimeout(() => showStep(2), 650);
+    }));
+    document.querySelectorAll("[data-action='understand-result']").forEach(button => button.addEventListener("click", () => showStep(7)));
 
-    function resetQuiz() {
-      quizState.index = 0;
-      quizState.answers = Array(questions.length).fill(null);
-      quizState.finalKey = null;
-      resultSection.classList.add("hidden");
-      renderQuestion();
-      document.getElementById("quiz").scrollIntoView({ behavior: "smooth" });
-    }
+    backButton.addEventListener("click", goBack);
+    continueButton.addEventListener("click", goNext);
+    document.getElementById("reset-top").addEventListener("click", resetExperience);
+    document.getElementById("brand-reset").addEventListener("click", event => { event.preventDefault(); resetExperience(); });
+    document.getElementById("start-over-final").addEventListener("click", resetExperience);
 
-    document.getElementById("copy-result").addEventListener("click", async () => {
-      if (!quizState.finalKey) return;
-      const d = results[quizState.finalKey];
-      const text = `${d.title}\n${d.summary}\n\n${d.story}\n\n${d.insight}\n\nNext step: ${d.next}`;
-      try { await navigator.clipboard.writeText(text); showToast("Result copied."); }
-      catch { showToast("Copy unavailable in this browser."); }
+    document.getElementById("show-email-form").addEventListener("click", () => {
+      document.getElementById("email-form").classList.add("show");
+      document.getElementById("name").focus();
     });
 
     document.getElementById("email-form").addEventListener("submit", event => {
       event.preventDefault();
       const name = document.getElementById("name").value.trim() || "there";
       const email = document.getElementById("email").value.trim();
-      document.getElementById("form-message").textContent = `Thanks, ${name}. In a live build, your result would be sent to ${email}.`;
+      const result = state.resultKey ? results[state.resultKey].title : "your reflection";
+      document.getElementById("form-message").textContent = `Thank you, ${name}. In a live build, ${result} would be sent to ${email}.`;
       showToast("Demo email flow submitted.");
     });
 
-    const methodContent = {
-      notice: ["Notice", "Name what feels misaligned, heavy, complete, or quietly unresolved. The first move is not fixing. It is telling the truth."],
-      release: ["Release", "Loosen the roles, rules, obligations, and old identities that no longer fit who the client is becoming."],
-      reclaim: ["Reclaim", "Return to desire, voice, energy, boundaries, creativity, and inner authority."],
-      rebuild: ["Rebuild", "Create grounded next steps for a life that feels more honest, spacious, and alive."]
-    };
-
-    document.querySelectorAll("[data-method]").forEach(button => {
-      button.addEventListener("click", () => {
-        const [title, copy] = methodContent[button.dataset.method];
-        document.getElementById("method-display").innerHTML = `<p class="section-kicker">The method</p><h3>${title}</h3><p>${copy}</p>`;
-      });
-    });
-
-    const stories = {
-      success: ["“I came in thinking I needed a career change. What I actually needed was to stop outsourcing my definition of success.”", "— Private Client, 48"],
-      exhaustion: ["“For the first time in years, I could hear myself think. I stopped treating my exhaustion like a character flaw.”", "— Coaching Client, 52"],
-      identity: ["“The work helped me move from panic to possibility. I didn’t blow up my life. I rebuilt my relationship with it.”", "— Reinvention Client, 45"]
-    };
-
-    document.querySelectorAll(".testimonial-tab").forEach(button => {
-      button.addEventListener("click", () => {
-        document.querySelectorAll(".testimonial-tab").forEach(b => b.classList.remove("active"));
-        button.classList.add("active");
-        const [quote, cite] = stories[button.dataset.story];
-        document.getElementById("testimonial-card").innerHTML = `<blockquote>${quote}</blockquote><cite>${cite}</cite>`;
-      });
-    });
-
-    const toast = document.getElementById("toast");
-    let toastTimer;
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
-    }
-
-    showStage(0);
-    renderQuestion();
+    buildOptions();
+    showStep(0);
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1240df3ac161ef2',t:'MTc4MjU1OTE0Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a127857fed96a678',t:'MTc4MjU5NTQ5Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

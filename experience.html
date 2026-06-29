@@ -1,1325 +1,1034 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Second Becoming | Guided Reflection</title>
-  <meta name="description" content="A single-flow interactive coaching homepage experience for women in a quiet life transition." />
-  <style>
-    :root {
-      --ivory: #fbf6ee;
-      --cream: #fffaf3;
-      --champagne: #eadbc5;
-      --rose: #d9a6a0;
-      --rose-soft: #f3ddda;
-      --clay: #b86f5c;
-      --clay-dark: #8e4f43;
-      --sage: #a7afa0;
-      --sage-dark: #65705f;
-      --plum: #3e2638;
-      --plum-soft: #6b4b62;
-      --charcoal: #302b2a;
-      --muted: #776962;
-      --line: rgba(62, 38, 56, 0.14);
-      --shadow: 0 30px 90px rgba(62, 38, 56, 0.16);
-      --shadow-soft: 0 18px 48px rgba(62, 38, 56, 0.1);
-      --radius-xl: 36px;
-      --radius-lg: 24px;
-      --serif: Georgia, "Times New Roman", Times, serif;
-      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: var(--sans);
-      color: var(--charcoal);
-      background:
-        radial-gradient(circle at 8% 0%, rgba(217, 166, 160, 0.34), transparent 34rem),
-        radial-gradient(circle at 88% 10%, rgba(167, 175, 160, 0.34), transparent 31rem),
-        radial-gradient(circle at 50% 100%, rgba(234, 219, 197, 0.8), transparent 34rem),
-        linear-gradient(180deg, var(--ivory), #f7eee4 52%, var(--cream));
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.2;
-      background-image:
-        linear-gradient(rgba(62,38,56,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(62,38,56,0.035) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: linear-gradient(to bottom, black, transparent 72%);
-      z-index: -2;
-    }
-
-    button, input { font: inherit; }
-    button, a { -webkit-tap-highlight-color: transparent; }
-    a { color: inherit; text-decoration: none; }
-
-    .page-shell {
-      min-height: 100vh;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      padding: 18px;
-    }
-
-    .topbar {
-      width: min(100%, 1180px);
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 16px 14px 20px;
-      border: 1px solid var(--line);
-      background: rgba(255, 250, 243, 0.72);
-      backdrop-filter: blur(18px);
-      border-radius: 999px;
-      box-shadow: 0 14px 34px rgba(62, 38, 56, 0.08);
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--serif);
-      color: var(--plum);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      white-space: nowrap;
-    }
-
-    .brand-mark {
-      width: 32px;
-      height: 32px;
-      display: inline-grid;
-      place-items: center;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--plum), var(--clay));
-      color: #fff;
-      font-size: 0.9rem;
-      box-shadow: 0 10px 22px rgba(184, 111, 92, 0.22);
-    }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .progress-word {
-      color: var(--muted);
-      font-size: 0.88rem;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .ghost-link,
-    .ghost-button {
-      border: 1px solid rgba(62,38,56,0.13);
-      background: rgba(255,255,255,0.48);
-      color: var(--plum);
-      border-radius: 999px;
-      padding: 10px 13px;
-      cursor: pointer;
-      font-size: 0.86rem;
-      font-weight: 850;
-    }
-
-    .experience-wrap {
-      width: min(100%, 1180px);
-      margin: 22px auto;
-      display: grid;
-      align-items: center;
-    }
-
-    .experience-card {
-      min-height: calc(100vh - 180px);
-      border: 1px solid rgba(62, 38, 56, 0.13);
-      background: rgba(255, 250, 243, 0.78);
-      backdrop-filter: blur(22px);
-      border-radius: clamp(28px, 4vw, 48px);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      position: relative;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-    }
-
-    .experience-card::before {
-      content: "";
-      position: absolute;
-      width: 520px;
-      height: 520px;
-      border-radius: 50%;
-      right: -190px;
-      top: -210px;
-      background: radial-gradient(circle, rgba(217,166,160,0.44), transparent 70%);
-      pointer-events: none;
-    }
-
-    .experience-card::after {
-      content: "";
-      position: absolute;
-      width: 420px;
-      height: 420px;
-      border-radius: 50%;
-      left: -180px;
-      bottom: -210px;
-      background: radial-gradient(circle, rgba(167,175,160,0.38), transparent 70%);
-      pointer-events: none;
-    }
-
-    .progress-area {
-      position: relative;
-      z-index: 2;
-      padding: 24px clamp(22px, 4vw, 48px) 0;
-    }
-
-    .progress-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      color: var(--muted);
-      font-size: 0.85rem;
-      font-weight: 850;
-      margin-bottom: 12px;
-    }
-
-    .progress-track {
-      height: 9px;
-      background: rgba(62, 38, 56, 0.09);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, var(--sage-dark), var(--clay), var(--plum));
-      border-radius: 999px;
-      transition: width 420ms ease;
-    }
-
-    .screen-stage {
-      position: relative;
-      z-index: 2;
-      display: grid;
-      align-items: center;
-      padding: clamp(28px, 5vw, 64px);
-    }
-
-    .screen {
-      display: none;
-      max-width: 920px;
-      margin: 0 auto;
-      width: 100%;
-      animation: enter 420ms ease both;
-    }
-
-    .screen.active { display: block; }
-
-    .screen.center { text-align: center; }
-
-    .kicker {
-      margin: 0 0 14px;
-      color: var(--clay-dark);
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      font-size: 0.75rem;
-      font-weight: 950;
-    }
-
-    h1, h2, h3 {
-      margin: 0;
-      font-family: var(--serif);
-      color: var(--plum);
-      letter-spacing: -0.05em;
-      line-height: 1.04;
-      font-weight: 700;
-    }
-
-    h1 { font-size: clamp(3.2rem, 8vw, 7.1rem); }
-    h2 { font-size: clamp(2.2rem, 5.3vw, 5rem); }
-    h3 { font-size: clamp(1.7rem, 3.1vw, 3rem); }
-
-    .lead {
-      max-width: 710px;
-      margin: 22px auto 0;
-      color: #5e514c;
-      font-size: clamp(1.08rem, 1.8vw, 1.3rem);
-      line-height: 1.62;
-      font-weight: 620;
-    }
-
-    .prompt-copy {
-      max-width: 660px;
-      margin-top: 18px;
-      color: var(--muted);
-      font-size: 1.08rem;
-      line-height: 1.62;
-      font-weight: 620;
-    }
-
-    .action-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 32px;
-    }
-
-    .primary-button,
-    .secondary-button {
-      border-radius: 999px;
-      border: 0;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 52px;
-      padding: 15px 23px;
-      font-weight: 900;
-      line-height: 1.1;
-      transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease, background 180ms ease;
-    }
-
-    .primary-button {
-      color: #fff;
-      background: var(--plum);
-      box-shadow: 0 16px 36px rgba(62,38,56,0.22);
-    }
-
-    .secondary-button {
-      color: var(--plum);
-      background: rgba(255,255,255,0.56);
-      border: 1px solid rgba(62,38,56,0.15);
-    }
-
-    .primary-button:hover,
-    .secondary-button:hover,
-    .choice:hover,
-    .reveal-card:hover,
-    .final-choice:hover {
-      transform: translateY(-2px);
-    }
-
-    .primary-button:disabled,
-    .secondary-button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .choice-grid {
-      display: grid;
-      gap: 14px;
-      margin-top: 32px;
-    }
-
-    .choice {
-      width: 100%;
-      border: 1px solid rgba(62,38,56,0.13);
-      background: rgba(255,255,255,0.56);
-      color: #4e433f;
-      border-radius: 24px;
-      padding: 18px 20px;
-      text-align: left;
-      cursor: pointer;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 14px;
-      align-items: start;
-      box-shadow: 0 13px 30px rgba(62,38,56,0.05);
-      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
-    }
-
-    .choice-number {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      display: inline-grid;
-      place-items: center;
-      background: rgba(251,246,238,0.92);
-      border: 1px solid rgba(62,38,56,0.13);
-      color: var(--clay-dark);
-      font-size: 0.8rem;
-      font-weight: 950;
-      margin-top: 1px;
-    }
-
-    .choice strong {
-      display: block;
-      color: var(--plum);
-      font-family: var(--serif);
-      font-size: 1.25rem;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      font-weight: 700;
-    }
-
-    .choice span:not(.choice-number) {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-weight: 650;
-      line-height: 1.42;
-    }
-
-    .choice.selected {
-      background: rgba(217,166,160,0.25);
-      border-color: rgba(142,79,67,0.42);
-      box-shadow: 0 18px 42px rgba(184,111,92,0.12);
-    }
-
-    .coach-response {
-      display: none;
-      margin-top: 24px;
-      padding: 22px;
-      border-radius: 26px;
-      color: #fff;
-      background: linear-gradient(135deg, rgba(62,38,56,0.96), rgba(107,75,98,0.94));
-      box-shadow: 0 18px 44px rgba(62,38,56,0.16);
-      animation: enter 300ms ease both;
-    }
-
-    .coach-response.show { display: block; }
-
-    .coach-response .label {
-      color: rgba(255,255,255,0.62);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      font-size: 0.72rem;
-      font-weight: 950;
-      margin-bottom: 8px;
-    }
-
-    .coach-response p {
-      margin: 0;
-      font-size: 1.05rem;
-      line-height: 1.58;
-      color: rgba(255,255,255,0.86);
-      font-weight: 650;
-    }
-
-    .pause-orb {
-      width: min(58vw, 280px);
-      height: min(58vw, 280px);
-      margin: 34px auto 0;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 42% 36%, rgba(255,255,255,0.78), transparent 22%),
-        radial-gradient(circle, rgba(217,166,160,0.68), rgba(167,175,160,0.34) 58%, rgba(62,38,56,0.12));
-      box-shadow: inset 0 0 0 1px rgba(62,38,56,0.08), 0 28px 60px rgba(62,38,56,0.14);
-      animation: breathe 4s ease-in-out infinite;
-    }
-
-    .reveal-panel {
-      max-width: 760px;
-      margin: 30px auto 0;
-      padding: clamp(24px, 4vw, 40px);
-      border-radius: 34px;
-      background: rgba(255,255,255,0.56);
-      border: 1px solid rgba(62,38,56,0.12);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .result-title-prefix {
-      color: var(--muted);
-      font-size: 0.95rem;
-      font-weight: 850;
-      margin-bottom: 10px;
-    }
-
-    .result-summary {
-      color: #5e514c;
-      line-height: 1.64;
-      font-weight: 650;
-      font-size: 1.1rem;
-      margin: 18px 0 0;
-    }
-
-    .interpret-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 30px;
-    }
-
-    .reveal-card {
-      border: 1px solid rgba(62,38,56,0.13);
-      background: rgba(255,255,255,0.55);
-      border-radius: 26px;
-      min-height: 190px;
-      padding: 22px;
-      text-align: left;
-      cursor: pointer;
-      box-shadow: 0 13px 30px rgba(62,38,56,0.05);
-      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
-    }
-
-    .reveal-card .small {
-      display: block;
-      color: var(--clay-dark);
-      text-transform: uppercase;
-      letter-spacing: 0.13em;
-      font-size: 0.7rem;
-      font-weight: 950;
-      margin-bottom: 14px;
-    }
-
-    .reveal-card strong {
-      font-family: var(--serif);
-      color: var(--plum);
-      font-size: 1.45rem;
-      line-height: 1.08;
-      letter-spacing: -0.035em;
-    }
-
-    .reveal-card p {
-      display: none;
-      margin: 14px 0 0;
-      color: var(--muted);
-      font-weight: 650;
-      line-height: 1.48;
-    }
-
-    .reveal-card.open {
-      background: rgba(217,166,160,0.23);
-      border-color: rgba(142,79,67,0.35);
-    }
-
-    .reveal-card.open p { display: block; animation: enter 220ms ease both; }
-
-    .invite-card,
-    .trust-card {
-      max-width: 760px;
-      margin: 30px auto 0;
-      padding: clamp(26px, 4vw, 42px);
-      border-radius: 34px;
-      background: rgba(255,255,255,0.56);
-      border: 1px solid rgba(62,38,56,0.12);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .invite-card p,
-    .trust-card p {
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.58;
-      font-weight: 650;
-      margin: 14px 0 0;
-    }
-
-    .trust-card blockquote {
-      margin: 0;
-      font-family: var(--serif);
-      color: var(--plum);
-      font-size: clamp(1.8rem, 3.7vw, 3.2rem);
-      line-height: 1.1;
-      letter-spacing: -0.045em;
-    }
-
-    .trust-card cite {
-      display: block;
-      margin-top: 18px;
-      color: var(--muted);
-      font-style: normal;
-      font-weight: 900;
-    }
-
-    .final-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 32px;
-    }
-
-    .final-choice {
-      min-height: 170px;
-      padding: 22px;
-      border-radius: 26px;
-      background: rgba(255,255,255,0.56);
-      border: 1px solid rgba(62,38,56,0.13);
-      text-align: left;
-      cursor: pointer;
-      box-shadow: 0 13px 30px rgba(62,38,56,0.05);
-      transition: transform 180ms ease, background 180ms ease;
-    }
-
-    .final-choice strong {
-      display: block;
-      font-family: var(--serif);
-      color: var(--plum);
-      font-size: 1.45rem;
-      line-height: 1.08;
-      letter-spacing: -0.035em;
-    }
-
-    .final-choice span {
-      display: block;
-      margin-top: 12px;
-      color: var(--muted);
-      font-weight: 650;
-      line-height: 1.48;
-    }
-
-    .email-form {
-      display: none;
-      max-width: 680px;
-      margin: 26px auto 0;
-      grid-template-columns: 1fr 1.25fr auto;
-      gap: 12px;
-      align-items: end;
-      text-align: left;
-      animation: enter 260ms ease both;
-    }
-
-    .email-form.show { display: grid; }
-
-    .field label {
-      display: block;
-      color: var(--plum);
-      font-weight: 900;
-      font-size: 0.84rem;
-      margin-bottom: 7px;
-    }
-
-    .field input {
-      width: 100%;
-      border: 1px solid rgba(62,38,56,0.15);
-      border-radius: 16px;
-      background: rgba(255,255,255,0.64);
-      padding: 14px;
-      color: var(--charcoal);
-      outline: none;
-    }
-
-    .field input:focus {
-      border-color: rgba(142,79,67,0.46);
-      box-shadow: 0 0 0 4px rgba(217,166,160,0.18);
-    }
-
-    .form-message {
-      margin-top: 16px;
-      color: var(--sage-dark);
-      font-weight: 850;
-      min-height: 1.4em;
-    }
-
-    .nav-area {
-      position: relative;
-      z-index: 2;
-      padding: 0 clamp(22px, 4vw, 48px) 26px;
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .nav-area .primary-button,
-    .nav-area .secondary-button { min-width: 132px; }
-
-    .footer-note {
-      width: min(100%, 1180px);
-      margin: 0 auto;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.86rem;
-      font-weight: 650;
-      padding: 2px 0 8px;
-    }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 24px;
-      transform: translate(-50%, 120%);
-      opacity: 0;
-      z-index: 100;
-      background: var(--plum);
-      color: #fff;
-      border-radius: 999px;
-      padding: 12px 16px;
-      box-shadow: 0 18px 40px rgba(62,38,56,0.26);
-      font-weight: 850;
-      transition: all 240ms ease;
-      text-align: center;
-      max-width: calc(100% - 30px);
-    }
-
-    .toast.show { transform: translate(-50%, 0); opacity: 1; }
-
-    @keyframes enter {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes breathe {
-      0%, 100% { transform: scale(0.96); filter: saturate(0.95); }
-      50% { transform: scale(1.04); filter: saturate(1.08); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
-    }
-
-    @media (max-width: 900px) {
-      .experience-card { min-height: calc(100vh - 170px); }
-      .interpret-grid, .final-grid { grid-template-columns: 1fr; }
-      .email-form { grid-template-columns: 1fr; }
-      .email-form .primary-button { width: 100%; }
-    }
-
-    @media (max-width: 640px) {
-      .page-shell { padding: 10px; }
-      .topbar { border-radius: 24px; align-items: flex-start; }
-      .brand { font-size: 0.96rem; }
-      .brand-mark { width: 29px; height: 29px; }
-      .progress-word { display: none; }
-      .ghost-link { display: none; }
-      .experience-wrap { margin: 12px auto; }
-      .experience-card { min-height: calc(100vh - 118px); border-radius: 28px; }
-      .progress-area { padding: 18px 18px 0; }
-      .screen-stage { padding: 30px 18px; align-items: start; }
-      h1 { font-size: clamp(2.85rem, 15vw, 4.4rem); }
-      h2 { font-size: clamp(2.1rem, 11vw, 3.3rem); }
-      h3 { font-size: clamp(1.55rem, 8vw, 2.3rem); }
-      .lead, .prompt-copy { font-size: 1rem; }
-      .choice { grid-template-columns: 1fr; padding: 17px; }
-      .choice-number { display: none; }
-      .nav-area { padding: 0 18px 18px; flex-direction: column-reverse; }
-      .nav-area .primary-button, .nav-area .secondary-button { width: 100%; }
-      .action-row { flex-direction: column; align-items: stretch; }
-      .action-row .primary-button, .action-row .secondary-button { width: 100%; }
-      .top-actions { gap: 6px; }
-      .ghost-button { padding: 9px 11px; font-size: 0.8rem; }
-      .pause-orb { margin-top: 26px; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Trust Gap Protocol</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --navy:#0d1b2a;
+  --navy-mid:#11223a;
+  --cream:#f0ebe0;
+  --cream-dim:#a89f8c;
+  --gold:#c9a84c;
+  --gold-light:#e2c97e;
+  --white:#ffffff;
+  --muted:#4a5f75;
+  --accent:#c9a84c;
+}
+
+html,body{
+  width:100%;height:100%;
+  background:var(--navy);
+  color:var(--cream);
+  font-family:'Georgia',serif;
+  overflow:hidden;
+  user-select:none;
+}
+
+/* ── CANVAS ── */
+#stage{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 24px;
+  z-index:10;
+}
+
+/* ── NOISE ── */
+#noise{
+  position:fixed;inset:0;pointer-events:none;z-index:1;
+  opacity:0.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── VIGNETTE ── */
+#vignette{
+  position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(ellipse at center,transparent 45%,rgba(5,12,22,0.8) 100%);
+}
+
+/* ── PROGRESS LABEL ── */
+#progress-label{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  font-family:'Georgia',serif;
+  font-size:0.68rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  z-index:100;
+  transition:color 1s ease, opacity 0.5s ease;
+  white-space:nowrap;
+}
+#progress-label.lit{color:var(--gold);}
+
+/* ── PROGRESS BAR ── */
+#progress-bar-wrap{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  width:min(320px,70vw);height:1px;
+  background:rgba(255,255,255,0.06);
+  z-index:100;
+  border-radius:2px;
+  overflow:hidden;
+}
+#progress-bar-fill{
+  height:100%;width:0%;
+  background:linear-gradient(to right,var(--muted),var(--gold));
+  transition:width 0.6s ease;
+}
+
+/* ── MAIN TEXT AREA ── */
+#text-block{
+  max-width:min(640px,90vw);
+  width:100%;
+  text-align:center;
+  position:relative;
+  z-index:10;
+  min-height:280px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+
+/* ── LINE STYLES ── */
+.line{
+  display:block;
+  opacity:0;
+  font-family:'Georgia',serif;
+  font-size:clamp(1.15rem,3.2vw,1.65rem);
+  font-weight:400;
+  line-height:1.7;
+  color:var(--cream);
+  margin-bottom:4px;
+  transition:opacity 0.3s ease;
+  position:relative;
+}
+.line.visible{opacity:1;}
+.line.dim{opacity:0.35;color:var(--cream-dim);}
+.line.large{
+  font-size:clamp(1.8rem,5vw,3rem);
+  font-weight:700;
+  margin-bottom:8px;
+}
+.line.huge{
+  font-size:clamp(2.4rem,7vw,4.5rem);
+  font-weight:700;
+  letter-spacing:-0.02em;
+  margin-bottom:8px;
+}
+.line.italic{font-style:italic;}
+.line.muted{color:var(--cream-dim); font-size:clamp(1rem,2.5vw,1.3rem);}
+.line.gold{color:var(--gold-light);}
+.line.brand{
+  font-family:'Georgia',serif;
+  font-size:clamp(1rem,2.8vw,1.4rem);
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--gold);
+}
+.line.shaking{animation:shake 0.45s ease forwards;}
+
+/* ── CURSOR BLINK ── */
+.cursor{
+  display:inline-block;
+  width:2px;height:1em;
+  background:var(--cream);
+  margin-left:3px;
+  vertical-align:middle;
+  animation:blink 0.85s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* ── SHAKE ── */
+@keyframes shake{
+  0%{transform:translateX(0);}
+  15%{transform:translateX(-7px);}
+  30%{transform:translateX(6px);}
+  45%{transform:translateX(-5px);}
+  60%{transform:translateX(4px);}
+  75%{transform:translateX(-3px);}
+  90%{transform:translateX(2px);}
+  100%{transform:translateX(0);}
+}
+
+/* ── BLANK PAUSE overlay ── */
+#blank-overlay{
+  position:fixed;inset:0;
+  background:var(--navy);
+  z-index:200;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.3s ease;
+}
+#blank-overlay.on{opacity:1;}
+
+/* ── CLICK INDICATOR ── */
+#click-hint{
+  position:fixed;bottom:60px;left:50%;transform:translateX(-50%);
+  z-index:100;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  opacity:0;
+  transition:opacity 0.5s ease;
+  pointer-events:none;
+}
+#click-hint.show{opacity:1;}
+#click-hint .hint-text{
+  font-size:0.65rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+#click-hint .hint-arrow{
+  font-size:1rem;
+  color:var(--muted);
+  animation:float-arrow 2s ease-in-out infinite;
+}
+@keyframes float-arrow{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(5px);}
+}
+
+/* ── CHOICE SCREEN ── */
+#choice-screen{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 24px;
+  z-index:50;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.6s ease;
+  background:var(--navy);
+}
+#choice-screen.show{opacity:1;pointer-events:all;}
+#choice-screen h3{
+  font-family:'Georgia',serif;
+  font-size:clamp(1rem,2.5vw,1.3rem);
+  color:var(--cream-dim);
+  margin-bottom:10px;
+  letter-spacing:0.04em;
+  font-weight:400;
+}
+#choice-screen .choice-q{
+  font-family:'Georgia',serif;
+  font-size:clamp(1.3rem,3.5vw,2rem);
+  color:var(--cream);
+  margin-bottom:36px;
+  text-align:center;
+  line-height:1.5;
+}
+.choice-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  max-width:500px;width:100%;
+}
+.choice-btn{
+  font-family:'Georgia',serif;
+  font-size:clamp(0.85rem,2vw,1rem);
+  color:var(--cream);
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(201,168,76,0.2);
+  border-radius:12px;
+  padding:18px 16px;
+  cursor:pointer;
+  transition:background 0.3s,border-color 0.3s,transform 0.2s;
+  text-align:center;
+  line-height:1.4;
+}
+.choice-btn:hover{
+  background:rgba(201,168,76,0.1);
+  border-color:var(--gold);
+  transform:translateY(-2px);
+}
+.choice-btn:active{transform:scale(0.97);}
+
+/* ── SOLUTION PANEL ── */
+#solution-screen{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 24px;
+  z-index:50;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.8s ease;
+  background:var(--navy);
+  overflow-y:auto;
+}
+#solution-screen.show{opacity:1;pointer-events:all;}
+#solution-screen.gold-bg{
+  background:radial-gradient(ellipse at 50% 30%, rgba(201,168,76,0.08) 0%, var(--navy) 70%);
+}
+.sol-inner{
+  max-width:min(620px,90vw);
+  text-align:center;
+  display:flex;flex-direction:column;
+  align-items:center;
+  gap:0;
+}
+.sol-line{
+  font-family:'Georgia',serif;
+  font-size:clamp(1rem,2.8vw,1.35rem);
+  color:var(--cream);
+  line-height:1.8;
+  opacity:0;
+  transform:translateY(12px);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+  margin-bottom:6px;
+}
+.sol-line.vis{opacity:1;transform:translateY(0);}
+.sol-line.dim{color:var(--cream-dim);}
+.sol-line.large{
+  font-size:clamp(1.5rem,4vw,2.4rem);
+  font-weight:700;
+  margin-bottom:10px;
+}
+.sol-line.brand{
+  font-size:clamp(0.9rem,2.2vw,1.1rem);
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:4px;
+}
+.sol-line.italic{font-style:italic;}
+.sol-line.gold{color:var(--gold-light);}
+.sol-divider{
+  width:0;height:1px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  margin:22px 0;
+  opacity:0;
+  transition:width 1s 0.3s ease, opacity 0.5s 0.3s ease;
+}
+.sol-divider.vis{width:160px;opacity:0.5;}
+
+/* Checkmark list */
+.check-list{
+  list-style:none;
+  text-align:left;
+  margin:16px 0;
+  display:flex;flex-direction:column;gap:10px;
+  width:100%;max-width:480px;
+}
+.check-list li{
+  font-family:'Georgia',serif;
+  font-size:clamp(0.9rem,2.2vw,1.05rem);
+  color:var(--cream-dim);
+  padding:10px 16px;
+  border-left:2px solid rgba(201,168,76,0.3);
+  line-height:1.5;
+  opacity:0;
+  transform:translateX(-10px);
+  transition:opacity 0.5s ease, transform 0.5s ease, border-color 0.3s;
+}
+.check-list li:hover{border-color:var(--gold);}
+.check-list li.vis{opacity:1;transform:translateX(0);}
+.check-list li strong{color:var(--cream);}
+.check-mark{color:var(--gold);margin-right:10px;}
+
+/* Results list */
+.result-list{
+  list-style:none;
+  text-align:left;
+  width:100%;max-width:480px;
+  display:flex;flex-direction:column;gap:8px;
+  margin:12px 0;
+}
+.result-list li{
+  font-family:'Georgia',serif;
+  font-size:clamp(0.9rem,2.2vw,1.05rem);
+  color:var(--cream-dim);
+  padding:8px 0;
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity 0.5s ease, transform 0.5s ease;
+  line-height:1.6;
+}
+.result-list li.vis{opacity:1;transform:translateY(0);}
+
+/* CTA */
+.cta-block{
+  margin-top:28px;
+  opacity:0;
+  transform:translateY(14px);
+  transition:opacity 0.8s ease, transform 0.8s ease;
+  text-align:center;
+}
+.cta-block.vis{opacity:1;transform:translateY(0);}
+.cta-eyebrow{
+  font-size:0.75rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:10px;
+  font-family:'Georgia',serif;
+}
+.cta-copy{
+  font-family:'Georgia',serif;
+  font-size:clamp(1rem,2.5vw,1.25rem);
+  color:var(--cream-dim);
+  line-height:1.7;
+  max-width:480px;
+  margin:0 auto 24px;
+}
+.cta-copy em{color:var(--cream);font-style:normal;}
+.cta-btn{
+  display:inline-block;
+  font-family:'Georgia',serif;
+  font-size:clamp(0.88rem,2vw,1rem);
+  font-weight:400;
+  letter-spacing:0.1em;
+  color:var(--navy);
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  border:none;border-radius:100px;
+  padding:16px 44px;
+  cursor:pointer;
+  text-decoration:none;
+  transition:transform 0.25s,box-shadow 0.25s,filter 0.25s;
+  box-shadow:0 4px 30px rgba(201,168,76,0.3);
+}
+.cta-btn:hover{
+  transform:translateY(-2px) scale(1.03);
+  box-shadow:0 8px 44px rgba(201,168,76,0.45);
+  filter:brightness(1.07);
+}
+
+/* ── RIPPLE ── */
+.rpl{position:relative;overflow:hidden;}
+.rpl-circle{
+  position:absolute;border-radius:50%;
+  background:rgba(201,168,76,0.2);
+  transform:scale(0);
+  animation:rpl-out 0.6s linear forwards;
+  pointer-events:none;
+}
+@keyframes rpl-out{to{transform:scale(4);opacity:0;}}
+
+/* ── GLOBAL CLICK AREA ── */
+#click-area{
+  position:fixed;inset:0;z-index:30;
+  cursor:pointer;
+}
+
+/* ── PARTICLES ── */
+#particles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.ptcl{
+  position:absolute;border-radius:50%;
+  background:var(--gold);opacity:0;
+  animation:drift linear infinite;
+}
+@keyframes drift{
+  0%{transform:translateY(110vh) scale(0.3);opacity:0;}
+  10%{opacity:0.1;}90%{opacity:0.04;}
+  100%{transform:translateY(-10vh) scale(1);opacity:0;}
+}
+
+/* ── MOBILE ── */
+@media(max-width:480px){
+  .choice-grid{grid-template-columns:1fr;}
+  #progress-label{font-size:0.6rem;}
+}
+</style>
 </head>
 <body>
-  <div class="page-shell">
-    <header class="topbar" aria-label="Experience header">
-      <a href="#" class="brand" id="brand-reset" aria-label="Restart The Second Becoming Reflection">
-        <span class="brand-mark">SB</span>
-        <span>The Second Becoming</span>
-      </a>
-      <div class="top-actions">
-        <span class="progress-word" id="progress-word">A private reflection</span>
-        <a href="/cdn-cgi/l/email-protection#b4dcd1d8d8dbf4d1ccd5d9c4d8d19ad7dbd9" class="ghost-link">Contact</a>
-        <button class="ghost-button" type="button" id="reset-top">Start over</button>
-      </div>
-    </header>
 
-    <main class="experience-wrap">
-      <article class="experience-card" aria-live="polite">
-        <div class="progress-area">
-          <div class="progress-meta">
-            <span id="step-label">Arrival</span>
-            <span id="step-count">Step 1 of 11</span>
-          </div>
-          <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div>
-        </div>
+<div id="particles"></div>
+<div id="noise"></div>
+<div id="vignette"></div>
+<div id="blank-overlay"></div>
 
-        <section class="screen-stage">
-          <div class="screen center active" data-screen="arrival">
-            <p class="kicker">A private reflection for women in a quiet life transition</p>
-            <h1>Maybe nothing is wrong with you.</h1>
-            <p class="lead">Maybe something is ready to change. If your life looks good from the outside but feels misaligned on the inside, this reflection will help you name the season you may be in.</p>
-            <div class="action-row">
-              <button class="primary-button" type="button" data-action="begin">Begin the Reflection</button>
-              <button class="secondary-button" type="button" data-action="soft-skip">I’m just looking around</button>
-            </div>
-          </div>
+<!-- Main clickable stage -->
+<div id="click-area"></div>
 
-          <div class="screen center" data-screen="pause">
-            <p class="kicker">Before we begin</p>
-            <h2>Take one honest breath.</h2>
-            <p class="lead">You do not have to explain your whole life here. Just notice what feels true.</p>
-            <div class="pause-orb" aria-hidden="true"></div>
-            <div class="coach-response" id="pause-response">
-              <div class="label">A note from the coach</div>
-              <p>Good. We’ll go one step at a time.</p>
-            </div>
-            <div class="action-row">
-              <button class="primary-button" type="button" data-action="pause-ready">I’m ready to be honest</button>
-            </div>
-          </div>
+<div id="stage">
+  <div id="text-block"></div>
+</div>
 
-          <div class="screen" data-screen="recognition">
-            <p class="kicker">Recognition</p>
-            <h2>Which sentence feels closest to where you are right now?</h2>
-            <p class="prompt-copy">Choose the one that lands closest. It does not need to explain everything.</p>
-            <div class="choice-grid" id="recognition-options"></div>
-            <div class="coach-response" id="recognition-response"></div>
-          </div>
+<div id="click-hint">
+  <span class="hint-arrow">↓</span>
+  <span class="hint-text">Click to continue</span>
+</div>
 
-          <div class="screen" data-screen="emotion">
-            <p class="kicker">Emotional naming</p>
-            <h2>What feeling have you been carrying most quietly?</h2>
-            <p class="prompt-copy">This is not about finding the perfect answer. It is about telling the truth gently.</p>
-            <div class="choice-grid" id="emotion-options"></div>
-            <div class="coach-response" id="emotion-response"></div>
-          </div>
+<div id="progress-label">Following the buyer's journey…</div>
+<div id="progress-bar-wrap"><div id="progress-bar-fill"></div></div>
 
-          <div class="screen" data-screen="pattern">
-            <p class="kicker">Pattern identification</p>
-            <h2>What pattern keeps showing up?</h2>
-            <p class="prompt-copy">Patterns often reveal what our lives have been trying to tell us.</p>
-            <div class="choice-grid" id="pattern-options"></div>
-            <div class="coach-response" id="pattern-response"></div>
-          </div>
-
-          <div class="screen" data-screen="truth">
-            <p class="kicker">The deeper truth</p>
-            <h2>If you were completely honest, what question are you living inside?</h2>
-            <p class="prompt-copy">This is the question underneath the question.</p>
-            <div class="choice-grid" id="truth-options"></div>
-            <div class="coach-response" id="truth-response"></div>
-          </div>
-
-          <div class="screen center" data-screen="reveal">
-            <p class="kicker">Your season may be</p>
-            <div class="reveal-panel">
-              <p class="result-title-prefix">Here is language for what you named:</p>
-              <h2 id="result-title">The Quietly Restless Achiever</h2>
-              <p class="result-summary" id="result-summary"></p>
-            </div>
-            <div class="action-row">
-              <button class="primary-button" type="button" data-action="understand-result">Help me understand this</button>
-            </div>
-          </div>
-
-          <div class="screen" data-screen="interpretation">
-            <p class="kicker">Coach interpretation</p>
-            <h2>This is where we listen more closely.</h2>
-            <p class="prompt-copy">Open each card. The result unfolds in small pieces, like a conversation.</p>
-            <div class="interpret-grid" id="interpret-grid"></div>
-            <div class="coach-response" id="interpret-response">
-              <div class="label">A note from the coach</div>
-              <p>You do not have to solve this all at once. Naming it clearly is already movement.</p>
-            </div>
-          </div>
-
-          <div class="screen center" data-screen="invitation">
-            <p class="kicker">A possible next step</p>
-            <div class="invite-card">
-              <h2 id="invite-headline"></h2>
-              <p id="invite-copy"></p>
-              <div class="action-row">
-                <a href="/cdn-cgi/l/email-protection#dab2bfb6b6b59abfa2bbb7aab6bff4b9b5b7e5a9afb8b0bfb9aee78aa8b3acbbaebfffe8ea99b6bba8b3aea3ffe8ea89bfa9a9b3b5b4" class="primary-button" id="invite-cta">Request a Private Clarity Session</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="screen center" data-screen="trust">
-            <p class="kicker">A matched client story</p>
-            <div class="trust-card">
-              <blockquote id="trust-quote"></blockquote>
-              <cite id="trust-cite"></cite>
-            </div>
-          </div>
-
-          <div class="screen center" data-screen="final">
-            <p class="kicker">Begin where you are</p>
-            <h2>You do not have to have the whole next chapter figured out.</h2>
-            <p class="lead">You only need enough honesty to take the next right step.</p>
-            <div class="final-grid">
-              <a class="final-choice" href="/cdn-cgi/l/email-protection#4028252c2c2f002538212d302c256e232f2d7f3335222a2523347d10322936213425657270032c213229343965727013253333292f2e">
-                <strong>Request a Private Clarity Session</strong>
-                <span>Continue the conversation with the coach.</span>
-              </a>
-              <button class="final-choice" type="button" id="show-email-form">
-                <strong>Send Me My Reflection</strong>
-                <span>Keep your season, prompts, and next-step practice.</span>
-              </button>
-              <button class="final-choice" type="button" id="start-over-final">
-                <strong>Start Over</strong>
-                <span>Move through the reflection again.</span>
-              </button>
-            </div>
-            <form class="email-form" id="email-form">
-              <div class="field">
-                <label for="name">First name</label>
-                <input id="name" name="name" type="text" placeholder="Your first name" autocomplete="given-name" />
-              </div>
-              <div class="field">
-                <label for="email">Email address</label>
-                <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
-              </div>
-              <input id="hidden-result" name="result" type="hidden" />
-              <button class="primary-button" type="submit">Send Reflection</button>
-            </form>
-            <p class="form-message" id="form-message" role="status"></p>
-          </div>
-        </section>
-
-        <nav class="nav-area" aria-label="Experience controls">
-          <button class="secondary-button" type="button" id="back-button">Back</button>
-          <button class="primary-button" type="button" id="continue-button">Continue</button>
-        </nav>
-      </article>
-    </main>
-
-    <footer class="footer-note">A single-flow homepage experience: recognition → reflection → revelation → invitation.</footer>
+<!-- CHOICE SCREEN -->
+<div id="choice-screen">
+  <h3>Quick question —</h3>
+  <div class="choice-q">Who do you mostly sell to?</div>
+  <div class="choice-grid">
+    <button class="choice-btn rpl" onclick="makeChoice(this)">Skeptical buyers who've been burned before</button>
+    <button class="choice-btn rpl" onclick="makeChoice(this)">Midlifers who think carefully before spending</button>
+    <button class="choice-btn rpl" onclick="makeChoice(this)">High-ticket clients who need deep trust first</button>
+    <button class="choice-btn rpl" onclick="makeChoice(this)">Honestly? All of the above</button>
   </div>
+</div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<!-- SOLUTION SCREEN -->
+<div id="solution-screen">
+  <div class="sol-inner" id="sol-inner"></div>
+</div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    const steps = [
-      { id: "arrival", label: "Arrival" },
-      { id: "pause", label: "Consent to pause" },
-      { id: "recognition", label: "Recognition" },
-      { id: "emotion", label: "Emotional naming" },
-      { id: "pattern", label: "Pattern" },
-      { id: "truth", label: "Deeper truth" },
-      { id: "reveal", label: "Season reveal" },
-      { id: "interpretation", label: "Interpretation" },
-      { id: "invitation", label: "Invitation" },
-      { id: "trust", label: "Trust" },
-      { id: "final", label: "Final choice" }
-    ];
+<script>
+// ─────────────────────────────────────────────
+// SCREENPLAY
+// Each "beat" is an object:
+//   text      – what to show (replaces block)
+//   append    – add line(s) below existing
+//   style     – CSS classes for the line
+//   delay     – ms before auto-showing next (0 = wait for click)
+//   blank     – pause with blank screen before reveal (ms)
+//   shake     – shake previous lines on entry
+//   typewrite – type the text character by character
+//   showHint  – show click-to-continue hint
+//   hideHint  – hide hint
+//   choice    – trigger choice screen
+//   solution  – trigger solution screen
+//   label     – progress label text
+// ─────────────────────────────────────────────
 
-    const resultKeys = ["restless", "keeper", "between", "purpose", "ready"];
+const TOTAL_BEATS = 31; // approx, for progress
 
-    const prompts = {
-      recognition: [
-        {
-          key: "restless",
-          title: "I’ve built a life that looks good, but something feels off.",
-          sub: "Nothing is technically wrong, but it still does not feel fully true.",
-          response: "That kind of restlessness can be confusing, especially when nothing is technically wrong. Let’s listen more closely."
-        },
-        {
-          key: "keeper",
-          title: "I’m tired of being the person everyone depends on.",
-          sub: "I want to feel like I belong to myself again.",
-          response: "Being needed can feel meaningful and exhausting at the same time. Your tiredness deserves more than dismissal."
-        },
-        {
-          key: "between",
-          title: "I don’t fully recognize who I am becoming.",
-          sub: "The old version of me no longer feels like the whole truth.",
-          response: "The in-between can feel disorienting. It can also be the place where a more honest life begins to take shape."
-        },
-        {
-          key: "purpose",
-          title: "I keep wondering what this next chapter is supposed to mean.",
-          sub: "I want depth, not just another plan.",
-          response: "That longing for meaning matters. It may be pointing toward what still feels alive."
-        },
-        {
-          key: "ready",
-          title: "I already know something needs to change.",
-          sub: "I may not have every answer, but I can feel the truth getting louder.",
-          response: "When the truth keeps returning, it may be time to stop negotiating with it and begin listening."
-        }
-      ],
-      emotion: [
-        {
-          key: "restless",
-          title: "Disappointment I don’t know how to explain",
-          sub: "Especially because I thought I would feel more fulfilled by now.",
-          response: "Unexplained disappointment often appears when the old definition of success can no longer carry your whole self."
-        },
-        {
-          key: "keeper",
-          title: "Exhaustion from holding everything together",
-          sub: "I am tired in a way rest alone does not seem to fix.",
-          response: "Exhaustion is not always a sign that you are failing. Sometimes it is the body telling the truth before the mind is ready to."
-        },
-        {
-          key: "between",
-          title: "Grief for a version of me that no longer fits",
-          sub: "Part of me misses who I was, even if I cannot go back.",
-          response: "Grief can be part of becoming. You can honor who you were without forcing yourself to stay there."
-        },
-        {
-          key: "purpose",
-          title: "Longing for something deeper",
-          sub: "I want my life to feel more connected and alive.",
-          response: "Longing is not always impractical. Sometimes it is the part of you that still remembers what matters."
-        },
-        {
-          key: "ready",
-          title: "A quiet urgency that says, “It’s time”",
-          sub: "I feel like I have waited long enough.",
-          response: "Urgency does not have to mean recklessness. It may mean your inner knowing is ready for structure."
-        }
-      ],
-      pattern: [
-        {
-          key: "restless",
-          title: "I keep chasing the next achievement, hoping it will feel different.",
-          sub: "The next milestone keeps promising more than it gives.",
-          response: "That pattern can keep you moving while quietly avoiding the deeper question: what would actually feel true now?"
-        },
-        {
-          key: "keeper",
-          title: "I keep putting myself last and calling it responsibility.",
-          sub: "I tell myself this is just what love requires.",
-          response: "That pattern can look like love from the outside. But inside, it can slowly become self-abandonment."
-        },
-        {
-          key: "between",
-          title: "I keep trying to return to an old version of me.",
-          sub: "Even though that version does not quite fit anymore.",
-          response: "Sometimes we reach backward because forward is not clear yet. That does not mean backward is where you belong."
-        },
-        {
-          key: "purpose",
-          title: "I keep searching for clarity but rarely feel certain.",
-          sub: "I want the next step to feel meaningful, not random.",
-          response: "Clarity often comes through movement and attention, not pressure. Meaning can be followed in threads."
-        },
-        {
-          key: "ready",
-          title: "I keep delaying the decision I already know I need to make.",
-          sub: "I keep circling the same truth.",
-          response: "Delay often protects us until support, timing, and courage can meet. But the truth still deserves a plan."
-        }
-      ],
-      truth: [
-        {
-          key: "restless",
-          title: "Why doesn’t this feel like enough?",
-          sub: "I thought I wanted this. Now I am not sure.",
-          response: "That question matters. Not because it needs to be solved immediately, but because it is pointing toward the part of you that wants honesty."
-        },
-        {
-          key: "keeper",
-          title: "When do I get to matter too?",
-          sub: "I want to care without disappearing.",
-          response: "That question matters. It may be the sound of your selfhood asking to be included in your own life."
-        },
-        {
-          key: "between",
-          title: "Who am I now?",
-          sub: "Outside the roles, routines, and identities I used to know.",
-          response: "That question matters. It does not need to be rushed. It needs a safe place to be heard."
-        },
-        {
-          key: "purpose",
-          title: "What am I here for in this season?",
-          sub: "I want my next chapter to mean something.",
-          response: "That question matters. It may be inviting you to listen for contribution, creativity, and aliveness."
-        },
-        {
-          key: "ready",
-          title: "What am I waiting for?",
-          sub: "I know I cannot keep doing life the same way.",
-          response: "That question matters. It may be asking for grounded action, not more self-convincing."
-        }
-      ]
-    };
+const beats = [
+  // 1
+  { text:"So...", style:"huge italic", typewrite:true, showHint:true, label:"Finding the gap… 3%" },
 
-    const results = {
-      restless: {
-        title: "The Quietly Restless Achiever",
-        summary: "You have done so much of what you were supposed to do. But now some honest part of you is asking why success does not feel more satisfying.",
-        interpretation: {
-          happening: "The old markers of success may no longer move you the way they once did. This does not mean you are ungrateful. It may mean your definition of success is ready to mature.",
-          need: "You may need space to question the version of success you inherited, reconnect with desire, and separate achievement from alignment.",
-          support: "Coaching may help you make honest changes without burning down everything you built."
-        },
-        inviteHeadline: "You may not need another goal. You may need a truer definition of success.",
-        inviteCopy: "A Success Redefined Session gives you space to name what no longer fits and begin choosing from inner authority instead of old achievement scripts.",
-        inviteCta: "Explore a Success Redefined Session",
-        quote: "“I came in thinking I needed a career change. What I actually needed was to stop outsourcing my definition of success.”",
-        cite: "— Private Client, 48"
-      },
-      keeper: {
-        title: "The Tired Keeper of Everyone Else’s Needs",
-        summary: "You have been carrying more than people realize. Your exhaustion may not be weakness. It may be information.",
-        interpretation: {
-          happening: "Your strength may have become the place everyone else comes to rest. You may be deeply loved, but also deeply relied upon.",
-          need: "You may need boundaries, space to hear yourself think, and permission to matter without apology.",
-          support: "Coaching may give you one place where you do not have to hold everything together."
-        },
-        inviteHeadline: "You deserve one space where you do not have to hold everything.",
-        inviteCopy: "A Self-Reclamation Session helps you hear your own needs again, practice boundaries, and return to yourself without abandoning the people you love.",
-        inviteCta: "Explore a Self-Reclamation Session",
-        quote: "“For the first time in years, I could hear myself think. I stopped treating my exhaustion like a character flaw.”",
-        cite: "— Coaching Client, 52"
-      },
-      between: {
-        title: "The Woman Between Identities",
-        summary: "The old version of you no longer fully fits. The new version has not fully arrived. This in-between space can feel disorienting, but it can also be sacred.",
-        interpretation: {
-          happening: "The old version of you no longer fully fits, but the new version has not fully arrived. This can feel like grief and freedom at the same time.",
-          need: "You may need a safe space to name what is ending without rushing to force clarity.",
-          support: "Coaching may help you listen for who you are becoming before you build your next plan."
-        },
-        inviteHeadline: "You do not have to rush your way out of the in-between.",
-        inviteCopy: "An Identity Transition Session helps you honor what is ending, listen for what is emerging, and move without forcing false certainty.",
-        inviteCta: "Navigate This Transition With Support",
-        quote: "“The work helped me move from panic to possibility. I didn’t blow up my life. I rebuilt my relationship with it.”",
-        cite: "— Reinvention Client, 45"
-      },
-      purpose: {
-        title: "The Purpose Seeker",
-        summary: "You may not be looking for a dramatic reinvention. You may be looking for meaning that feels alive enough to guide your next chapter.",
-        interpretation: {
-          happening: "Your life may be full, but not fully alive. The question may be less about what you do and more about why it matters.",
-          need: "You may need to reconnect with meaning, creativity, contribution, and what gives you energy now.",
-          support: "Coaching may help you follow the thread of what feels alive and turn it into grounded action."
-        },
-        inviteHeadline: "Your longing may be pointing toward what still feels alive.",
-        inviteCopy: "A Purpose Clarity Session helps you distinguish pressure from purpose and begin following the thread of what matters now.",
-        inviteCta: "Explore a Purpose Clarity Session",
-        quote: "“I thought purpose had to be one big answer. The work helped me notice what was already alive and build from there.”",
-        cite: "— Purpose Clarity Client, 50"
-      },
-      ready: {
-        title: "The Ready Reinventor",
-        summary: "Something in you already knows the waiting season is ending. You may not have every answer, but you are closer to movement than you think.",
-        interpretation: {
-          happening: "Some part of you already knows the waiting season is ending. You may not have every answer, but you are closer to movement than you think.",
-          need: "You may need structure, courage, accountability, and a grounded plan.",
-          support: "Coaching may help you move from reflection into a chosen next chapter."
-        },
-        inviteHeadline: "You may be ready to turn knowing into movement.",
-        inviteCopy: "A Reinvention Intensive helps you clarify the decision, create a grounded plan, and take your next brave step with support.",
-        inviteCta: "Plan Your Next Brave Step",
-        quote: "“I stopped waiting for perfect certainty. I left with a grounded plan and the courage to begin.”",
-        cite: "— Reinvention Intensive Client, 47"
-      }
-    };
+  // 2
+  { text:"You've tried almost everything, haven't you?", style:"muted italic", append:true, showHint:true, label:"Finding the gap… 6%" },
 
-    const state = {
-      stepIndex: 0,
-      answers: {},
-      scores: Object.fromEntries(resultKeys.map(key => [key, 0])),
-      resultKey: null,
-      openedCards: new Set()
-    };
+  // 3
+  { clear:true, text:"The traffic comes.", style:"", label:"Following the buyer… 10%" },
+  { text:"People click.", style:"", append:true },
+  { text:"They arrive on your page.", style:"", append:true },
+  { text:"So far...", style:"muted italic", append:true, delay:500 },
+  { text:"Everything is working exactly as it should.", style:"gold italic", append:true, showHint:true, label:"Following the buyer… 16%" },
 
-    const screens = document.querySelectorAll(".screen");
-    const stepLabel = document.getElementById("step-label");
-    const stepCount = document.getElementById("step-count");
-    const progressFill = document.getElementById("progress-fill");
-    const backButton = document.getElementById("back-button");
-    const continueButton = document.getElementById("continue-button");
-    const toast = document.getElementById("toast");
+  // 4
+  { clear:true, text:"They read.", style:"", label:"Following the buyer… 20%" },
+  { text:"They scroll.", style:"", append:true },
+  { text:"They spend longer than you expected.", style:"", append:true },
+  { text:"Some even nod along.", style:"muted italic", append:true, delay:400 },
+  { text:"You can almost feel the sale coming.", style:"large italic", append:true, showHint:true, label:"Following the buyer… 26%" },
 
-    function buildOptions() {
-      Object.keys(prompts).forEach(group => {
-        const container = document.getElementById(`${group}-options`);
-        container.innerHTML = prompts[group].map((item, index) => `
-          <button class="choice" type="button" data-group="${group}" data-key="${item.key}" data-response="${escapeAttribute(item.response)}">
-            <span class="choice-number">${index + 1}</span>
-            <span><strong>${item.title}</strong><span>${item.sub}</span></span>
-          </button>
-        `).join("");
-      });
+  // 5 — dramatic blank + "Then... Nothing."
+  { clear:true, text:"Then...", style:"large italic", blank:900, label:"The moment it breaks… 30%" },
+  { text:"Nothing.", style:"huge", append:true, showHint:true, label:"The moment it breaks… 33%" },
 
-      document.querySelectorAll(".choice").forEach(choice => {
-        choice.addEventListener("click", () => handleChoice(choice));
-      });
+  // 6
+  { clear:true, text:"No purchase.", style:"", label:"The moment it breaks… 37%" },
+  { text:"No booking.", style:"", append:true },
+  { text:"No reply.", style:"", append:true },
+  { text:"No \"I'll take it.\"", style:"", append:true },
+  { text:"Just another visitor disappearing into your analytics. Forever.", style:"muted italic", append:true, showHint:true, label:"The moment it breaks… 41%" },
+
+  // 7 — choice screen trigger
+  { choice:true, label:"Reading your situation… 44%" },
+
+  // 8
+  { clear:true, text:"And eventually...", style:"muted italic", label:"Finding the cause… 46%" },
+  { text:"you ask yourself the same questions every founder asks.", style:"", append:true, delay:500 },
+  { text:"Is the offer wrong?", style:"large italic", append:true, showHint:true, label:"Finding the cause… 48%" },
+
+  // 9
+  { clear:true, text:"Maybe it's the pricing.", style:"large italic", shake:true, label:"Finding the cause… 50%" },
+  { clear:true, text:"Maybe the design.", style:"large italic", shake:true, delay:200, label:"Finding the cause… 52%" },
+  { clear:true, text:"Maybe the headline.", style:"large italic", shake:true, delay:200, showHint:true, label:"Finding the cause… 54%" },
+
+  // 10
+  { clear:true, text:"Maybe...", style:"muted italic", label:"Finding the cause… 57%" },
+  { text:"it's me.", style:"huge italic gold", append:true, showHint:true, label:"Finding the cause… 60%" },
+
+  // 11
+  { clear:true, text:"So you change things.", style:"", label:"The cycle continues… 63%" },
+  { text:"Again.", style:"gold italic large", append:true, delay:300 },
+  { text:"New headline. New pricing. New photos. New CTA.", style:"muted", append:true, delay:300 },
+  { text:"New testimonials. More social proof. Another redesign.", style:"muted", append:true, delay:300 },
+  { text:"Another funnel. Another launch.", style:"muted", append:true, showHint:true, label:"The cycle continues… 66%" },
+
+  // 12
+  { clear:true, text:"Sometimes...", style:"muted italic", label:"Recognising the pattern… 69%" },
+  { text:"the numbers improve.", style:"", append:true, delay:400 },
+  { text:"Just enough to keep you hoping.", style:"italic gold", append:true, delay:300 },
+  { text:"But never enough to explain why people still leave.", style:"muted", append:true, showHint:true, label:"Recognising the pattern… 72%" },
+
+  // 13
+  { clear:true, text:"Here's what almost nobody tells you.", style:"brand", label:"The real truth… 76%" },
+  { text:"People don't buy because they understand you.", style:"", append:true, delay:500 },
+  { text:"People buy because they feel understood.", style:"large italic gold", append:true, showHint:true, label:"The real truth… 79%" },
+
+  // 14
+  { clear:true, text:"Most brands are talking to buyers...", style:"muted italic", label:"Mapping the gap… 81%" },
+  { text:"who don't exist.", style:"huge", append:true, showHint:true, label:"Mapping the gap… 83%" },
+
+  // 15
+  { clear:true, text:"Because the people arriving on your website aren't blank slates.", style:"", label:"Mapping the gap… 85%" },
+  { text:"They're carrying baggage.", style:"large italic", append:true, showHint:true, label:"Mapping the gap… 86%" },
+
+  // 16
+  { clear:true, text:"Some have been burned.", style:"", label:"Understanding your buyer… 87%" },
+  { clear:true, text:"Some have bought five different \"solutions.\" None worked.", style:"", showHint:true, label:"Understanding your buyer… 88%" },
+
+  // 17
+  { clear:true, text:"Some are in midlife.", style:"", label:"Understanding your buyer… 89%" },
+  { text:"Every purchase feels bigger now.", style:"italic", append:true, delay:400 },
+  { text:"More expensive. Harder to reverse.", style:"muted", append:true, showHint:true, label:"Understanding your buyer… 90%" },
+
+  // 18
+  { clear:true, text:"Some have become professional skeptics.", style:"", label:"Understanding your buyer… 91%" },
+  { text:"Not because they're difficult.", style:"muted italic", append:true, delay:400 },
+  { text:"Because experience taught them to be.", style:"muted italic", append:true, showHint:true, label:"Understanding your buyer… 92%" },
+
+  // 19
+  { clear:true, text:"Yet most websites speak as if none of that happened.", style:"large italic muted", showHint:true, label:"Seeing the gap… 93%" },
+
+  // 20
+  { clear:true, text:"They shout benefits...", style:"", label:"Seeing the gap… 94%" },
+  { text:"when buyers are still asking,", style:"muted italic", append:true, delay:400 },
+  { text:"\"Can I trust you?\"", style:"large italic gold", append:true, showHint:true, label:"Seeing the gap… 94%" },
+
+  // 21
+  { clear:true, text:"They rush to the offer...", style:"", label:"Seeing the gap… 95%" },
+  { text:"before earning attention.", style:"muted italic", append:true, showHint:true, label:"Seeing the gap… 95%" },
+
+  // 22
+  { clear:true, text:"They explain features...", style:"", label:"Seeing the gap… 96%" },
+  { text:"while fear is still driving every decision.", style:"muted italic", append:true, showHint:true, label:"Seeing the gap… 96%" },
+
+  // 23
+  { clear:true, text:"And that's where conversions quietly die.", style:"", label:"The gap revealed… 97%" },
+  { text:"It's not that your product isn't valuable.", style:"muted", append:true, delay:500 },
+  { text:"Just that your message arrived...", style:"muted italic", append:true, delay:400 },
+  { text:"before your prospect was ready to hear it.", style:"italic gold", append:true, showHint:true, label:"The gap revealed… 97%" },
+
+  // 24
+  { clear:true, text:"Every skeptical buyer has invisible questions.", style:"", label:"Naming the gap… 98%" },
+  { text:"Until those questions are answered...", style:"muted italic", append:true, delay:500 },
+  { text:"nothing else matters.", style:"large italic", append:true, showHint:true, label:"Naming the gap… 98%" },
+
+  // 25
+  { clear:true, text:"That's the gap.", style:"large brand", label:"Gap identified. 99%" },
+  { text:"The distance between", style:"muted", append:true, delay:400 },
+  { text:"\"This sounds interesting...\"", style:"italic", append:true, delay:300 },
+  { text:"and", style:"muted", append:true, delay:200 },
+  { text:"\"I trust this enough to buy.\"", style:"large italic gold", append:true, showHint:true, label:"Gap identified. 99%" },
+
+  // 26
+  { clear:true, text:"Most brands never see that gap.", style:"", label:"Gap identified. 99%" },
+  { text:"They just keep throwing better offers across it.", style:"muted italic", append:true, showHint:true, label:"Gap identified. 99%" },
+
+  // 27
+  { clear:true, text:"I help you find THAT gap.", style:"large", showHint:true, label:"The protocol. 100%" },
+
+  // SOLUTION
+  { solution:true }
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let beatIndex = 0;
+let busy = false;
+let hintVisible = false;
+let inChoice = false;
+let inSolution = false;
+let solutionStep = 0;
+
+const textBlock = document.getElementById('text-block');
+const blankOverlay = document.getElementById('blank-overlay');
+const clickHint = document.getElementById('click-hint');
+const progressLabel = document.getElementById('progress-label');
+const progressFill = document.getElementById('progress-bar-fill');
+const choiceScreen = document.getElementById('choice-screen');
+const solutionScreen = document.getElementById('solution-screen');
+const solInner = document.getElementById('sol-inner');
+const clickArea = document.getElementById('click-area');
+
+// ─────────────────────────────────────────────
+// PARTICLES
+// ─────────────────────────────────────────────
+(function(){
+  const c = document.getElementById('particles');
+  for(let i=0;i<18;i++){
+    const p = document.createElement('div');
+    p.className='ptcl';
+    const s=Math.random()*2.5+0.5;
+    p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;
+      animation-duration:${16+Math.random()*20}s;animation-delay:${Math.random()*14}s;`;
+    c.appendChild(p);
+  }
+})();
+
+// ─────────────────────────────────────────────
+// RIPPLE
+// ─────────────────────────────────────────────
+function addRipple(el,e){
+  const rect=el.getBoundingClientRect();
+  const circle=document.createElement('div');
+  circle.className='rpl-circle';
+  const size=Math.max(rect.width,rect.height);
+  circle.style.cssText=`width:${size}px;height:${size}px;
+    left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;`;
+  el.appendChild(circle);
+  setTimeout(()=>circle.remove(),650);
+}
+document.querySelectorAll('.rpl').forEach(el=>{
+  el.addEventListener('click',e=>addRipple(el,e));
+});
+
+// ─────────────────────────────────────────────
+// PROGRESS
+// ─────────────────────────────────────────────
+function setProgress(label, pct){
+  if(label) progressLabel.textContent = label;
+  if(pct !== undefined) progressFill.style.width = pct+'%';
+}
+
+// ─────────────────────────────────────────────
+// SHOW / HIDE HINT
+// ─────────────────────────────────────────────
+function showHint(){ clickHint.classList.add('show'); hintVisible=true; }
+function hideHint(){ clickHint.classList.remove('show'); hintVisible=false; }
+
+// ─────────────────────────────────────────────
+// TYPEWRITE
+// ─────────────────────────────────────────────
+function typewrite(el, text, cb){
+  el.textContent='';
+  const cur = document.createElement('span');
+  cur.className='cursor';
+  el.appendChild(cur);
+  let i=0;
+  function tick(){
+    if(i<text.length){
+      el.insertBefore(document.createTextNode(text[i]),cur);
+      i++;
+      setTimeout(tick, i<4?120:55);
+    } else {
+      cur.remove();
+      if(cb) cb();
     }
+  }
+  tick();
+}
 
-    function escapeAttribute(text) {
-      return text.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
+// ─────────────────────────────────────────────
+// ADD LINE TO TEXT BLOCK
+// ─────────────────────────────────────────────
+function addLine(text, styleClasses, tw, cb){
+  const span = document.createElement('span');
+  span.className = 'line ' + (styleClasses||'');
+  textBlock.appendChild(span);
 
-    function handleChoice(choice) {
-      const group = choice.dataset.group;
-      const key = choice.dataset.key;
-      state.answers[group] = key;
-      const groupChoices = document.querySelectorAll(`.choice[data-group="${group}"]`);
-      groupChoices.forEach(item => item.classList.remove("selected"));
-      choice.classList.add("selected");
-
-      const response = document.getElementById(`${group}-response`);
-      response.innerHTML = `<div class="label">A note from the coach</div><p>${choice.dataset.response}</p>`;
-      response.classList.add("show");
-      updateControls();
-    }
-
-    function currentStep() {
-      return steps[state.stepIndex];
-    }
-
-    function showStep(index) {
-      state.stepIndex = Math.max(0, Math.min(steps.length - 1, index));
-      const step = currentStep();
-
-      screens.forEach(screen => screen.classList.toggle("active", screen.dataset.screen === step.id));
-      stepLabel.textContent = step.label;
-      stepCount.textContent = `Step ${state.stepIndex + 1} of ${steps.length}`;
-      progressFill.style.width = `${((state.stepIndex + 1) / steps.length) * 100}%`;
-      document.getElementById("progress-word").textContent = step.label;
-
-      if (step.id === "reveal") renderResultReveal();
-      if (step.id === "interpretation") renderInterpretation();
-      if (step.id === "invitation") renderInvitation();
-      if (step.id === "trust") renderTrust();
-
-      updateControls();
-    }
-
-    function updateControls() {
-      const id = currentStep().id;
-      const isArrival = id === "arrival";
-      const isFinal = id === "final";
-      const needsAnswer = ["recognition", "emotion", "pattern", "truth"].includes(id);
-      const hasAnswer = !needsAnswer || Boolean(state.answers[id]);
-
-      backButton.disabled = state.stepIndex === 0;
-      continueButton.disabled = !hasAnswer;
-      backButton.style.visibility = isArrival ? "hidden" : "visible";
-      continueButton.style.visibility = (isArrival || isFinal || id === "pause" || id === "reveal") ? "hidden" : "visible";
-
-      if (id === "interpretation") {
-        continueButton.style.visibility = "visible";
-        continueButton.disabled = state.openedCards.size < 3;
-        continueButton.textContent = state.openedCards.size < 3 ? `Open ${3 - state.openedCards.size} more` : "Continue";
-      } else {
-        continueButton.textContent = id === "trust" ? "Final choice" : "Continue";
-      }
-    }
-
-    function goNext() {
-      const id = currentStep().id;
-      if (["recognition", "emotion", "pattern", "truth"].includes(id) && !state.answers[id]) {
-        showToast("Choose the line that feels closest first.");
-        return;
-      }
-      if (id === "truth") calculateResult();
-      showStep(state.stepIndex + 1);
-    }
-
-    function goBack() {
-      showStep(state.stepIndex - 1);
-    }
-
-    function calculateResult() {
-      state.scores = Object.fromEntries(resultKeys.map(key => [key, 0]));
-      Object.values(state.answers).forEach(key => {
-        if (state.scores[key] !== undefined) state.scores[key] += 1;
-      });
-      let winner = resultKeys[0];
-      resultKeys.forEach(key => {
-        if (state.scores[key] > state.scores[winner]) winner = key;
-      });
-      state.resultKey = winner;
-      document.getElementById("hidden-result").value = results[winner].title;
-    }
-
-    function renderResultReveal() {
-      if (!state.resultKey) calculateResult();
-      const result = results[state.resultKey];
-      document.getElementById("result-title").textContent = result.title;
-      document.getElementById("result-summary").textContent = result.summary;
-    }
-
-    function renderInterpretation() {
-      if (!state.resultKey) calculateResult();
-      state.openedCards = new Set();
-      const result = results[state.resultKey];
-      const cards = [
-        ["happening", "What may be happening", result.interpretation.happening],
-        ["need", "What you may need", result.interpretation.need],
-        ["support", "What support could look like", result.interpretation.support]
-      ];
-      const grid = document.getElementById("interpret-grid");
-      grid.innerHTML = cards.map(([key, title, copy], index) => `
-        <button class="reveal-card" type="button" data-card="${key}">
-          <span class="small">Card ${index + 1}</span>
-          <strong>${title}</strong>
-          <p>${copy}</p>
-        </button>
-      `).join("");
-
-      document.getElementById("interpret-response").classList.remove("show");
-      grid.querySelectorAll(".reveal-card").forEach(card => {
-        card.addEventListener("click", () => {
-          card.classList.add("open");
-          state.openedCards.add(card.dataset.card);
-          if (state.openedCards.size === 3) {
-            document.getElementById("interpret-response").classList.add("show");
-          }
-          updateControls();
-        });
+  requestAnimationFrame(()=>{
+    if(tw){
+      span.classList.add('visible');
+      typewrite(span, text, cb);
+    } else {
+      span.textContent = text;
+      requestAnimationFrame(()=>{
+        span.classList.add('visible');
+        if(cb) setTimeout(cb,50);
       });
     }
+  });
+  return span;
+}
 
-    function renderInvitation() {
-      const result = results[state.resultKey];
-      document.getElementById("invite-headline").textContent = result.inviteHeadline;
-      document.getElementById("invite-copy").textContent = result.inviteCopy;
-      document.getElementById("invite-cta").textContent = result.inviteCta;
+// ─────────────────────────────────────────────
+// CLEAR TEXT BLOCK
+// ─────────────────────────────────────────────
+function clearBlock(cb){
+  const lines = textBlock.querySelectorAll('.line');
+  lines.forEach(l=>{ l.classList.remove('visible'); l.classList.add('dim'); });
+  setTimeout(()=>{
+    textBlock.innerHTML='';
+    if(cb) cb();
+  }, 320);
+}
+
+// ─────────────────────────────────────────────
+// SHAKE existing lines
+// ─────────────────────────────────────────────
+function shakeLines(){
+  textBlock.querySelectorAll('.line').forEach(l=>{
+    l.classList.remove('shaking');
+    void l.offsetWidth;
+    l.classList.add('shaking');
+  });
+}
+
+// ─────────────────────────────────────────────
+// PLAY BEAT
+// ─────────────────────────────────────────────
+function playBeat(b){
+  busy = true;
+  hideHint();
+
+  // Update progress label
+  if(b.label) progressLabel.textContent = b.label;
+
+  // Approx progress %
+  const pct = Math.round((beatIndex / beats.length)*100);
+  progressFill.style.width = pct+'%';
+
+  // CHOICE
+  if(b.choice){
+    choiceScreen.classList.add('show');
+    busy = false;
+    return;
+  }
+
+  // SOLUTION
+  if(b.solution){
+    launchSolution();
+    return;
+  }
+
+  // BLANK pause before content
+  const doReveal = ()=>{
+    if(b.clear && !b.append){
+      clearBlock(()=> renderBeat(b));
+    } else {
+      renderBeat(b);
     }
+  };
 
-    function renderTrust() {
-      const result = results[state.resultKey];
-      document.getElementById("trust-quote").textContent = result.quote;
-      document.getElementById("trust-cite").textContent = result.cite;
+  if(b.blank){
+    blankOverlay.classList.add('on');
+    setTimeout(()=>{
+      // clear while blank
+      textBlock.innerHTML='';
+      setTimeout(()=>{
+        blankOverlay.classList.remove('on');
+        doReveal();
+      }, b.blank);
+    },300);
+  } else if(b.clear && !b.append){
+    clearBlock(()=> renderBeat(b));
+  } else {
+    renderBeat(b);
+  }
+}
+
+function renderBeat(b){
+  if(b.shake) shakeLines();
+
+  const done = ()=>{
+    busy = false;
+    if(b.showHint) showHint();
+    if(b.delay && !b.showHint){
+      setTimeout(advance,b.delay);
     }
+  };
 
-    function resetExperience() {
-      state.stepIndex = 0;
-      state.answers = {};
-      state.scores = Object.fromEntries(resultKeys.map(key => [key, 0]));
-      state.resultKey = null;
-      state.openedCards = new Set();
-      document.querySelectorAll(".choice").forEach(choice => choice.classList.remove("selected"));
-      document.querySelectorAll(".coach-response").forEach(response => response.classList.remove("show"));
-      document.getElementById("email-form").classList.remove("show");
-      document.getElementById("form-message").textContent = "";
-      document.getElementById("email-form").reset();
-      showStep(0);
-    }
+  addLine(b.text, b.style, b.typewrite, done);
+}
 
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add("show");
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 2300);
-    }
+// ─────────────────────────────────────────────
+// ADVANCE
+// ─────────────────────────────────────────────
+function advance(){
+  if(busy || inChoice || inSolution) return;
+  beatIndex++;
+  if(beatIndex >= beats.length) return;
+  playBeat(beats[beatIndex]);
+}
 
-    document.querySelectorAll("[data-action='begin']").forEach(button => button.addEventListener("click", () => showStep(1)));
-    document.querySelectorAll("[data-action='soft-skip']").forEach(button => button.addEventListener("click", () => showToast("This experience is meant to be felt, not browsed. Begin when you are ready.")));
-    document.querySelectorAll("[data-action='pause-ready']").forEach(button => button.addEventListener("click", () => {
-      document.getElementById("pause-response").classList.add("show");
-      setTimeout(() => showStep(2), 650);
-    }));
-    document.querySelectorAll("[data-action='understand-result']").forEach(button => button.addEventListener("click", () => showStep(7)));
+// ─────────────────────────────────────────────
+// CHOICE
+// ─────────────────────────────────────────────
+function makeChoice(btn){
+  addRipple(btn, {clientX: btn.getBoundingClientRect().left+60, clientY: btn.getBoundingClientRect().top+20});
+  btn.style.background='rgba(201,168,76,0.18)';
+  btn.style.borderColor='var(--gold)';
+  setTimeout(()=>{
+    choiceScreen.classList.remove('show');
+    advance();
+  },700);
+}
 
-    backButton.addEventListener("click", goBack);
-    continueButton.addEventListener("click", goNext);
-    document.getElementById("reset-top").addEventListener("click", resetExperience);
-    document.getElementById("brand-reset").addEventListener("click", event => { event.preventDefault(); resetExperience(); });
-    document.getElementById("start-over-final").addEventListener("click", resetExperience);
+// ─────────────────────────────────────────────
+// SOLUTION SCREEN — sequential reveal
+// ─────────────────────────────────────────────
+const solBeats = [
+  // brand reveal
+  { type:'line', cls:'sol-line brand', text:'Introducing...' },
+  { type:'line', cls:'sol-line large gold', text:'The Trust Gap Protocol.' },
+  { type:'divider' },
+  { type:'line', cls:'sol-line dim', text:'This is not another copywriting service.' },
+  { type:'line', cls:'sol-line dim', text:'Or another funnel review.' },
+  { type:'line', cls:'sol-line', text:'It\'s a systematic audit that identifies exactly where skeptical buyers stop trusting your message...' },
+  { type:'line', cls:'sol-line gold italic', text:'...and a messaging rebuild designed to close those gaps.' },
+  { type:'hint' },
 
-    document.getElementById("show-email-form").addEventListener("click", () => {
-      document.getElementById("email-form").classList.add("show");
-      document.getElementById("name").focus();
+  { type:'line', cls:'sol-line brand', text:'Inside the audit, you\'ll discover:' },
+  { type:'checks', items:[
+    'Where trust begins leaking.',
+    'Which objections your copy never answers.',
+    'Which emotional stage your buyers are actually in.',
+    'Which messages belong on each touchpoint.',
+    'What to remove. What to amplify.',
+    'What finally gives hesitant buyers permission to act.'
+  ]},
+  { type:'hint' },
+
+  { type:'line', cls:'sol-line', text:'Because when your messaging meets people where they actually are...' },
+  { type:'results', items:[
+    'Conversions stop feeling random.',
+    'Sales conversations get shorter.',
+    'Price resistance drops.',
+    'Trust compounds.',
+    'And your marketing starts working <em>with</em> human psychology — instead of against it.'
+  ]},
+  { type:'hint' },
+
+  { type:'cta' }
+];
+
+let solIdx = 0;
+let solBusy = false;
+
+function launchSolution(){
+  inSolution = true;
+  clickArea.style.display='none';
+  solutionScreen.classList.add('show','gold-bg');
+  progressLabel.textContent = 'The protocol. 100%';
+  progressFill.style.width='100%';
+  progressLabel.classList.add('lit');
+  solIdx = 0;
+  showSolBeat();
+}
+
+function showSolBeat(){
+  if(solIdx >= solBeats.length) return;
+  const b = solBeats[solIdx];
+  solBusy = true;
+  hideHint();
+
+  if(b.type==='line'){
+    const el = document.createElement('div');
+    el.className = b.cls;
+    el.innerHTML = b.text;
+    solInner.appendChild(el);
+    requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ el.classList.add('vis'); solBusy=false; }); });
+
+  } else if(b.type==='divider'){
+    const d = document.createElement('div');
+    d.className='sol-divider';
+    solInner.appendChild(d);
+    requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ d.classList.add('vis'); solBusy=false; }); });
+
+  } else if(b.type==='hint'){
+    solBusy=false;
+    showHint();
+    return;
+
+  } else if(b.type==='checks'){
+    const ul = document.createElement('ul');
+    ul.className='check-list';
+    b.items.forEach((item,i)=>{
+      const li = document.createElement('li');
+      li.style.transitionDelay=(i*0.1)+'s';
+      li.innerHTML=`<span class="check-mark">✓</span>${item}`;
+      ul.appendChild(li);
     });
+    solInner.appendChild(ul);
+    requestAnimationFrame(()=>{requestAnimationFrame(()=>{
+      ul.querySelectorAll('li').forEach(li=>li.classList.add('vis'));
+      solBusy=false;
+    });});
 
-    document.getElementById("email-form").addEventListener("submit", event => {
-      event.preventDefault();
-      const name = document.getElementById("name").value.trim() || "there";
-      const email = document.getElementById("email").value.trim();
-      const result = state.resultKey ? results[state.resultKey].title : "your reflection";
-      document.getElementById("form-message").textContent = `Thank you, ${name}. In a live build, ${result} would be sent to ${email}.`;
-      showToast("Demo email flow submitted.");
+  } else if(b.type==='results'){
+    const ul = document.createElement('ul');
+    ul.className='result-list';
+    b.items.forEach((item,i)=>{
+      const li = document.createElement('li');
+      li.style.transitionDelay=(i*0.12)+'s';
+      li.innerHTML=item;
+      ul.appendChild(li);
     });
+    solInner.appendChild(ul);
+    requestAnimationFrame(()=>{requestAnimationFrame(()=>{
+      ul.querySelectorAll('li').forEach(li=>li.classList.add('vis'));
+      solBusy=false;
+    });});
 
-    buildOptions();
-    showStep(0);
-  </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a127857fed96a678',t:'MTc4MjU5NTQ5Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  } else if(b.type==='cta'){
+    const block = document.createElement('div');
+    block.className='cta-block';
+    block.innerHTML=`
+      <p class="cta-copy">
+        You don't need more traffic.<br>
+        You don't need another redesign.<br>
+        You don't even need a better offer.<br><br>
+        <em>You need messaging that earns belief before it asks for action.</em>
+      </p>
+      <p class="cta-copy" style="font-size:clamp(0.88rem,2vw,1rem);margin-bottom:20px;color:var(--cream-dim);">
+        If you'd like to discover where your buyers are quietly slipping away, start here.
+        We'll identify where trust is breaking inside your customer journey and explore
+        whether the Trust Gap Protocol is the right fit for your business.
+      </p>
+      <a href="#" class="cta-btn">Get Your Trust Gap Audit →</a>
+    `;
+    solInner.appendChild(block);
+    requestAnimationFrame(()=>{requestAnimationFrame(()=>{ block.classList.add('vis'); solBusy=false; });});
+  }
+
+  solIdx++;
+  // if not a hint-stop, auto-continue after short pause
+  if(b.type !== 'hint'){
+    setTimeout(()=>{
+      if(!solBusy) showSolBeat();
+      else setTimeout(()=> showSolBeat(), 200);
+    }, 380);
+  }
+}
+
+function advanceSolution(){
+  if(solBusy) return;
+  showSolBeat();
+}
+
+// ─────────────────────────────────────────────
+// CLICK HANDLING
+// ─────────────────────────────────────────────
+clickArea.addEventListener('click', e=>{
+  if(inChoice) return;
+  if(inSolution){ advanceSolution(); return; }
+  if(busy) return;
+  advance();
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key===' '||e.key==='Enter'){
+    e.preventDefault();
+    if(inChoice) return;
+    if(inSolution){ advanceSolution(); return; }
+    if(!busy) advance();
+  }
+});
+
+let tsy=0;
+document.addEventListener('touchstart',e=>{tsy=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(tsy - e.changedTouches[0].clientY > 40){
+    if(inChoice) return;
+    if(inSolution){ advanceSolution(); return; }
+    if(!busy) advance();
+  }
+},{passive:true});
+
+// ─────────────────────────────────────────────
+// PARALLAX
+// ─────────────────────────────────────────────
+document.addEventListener('mousemove',e=>{
+  const x=(e.clientX/window.innerWidth-0.5)*10;
+  const y=(e.clientY/window.innerHeight-0.5)*7;
+  textBlock.style.transform=`translate(${x*0.25}px,${y*0.25}px)`;
+});
+
+// ─────────────────────────────────────────────
+// KICK OFF
+// ─────────────────────────────────────────────
+playBeat(beats[0]);
+</script>
+</body>
 </html>

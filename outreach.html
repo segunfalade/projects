@@ -45,7 +45,6 @@
       font-family: 'Orbitron', sans-serif;
     }
 
-    /* Animations */
     @keyframes pulse-glow {
       0%, 100% { box-shadow: 0 0 5px rgba(79,172,254,.3); }
       50% { box-shadow: 0 0 20px rgba(79,172,254,.6); }
@@ -90,7 +89,6 @@
     .animate-boss-attack { animation: bossAttack .5s ease-in-out; }
     .animate-fire-glow { animation: fire-glow 1.5s ease-in-out infinite; }
 
-    /* UI Components */
     .glass {
       background: rgba(26,26,46,.7);
       backdrop-filter: blur(10px);
@@ -103,26 +101,22 @@
       border: 1px solid rgba(255,255,255,.15);
     }
     
-    /* Gradients */
     .text-gradient-gold { background: linear-gradient(135deg,#ffd700,#ffaa00,#ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .text-gradient-blue { background: linear-gradient(135deg,#4facfe,#00f2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .text-gradient-fire { background: linear-gradient(135deg,#ff6b35,#ff4500,#ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .text-gradient-quest { background: linear-gradient(135deg,#06d6a0,#43e97b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .text-gradient-boss { background: linear-gradient(135deg,#a855f7,#6366f1,#a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: var(--dark-800); }
     ::-webkit-scrollbar-thumb { background: var(--dark-500); border-radius: 4px; }
     
-    /* Heatmap */
     .heat-0 { background: #1a1a2e; }
     .heat-1 { background: #163020; }
     .heat-2 { background: #1a4a2a; }
     .heat-3 { background: #2d6b3f; }
     .heat-4 { background: #43e97b; }
     
-    /* Status Badges */
     .status-new { background: rgba(107,114,128,.3); color: #9ca3af; }
     .status-contacted { background: rgba(59,130,246,.2); color: #60a5fa; }
     .status-fu1 { background: rgba(6,182,212,.2); color: #22d3ee; }
@@ -136,7 +130,6 @@
     .status-lost { background: rgba(239,68,68,.2); color: #f87171; }
     .status-ghosted { background: rgba(75,85,99,.3); color: #6b7280; }
     
-    /* Colors */
     .value-low { color: #9ca3af; }
     .value-medium { color: #60a5fa; }
     .value-high { color: #fb923c; }
@@ -149,7 +142,6 @@
     .result-meeting-booked { color: #ffd700; }
     .result-no-response { color: #6b7280; }
     
-    /* Inputs & Forms */
     input, select, textarea {
       background: var(--dark-700);
       border: 1px solid var(--dark-600);
@@ -184,7 +176,6 @@
       margin-bottom: 4px;
     }
     
-    /* Buttons */
     .btn {
       padding: 8px 16px;
       border-radius: 8px;
@@ -203,7 +194,6 @@
     .btn-ghost { background: var(--dark-700); color: var(--dark-200); border: 1px solid var(--dark-600); }
     .btn-quest { background: linear-gradient(135deg,var(--quest-cyan),var(--xp-green)); color: var(--dark-900); }
     
-    /* Nav & Tabs */
     .nav-item {
       padding: 10px 16px;
       border-radius: 12px;
@@ -240,7 +230,6 @@
       border-color: rgba(255,215,0,.3);
     }
     
-    /* Toasts */
     .toast-container {
       position: fixed;
       top: 20px;
@@ -264,7 +253,6 @@
     .toast-level { background: rgba(168,85,247,.2); border: 1px solid rgba(168,85,247,.3); color: var(--boss-purple); }
     .toast-warning { background: rgba(255,71,87,.2); border: 1px solid rgba(255,71,87,.3); color: var(--health-red); }
     
-    /* Modals */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -290,7 +278,6 @@
       box-shadow: 0 4px 20px rgba(0,0,0,.3);
     }
     
-    /* Layout Grids & Responsiveness */
     .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
     .grid-8 { display: grid; grid-template-columns: repeat(8,1fr); gap: 8px; }
 
@@ -567,16 +554,6 @@ function loadState() {
       }
       if (!p.stats) {
         p.stats = defaultState().stats;
-      } else {
-        // Safely merge default stats to ensure new properties like consecutiveDays exist
-        p.stats = { ...defaultState().stats, ...p.stats };
-      }
-      
-      // Ensure all older prospects have a touchpoints array to prevent crashes
-      if (p.prospects) {
-        p.prospects.forEach(pr => {
-          if (!pr.touchpoints) pr.touchpoints = [];
-        });
       }
       return p;
     }
@@ -1126,8 +1103,9 @@ function renderDashboard() {
     </div>
   `;
 
+  // Fix: Used subtraction on actual Date objects instead of string localeCompare on a Date.
   const atp = state.prospects.flatMap(p => p.touchpoints.map(t => ({...t, contact: p.contact, company: p.company, status: p.status})))
-    .sort((a, b) => new Date(b.date).localeCompare(new Date(a.date)))
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 8);
 
   html += `
@@ -1157,9 +1135,7 @@ function renderDashboard() {
 
 function renderHeatMap() {
   const counts = {};
-  if (state.stats.consecutiveDays) {
-    state.stats.consecutiveDays.forEach(d => { counts[d] = (counts[d] || 0) + 1; });
-  }
+  state.stats.consecutiveDays.forEach(d => { counts[d] = (counts[d] || 0) + 1; });
   const today = new Date();
   const sd = new Date(today.getTime() - 83 * 864e5);
   const sd2 = sd.getDay();
@@ -1202,18 +1178,18 @@ function renderHeatMap() {
       </div>
     </div>
   `;
+}
 
-  // Safely collect touchpoints without using flatMap (for older browser compatibility)
-  const atp = state.prospects.reduce((acc, p) => {
-    const tpList = (p.touchpoints || []).map(t => ({...t, contact: p.contact, company: p.company, status: p.status}));
-    return acc.concat(tpList);
-  }, [])
-  .sort((a, b) => new Date(b.date).localeCompare(new Date(a.date)))
-  .slice(0, 8);
-
-  html += `
-    <div class="glass" style="padding:20px; margin-top:20px">
-      <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">📋 Recent Activity</h3>
+function renderProspects() {
+  setTimeout(filterProspects, 0); // Defer filtering slightly to allow DOM to catch up
+  return `
+    <div class="animate-fade-in-up" style="max-width:900px">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px">
+        <div>
+          <h1 class="font-display text-2xl font-bold text-gradient-quest">Prospects</h1>
+          <p style="color:var(--dark-300); font-size:14px">${state.prospects.length} prospects</p>
+        </div>
+        <button class="btn btn-quest" onclick="openAddProspect()">+ Add Prospect</button>
       </div>
       <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px">
         <input id="searchInput" placeholder="🔍 Search prospects..." style="flex:1; min-width:180px" oninput="filterProspects()">

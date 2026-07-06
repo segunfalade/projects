@@ -1,181 +1,181 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>⚔️ Outreach Arena — Gamified Follow-Up Tracker</title>
-<style>
-  :root{
-    --bg:#020617; --panel:rgba(30,41,59,.6); --panel2:rgba(15,23,42,.6);
-    --ring:rgba(255,255,255,.1); --txt:#e2e8f0; --muted:#94a3b8; --muted2:#64748b;
-    --indigo:#6366f1; --sky:#0ea5e9; --fuchsia:#d946ef; --amber:#f59e0b;
-    --emerald:#10b981; --rose:#f43f5e; --violet:#8b5cf6; --orange:#f97316; --yellow:#eab308;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);
-    background-image:
-      radial-gradient(60rem 40rem at 80% -10%,rgba(99,102,241,.18),transparent),
-      radial-gradient(50rem 40rem at -10% 10%,rgba(217,70,239,.14),transparent);
-    color:var(--txt); min-height:100vh; padding-bottom:6rem;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:1024px;margin:0 auto;padding:1.5rem 1rem 0}
-  a{color:#38bdf8;text-decoration:none} a:hover{text-decoration:underline}
-  button{font-family:inherit;cursor:pointer;border:0}
-  select,input,textarea{font-family:inherit}
-  h1,h2,h3{margin:0}
-  .row{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
-  .between{justify-content:space-between}
-  .grow{flex:1}
-  .muted{color:var(--muted)} .muted2{color:var(--muted2)}
-  .hidden{display:none!important}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚔️ Outreach Arena — Gamified Follow-Up Tracker</title>
+  <style>
+    :root {
+      --bg: #020617; 
+      --panel: rgba(30, 41, 59, 0.6); 
+      --panel2: rgba(15, 23, 42, 0.6);
+      --ring: rgba(255, 255, 255, 0.1); 
+      --txt: #e2e8f0; 
+      --muted: #94a3b8; 
+      --muted2: #64748b;
+      --indigo: #6366f1; 
+      --sky: #0ea5e9; 
+      --fuchsia: #d946ef; 
+      --amber: #f59e0b;
+      --emerald: #10b981; 
+      --rose: #f43f5e; 
+      --violet: #8b5cf6; 
+      --orange: #f97316; 
+      --yellow: #eab308;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      background-image:
+        radial-gradient(60rem 40rem at 80% -10%, rgba(99, 102, 241, 0.18), transparent),
+        radial-gradient(50rem 40rem at -10% 10%, rgba(217, 70, 239, 0.14), transparent);
+      color: var(--txt); 
+      min-height: 100vh; 
+      padding-bottom: 6rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 1024px; margin: 0 auto; padding: 1.5rem 1rem 0; }
+    a { color: #38bdf8; text-decoration: none; } 
+    a:hover { text-decoration: underline; }
+    button { font-family: inherit; cursor: pointer; border: 0; }
+    select, input, textarea { font-family: inherit; }
+    h1, h2, h3 { margin: 0; }
+    .row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+    .between { justify-content: space-between; }
+    .grow { flex: 1; }
+    .muted { color: var(--muted); } 
+    .muted2 { color: var(--muted2); }
+    .hidden { display: none !important; }
 
-  /* header */
-  header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1.25rem}
-  .title{font-size:1.75rem;font-weight:900;letter-spacing:-.02em;color:#fff}
-  .sub{font-size:.875rem;color:var(--muted);margin-top:.15rem}
+    /* header */
+    header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .title { font-size: 1.75rem; font-weight: 900; letter-spacing: -0.02em; color: #fff; }
+    .sub { font-size: 0.875rem; color: var(--muted); margin-top: 0.15rem; }
 
-  /* buttons */
-  .btn{border-radius:.75rem;padding:.5rem .75rem;font-size:.875rem;font-weight:700;color:#fff;
-    background:linear-gradient(90deg,var(--indigo),var(--sky));transition:.15s;box-shadow:0 8px 24px -12px rgba(79,70,229,.6)}
-  .btn:hover{filter:brightness(1.1)}
-  .btn.boss{background:linear-gradient(90deg,var(--fuchsia),var(--violet));box-shadow:0 8px 24px -12px rgba(217,70,239,.6)}
-  .btn.ghost{background:transparent;box-shadow:none;padding:.5rem .75rem;border-radius:.75rem;font-weight:700;font-size:.875rem}
-  .chip-btn{border-radius:.75rem;padding:.5rem .75rem;font-size:.875rem;font-weight:700;background:rgba(255,255,255,.05);
-    color:var(--txt);box-shadow:inset 0 0 0 1px var(--ring)}
-  .chip-btn:hover{background:rgba(255,255,255,.1)}
-  .amber-btn{background:rgba(245,158,11,.15);color:#fcd34d;box-shadow:inset 0 0 0 1px rgba(245,158,11,.4)}
-  .emerald-btn{background:rgba(16,185,129,.15);color:#6ee7b7;box-shadow:inset 0 0 0 1px rgba(16,185,129,.4)}
-  .sky-btn{background:rgba(14,165,233,.15);color:#7dd3fc;box-shadow:inset 0 0 0 1px rgba(14,165,233,.4)}
-  .violet-btn{background:rgba(139,92,246,.15);color:#c4b5fd;box-shadow:inset 0 0 0 1px rgba(139,92,246,.4)}
-  .rose-btn{background:rgba(244,63,94,.1);color:#fda4af;box-shadow:inset 0 0 0 1px rgba(244,63,94,.3)}
+    /* buttons */
+    .btn { border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--indigo), var(--sky)); transition: 0.15s; box-shadow: 0 8px 24px -12px rgba(79, 70, 229, 0.6); }
+    .btn:hover { filter: brightness(1.1); }
+    .btn.boss { background: linear-gradient(90deg, var(--fuchsia), var(--violet)); box-shadow: 0 8px 24px -12px rgba(217, 70, 239, 0.6); }
+    .btn.ghost { background: transparent; box-shadow: none; padding: 0.5rem 0.75rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.875rem; }
+    .chip-btn { border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 700; background: rgba(255, 255, 255, 0.05); color: var(--txt); box-shadow: inset 0 0 0 1px var(--ring); transition: 0.15s; }
+    .chip-btn:hover { background: rgba(255, 255, 255, 0.1); }
+    .amber-btn { background: rgba(245, 158, 11, 0.15); color: #fcd34d; box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.4); }
+    .emerald-btn { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.4); }
+    .sky-btn { background: rgba(14, 165, 233, 0.15); color: #7dd3fc; box-shadow: inset 0 0 0 1px rgba(14, 165, 233, 0.4); }
+    .violet-btn { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; box-shadow: inset 0 0 0 1px rgba(139, 92, 246, 0.4); }
+    .rose-btn { background: rgba(244, 63, 94, 0.1); color: #fda4af; box-shadow: inset 0 0 0 1px rgba(244, 63, 94, 0.3); }
 
-  /* stats grid */
-  .stats{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-  @media(min-width:640px){.stats{grid-template-columns:2fr 1fr 1fr}}
-  .card{border-radius:1rem;padding:1rem;box-shadow:inset 0 0 0 1px var(--ring);background:var(--panel)}
-  .stat-xp{grid-column:span 2;background:linear-gradient(135deg,rgba(99,102,241,.3),rgba(139,92,246,.2));box-shadow:inset 0 0 0 1px rgba(129,140,248,.3)}
-  @media(min-width:640px){.stat-xp{grid-column:span 1}}
-  .stat-streak.on{background:linear-gradient(135deg,rgba(249,115,22,.3),rgba(244,63,94,.2));box-shadow:inset 0 0 0 1px rgba(251,146,60,.3)}
-  .rank{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#a5b4fc}
-  .big{font-size:1.5rem;font-weight:900;color:#fff}
-  .huge{font-size:1.875rem;font-weight:900;color:#fff}
-  .bar{height:.75rem;width:100%;overflow:hidden;border-radius:999px;background:rgba(2,6,23,.7);box-shadow:inset 0 0 0 1px var(--ring);margin-top:.75rem}
-  .bar > i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#818cf8,#e879f9);transition:width .7s}
-  .tiny{font-size:.7rem} .xs{font-size:.75rem} .sm{font-size:.875rem}
-  .right{text-align:right}
+    /* stats grid */
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    @media(min-width: 640px) { .stats { grid-template-columns: 2fr 1fr 1fr; } }
+    .card { border-radius: 1rem; padding: 1rem; box-shadow: inset 0 0 0 1px var(--ring); background: var(--panel); }
+    .stat-xp { grid-column: span 2; background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.2)); box-shadow: inset 0 0 0 1px rgba(129, 140, 248, 0.3); }
+    @media(min-width: 640px) { .stat-xp { grid-column: span 1; } }
+    .stat-streak.on { background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(244, 63, 94, 0.2)); box-shadow: inset 0 0 0 1px rgba(251, 146, 60, 0.3); }
+    .rank { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #a5b4fc; }
+    .big { font-size: 1.5rem; font-weight: 900; color: #fff; }
+    .huge { font-size: 1.875rem; font-weight: 900; color: #fff; }
+    .bar { height: 0.75rem; width: 100%; overflow: hidden; border-radius: 999px; background: rgba(2, 6, 23, 0.7); box-shadow: inset 0 0 0 1px var(--ring); margin-top: 0.75rem; }
+    .bar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #818cf8, #e879f9); transition: width 0.7s; }
+    .tiny { font-size: 0.7rem; } .xs { font-size: 0.75rem; } .sm { font-size: 0.875rem; }
+    .right { text-align: right; }
 
-  /* nudge */
-  .nudge{margin-top:1rem;display:flex;align-items:center;gap:.75rem;border-radius:1rem;padding:.75rem;font-size:.875rem;
-    background:rgba(245,158,11,.1);box-shadow:inset 0 0 0 1px rgba(245,158,11,.3);color:#fde68a}
+    /* nudge */
+    .nudge { margin-top: 1rem; display: flex; align-items: center; gap: 0.75rem; border-radius: 1rem; padding: 0.75rem; font-size: 0.875rem; background: rgba(245, 158, 11, 0.1); box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.3); color: #fde68a; }
 
-  /* controls */
-  .controls{margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
-  .inp{border-radius:.75rem;background:rgba(30,41,59,.7);padding:.5rem .75rem;font-size:.875rem;color:#fff;
-    box-shadow:inset 0 0 0 1px var(--ring);outline:none}
-  .inp:focus{box-shadow:inset 0 0 0 2px var(--indigo)}
-  .inp::placeholder{color:var(--muted2)}
-  .search{flex:1;min-width:180px}
-  .filters{margin-top:.75rem;display:flex;flex-wrap:wrap;gap:.5rem}
-  .pill{border-radius:999px;padding:.375rem .75rem;font-size:.75rem;font-weight:600;background:rgba(30,41,59,.5);
-    color:var(--txt);box-shadow:inset 0 0 0 1px var(--ring)}
-  .pill:hover{background:rgba(30,41,59,.9)}
-  .pill.active{background:rgba(99,102,241,.25);color:#fff;box-shadow:inset 0 0 0 1px var(--indigo)}
+    /* controls */
+    .controls { margin-top: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .inp { border-radius: 0.75rem; background: rgba(30, 41, 59, 0.7); padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #fff; box-shadow: inset 0 0 0 1px var(--ring); outline: none; }
+    .inp:focus { box-shadow: inset 0 0 0 2px var(--indigo); }
+    .inp::placeholder { color: var(--muted2); }
+    .search { flex: 1; min-width: 180px; }
+    .filters { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .pill { border-radius: 999px; padding: 0.375rem 0.75rem; font-size: 0.75rem; font-weight: 600; background: rgba(30, 41, 59, 0.5); color: var(--txt); box-shadow: inset 0 0 0 1px var(--ring); transition: 0.1s; cursor: pointer;}
+    .pill:hover { background: rgba(30, 41, 59, 0.9); }
+    .pill.active { background: rgba(99, 102, 241, 0.25); color: #fff; box-shadow: inset 0 0 0 1px var(--indigo); }
 
-  /* grid */
-  .grid{margin-top:1rem;display:grid;grid-template-columns:1fr;gap:1rem}
-  @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
-  @media(min-width:1024px){.grid{grid-template-columns:1fr 1fr 1fr}}
+    /* grid */
+    .grid { margin-top: 1rem; display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media(min-width: 640px) { .grid { grid-template-columns: 1fr 1fr; } }
+    @media(min-width: 1024px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
 
-  /* prospect card */
-  .pcard{position:relative;overflow:hidden;border-radius:1rem;padding:1rem;background:var(--panel);
-    box-shadow:inset 0 0 0 1px var(--ring);transition:.15s}
-  .pcard:hover{background:rgba(30,41,59,.9);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
-  .pcard.boss{box-shadow:inset 0 0 0 1px rgba(217,70,239,.4)}
-  .pcard.boss:hover{box-shadow:inset 0 0 0 1px rgba(232,121,249,.7)}
-  .pcard.cold{box-shadow:inset 0 0 0 1px rgba(244,63,94,.5);animation:pulseSlow 2.4s ease-in-out infinite}
-  @keyframes pulseSlow{0%,100%{box-shadow:inset 0 0 0 1px rgba(244,63,94,.5),0 0 0 0 rgba(244,63,94,0)}50%{box-shadow:inset 0 0 0 1px rgba(244,63,94,.5),0 0 0 3px rgba(244,63,94,.25)}}
-  .crown-bg{position:absolute;right:-1.5rem;top:-1.5rem;font-size:4.5rem;opacity:.1;pointer-events:none}
-  .pname{font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .badge{flex-shrink:0;border-radius:.375rem;padding:.1rem .375rem;font-size:.625rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
-  .badge.boss{background:rgba(217,70,239,.2);color:#f0abfc;box-shadow:inset 0 0 0 1px rgba(217,70,239,.4)}
-  .icon-btn{flex-shrink:0;border-radius:.5rem;padding:.35rem;background:transparent;color:var(--muted);opacity:0;transition:.15s}
-  .pcard:hover .icon-btn{opacity:1}
-  .icon-btn:hover{background:rgba(255,255,255,.1);color:#fff}
-  .metarow{margin-top:.75rem;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
-  .tag{border-radius:.5rem;padding:.25rem .5rem;font-size:.75rem;font-weight:500;background:rgba(255,255,255,.05)}
-  .tag.xp{background:rgba(99,102,241,.15);color:#a5b4fc;font-weight:700}
-  .stage-sel{cursor:pointer;border-radius:.5rem;padding:.25rem .5rem;font-size:.75rem;font-weight:600;border:0;outline:none;color:#fff;background:#334155;box-shadow:inset 0 0 0 1px var(--ring)}
-  .hpwrap{margin-top:.75rem}
-  .hpbar{height:.65rem;width:100%;overflow:hidden;border-radius:999px;background:rgba(2,6,23,.8);box-shadow:inset 0 0 0 1px var(--ring)}
-  .hpbar > i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#f43f5e,#d946ef,#a855f7);transition:width .7s}
-  .hpbar > i.dead{background:linear-gradient(90deg,#34d399,#2dd4bf)}
-  .lastbox{margin-top:.75rem;border-radius:.75rem;padding:.625rem;background:rgba(15,23,42,.5);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
-  .empty-note{margin-top:.75rem;border-radius:.75rem;padding:.625rem;text-align:center;font-size:.75rem;color:var(--muted2);background:rgba(15,23,42,.4);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
-  .timeline{margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.25rem;font-size:.9rem}
-  .logbtn{margin-top:.75rem;width:100%;border-radius:.75rem;padding:.5rem .75rem;font-size:.875rem;font-weight:700;color:#fff;
-    background:linear-gradient(90deg,var(--indigo),var(--sky))}
-  .logbtn.boss{background:linear-gradient(90deg,var(--fuchsia),var(--violet))}
-  .logbtn:hover{filter:brightness(1.1)}
-  .logbtn.disabled{background:rgba(51,65,85,.5);color:var(--muted2);cursor:not-allowed}
-  .clip2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    /* prospect card */
+    .pcard { position: relative; overflow: hidden; border-radius: 1rem; padding: 1rem; background: var(--panel); box-shadow: inset 0 0 0 1px var(--ring); transition: 0.15s; }
+    .pcard:hover { background: rgba(30, 41, 59, 0.9); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25); }
+    .pcard.boss { box-shadow: inset 0 0 0 1px rgba(217, 70, 239, 0.4); }
+    .pcard.boss:hover { box-shadow: inset 0 0 0 1px rgba(232, 121, 249, 0.7); }
+    .pcard.cold { box-shadow: inset 0 0 0 1px rgba(244, 63, 94, 0.5); animation: pulseSlow 2.4s ease-in-out infinite; }
+    @keyframes pulseSlow { 0%, 100% { box-shadow: inset 0 0 0 1px rgba(244, 63, 94, 0.5), 0 0 0 0 rgba(244, 63, 94, 0); } 50% { box-shadow: inset 0 0 0 1px rgba(244, 63, 94, 0.5), 0 0 0 3px rgba(244, 63, 94, 0.25); } }
+    .crown-bg { position: absolute; right: -1.5rem; top: -1.5rem; font-size: 4.5rem; opacity: 0.1; pointer-events: none; }
+    .pname { font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .badge { flex-shrink: 0; border-radius: 0.375rem; padding: 0.1rem 0.375rem; font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+    .badge.boss { background: rgba(217, 70, 239, 0.2); color: #f0abfc; box-shadow: inset 0 0 0 1px rgba(217, 70, 239, 0.4); }
+    .icon-btn { flex-shrink: 0; border-radius: 0.5rem; padding: 0.35rem; background: transparent; color: var(--muted); opacity: 0; transition: 0.15s; }
+    .pcard:hover .icon-btn { opacity: 1; }
+    .icon-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+    .metarow { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .tag { border-radius: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 500; background: rgba(255, 255, 255, 0.05); }
+    .tag.xp { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; font-weight: 700; }
+    .stage-sel { cursor: pointer; border-radius: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 600; border: 0; outline: none; color: #fff; background: #334155; box-shadow: inset 0 0 0 1px var(--ring); }
+    .hpwrap { margin-top: 0.75rem; }
+    .hpbar { height: 0.65rem; width: 100%; overflow: hidden; border-radius: 999px; background: rgba(2, 6, 23, 0.8); box-shadow: inset 0 0 0 1px var(--ring); }
+    .hpbar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #f43f5e, #d946ef, #a855f7); transition: width 0.7s; }
+    .hpbar > i.dead { background: linear-gradient(90deg, #34d399, #2dd4bf); }
+    .lastbox { margin-top: 0.75rem; border-radius: 0.75rem; padding: 0.625rem; background: rgba(15, 23, 42, 0.5); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05); }
+    .empty-note { margin-top: 0.75rem; border-radius: 0.75rem; padding: 0.625rem; text-align: center; font-size: 0.75rem; color: var(--muted2); background: rgba(15, 23, 42, 0.4); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05); }
+    .timeline { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.25rem; font-size: 0.9rem; }
+    .logbtn { margin-top: 0.75rem; width: 100%; border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--indigo), var(--sky)); }
+    .logbtn.boss { background: linear-gradient(90deg, var(--fuchsia), var(--violet)); }
+    .logbtn:hover { filter: brightness(1.1); }
+    .logbtn.disabled { background: rgba(51, 65, 85, 0.5); color: var(--muted2); cursor: not-allowed; }
+    .clip2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-  /* backup */
-  .backup{margin-top:2rem;border-radius:1rem;padding:1rem;background:rgba(30,41,59,.4);box-shadow:inset 0 0 0 1px var(--ring)}
+    /* backup section */
+    .backup { margin-top: 2rem; border-radius: 1rem; padding: 1rem; background: rgba(30, 41, 59, 0.4); box-shadow: inset 0 0 0 1px var(--ring); }
 
-  /* modal */
-  .overlay{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.7);
-    backdrop-filter:blur(4px);padding:0}
-  @media(min-width:640px){.overlay{align-items:center;padding:1rem}}
-  .modal{width:100%;max-width:32rem;max-height:92vh;overflow-y:auto;background:#0f172a;border-radius:1.5rem 1.5rem 0 0;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
-  @media(min-width:640px){.modal{border-radius:1.5rem}}
-  .modal.boss{box-shadow:inset 0 0 0 1px rgba(217,70,239,.4)}
-  .modal-head{position:sticky;top:0;background:#0f172a;display:flex;align-items:center;justify-content:space-between;
-    padding:1rem;border-bottom:1px solid var(--ring);z-index:1}
-  .modal-head h2{font-size:1.125rem;font-weight:700;color:#fff}
-  .modal-body{padding:1rem}
-  .label{display:block;margin-bottom:.25rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
-  .field{width:100%;border-radius:.75rem;background:#1e293b;padding:.625rem .75rem;font-size:.875rem;color:#fff;
-    box-shadow:inset 0 0 0 1px var(--ring);outline:none;margin-bottom:.75rem}
-  .field:focus{box-shadow:inset 0 0 0 2px var(--indigo)}
-  textarea.field{resize:none}
-  .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem}
-  .type-btn{display:flex;align-items:center;justify-content:space-between;border-radius:.75rem;padding:.5rem .75rem;
-    font-size:.875rem;font-weight:500;background:rgba(30,41,59,.6);color:var(--txt);box-shadow:inset 0 0 0 1px var(--ring)}
-  .type-btn:hover{background:#1e293b}
-  .type-btn.sel{background:rgba(99,102,241,.2);color:#fff;box-shadow:inset 0 0 0 1px var(--indigo)}
-  .two{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-  .prev-box{margin-bottom:.75rem;border-radius:.75rem;padding:.75rem;background:rgba(30,41,59,.7)}
-  .submit{width:100%;border-radius:.75rem;padding:.75rem 1rem;font-size:1rem;font-weight:700;color:#fff;
-    background:linear-gradient(90deg,var(--indigo),var(--sky))}
-  .submit.boss{background:linear-gradient(90deg,var(--fuchsia),var(--violet))}
-  .submit:hover{filter:brightness(1.1)}
-  .del-btn{border-radius:.75rem;padding:.75rem 1rem;font-size:.875rem;font-weight:700;background:rgba(244,63,94,.2);
-    color:#fda4af;box-shadow:inset 0 0 0 1px rgba(244,63,94,.4)}
+    /* modal layout */
+    .overlay { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; justify-content: center; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); padding: 0; }
+    @media(min-width: 640px) { .overlay { align-items: center; padding: 1rem; } }
+    .modal { width: 100%; max-width: 32rem; max-height: 92vh; overflow-y: auto; background: #0f172a; border-radius: 1.5rem 1.5rem 0 0; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15); }
+    @media(min-width: 640px) { .modal { border-radius: 1.5rem; } }
+    .modal.boss { box-shadow: inset 0 0 0 1px rgba(217, 70, 239, 0.4); }
+    .modal-head { position: sticky; top: 0; background: #0f172a; display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid var(--ring); z-index: 1; }
+    .modal-head h2 { font-size: 1.125rem; font-weight: 700; color: #fff; }
+    .modal-body { padding: 1rem; }
+    .label { display: block; margin-bottom: 0.25rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .field { width: 100%; border-radius: 0.75rem; background: #1e293b; padding: 0.625rem 0.75rem; font-size: 0.875rem; color: #fff; box-shadow: inset 0 0 0 1px var(--ring); outline: none; margin-bottom: 0.75rem; }
+    .field:focus { box-shadow: inset 0 0 0 2px var(--indigo); }
+    textarea.field { resize: none; }
+    .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .type-btn { display: flex; align-items: center; justify-content: space-between; border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500; background: rgba(30, 41, 59, 0.6); color: var(--txt); box-shadow: inset 0 0 0 1px var(--ring); cursor: pointer; transition: 0.1s;}
+    .type-btn:hover { background: #1e293b; }
+    .type-btn.sel { background: rgba(99, 102, 241, 0.2); color: #fff; box-shadow: inset 0 0 0 1px var(--indigo); }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .prev-box { margin-bottom: 0.75rem; border-radius: 0.75rem; padding: 0.75rem; background: rgba(30, 41, 59, 0.7); }
+    .submit { width: 100%; border-radius: 0.75rem; padding: 0.75rem 1rem; font-size: 1rem; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--indigo), var(--sky)); transition: 0.15s;}
+    .submit.boss { background: linear-gradient(90deg, var(--fuchsia), var(--violet)); }
+    .submit:hover { filter: brightness(1.1); }
+    .del-btn { border-radius: 0.75rem; padding: 0.75rem 1rem; font-size: 0.875rem; font-weight: 700; background: rgba(244, 63, 94, 0.2); color: #fda4af; box-shadow: inset 0 0 0 1px rgba(244, 63, 94, 0.4); }
 
-  /* achievements */
-  .ach-grid{display:grid;grid-template-columns:1fr;gap:.5rem}
-  @media(min-width:640px){.ach-grid{grid-template-columns:1fr 1fr}}
-  .ach{display:flex;align-items:center;gap:.75rem;border-radius:.75rem;padding:.75rem;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);background:rgba(30,41,59,.4);opacity:.6}
-  .ach.got{background:rgba(245,158,11,.1);box-shadow:inset 0 0 0 1px rgba(245,158,11,.4);opacity:1}
-  .ach .emo{font-size:1.5rem}
-  .ach.locked .emo{filter:grayscale(1)}
-  .ach .an{font-size:.875rem;font-weight:700;color:var(--muted)}
-  .ach.got .an{color:#fde68a}
+    /* achievements */
+    .ach-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
+    @media(min-width: 640px) { .ach-grid { grid-template-columns: 1fr 1fr; } }
+    .ach { display: flex; align-items: center; gap: 0.75rem; border-radius: 0.75rem; padding: 0.75rem; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05); background: rgba(30, 41, 59, 0.4); opacity: 0.6; }
+    .ach.got { background: rgba(245, 158, 11, 0.1); box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.4); opacity: 1; }
+    .ach .emo { font-size: 1.5rem; }
+    .ach.locked .emo { filter: grayscale(1); }
+    .ach .an { font-size: 0.875rem; font-weight: 700; color: var(--muted); margin: 0; }
+    .ach.got .an { color: #fde68a; }
 
-  /* toast */
-  .toast-wrap{position:fixed;left:0;right:0;top:1rem;z-index:60;display:flex;justify-content:center;padding:0 1rem;pointer-events:none}
-  .toast{border-radius:1rem;padding:.75rem 1.25rem;text-align:center;font-size:.875rem;font-weight:700;color:#fff;
-    background:linear-gradient(90deg,var(--indigo),var(--fuchsia));box-shadow:0 20px 40px -12px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.2);
-    animation:toastIn 3.2s ease-in-out forwards}
-  @keyframes toastIn{0%{transform:translateY(-20px) scale(.95);opacity:0}10%{transform:translateY(0) scale(1.03);opacity:1}20%{transform:scale(1)}90%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+    /* toast notifications */
+    .toast-wrap { position: fixed; left: 0; right: 0; top: 1rem; z-index: 60; display: flex; justify-content: center; padding: 0 1rem; pointer-events: none; }
+    .toast { border-radius: 1rem; padding: 0.75rem 1.25rem; text-align: center; font-size: 0.875rem; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--indigo), var(--fuchsia)); box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.2); animation: toastIn 3.2s ease-in-out forwards; }
+    @keyframes toastIn { 0% { transform: translateY(-20px) scale(0.95); opacity: 0; } 10% { transform: translateY(0) scale(1.03); opacity: 1; } 20% { transform: scale(1); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
 
-  .empty-state{margin-top:2.5rem;border-radius:1rem;padding:2.5rem;text-align:center;color:var(--muted);box-shadow:inset 0 0 0 1px var(--ring);background:rgba(30,41,59,.4)}
-</style>
+    .empty-state { margin-top: 2.5rem; border-radius: 1rem; padding: 2.5rem; text-align: center; color: var(--muted); box-shadow: inset 0 0 0 1px var(--ring); background: rgba(30, 41, 59, 0.4); }
+  </style>
 </head>
 <body>
   <div id="toast-root"></div>
@@ -208,13 +208,13 @@
     <div id="empty-slot"></div>
 
     <div class="backup">
-      <p class="sm" style="font-weight:700;color:#fff;margin:0 0 .5rem">💾 Save &amp; Backup</p>
-      <p class="xs muted" style="margin:0 0 .75rem">Progress auto-saves in this browser. Export a backup so a cleared cache never wipes your grind.</p>
+      <p class="sm" style="font-weight:700; color:#fff; margin:0 0 0.5rem">💾 Save &amp; Backup</p>
+      <p class="xs muted" style="margin:0 0 0.75rem">Progress auto-saves in this browser. Export a backup so a cleared cache never wipes your grind.</p>
       <div class="row">
         <button class="chip-btn emerald-btn" id="btn-json">⬇️ Export Backup (.json)</button>
         <button class="chip-btn sky-btn" id="btn-csv">📊 Export Sheet (.csv)</button>
         <button class="chip-btn violet-btn" id="btn-import">⬆️ Import Backup</button>
-        <button class="chip-btn rose-btn" id="btn-reset">♻️ Reset</button>
+        <button class="chip-btn rose-btn" id="btn-reset">♻️ Reset Data</button>
         <input type="file" id="file-import" accept="application/json" class="hidden" />
       </div>
     </div>
@@ -225,266 +225,410 @@
 <script>
 "use strict";
 
-/* ========================= GAME DATA ========================= */
 const TOUCHPOINT_TYPES = [
-  {value:"Email", icon:"✉️", baseXp:10},
-  {value:"LinkedIn DM", icon:"💼", baseXp:12},
-  {value:"Social Comment", icon:"💬", baseXp:8},
-  {value:"Voicemail", icon:"📩", baseXp:15},
-  {value:"Phone Call", icon:"📞", baseXp:25},
-  {value:"Video Message", icon:"🎥", baseXp:30},
-  {value:"Referral Ask", icon:"🤝", baseXp:20},
-  {value:"In-Person / Meeting", icon:"☕", baseXp:50},
+  {value: "Email", icon: "✉️", baseXp: 10},
+  {value: "LinkedIn DM", icon: "💼", baseXp: 12},
+  {value: "Social Comment", icon: "💬", baseXp: 8},
+  {value: "Voicemail", icon: "📩", baseXp: 15},
+  {value: "Phone Call", icon: "📞", baseXp: 25},
+  {value: "Video Message", icon: "🎥", baseXp: 30},
+  {value: "Referral Ask", icon: "🤝", baseXp: 20},
+  {value: "In-Person / Meeting", icon: "☕", baseXp: 50},
 ];
+
 const OUTCOMES = [
-  {value:"No Response", icon:"🕸️", bonusXp:0},
-  {value:"Opened / Seen", icon:"👀", bonusXp:5},
-  {value:"Replied", icon:"↩️", bonusXp:15},
-  {value:"Positive Reply", icon:"😃", bonusXp:30},
-  {value:"Booked Meeting", icon:"📅", bonusXp:60},
-  {value:"Not Interested", icon:"🚪", bonusXp:3},
-  {value:"Closed Won", icon:"💰", bonusXp:200},
+  {value: "No Response", icon: "🕸️", bonusXp: 0},
+  {value: "Opened / Seen", icon: "👀", bonusXp: 5},
+  {value: "Replied", icon: "↩️", bonusXp: 15},
+  {value: "Positive Reply", icon: "😃", bonusXp: 30},
+  {value: "Booked Meeting", icon: "📅", bonusXp: 60},
+  {value: "Not Interested", icon: "🚪", bonusXp: 3},
+  {value: "Closed Won", icon: "💰", bonusXp: 200},
 ];
+
 const STAGES = [
-  {value:"New Lead", bg:"#334155"},
-  {value:"Contacted", bg:"#0369a1"},
-  {value:"In Conversation", bg:"#6d28d9"},
-  {value:"Meeting Booked", bg:"#b45309"},
-  {value:"Won", bg:"#047857"},
-  {value:"Lost", bg:"#9f1239"},
+  {value: "New Lead", bg: "#334155"},
+  {value: "Contacted", bg: "#0369a1"},
+  {value: "In Conversation", bg: "#6d28d9"},
+  {value: "Meeting Booked", bg: "#b45309"},
+  {value: "Won", bg: "#047857"},
+  {value: "Lost", bg: "#9f1239"},
 ];
+
 const QUEST_NAMES = [
-  "⚔️ First Contact","🎯 The Opening Move","💥 Value Bomb","🔍 The Check-In",
-  "🌊 Persistence Wave","🧗 Break Through the Wall","🎁 The Gift Drop",
-  "🛡️ The Last Stand","🔮 The Long Game","👑 Final Boss Push"
+  "⚔️ First Contact", "🎯 The Opening Move", "💥 Value Bomb", "🔍 The Check-In",
+  "🌊 Persistence Wave", "🧗 Break Through the Wall", "🎁 The Gift Drop",
+  "🛡️ The Last Stand", "🔮 The Long Game", "👑 Final Boss Push"
 ];
-function questNameForIndex(i){
-  if(i < QUEST_NAMES.length) return QUEST_NAMES[i];
-  return "♾️ Relentless Pursuit #"+(i-QUEST_NAMES.length+1);
+
+function questNameForIndex(i) {
+  if (i < QUEST_NAMES.length) return QUEST_NAMES[i];
+  return "♾️ Relentless Pursuit #" + (i - QUEST_NAMES.length + 1);
 }
+
 const RANKS = [
-  {minLevel:1,title:"Cold Caller",icon:"🐣"},
-  {minLevel:3,title:"Prospector",icon:"⛏️"},
-  {minLevel:5,title:"Connector",icon:"🔗"},
-  {minLevel:8,title:"Closer",icon:"🎯"},
-  {minLevel:12,title:"Rainmaker",icon:"🌧️"},
-  {minLevel:16,title:"Deal Wizard",icon:"🧙"},
-  {minLevel:20,title:"Outreach Legend",icon:"👑"},
+  {minLevel: 1, title: "Cold Caller", icon: "🐣"},
+  {minLevel: 3, title: "Prospector", icon: "⛏️"},
+  {minLevel: 5, title: "Connector", icon: "🔗"},
+  {minLevel: 8, title: "Closer", icon: "🎯"},
+  {minLevel: 12, title: "Rainmaker", icon: "🌧️"},
+  {minLevel: 16, title: "Deal Wizard", icon: "🧙"},
+  {minLevel: 20, title: "Outreach Legend", icon: "👑"},
 ];
-function rankForLevel(level){let c=RANKS[0];for(const r of RANKS)if(level>=r.minLevel)c=r;return c;}
+
+function rankForLevel(level) {
+  let c = RANKS[0]; 
+  for (const r of RANKS) if (level >= r.minLevel) c = r; 
+  return c;
+}
+
 const ACHIEVEMENTS = [
-  {id:"first_blood",name:"First Blood",icon:"🩸",desc:"Log your very first touchpoint."},
-  {id:"streak_3",name:"Warming Up",icon:"🔥",desc:"Hit a 3-day streak."},
-  {id:"streak_7",name:"On Fire",icon:"🔥🔥",desc:"Hit a 7-day streak."},
-  {id:"streak_30",name:"Unstoppable",icon:"🌋",desc:"Hit a 30-day streak."},
-  {id:"level_5",name:"Rising Star",icon:"⭐",desc:"Reach Level 5."},
-  {id:"level_10",name:"Elite Operator",icon:"💫",desc:"Reach Level 10."},
-  {id:"touch_25",name:"Grinder",icon:"⚙️",desc:"Log 25 total touchpoints."},
-  {id:"touch_100",name:"Centurion",icon:"🏛️",desc:"Log 100 total touchpoints."},
-  {id:"phone_10",name:"Phone Warrior",icon:"📞",desc:"Make 10 phone calls."},
-  {id:"first_reply",name:"It Speaks!",icon:"↩️",desc:"Get your first reply."},
-  {id:"first_meeting",name:"Deal Whisperer",icon:"📅",desc:"Book your first meeting."},
-  {id:"first_win",name:"Ka-Ching",icon:"💰",desc:"Close your first deal."},
-  {id:"boss_slayer",name:"Boss Slayer",icon:"🐉",desc:"Defeat a Boss (win a High-Value prospect)."},
-  {id:"comeback",name:"Necromancer",icon:"🧟",desc:"Revive a cold (red) prospect with a touchpoint."},
-  {id:"all_green",name:"Perfect Garden",icon:"🌿",desc:"Get every active prospect to green heat."},
-  {id:"roster_10",name:"Full Roster",icon:"📇",desc:"Track 10 or more prospects."},
+  {id: "first_blood", name: "First Blood", icon: "🩸", desc: "Log your very first touchpoint."},
+  {id: "streak_3", name: "Warming Up", icon: "🔥", desc: "Hit a 3-day streak."},
+  {id: "streak_7", name: "On Fire", icon: "🔥🔥", desc: "Hit a 7-day streak."},
+  {id: "streak_30", name: "Unstoppable", icon: "🌋", desc: "Hit a 30-day streak."},
+  {id: "level_5", name: "Rising Star", icon: "⭐", desc: "Reach Level 5."},
+  {id: "level_10", name: "Elite Operator", icon: "💫", desc: "Reach Level 10."},
+  {id: "touch_25", name: "Grinder", icon: "⚙️", desc: "Log 25 total touchpoints."},
+  {id: "touch_100", name: "Centurion", icon: "🏛️", desc: "Log 100 total touchpoints."},
+  {id: "phone_10", name: "Phone Warrior", icon: "📞", desc: "Make 10 phone calls."},
+  {id: "first_reply", name: "It Speaks!", icon: "↩️", desc: "Get your first reply."},
+  {id: "first_meeting", name: "Deal Whisperer", icon: "📅", desc: "Book your first meeting."},
+  {id: "first_win", name: "Ka-Ching", icon: "💰", desc: "Close your first deal."},
+  {id: "boss_slayer", name: "Boss Slayer", icon: "🐉", desc: "Defeat a Boss (win a High-Value prospect)."},
+  {id: "comeback", name: "Necromancer", icon: "🧟", desc: "Revive a cold (red) prospect with a touchpoint."},
+  {id: "all_green", name: "Perfect Garden", icon: "🌿", desc: "Get every active prospect to green heat."},
+  {id: "roster_10", name: "Full Roster", icon: "📇", desc: "Track 10 or more prospects."},
 ];
 
-/* ========================= STORAGE ========================= */
 const KEY = "outreach_arena_state_v1";
-function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36);}
-const SEED = [
-  {company:"Design Your Next Step",contact:"Jen Lewi",email:"jennifer_lewi@yahoo.com",value:"Standard",stage:"New Lead"},
-  {company:"Bay Street Coaching",contact:"Sara Knapp",email:"sara.knapp@baystreetcoaching.com",value:"Standard",stage:"New Lead"},
-  {company:"Next Step Clarity",contact:"Graham Dover",email:"coaching@grahamdover.com",value:"Standard",stage:"New Lead"},
-  {company:"Central Park Executive Coach",contact:"Eileen Springer",email:"eileen@centralparkexecutivecoaching.com",value:"High-Value",stage:"New Lead"},
-  {company:"Jodi Webb Life Coach",contact:"Jodi Webb",email:"Jodi@JodiWebbLifeCoach.com",value:"Standard",stage:"New Lead"},
-  {company:"Mark Collins Coaching",contact:"Mark Collins",email:"info@markcollins.co",value:"Standard",stage:"New Lead"},
-  {company:"Proverbs Leadership",contact:"Mesale Solomon Mendes",email:"mesale.solomon@proverbsleadership.com",value:"High-Value",stage:"New Lead"},
-  {company:"Exalt Coach",contact:"John Beach",email:"john@drjohnbeach.com",value:"Standard",stage:"New Lead"},
-  {company:"Jack Willis Coaching",contact:"Jack Willis",email:"jackwilliscoaching@hotmail.com",value:"Standard",stage:"New Lead"},
-  {company:"Roush Development",contact:"Tammy Roush",email:"tammy@roushdevelopment.com",value:"High-Value",stage:"New Lead"},
-];
-function seedState(){
-  const now = new Date().toISOString();
-  return {version:1, unlockedAchievements:[], prospects:SEED.map(s=>({...s,id:uid(),createdAt:now,touchpoints:[]}))};
-}
-function loadState(){
-  try{
-    const raw = localStorage.getItem(KEY);
-    if(!raw) return seedState();
-    const p = JSON.parse(raw);
-    if(!p.prospects) return seedState();
-    return {version:1, unlockedAchievements:p.unlockedAchievements||[], prospects:p.prospects};
-  }catch(e){return seedState();}
-}
-function saveState(){try{localStorage.setItem(KEY, JSON.stringify(state));}catch(e){}}
 
-/* ========================= GAME LOGIC ========================= */
-function xpForTouchpoint(type,outcome){
-  const t = TOUCHPOINT_TYPES.find(x=>x.value===type);
-  const o = OUTCOMES.find(x=>x.value===outcome);
-  return (t?t.baseXp:10)+(o?o.bonusXp:0);
+function uid() { 
+  return Math.random().toString(36).slice(2, 10) + Date.now().toString(36); 
 }
-function pXp(p){return p.touchpoints.reduce((s,t)=>s+t.xp,0);}
-function totalXp(){return state.prospects.reduce((s,p)=>s+pXp(p),0);}
-function totalTouchpoints(){return state.prospects.reduce((s,p)=>s+p.touchpoints.length,0);}
-function xpToReachLevel(l){return l<=1?0:50*(l-1)*l;}
-function levelInfo(xp){
-  let level=1; while(xp>=xpToReachLevel(level+1))level++;
-  const cf=xpToReachLevel(level), nf=xpToReachLevel(level+1);
-  const into=xp-cf, span=nf-cf;
-  return {level, toNext:nf-xp, progress:span>0?Math.min(100,into/span*100):100};
+
+const SEED = [
+  {company: "Design Your Next Step", contact: "Jen Lewi", email: "jennifer_lewi@yahoo.com", value: "Standard", stage: "New Lead"},
+  {company: "Bay Street Coaching", contact: "Sara Knapp", email: "sara.knapp@baystreetcoaching.com", value: "Standard", stage: "New Lead"},
+  {company: "Next Step Clarity", contact: "Graham Dover", email: "coaching@grahamdover.com", value: "Standard", stage: "New Lead"},
+  {company: "Central Park Executive Coach", contact: "Eileen Springer", email: "eileen@centralparkexecutivecoaching.com", value: "High-Value", stage: "New Lead"},
+  {company: "Jodi Webb Life Coach", contact: "Jodi Webb", email: "Jodi@JodiWebbLifeCoach.com", value: "Standard", stage: "New Lead"},
+  {company: "Mark Collins Coaching", contact: "Mark Collins", email: "info@markcollins.co", value: "Standard", stage: "New Lead"},
+  {company: "Proverbs Leadership", contact: "Mesale Solomon Mendes", email: "mesale.solomon@proverbsleadership.com", value: "High-Value", stage: "New Lead"},
+  {company: "Exalt Coach", contact: "John Beach", email: "john@drjohnbeach.com", value: "Standard", stage: "New Lead"},
+  {company: "Jack Willis Coaching", contact: "Jack Willis", email: "jackwilliscoaching@hotmail.com", value: "Standard", stage: "New Lead"},
+  {company: "Roush Development", contact: "Tammy Roush", email: "tammy@roushdevelopment.com", value: "High-Value", stage: "New Lead"},
+];
+
+function seedState() {
+  const now = new Date().toISOString();
+  return {
+    version: 1, 
+    unlockedAchievements: [], 
+    prospects: SEED.map(s => ({...s, id: uid(), createdAt: now, touchpoints: []}))
+  };
 }
-function localToday(){const d=new Date();d.setHours(0,0,0,0);return d;}
-function dayKey(d){return d.toISOString().slice(0,10);}
-function computeStreak(){
-  const days=new Set();
-  state.prospects.forEach(p=>p.touchpoints.forEach(t=>days.add(t.date)));
-  if(days.size===0)return 0;
-  const today=localToday(); const cur=new Date(today);
-  if(!days.has(dayKey(cur))){cur.setDate(cur.getDate()-1);if(!days.has(dayKey(cur)))return 0;}
-  let s=0; while(days.has(dayKey(cur))){s++;cur.setDate(cur.getDate()-1);}
+
+// Fortified State Loader to prevent crashes on bad missing keys from old states
+function sanitizeState(parsed) {
+  if (!parsed || !parsed.prospects) return seedState();
+  const prospects = parsed.prospects.map(p => ({
+    ...p,
+    touchpoints: p.touchpoints || []
+  }));
+  return {
+    version: parsed.version || 1,
+    unlockedAchievements: parsed.unlockedAchievements || [],
+    prospects: prospects
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return seedState();
+    return sanitizeState(JSON.parse(raw));
+  } catch (e) {
+    return seedState();
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state));
+  } catch (e) {
+    // Fail silently in incognito/strict-privacy modes where localStorage is restricted
+  }
+}
+
+function xpForTouchpoint(type, outcome) {
+  const t = TOUCHPOINT_TYPES.find(x => x.value === type);
+  const o = OUTCOMES.find(x => x.value === outcome);
+  return (t ? t.baseXp : 10) + (o ? o.bonusXp : 0);
+}
+
+function pXp(p) { return (p.touchpoints || []).reduce((s, t) => s + (t.xp || 0), 0); }
+function totalXp() { return state.prospects.reduce((s, p) => s + pXp(p), 0); }
+function totalTouchpoints() { return state.prospects.reduce((s, p) => s + (p.touchpoints ? p.touchpoints.length : 0), 0); }
+
+function xpToReachLevel(l) { return l <= 1 ? 0 : 50 * (l - 1) * l; }
+function levelInfo(xp) {
+  let level = 1; 
+  while (xp >= xpToReachLevel(level + 1)) level++;
+  const cf = xpToReachLevel(level), nf = xpToReachLevel(level + 1);
+  const into = xp - cf, span = nf - cf;
+  return {level, toNext: nf - xp, progress: span > 0 ? Math.min(100, into / span * 100) : 100};
+}
+
+function localToday() { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }
+function dayKey(d) { return d.toISOString().slice(0, 10); }
+
+function computeStreak() {
+  const days = new Set();
+  state.prospects.forEach(p => (p.touchpoints || []).forEach(t => days.add(t.date)));
+  if (days.size === 0) return 0;
+  
+  const today = localToday(); 
+  const cur = new Date(today);
+  if (!days.has(dayKey(cur))) {
+    cur.setDate(cur.getDate() - 1);
+    if (!days.has(dayKey(cur))) return 0;
+  }
+  
+  let s = 0; 
+  while (days.has(dayKey(cur))) {
+    s++;
+    cur.setDate(cur.getDate() - 1);
+  }
   return s;
 }
-function loggedToday(){
-  const k=dayKey(localToday());
-  return state.prospects.some(p=>p.touchpoints.some(t=>t.date===k));
+
+function loggedToday() {
+  const k = dayKey(localToday());
+  return state.prospects.some(p => (p.touchpoints || []).some(t => t.date === k));
 }
-function daysSince(dateStr){
-  const then=new Date(dateStr+"T00:00:00"), now=localToday();
-  return Math.floor((now-then)/86400000);
+
+function daysSince(dateStr) {
+  const then = new Date(dateStr + "T00:00:00"), now = localToday();
+  return Math.floor((now - then) / 86400000);
 }
+
 const HEAT_META = {
-  green:{dot:"🟢",label:"Hot",text:"#6ee7b7",order:2},
-  yellow:{dot:"🟡",label:"Cooling",text:"#fde047",order:3},
-  orange:{dot:"🟠",label:"Slipping",text:"#fdba74",order:4},
-  red:{dot:"🔴",label:"Going Cold!",text:"#fda4af",order:5},
-  new:{dot:"⚪",label:"Untouched",text:"#cbd5e1",order:1},
-  closed:{dot:"🏁",label:"Closed",text:"#94a3b8",order:6},
+  green: {dot: "🟢", label: "Hot", text: "#6ee7b7", order: 2},
+  yellow: {dot: "🟡", label: "Cooling", text: "#fde047", order: 3},
+  orange: {dot: "🟠", label: "Slipping", text: "#fdba74", order: 4},
+  red: {dot: "🔴", label: "Going Cold!", text: "#fda4af", order: 5},
+  new: {dot: "⚪", label: "Untouched", text: "#cbd5e1", order: 1},
+  closed: {dot: "🏁", label: "Closed", text: "#94a3b8", order: 6},
 };
-function prospectHeat(p){
-  if(p.stage==="Won"||p.stage==="Lost")return "closed";
-  if(p.touchpoints.length===0)return "new";
-  const last=[...p.touchpoints].sort((a,b)=>a.date<b.date?1:-1)[0];
-  const d=daysSince(last.date);
-  if(d<=2)return "green"; if(d<=5)return "yellow"; if(d<=9)return "orange"; return "red";
+
+function prospectHeat(p) {
+  if (p.stage === "Won" || p.stage === "Lost") return "closed";
+  if (!p.touchpoints || p.touchpoints.length === 0) return "new";
+  const last = [...p.touchpoints].sort((a, b) => a.date < b.date ? 1 : -1)[0];
+  const d = daysSince(last.date);
+  if (d <= 2) return "green"; 
+  if (d <= 5) return "yellow"; 
+  if (d <= 9) return "orange"; 
+  return "red";
 }
-function bossState(p){
-  const maxHp=500;
-  if(p.stage==="Won")return {maxHp,hp:0,pct:0,defeated:true};
-  const dmg=pXp(p); const hp=Math.max(0,maxHp-dmg);
-  return {maxHp,hp,pct:hp/maxHp*100,defeated:hp<=0};
+
+function bossState(p) {
+  const maxHp = 500;
+  if (p.stage === "Won") return {maxHp, hp: 0, pct: 0, defeated: true};
+  const dmg = pXp(p); 
+  const hp = Math.max(0, maxHp - dmg);
+  return {maxHp, hp, pct: hp / maxHp * 100, defeated: hp <= 0};
 }
-function computeUnlocked(){
-  const xp=totalXp(); const {level}=levelInfo(xp);
-  const streak=computeStreak(); const touches=totalTouchpoints();
-  const allTp=state.prospects.flatMap(p=>p.touchpoints);
-  const phone=allTp.filter(t=>t.type==="Phone Call").length;
-  const active=state.prospects.filter(p=>p.stage!=="Won"&&p.stage!=="Lost");
-  const unlocked=new Set(state.unlockedAchievements);
-  const checks={
-    first_blood:touches>=1, streak_3:streak>=3, streak_7:streak>=7, streak_30:streak>=30,
-    level_5:level>=5, level_10:level>=10, touch_25:touches>=25, touch_100:touches>=100,
-    phone_10:phone>=10,
-    first_reply:allTp.some(t=>["Replied","Positive Reply","Booked Meeting","Closed Won"].includes(t.outcome)),
-    first_meeting:state.prospects.some(p=>p.stage==="Meeting Booked"||p.stage==="Won"),
-    first_win:state.prospects.some(p=>p.stage==="Won"),
-    boss_slayer:state.prospects.some(p=>p.value==="High-Value"&&p.stage==="Won"),
-    all_green:active.length>0&&active.every(p=>prospectHeat(p)==="green"),
-    roster_10:state.prospects.length>=10,
+
+function computeUnlocked() {
+  const xp = totalXp(); 
+  const {level} = levelInfo(xp);
+  const streak = computeStreak(); 
+  const touches = totalTouchpoints();
+  const allTp = state.prospects.flatMap(p => p.touchpoints || []);
+  const phone = allTp.filter(t => t.type === "Phone Call").length;
+  const active = state.prospects.filter(p => p.stage !== "Won" && p.stage !== "Lost");
+  
+  const unlocked = new Set(state.unlockedAchievements || []);
+  const checks = {
+    first_blood: touches >= 1, 
+    streak_3: streak >= 3, 
+    streak_7: streak >= 7, 
+    streak_30: streak >= 30,
+    level_5: level >= 5, 
+    level_10: level >= 10, 
+    touch_25: touches >= 25, 
+    touch_100: touches >= 100,
+    phone_10: phone >= 10,
+    first_reply: allTp.some(t => ["Replied", "Positive Reply", "Booked Meeting", "Closed Won"].includes(t.outcome)),
+    first_meeting: state.prospects.some(p => p.stage === "Meeting Booked" || p.stage === "Won"),
+    first_win: state.prospects.some(p => p.stage === "Won"),
+    boss_slayer: state.prospects.some(p => p.value === "High-Value" && p.stage === "Won"),
+    all_green: active.length > 0 && active.every(p => prospectHeat(p) === "green"),
+    roster_10: state.prospects.length >= 10,
   };
-  ACHIEVEMENTS.forEach(a=>{if(checks[a.id])unlocked.add(a.id);});
+  
+  ACHIEVEMENTS.forEach(a => { if (checks[a.id]) unlocked.add(a.id); });
   return Array.from(unlocked);
 }
 
-/* ========================= EXPORT / IMPORT ========================= */
-function download(filename,content,type){
-  const blob=new Blob([content],{type});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a"); a.href=url; a.download=filename; a.click();
+function download(filename, content, type) {
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); 
+  a.href = url; 
+  a.download = filename; 
+  a.click();
   URL.revokeObjectURL(url);
 }
-function exportJson(){download("outreach-arena-backup-"+dayKey(new Date())+".json",JSON.stringify(state,null,2),"application/json");}
-function csvEscape(v){v=String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
-function exportCsv(){
-  const rows=[["Company","Contact","Email","Value","Stage","Touchpoints","Total XP","Last Touch Date","Quest","Type","Outcome","Notes"].join(",")];
-  state.prospects.forEach(p=>{
-    const xp=pXp(p);
-    const last=[...p.touchpoints].sort((a,b)=>a.date<b.date?1:-1)[0];
-    const lastDate=last?last.date:"";
-    if(p.touchpoints.length===0){
-      rows.push([p.company,p.contact,p.email,p.value,p.stage,0,0,"","","","",""].map(csvEscape).join(","));
-    }else{
-      p.touchpoints.forEach((t,i)=>{
+
+function exportJson() { 
+  download("outreach-arena-backup-" + dayKey(new Date()) + ".json", JSON.stringify(state, null, 2), "application/json"); 
+}
+
+function csvEscape(v) { 
+  v = String(v || ""); 
+  return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; 
+}
+
+function exportCsv() {
+  const rows = [["Company", "Contact", "Email", "Value", "Stage", "Touchpoints", "Total XP", "Last Touch Date", "Quest", "Type", "Outcome", "Notes"].join(",")];
+  state.prospects.forEach(p => {
+    const xp = pXp(p);
+    const last = p.touchpoints ? [...p.touchpoints].sort((a, b) => a.date < b.date ? 1 : -1)[0] : null;
+    const lastDate = last ? last.date : "";
+    
+    if (!p.touchpoints || p.touchpoints.length === 0) {
+      rows.push([p.company, p.contact, p.email, p.value, p.stage, 0, 0, "", "", "", "", ""].map(csvEscape).join(","));
+    } else {
+      p.touchpoints.forEach((t, i) => {
         rows.push([
-          i===0?p.company:"", i===0?p.contact:"", i===0?p.email:"", i===0?p.value:"",
-          i===0?p.stage:"", i===0?p.touchpoints.length:"", i===0?xp:"", i===0?lastDate:"",
-          t.questName,t.type,t.outcome,t.notes
+          i === 0 ? p.company : "", i === 0 ? p.contact : "", i === 0 ? p.email : "", i === 0 ? p.value : "",
+          i === 0 ? p.stage : "", i === 0 ? p.touchpoints.length : "", i === 0 ? xp : "", i === 0 ? lastDate : "",
+          t.questName, t.type, t.outcome, t.notes
         ].map(csvEscape).join(","));
       });
     }
   });
-  download("outreach-arena-"+dayKey(new Date())+".csv",rows.join("\n"),"text/csv");
+  download("outreach-arena-" + dayKey(new Date()) + ".csv", rows.join("\n"), "text/csv");
 }
-function importJson(file){
-  const reader=new FileReader();
-  reader.onload=()=>{
-    try{
-      const p=JSON.parse(reader.result);
-      if(!p.prospects)throw 0;
-      state={version:1,unlockedAchievements:p.unlockedAchievements||[],prospects:p.prospects};
-      prevLevel=levelInfo(totalXp()).level;
-      prevUnlocked=state.unlockedAchievements.slice();
-      saveState(); render();
+
+function importJson(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const p = JSON.parse(reader.result);
+      state = sanitizeState(p);
+      prevLevel = levelInfo(totalXp()).level;
+      prevUnlocked = state.unlockedAchievements.slice();
+      saveState(); 
+      render();
       toast("✅ Progress imported successfully!");
-    }catch(e){toast("❌ Could not import that file.");}
+    } catch (e) {
+      toast("❌ Could not import that file. It might be corrupted.");
+    }
   };
   reader.readAsText(file);
 }
 
-/* ========================= UI HELPERS ========================= */
-const $=(s,r=document)=>r.querySelector(s);
-function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function typeIcon(t){const x=TOUCHPOINT_TYPES.find(y=>y.value===t);return x?x.icon:"•";}
-function outcomeIcon(o){const x=OUTCOMES.find(y=>y.value===o);return x?x.icon:"•";}
-function stageBg(st){const x=STAGES.find(s=>s.value===st);return x?x.bg:"#334155";}
-
-let toastTimer=null;
-function toast(msg){
-  const root=$("#toast-root"); root.innerHTML="";
-  const w=el("div","toast-wrap"); const t=el("div","toast",esc(msg));
-  w.appendChild(t); root.appendChild(w);
-  if(toastTimer)clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>{root.innerHTML="";},3200);
+const $ = (s, r = document) => r.querySelector(s);
+function el(tag, cls, html) { 
+  const e = document.createElement(tag); 
+  if (cls) e.className = cls; 
+  if (html != null) e.innerHTML = html; 
+  return e; 
 }
 
-/* ========================= STATE + APP ========================= */
-let state=loadState();
-let filter="all", sort="heat", query="";
-let prevLevel=levelInfo(totalXp()).level;
-let prevUnlocked=state.unlockedAchievements.slice();
+function esc(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+}
 
-const FILTERS=[
-  {id:"all",label:"All"},
-  {id:"cold",label:"🔴 Needs Action"},
-  {id:"boss",label:"👑 Bosses"},
-  {id:"active",label:"Active"},
-  {id:"closed",label:"🏁 Closed"},
+function typeIcon(t) { const x = TOUCHPOINT_TYPES.find(y => y.value === t); return x ? x.icon : "•"; }
+function outcomeIcon(o) { const x = OUTCOMES.find(y => y.value === o); return x ? x.icon : "•"; }
+function stageBg(st) { const x = STAGES.find(s => s.value === st); return x ? x.bg : "#334155"; }
+
+let toastTimer = null;
+function toast(msg) {
+  const root = $("#toast-root"); 
+  root.innerHTML = "";
+  const w = el("div", "toast-wrap"); 
+  const t = el("div", "toast", esc(msg));
+  w.appendChild(t); 
+  root.appendChild(w);
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { root.innerHTML = ""; }, 3200);
+}
+
+// Ensure safe modals instead of blocked window.confirm() dialogs
+function closeModal() { $("#modal-root").innerHTML = ""; }
+
+function modalShell(titleHtml, bodyEl, boss) {
+  const root = $("#modal-root"); 
+  root.innerHTML = "";
+  const ov = el("div", "overlay");
+  ov.onclick = e => { if (e.target === ov) closeModal(); };
+  
+  const m = el("div", "modal" + (boss ? " boss" : ""));
+  const head = el("div", "modal-head");
+  head.innerHTML = `<h2>${titleHtml}</h2>`;
+  
+  const x = el("button", "icon-btn", "✕"); 
+  x.style.opacity = "1"; 
+  x.onclick = closeModal;
+  head.appendChild(x);
+  
+  const body = el("div", "modal-body"); 
+  body.appendChild(bodyEl);
+  
+  m.appendChild(head); 
+  m.appendChild(body); 
+  ov.appendChild(m); 
+  root.appendChild(ov);
+}
+
+// Custom Confirm Prompt (Replaces browser confirm)
+function showConfirm(title, message, confirmBtnText, onConfirm) {
+  const body = el("div");
+  body.innerHTML = `
+    <p style="margin-top:0; color:var(--txt);">${esc(message)}</p>
+    <div class="row" style="margin-top:1.25rem; gap:0.5rem">
+      <button class="submit grow" id="cc-btn-confirm" style="background:linear-gradient(90deg,var(--rose),var(--orange));">${esc(confirmBtnText)}</button>
+      <button class="chip-btn grow" id="cc-btn-cancel" style="padding:0.75rem">Cancel</button>
+    </div>
+  `;
+  body.querySelector("#cc-btn-confirm").onclick = () => {
+    closeModal();
+    if (onConfirm) onConfirm();
+  };
+  body.querySelector("#cc-btn-cancel").onclick = closeModal;
+  modalShell(`⚠️ ${title}`, body, false);
+}
+
+let state = loadState();
+let filter = "all", sort = "heat", query = "";
+let prevLevel = levelInfo(totalXp()).level;
+let prevUnlocked = state.unlockedAchievements.slice();
+
+const FILTERS = [
+  {id: "all", label: "All"},
+  {id: "cold", label: "🔴 Needs Action"},
+  {id: "boss", label: "👑 Bosses"},
+  {id: "active", label: "Active"},
+  {id: "closed", label: "🏁 Closed"},
 ];
 
-/* ---------- render stats ---------- */
-function renderStats(){
-  const xp=totalXp(); const li=levelInfo(xp); const streak=computeStreak();
-  const didToday=loggedToday();
-  const active=state.prospects.filter(p=>p.stage!=="Won"&&p.stage!=="Lost");
-  const green=active.filter(p=>prospectHeat(p)==="green").length;
-  const red=active.filter(p=>prospectHeat(p)==="red").length;
-  const rank=rankForLevel(li.level);
+function renderStats() {
+  const xp = totalXp(); 
+  const li = levelInfo(xp); 
+  const streak = computeStreak();
+  const didToday = loggedToday();
+  const active = state.prospects.filter(p => p.stage !== "Won" && p.stage !== "Lost");
+  const green = active.filter(p => prospectHeat(p) === "green").length;
+  const red = active.filter(p => prospectHeat(p) === "red").length;
+  const rank = rankForLevel(li.level);
 
-  $("#stats").innerHTML=`
+  $("#stats").innerHTML = `
     <div class="card stat-xp">
       <div class="row between">
         <div>
@@ -497,330 +641,361 @@ function renderStats(){
         </div>
       </div>
       <div class="bar"><i style="width:${li.progress}%"></i></div>
-      <p class="tiny muted right" style="margin:.25rem 0 0">${li.toNext.toLocaleString()} XP to Level ${li.level+1}</p>
+      <p class="tiny muted right" style="margin:0.25rem 0 0">${li.toNext.toLocaleString()} XP to Level ${li.level + 1}</p>
     </div>
-    <div class="card stat-streak ${streak>0?'on':''}">
-      <p class="huge">${streak>0?'🔥':'🧊'} ${streak}</p>
-      <p class="xs" style="font-weight:600;color:#cbd5e1">day streak</p>
-      <p class="tiny" style="margin:.25rem 0 0;color:${didToday?'#6ee7b7':'#fcd34d'}">${didToday?'✓ logged today':'⚠ not logged today'}</p>
+    <div class="card stat-streak ${streak > 0 ? 'on' : ''}">
+      <p class="huge">${streak > 0 ? '🔥' : '🧊'} ${streak}</p>
+      <p class="xs" style="font-weight:600; color:#cbd5e1">day streak</p>
+      <p class="tiny" style="margin:0.25rem 0 0; color:${didToday ? '#6ee7b7' : '#fcd34d'}">${didToday ? '✓ logged today' : '⚠ not logged today'}</p>
     </div>
     <div class="card">
-      <p class="xs" style="font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">Pipeline Heat</p>
-      <p class="big" style="margin-top:.25rem">🟢 ${green}</p>
-      <p class="tiny" style="margin:.25rem 0 0;color:#fda4af">🔴 ${red} going cold ${red>0?'· act now!':'· all clear'}</p>
+      <p class="xs" style="font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted)">Pipeline Heat</p>
+      <p class="big" style="margin-top:0.25rem">🟢 ${green}</p>
+      <p class="tiny" style="margin:0.25rem 0 0; color:#fda4af">🔴 ${red} going cold ${red > 0 ? '· act now!' : '· all clear'}</p>
       <p class="tiny muted2">${active.length} active prospects</p>
     </div>`;
 
-  const ns=$("#nudge-slot"); ns.innerHTML="";
-  if(!didToday && active.length>0){
-    let msg = streak>0 ? `<b>Keep your ${streak}-day streak alive!</b>` : `<b>Start a streak — log one now!</b>`;
-    if(red>0) msg += ` ${red} prospect${red>1?'s are':' is'} going cold.`;
-    ns.innerHTML=`<div class="nudge"><span style="font-size:1.25rem">⏰</span><p style="margin:0">You haven't logged a touchpoint today. ${msg}</p></div>`;
+  const ns = $("#nudge-slot"); 
+  ns.innerHTML = "";
+  if (!didToday && active.length > 0) {
+    let msg = streak > 0 ? `<b>Keep your ${streak}-day streak alive!</b>` : `<b>Start a streak — log one now!</b>`;
+    if (red > 0) msg += ` ${red} prospect${red > 1 ? 's are' : ' is'} going cold.`;
+    ns.innerHTML = `<div class="nudge"><span style="font-size:1.25rem">⏰</span><p style="margin:0">You haven't logged a touchpoint today. ${msg}</p></div>`;
   }
 }
 
-/* ---------- render filters ---------- */
-function renderFilters(){
-  const f=$("#filters"); f.innerHTML="";
-  FILTERS.forEach(ft=>{
-    const b=el("button","pill"+(filter===ft.id?" active":""),ft.label);
-    b.onclick=()=>{filter=ft.id;render();};
+function renderFilters() {
+  const f = $("#filters"); 
+  f.innerHTML = "";
+  FILTERS.forEach(ft => {
+    const b = el("button", "pill" + (filter === ft.id ? " active" : ""), ft.label);
+    b.onclick = () => { filter = ft.id; render(); };
     f.appendChild(b);
   });
 }
 
-/* ---------- render prospect card ---------- */
-function prospectCard(p){
-  const heat=prospectHeat(p); const hm=HEAT_META[heat];
-  const isBoss=p.value==="High-Value"; const boss=bossState(p);
-  const xp=pXp(p); const closed=p.stage==="Won"||p.stage==="Lost";
-  const sorted=[...p.touchpoints].sort((a,b)=>a.date<b.date?1:-1);
-  const last=sorted[0]; const daysAgo=last?daysSince(last.date):null;
+function prospectCard(p) {
+  const heat = prospectHeat(p); 
+  const hm = HEAT_META[heat];
+  const isBoss = p.value === "High-Value"; 
+  const boss = bossState(p);
+  const xp = pXp(p); 
+  const closed = p.stage === "Won" || p.stage === "Lost";
+  const sorted = p.touchpoints ? [...p.touchpoints].sort((a, b) => a.date < b.date ? 1 : -1) : [];
+  const last = sorted[0]; 
+  const daysAgo = last ? daysSince(last.date) : null;
 
-  const c=el("div","pcard"+(isBoss?" boss":"")+(heat==="red"&&!closed?" cold":""));
+  const c = el("div", "pcard" + (isBoss ? " boss" : "") + (heat === "red" && !closed ? " cold" : ""));
 
-  let html="";
-  if(isBoss) html+=`<div class="crown-bg">👑</div>`;
+  let html = "";
+  if (isBoss) html += `<div class="crown-bg">👑</div>`;
 
-  html+=`<div class="row between" style="align-items:flex-start;gap:.75rem">
+  html += `<div class="row between" style="align-items:flex-start; gap:0.75rem">
     <div style="min-width:0">
-      <div class="row" style="gap:.5rem">
+      <div class="row" style="gap:0.5rem">
         <span style="font-size:1.1rem" title="${hm.label}">${hm.dot}</span>
         <h3 class="pname">${esc(p.company)}</h3>
-        ${isBoss?'<span class="badge boss">👑 Boss</span>':''}
+        ${isBoss ? '<span class="badge boss">👑 Boss</span>' : ''}
       </div>
-      <p class="sm muted" style="margin:.15rem 0 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.contact)}</p>
-      <a class="xs" href="mailto:${esc(p.email)}" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.email)}</a>
+      <p class="sm muted" style="margin:0.15rem 0 0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${esc(p.contact)}</p>
+      <a class="xs" href="mailto:${esc(p.email)}" style="display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${esc(p.email)}</a>
     </div>
     <button class="icon-btn" data-edit="${p.id}" title="Edit prospect">✏️</button>
   </div>`;
 
-  html+=`<div class="metarow">
+  html += `<div class="metarow">
     <select class="stage-sel" data-stage="${p.id}" style="background:${stageBg(p.stage)}">
-      ${STAGES.map(s=>`<option value="${s.value}" ${s.value===p.stage?'selected':''}>${s.value}</option>`).join("")}
+      ${STAGES.map(s => `<option value="${s.value}" ${s.value === p.stage ? 'selected' : ''}>${s.value}</option>`).join("")}
     </select>
     <span class="tag" style="color:${hm.text}">${hm.label}</span>
     <span class="tag xp">⚡ ${xp} XP</span>
-    <span class="tag">${p.touchpoints.length} touch${p.touchpoints.length===1?'':'es'}</span>
+    <span class="tag">${p.touchpoints ? p.touchpoints.length : 0} touch${p.touchpoints && p.touchpoints.length === 1 ? '' : 'es'}</span>
   </div>`;
 
-  if(isBoss && p.stage!=="Lost"){
-    html+=`<div class="hpwrap">
-      <div class="row between tiny" style="font-weight:700;margin-bottom:.25rem">
-        <span style="color:#f0abfc">${boss.defeated?'🏆 BOSS DEFEATED!':'Boss HP'}</span>
+  if (isBoss && p.stage !== "Lost") {
+    html += `<div class="hpwrap">
+      <div class="row between tiny" style="font-weight:700; margin-bottom:0.25rem">
+        <span style="color:#f0abfc">${boss.defeated ? '🏆 BOSS DEFEATED!' : 'Boss HP'}</span>
         <span class="muted">${boss.hp}/${boss.maxHp}</span>
       </div>
-      <div class="hpbar"><i class="${boss.defeated?'dead':''}" style="width:${boss.defeated?100:boss.pct}%"></i></div>
+      <div class="hpbar"><i class="${boss.defeated ? 'dead' : ''}" style="width:${boss.defeated ? 100 : boss.pct}%"></i></div>
     </div>`;
   }
 
-  if(last){
-    html+=`<div class="lastbox">
+  if (last) {
+    html += `<div class="lastbox">
       <div class="row between xs">
-        <span style="font-weight:500;color:#e2e8f0">${esc(last.questName)}</span>
-        <span style="color:${daysAgo>5?'#fda4af':'#94a3b8'}">${daysAgo===0?'today':daysAgo===1?'1 day ago':daysAgo+' days ago'}</span>
+        <span style="font-weight:500; color:#e2e8f0">${esc(last.questName)}</span>
+        <span style="color:${daysAgo > 5 ? '#fda4af' : '#94a3b8'}">${daysAgo === 0 ? 'today' : daysAgo === 1 ? '1 day ago' : daysAgo + ' days ago'}</span>
       </div>
-      <div class="row xs muted" style="margin-top:.25rem;gap:.5rem">
+      <div class="row xs muted" style="margin-top:0.25rem; gap:0.5rem">
         <span>${typeIcon(last.type)} ${esc(last.type)}</span><span>·</span>
         <span>${outcomeIcon(last.outcome)} ${esc(last.outcome)}</span>
       </div>
-      ${last.notes?`<p class="xs clip2" style="margin:.25rem 0 0;font-style:italic;color:#94a3b8">“${esc(last.notes)}”</p>`:''}
+      ${last.notes ? `<p class="xs clip2" style="margin:0.25rem 0 0; font-style:italic; color:#94a3b8">“${esc(last.notes)}”</p>` : ''}
     </div>`;
-  }else{
-    html+=`<p class="empty-note">No touchpoints yet — start the quest! 🎯</p>`;
+  } else {
+    html += `<p class="empty-note">No touchpoints yet — start the quest! 🎯</p>`;
   }
 
-  if(p.touchpoints.length>0){
-    const dots=sorted.slice().reverse().map(t=>`<span title="${esc(t.questName)} · ${esc(t.type)} · ${esc(t.outcome)} · ${t.date}">${typeIcon(t.type)}</span>`).join("");
-    html+=`<div class="timeline">${dots}</div>`;
+  if (p.touchpoints && p.touchpoints.length > 0) {
+    const dots = sorted.slice().reverse().map(t => `<span title="${esc(t.questName)} · ${esc(t.type)} · ${esc(t.outcome)} · ${t.date}">${typeIcon(t.type)}</span>`).join("");
+    html += `<div class="timeline">${dots}</div>`;
   }
 
-  const label=p.stage==="Won"?'🏆 Closed Won':p.stage==="Lost"?'💀 Closed Lost':isBoss?'⚔️ Attack the Boss':'➕ Log Touchpoint';
-  html+=`<button class="logbtn ${closed?'disabled':''} ${isBoss&&!closed?'boss':''}" data-log="${p.id}" ${closed?'disabled':''}>${label}</button>`;
+  const label = p.stage === "Won" ? '🏆 Closed Won' : p.stage === "Lost" ? '💀 Closed Lost' : isBoss ? '⚔️ Attack the Boss' : '➕ Log Touchpoint';
+  html += `<button class="logbtn ${closed ? 'disabled' : ''} ${isBoss && !closed ? 'boss' : ''}" data-log="${p.id}" ${closed ? 'disabled' : ''}>${label}</button>`;
 
-  c.innerHTML=html;
+  c.innerHTML = html;
   return c;
 }
 
-/* ---------- render grid ---------- */
-function visibleProspects(){
-  let list=state.prospects.slice();
-  if(query.trim()){
-    const q=query.toLowerCase();
-    list=list.filter(p=>p.company.toLowerCase().includes(q)||p.contact.toLowerCase().includes(q)||p.email.toLowerCase().includes(q));
+function visibleProspects() {
+  let list = state.prospects.slice();
+  if (query.trim()) {
+    const q = query.toLowerCase();
+    list = list.filter(p => p.company.toLowerCase().includes(q) || p.contact.toLowerCase().includes(q) || p.email.toLowerCase().includes(q));
   }
-  if(filter==="boss")list=list.filter(p=>p.value==="High-Value");
-  else if(filter==="cold")list=list.filter(p=>["red","orange"].includes(prospectHeat(p)));
-  else if(filter==="active")list=list.filter(p=>p.stage!=="Won"&&p.stage!=="Lost");
-  else if(filter==="closed")list=list.filter(p=>p.stage==="Won"||p.stage==="Lost");
-  list.sort((a,b)=>{
-    if(sort==="name")return a.company.localeCompare(b.company);
-    if(sort==="xp")return pXp(b)-pXp(a);
-    return HEAT_META[prospectHeat(b)].order-HEAT_META[prospectHeat(a)].order;
+  if (filter === "boss") list = list.filter(p => p.value === "High-Value");
+  else if (filter === "cold") list = list.filter(p => ["red", "orange"].includes(prospectHeat(p)));
+  else if (filter === "active") list = list.filter(p => p.stage !== "Won" && p.stage !== "Lost");
+  else if (filter === "closed") list = list.filter(p => p.stage === "Won" || p.stage === "Lost");
+  
+  list.sort((a, b) => {
+    if (sort === "name") return a.company.localeCompare(b.company);
+    if (sort === "xp") return pXp(b) - pXp(a);
+    return HEAT_META[prospectHeat(b)].order - HEAT_META[prospectHeat(a)].order;
   });
   return list;
 }
-function renderGrid(){
-  const g=$("#grid"); g.innerHTML="";
-  const list=visibleProspects();
-  list.forEach(p=>g.appendChild(prospectCard(p)));
-  const es=$("#empty-slot"); es.innerHTML="";
-  if(list.length===0)es.innerHTML=`<div class="empty-state">No prospects match. Add one or clear filters.</div>`;
 
-  g.querySelectorAll("[data-log]").forEach(b=>b.onclick=()=>openLog(b.dataset.log));
-  g.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));
-  g.querySelectorAll("[data-stage]").forEach(s=>s.onchange=()=>changeStage(s.dataset.stage,s.value));
+function renderGrid() {
+  const g = $("#grid"); 
+  g.innerHTML = "";
+  const list = visibleProspects();
+  list.forEach(p => g.appendChild(prospectCard(p)));
+  
+  const es = $("#empty-slot"); 
+  es.innerHTML = "";
+  if (list.length === 0) es.innerHTML = `<div class="empty-state">No prospects match. Add one or clear filters.</div>`;
+
+  g.querySelectorAll("[data-log]").forEach(b => b.onclick = () => openLog(b.dataset.log));
+  g.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => openEdit(b.dataset.edit));
+  g.querySelectorAll("[data-stage]").forEach(s => s.onchange = () => changeStage(s.dataset.stage, s.value));
 }
 
-/* ---------- main render ---------- */
-function render(){
-  $("#subline").textContent="Turn every follow-up into a win. "+totalTouchpoints()+" touchpoints logged.";
-  $("#ach-count").textContent=state.unlockedAchievements.length+"/"+ACHIEVEMENTS.length;
-  renderStats(); renderFilters(); renderGrid();
+function render() {
+  $("#subline").textContent = "Turn every follow-up into a win. " + totalTouchpoints() + " touchpoints logged.";
+  $("#ach-count").textContent = state.unlockedAchievements.length + "/" + ACHIEVEMENTS.length;
+  renderStats(); 
+  renderFilters(); 
+  renderGrid();
 }
 
-/* ---------- persistence + achievement detection ---------- */
-function commit(){
-  const now=computeUnlocked();
-  if(now.length!==state.unlockedAchievements.length){
-    const fresh=now.filter(id=>!prevUnlocked.includes(id));
-    state.unlockedAchievements=now;
-    if(fresh.length){const d=ACHIEVEMENTS.find(a=>a.id===fresh[0]);if(d)toast(d.icon+" Achievement Unlocked: "+d.name+"!");}
+function commit() {
+  const now = computeUnlocked();
+  if (now.length !== state.unlockedAchievements.length) {
+    const fresh = now.filter(id => !prevUnlocked.includes(id));
+    state.unlockedAchievements = now;
+    if (fresh.length) {
+      const d = ACHIEVEMENTS.find(a => a.id === fresh[0]);
+      if (d) toast(d.icon + " Achievement Unlocked: " + d.name + "!");
+    }
   }
-  prevUnlocked=state.unlockedAchievements.slice();
-  const lvl=levelInfo(totalXp()).level;
-  if(lvl>prevLevel)toast("🎉 LEVEL UP! You reached Level "+lvl+"!");
-  prevLevel=lvl;
-  saveState(); render();
+  prevUnlocked = state.unlockedAchievements.slice();
+  const lvl = levelInfo(totalXp()).level;
+  if (lvl > prevLevel) toast("🎉 LEVEL UP! You reached Level " + lvl + "!");
+  prevLevel = lvl;
+  saveState(); 
+  render();
 }
 
-/* ========================= ACTIONS ========================= */
-function changeStage(id,stage){
-  const p=state.prospects.find(x=>x.id===id); if(!p)return;
-  p.stage=stage;
-  if(stage==="Won")toast(p.value==="High-Value"?"🐉 BOSS DEFEATED! 🎉":"💰 Won! 🎉");
+function changeStage(id, stage) {
+  const p = state.prospects.find(x => x.id === id); 
+  if (!p) return;
+  p.stage = stage;
+  if (stage === "Won") toast(p.value === "High-Value" ? "🐉 BOSS DEFEATED! 🎉" : "💰 Won! 🎉");
   commit();
 }
 
-/* ========================= MODALS ========================= */
-function closeModal(){$("#modal-root").innerHTML="";}
-function modalShell(titleHtml,bodyEl,boss){
-  const root=$("#modal-root"); root.innerHTML="";
-  const ov=el("div","overlay");
-  ov.onclick=e=>{if(e.target===ov)closeModal();};
-  const m=el("div","modal"+(boss?" boss":""));
-  const head=el("div","modal-head");
-  head.innerHTML=`<h2>${titleHtml}</h2>`;
-  const x=el("button","icon-btn","✕"); x.style.opacity="1"; x.onclick=closeModal;
-  head.appendChild(x);
-  const body=el("div","modal-body"); body.appendChild(bodyEl);
-  m.appendChild(head); m.appendChild(body); ov.appendChild(m); root.appendChild(ov);
-}
+function openLog(id) {
+  const p = state.prospects.find(x => x.id === id); 
+  if (!p) return;
+  const isBoss = p.value === "High-Value";
+  const touchLength = p.touchpoints ? p.touchpoints.length : 0;
+  const nextQuest = questNameForIndex(touchLength);
+  
+  let type = "Email", outcome = "No Response";
+  let date = dayKey(new Date()), stage = p.stage;
 
-/* ---- log touchpoint modal ---- */
-function openLog(id){
-  const p=state.prospects.find(x=>x.id===id); if(!p)return;
-  const isBoss=p.value==="High-Value";
-  const nextQuest=questNameForIndex(p.touchpoints.length);
-  let type="Email", outcome="No Response";
-  let date=dayKey(new Date()), stage=p.stage;
-
-  const body=el("div");
-  body.innerHTML=`
+  const body = el("div");
+  body.innerHTML = `
     <div class="prev-box">
       <p class="sm muted" style="margin:0">${esc(p.company)} · <span class="muted2">${esc(p.contact)}</span></p>
-      <p style="margin:.25rem 0 0;font-size:1.1rem;font-weight:700;color:#fff">${esc(nextQuest)}</p>
+      <p style="margin:0.25rem 0 0; font-size:1.1rem; font-weight:700; color:#fff">${esc(nextQuest)}</p>
     </div>
     <label class="label">Channel</label>
     <div class="type-grid" id="type-grid"></div>
     <label class="label">Outcome</label>
-    <select class="field" id="f-outcome">${OUTCOMES.map(o=>`<option value="${o.value}">${o.icon} ${o.value} (+${o.bonusXp} XP)</option>`).join("")}</select>
+    <select class="field" id="f-outcome">${OUTCOMES.map(o => `<option value="${o.value}">${o.icon} ${o.value} (+${o.bonusXp} XP)</option>`).join("")}</select>
     <div class="two">
       <div><label class="label">Date</label><input type="date" class="field" id="f-date" value="${date}"></div>
-      <div><label class="label">Stage</label><select class="field" id="f-stage">${STAGES.map(s=>`<option value="${s.value}" ${s.value===stage?'selected':''}>${s.value}</option>`).join("")}</select></div>
+      <div><label class="label">Stage</label><select class="field" id="f-stage">${STAGES.map(s => `<option value="${s.value}" ${s.value === stage ? 'selected' : ''}>${s.value}</option>`).join("")}</select></div>
     </div>
     <label class="label">Notes (optional)</label>
     <textarea class="field" id="f-notes" rows="2" placeholder="What did you say / send? Any next steps?"></textarea>
-    <button class="submit ${isBoss?'boss':''}" id="f-submit"></button>
+    <button class="submit ${isBoss ? 'boss' : ''}" id="f-submit"></button>
   `;
 
-  const tg=body.querySelector("#type-grid");
-  function renderTypes(){
-    tg.innerHTML="";
-    TOUCHPOINT_TYPES.forEach(t=>{
-      const b=el("button","type-btn"+(type===t.value?" sel":""),`<span>${t.icon} ${t.value}</span><span style="font-size:.65rem;color:#a5b4fc">+${t.baseXp}</span>`);
-      b.onclick=()=>{type=t.value;renderTypes();updatePreview();};
+  const tg = body.querySelector("#type-grid");
+  function renderTypes() {
+    tg.innerHTML = "";
+    TOUCHPOINT_TYPES.forEach(t => {
+      const b = el("button", "type-btn" + (type === t.value ? " sel" : ""), `<span>${t.icon} ${t.value}</span><span style="font-size:0.65rem; color:#a5b4fc">+${t.baseXp}</span>`);
+      b.onclick = () => { type = t.value; renderTypes(); updatePreview(); };
       tg.appendChild(b);
     });
   }
   renderTypes();
 
-  const subBtn=body.querySelector("#f-submit");
-  function updatePreview(){
-    const xp=xpForTouchpoint(type,outcome);
-    subBtn.textContent=(isBoss?"💥 Strike":"✅ Complete Quest")+" · +"+xp+" XP";
+  const subBtn = body.querySelector("#f-submit");
+  function updatePreview() {
+    const xp = xpForTouchpoint(type, outcome);
+    subBtn.textContent = (isBoss ? "💥 Strike" : "✅ Complete Quest") + " · +" + xp + " XP";
   }
-  body.querySelector("#f-outcome").onchange=e=>{outcome=e.target.value;updatePreview();};
+  
+  body.querySelector("#f-outcome").onchange = e => { outcome = e.target.value; updatePreview(); };
   updatePreview();
 
-  subBtn.onclick=()=>{
-    date=body.querySelector("#f-date").value;
-    stage=body.querySelector("#f-stage").value;
-    const notes=body.querySelector("#f-notes").value.trim();
-    const xp=xpForTouchpoint(type,outcome);
-    const tp={id:uid(),questName:nextQuest,type,outcome,date,notes,xp};
-    let finalStage=stage;
-    if(outcome==="Closed Won")finalStage="Won";
-    else if(outcome==="Booked Meeting")finalStage="Meeting Booked";
-    else if(outcome==="Not Interested")finalStage="Lost";
+  subBtn.onclick = () => {
+    date = body.querySelector("#f-date").value;
+    stage = body.querySelector("#f-stage").value;
+    const notes = body.querySelector("#f-notes").value.trim();
+    const xp = xpForTouchpoint(type, outcome);
+    const tp = {id: uid(), questName: nextQuest, type, outcome, date, notes, xp};
+    
+    let finalStage = stage;
+    if (outcome === "Closed Won") finalStage = "Won";
+    else if (outcome === "Booked Meeting") finalStage = "Meeting Booked";
+    else if (outcome === "Not Interested") finalStage = "Lost";
 
-    const wasRed=prospectHeat(p)==="red";
-    p.touchpoints.push(tp); p.stage=finalStage;
-    if(wasRed&&!state.unlockedAchievements.includes("comeback"))state.unlockedAchievements.push("comeback");
+    const wasRed = prospectHeat(p) === "red";
+    if (!p.touchpoints) p.touchpoints = [];
+    p.touchpoints.push(tp); 
+    p.stage = finalStage;
+    if (wasRed && !state.unlockedAchievements.includes("comeback")) state.unlockedAchievements.push("comeback");
 
-    if(finalStage==="Won")toast(isBoss?"🐉 BOSS DEFEATED! Massive win! 🎉":"💰 Deal Closed Won! 🎉");
-    else toast('⚡ +'+xp+' XP · "'+nextQuest+'" complete!');
+    if (finalStage === "Won") toast(isBoss ? "🐉 BOSS DEFEATED! Massive win! 🎉" : "💰 Deal Closed Won! 🎉");
+    else toast('⚡ +' + xp + ' XP · "' + nextQuest + '" complete!');
 
-    closeModal(); commit();
+    closeModal(); 
+    commit();
   };
 
-  modalShell(isBoss?"⚔️ Attack the Boss":"🎯 New Quest", body, isBoss);
+  modalShell(isBoss ? "⚔️ Attack the Boss" : "🎯 New Quest", body, isBoss);
 }
 
-/* ---- prospect modal (add/edit) ---- */
-function openEdit(id){
-  const p=id?state.prospects.find(x=>x.id===id):null;
-  const body=el("div");
-  body.innerHTML=`
+function openEdit(id) {
+  const p = id ? state.prospects.find(x => x.id === id) : null;
+  const body = el("div");
+  body.innerHTML = `
     <label class="label">Company</label>
-    <input class="field" id="p-company" placeholder="Acme Coaching" value="${p?esc(p.company):''}">
+    <input class="field" id="p-company" placeholder="Acme Coaching" value="${p ? esc(p.company) : ''}">
     <label class="label">Contact</label>
-    <input class="field" id="p-contact" placeholder="Jane Doe" value="${p?esc(p.contact):''}">
+    <input class="field" id="p-contact" placeholder="Jane Doe" value="${p ? esc(p.contact) : ''}">
     <label class="label">Email</label>
-    <input class="field" id="p-email" placeholder="jane@acme.com" value="${p?esc(p.email):''}">
+    <input class="field" id="p-email" placeholder="jane@acme.com" value="${p ? esc(p.email) : ''}">
     <div class="two">
       <div><label class="label">Value</label>
         <select class="field" id="p-value">
-          <option value="Standard" ${p&&p.value==='Standard'?'selected':''}>Standard</option>
-          <option value="High-Value" ${p&&p.value==='High-Value'?'selected':''}>👑 High-Value (Boss)</option>
+          <option value="Standard" ${p && p.value === 'Standard' ? 'selected' : ''}>Standard</option>
+          <option value="High-Value" ${p && p.value === 'High-Value' ? 'selected' : ''}>👑 High-Value (Boss)</option>
         </select>
       </div>
       <div><label class="label">Stage</label>
-        <select class="field" id="p-stage">${STAGES.map(s=>`<option value="${s.value}" ${p&&p.stage===s.value?'selected':''}>${s.value}</option>`).join("")}</select>
+        <select class="field" id="p-stage">${STAGES.map(s => `<option value="${s.value}" ${p && p.stage === s.value ? 'selected' : ''}>${s.value}</option>`).join("")}</select>
       </div>
     </div>
-    <div class="row" style="margin-top:.5rem;gap:.5rem">
+    <div class="row" style="margin-top:0.5rem; gap:0.5rem">
       <button class="submit grow" id="p-save">Save</button>
-      ${p?'<button class="del-btn" id="p-del">🗑️</button>':''}
+      ${p ? '<button class="del-btn" id="p-del">🗑️</button>' : ''}
     </div>
   `;
-  body.querySelector("#p-save").onclick=()=>{
-    const company=body.querySelector("#p-company").value.trim();
-    const contact=body.querySelector("#p-contact").value.trim();
-    const email=body.querySelector("#p-email").value.trim();
-    const value=body.querySelector("#p-value").value;
-    const stage=body.querySelector("#p-stage").value;
-    if(!company&&!contact)return;
-    if(p){p.company=company;p.contact=contact;p.email=email;p.value=value;p.stage=stage;}
-    else{state.prospects.unshift({company,contact,email,value,stage,id:uid(),createdAt:new Date().toISOString(),touchpoints:[]});toast("📇 New prospect added to the arena!");}
-    closeModal(); commit();
+  
+  body.querySelector("#p-save").onclick = () => {
+    const company = body.querySelector("#p-company").value.trim();
+    const contact = body.querySelector("#p-contact").value.trim();
+    const email = body.querySelector("#p-email").value.trim();
+    const value = body.querySelector("#p-value").value;
+    const stage = body.querySelector("#p-stage").value;
+    
+    if (!company && !contact) return;
+    
+    if (p) {
+      p.company = company; p.contact = contact; p.email = email; p.value = value; p.stage = stage;
+    } else {
+      state.prospects.unshift({
+        company, contact, email, value, stage, id: uid(), 
+        createdAt: new Date().toISOString(), touchpoints: []
+      });
+      toast("📇 New prospect added to the arena!");
+    }
+    closeModal(); 
+    commit();
   };
-  if(p){
-    body.querySelector("#p-del").onclick=()=>{
-      if(confirm("Delete "+p.company+"? This cannot be undone.")){
-        state.prospects=state.prospects.filter(x=>x.id!==p.id);
-        closeModal(); commit();
-      }
+  
+  if (p) {
+    body.querySelector("#p-del").onclick = () => {
+      showConfirm("Delete Prospect", `Are you sure you want to delete ${p.company}? This cannot be undone.`, "Delete Permanently", () => {
+        state.prospects = state.prospects.filter(x => x.id !== p.id);
+        commit();
+      });
     };
   }
-  modalShell(p?"✏️ Edit Prospect":"➕ New Prospect", body, false);
+  
+  modalShell(p ? "✏️ Edit Prospect" : "➕ New Prospect", body, false);
 }
 
-/* ---- achievements modal ---- */
-function openAchievements(){
-  const body=el("div");
-  const grid=el("div","ach-grid");
-  ACHIEVEMENTS.forEach(a=>{
-    const got=state.unlockedAchievements.includes(a.id);
-    const d=el("div","ach "+(got?"got":"locked"));
-    d.innerHTML=`<span class="emo">${a.icon}</span><div style="min-width:0"><p class="an">${got?esc(a.name):"???"}</p><p class="xs muted" style="margin:.1rem 0 0">${esc(a.desc)}</p></div>`;
+function openAchievements() {
+  const body = el("div");
+  const grid = el("div", "ach-grid");
+  ACHIEVEMENTS.forEach(a => {
+    const got = state.unlockedAchievements.includes(a.id);
+    const d = el("div", "ach " + (got ? "got" : "locked"));
+    d.innerHTML = `<span class="emo">${a.icon}</span><div style="min-width:0"><p class="an">${got ? esc(a.name) : "???"}</p><p class="xs muted" style="margin:0.1rem 0 0">${esc(a.desc)}</p></div>`;
     grid.appendChild(d);
   });
   body.appendChild(grid);
-  modalShell(`🏆 Achievements <span style="font-size:.875rem;font-weight:400;color:#94a3b8">${state.unlockedAchievements.length}/${ACHIEVEMENTS.length}</span>`, body, false);
+  modalShell(`🏆 Achievements <span style="font-size:0.875rem; font-weight:400; color:#94a3b8">${state.unlockedAchievements.length}/${ACHIEVEMENTS.length}</span>`, body, false);
 }
 
-/* ========================= WIRE UP ========================= */
-$("#btn-add").onclick=()=>openEdit(null);
-$("#btn-ach").onclick=openAchievements;
-$("#btn-json").onclick=exportJson;
-$("#btn-csv").onclick=exportCsv;
-$("#btn-import").onclick=()=>$("#file-import").click();
-$("#file-import").onchange=e=>{const f=e.target.files[0];if(f)importJson(f);e.target.value="";};
-$("#btn-reset").onclick=()=>{if(confirm("Reset everything to the starter roster? Export a backup first!")){state=seedState();prevLevel=1;prevUnlocked=[];saveState();render();}};
-$("#search").oninput=e=>{query=e.target.value;renderGrid();};
-$("#sort").onchange=e=>{sort=e.target.value;renderGrid();};
+$("#btn-add").onclick = () => openEdit(null);
+$("#btn-ach").onclick = openAchievements;
+$("#btn-json").onclick = exportJson;
+$("#btn-csv").onclick = exportCsv;
+$("#btn-import").onclick = () => $("#file-import").click();
 
+$("#file-import").onchange = e => {
+  const f = e.target.files[0]; 
+  if (f) importJson(f); 
+  e.target.value = "";
+};
+
+$("#btn-reset").onclick = () => {
+  showConfirm("Reset Tracker", "Reset everything to the starter roster? It is highly recommended to export a backup first!", "Yes, Reset Data", () => {
+    state = seedState();
+    prevLevel = 1;
+    prevUnlocked = [];
+    saveState();
+    render();
+    toast("♻️ Arena has been reset!");
+  });
+};
+
+$("#search").oninput = e => { query = e.target.value; renderGrid(); };
+$("#sort").onchange = e => { sort = e.target.value; renderGrid(); };
+
+// Boot the application
 render();
 </script>
 </body>

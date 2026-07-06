@@ -1,1002 +1,1726 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>⚔️ Outreach Arena — Gamified Follow-Up Tracker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚔️ Outreach Quest — Gamified Outreach Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --bg: #020617; 
-      --panel: rgba(30, 41, 59, 0.6); 
-      --panel2: rgba(15, 23, 42, 0.6);
-      --ring: rgba(255, 255, 255, 0.1); 
-      --txt: #e2e8f0; 
-      --muted: #94a3b8; 
-      --muted2: #64748b;
-      --indigo: #6366f1; 
-      --sky: #0ea5e9; 
-      --fuchsia: #d946ef; 
-      --amber: #f59e0b;
-      --emerald: #10b981; 
-      --rose: #f43f5e; 
-      --violet: #8b5cf6; 
-      --orange: #f97316; 
-      --yellow: #eab308;
+      --dark-900: #0a0a0f;
+      --dark-800: #12121a;
+      --dark-700: #1a1a2e;
+      --dark-600: #252540;
+      --dark-500: #3a3a5c;
+      --dark-400: #555580;
+      --dark-300: #8888aa;
+      --dark-200: #bbbbdd;
+      --dark-100: #ddddf0;
+      --gold: #ffd700;
+      --gold-dark: #b8960c;
+      --xp-blue: #4facfe;
+      --xp-green: #43e97b;
+      --fire: #ff6b35;
+      --health-red: #ff4757;
+      --boss-purple: #a855f7;
+      --quest-cyan: #06d6a0;
+      --streak-orange: #f59e0b;
     }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      background-image:
-        radial-gradient(60rem 40rem at 80% -10%, rgba(99, 102, 241, 0.18), transparent),
-        radial-gradient(50rem 40rem at -10% 10%, rgba(217, 70, 239, 0.14), transparent);
-      color: var(--txt); 
-      min-height: 100vh; 
-      padding-bottom: 6rem;
-      -webkit-font-smoothing: antialiased;
+      font-family: 'Inter', sans-serif;
+      background: var(--dark-900);
+      color: #e0e0f0;
+      min-height: 100vh;
     }
-    .wrap { max-width: 1024px; margin: 0 auto; padding: 1.5rem 1rem 0; }
-    a { color: #38bdf8; text-decoration: none; } 
-    a:hover { text-decoration: underline; }
-    button { font-family: inherit; cursor: pointer; border: 0; }
-    select, input, textarea { font-family: inherit; }
-    h1, h2, h3 { margin: 0; }
-    .row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
-    .between { justify-content: space-between; }
-    .grow { flex: 1; }
-    .muted { color: var(--muted); } 
-    .muted2 { color: var(--muted2); }
-    .hidden { display: none !important; }
+    
+    .font-display {
+      font-family: 'Orbitron', sans-serif;
+    }
 
-    /* header */
-    header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1.25rem; }
-    .title { font-size: 1.75rem; font-weight: 900; letter-spacing: -0.02em; color: #fff; }
-    .sub { font-size: 0.875rem; color: var(--muted); margin-top: 0.15rem; }
+    /* Animations */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 5px rgba(79,172,254,.3); }
+      50% { box-shadow: 0 0 20px rgba(79,172,254,.6); }
+    }
+    @keyframes fire-glow {
+      0%, 100% { text-shadow: 0 0 5px #ff6b35, 0 0 10px #ff6b35; }
+      50% { text-shadow: 0 0 15px #ff6b35, 0 0 30px #ff6b35, 0 0 45px #ff4500; }
+    }
+    @keyframes level-up-flash {
+      0% { transform: scale(.5); opacity: 0; }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes bossAttack {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.1) rotate(-2deg); }
+      50% { transform: scale(1.2) rotate(2deg); }
+      75% { transform: scale(1.1) rotate(-1deg); }
+      100% { transform: scale(1); }
+    }
+    
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-fade-in-up { animation: fadeInUp .5s ease-out; }
+    .animate-slide-in-right { animation: slideInRight .3s ease-out; }
+    .animate-level-up { animation: level-up-flash .6s ease-out; }
+    .animate-boss-attack { animation: bossAttack .5s ease-in-out; }
+    .animate-fire-glow { animation: fire-glow 1.5s ease-in-out infinite; }
 
-    /* buttons */
-    .btn { border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--indigo), var(--sky)); transition: 0.15s; box-shadow: 0 8px 24px -12px rgba(79, 70, 229, 0.6); }
-    .btn:hover { filter: brightness(1.1); }
-    .btn.boss { background: linear-gradient(90deg, var(--fuchsia), var(--violet)); box-shadow: 0 8px 24px -12px rgba(217, 70, 239, 0.6); }
-    .btn.ghost { background: transparent; box-shadow: none; padding: 0.5rem 0.75rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.875rem; }
-    .chip-btn { border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 700; background: rgba(255, 255, 255, 0.05); color: var(--txt); box-shadow: inset 0 0 0 1px var(--ring); transition: 0.15s; }
-    .chip-btn:hover { background: rgba(255, 255, 255, 0.1); }
-    .amber-btn { background: rgba(245, 158, 11, 0.15); color: #fcd34d; box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.4); }
-    .emerald-btn { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.4); }
-    .sky-btn { background: rgba(14, 165, 233, 0.15); color: #7dd3fc; box-shadow: inset 0 0 0 1px rgba(14, 165, 233, 0.4); }
-    .violet-btn { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; box-shadow: inset 0 0 0 1px rgba(139, 92, 246, 0.4); }
-    .rose-btn { background: rgba(244, 63, 94, 0.1); color: #fda4af; box-shadow: inset 0 0 0 1px rgba(244, 63, 94, 0.3); }
+    /* UI Components */
+    .glass {
+      background: rgba(26,26,46,.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+    }
+    .glass-strong {
+      background: rgba(26,26,46,.9);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.15);
+    }
+    
+    /* Gradients */
+    .text-gradient-gold { background: linear-gradient(135deg,#ffd700,#ffaa00,#ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .text-gradient-blue { background: linear-gradient(135deg,#4facfe,#00f2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .text-gradient-fire { background: linear-gradient(135deg,#ff6b35,#ff4500,#ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .text-gradient-quest { background: linear-gradient(135deg,#06d6a0,#43e97b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .text-gradient-boss { background: linear-gradient(135deg,#a855f7,#6366f1,#a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--dark-800); }
+    ::-webkit-scrollbar-thumb { background: var(--dark-500); border-radius: 4px; }
+    
+    /* Heatmap */
+    .heat-0 { background: #1a1a2e; }
+    .heat-1 { background: #163020; }
+    .heat-2 { background: #1a4a2a; }
+    .heat-3 { background: #2d6b3f; }
+    .heat-4 { background: #43e97b; }
+    
+    /* Status Badges */
+    .status-new { background: rgba(107,114,128,.3); color: #9ca3af; }
+    .status-contacted { background: rgba(59,130,246,.2); color: #60a5fa; }
+    .status-fu1 { background: rgba(6,182,212,.2); color: #22d3ee; }
+    .status-fu2 { background: rgba(20,184,166,.2); color: #2dd4bf; }
+    .status-fu3 { background: rgba(34,197,94,.2); color: #4ade80; }
+    .status-fu4 { background: rgba(132,204,22,.2); color: #a3e635; }
+    .status-fu5 { background: rgba(234,179,8,.2); color: #facc15; }
+    .status-response { background: rgba(249,115,22,.2); color: #fb923c; }
+    .status-meeting { background: rgba(168,85,247,.2); color: #c084fc; }
+    .status-won { background: rgba(255,215,0,.2); color: #ffd700; }
+    .status-lost { background: rgba(239,68,68,.2); color: #f87171; }
+    .status-ghosted { background: rgba(75,85,99,.3); color: #6b7280; }
+    
+    /* Colors */
+    .value-low { color: #9ca3af; }
+    .value-medium { color: #60a5fa; }
+    .value-high { color: #fb923c; }
+    .value-boss { color: #c084fc; }
+    .result-sent { color: #60a5fa; }
+    .result-opened { color: #22d3ee; }
+    .result-replied { color: #4ade80; }
+    .result-call-connected { color: #c084fc; }
+    .result-voicemail { color: #fb923c; }
+    .result-meeting-booked { color: #ffd700; }
+    .result-no-response { color: #6b7280; }
+    
+    /* Inputs & Forms */
+    input, select, textarea {
+      background: var(--dark-700);
+      border: 1px solid var(--dark-600);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: white;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
+      outline: none;
+      transition: border-color .2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--xp-blue);
+      box-shadow: 0 0 0 1px rgba(79,172,254,.3);
+    }
+    input::placeholder, textarea::placeholder {
+      color: var(--dark-400);
+    }
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238888aa' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--dark-300);
+      margin-bottom: 4px;
+    }
+    
+    /* Buttons */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn:hover { transform: scale(1.05); }
+    .btn:active { transform: scale(.95); }
+    .btn-primary { background: linear-gradient(135deg,var(--xp-blue),var(--xp-green)); color: var(--dark-900); }
+    .btn-gold { background: linear-gradient(135deg,var(--gold),var(--gold-dark)); color: var(--dark-900); }
+    .btn-danger { background: rgba(255,71,87,.2); color: var(--health-red); border: 1px solid rgba(255,71,87,.3); }
+    .btn-ghost { background: var(--dark-700); color: var(--dark-200); border: 1px solid var(--dark-600); }
+    .btn-quest { background: linear-gradient(135deg,var(--quest-cyan),var(--xp-green)); color: var(--dark-900); }
+    
+    /* Nav & Tabs */
+    .nav-item {
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-item:hover { background: var(--dark-700); color: white; }
+    .nav-item.active {
+      background: rgba(255,215,0,.1);
+      color: var(--gold);
+      border: 1px solid rgba(255,215,0,.2);
+    }
+    .xp-bar-fill { transition: width .8s cubic-bezier(.4,0,.2,1); }
+    .tab-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      border: 1px solid var(--dark-600);
+      background: var(--dark-700);
+      color: var(--dark-300);
+    }
+    .tab-btn:hover { border-color: var(--dark-500); color: white; }
+    .tab-btn.active {
+      background: rgba(255,215,0,.1);
+      color: var(--gold);
+      border-color: rgba(255,215,0,.3);
+    }
+    
+    /* Toasts */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      animation: slideInRight .3s ease-out;
+      box-shadow: 0 4px 20px rgba(0,0,0,.4);
+    }
+    .toast-success { background: rgba(67,233,123,.2); border: 1px solid rgba(67,233,123,.3); color: var(--xp-green); }
+    .toast-xp { background: rgba(79,172,254,.2); border: 1px solid rgba(79,172,254,.3); color: var(--xp-blue); }
+    .toast-achievement { background: rgba(255,215,0,.2); border: 1px solid rgba(255,215,0,.3); color: var(--gold); }
+    .toast-level { background: rgba(168,85,247,.2); border: 1px solid rgba(168,85,247,.3); color: var(--boss-purple); }
+    .toast-warning { background: rgba(255,71,87,.2); border: 1px solid rgba(255,71,87,.3); color: var(--health-red); }
+    
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.7);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: var(--dark-800);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+    .card-hover { transition: all .2s; }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,0,0,.3);
+    }
+    
+    /* Layout Grids & Responsiveness */
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .grid-8 { display: grid; grid-template-columns: repeat(8,1fr); gap: 8px; }
 
-    /* stats grid */
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    @media(min-width: 640px) { .stats { grid-template-columns: 2fr 1fr 1fr; } }
-    .card { border-radius: 1rem; padding: 1rem; box-shadow: inset 0 0 0 1px var(--ring); background: var(--panel); }
-    .stat-xp { grid-column: span 2; background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.2)); box-shadow: inset 0 0 0 1px rgba(129, 140, 248, 0.3); }
-    @media(min-width: 640px) { .stat-xp { grid-column: span 1; } }
-    .stat-streak.on { background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(244, 63, 94, 0.2)); box-shadow: inset 0 0 0 1px rgba(251, 146, 60, 0.3); }
-    .rank { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #a5b4fc; }
-    .big { font-size: 1.5rem; font-weight: 900; color: #fff; }
-    .huge { font-size: 1.875rem; font-weight: 900; color: #fff; }
-    .bar { height: 0.75rem; width: 100%; overflow: hidden; border-radius: 999px; background: rgba(2, 6, 23, 0.7); box-shadow: inset 0 0 0 1px var(--ring); margin-top: 0.75rem; }
-    .bar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #818cf8, #e879f9); transition: width 0.7s; }
-    .tiny { font-size: 0.7rem; } .xs { font-size: 0.75rem; } .sm { font-size: 0.875rem; }
-    .right { text-align: right; }
-
-    /* nudge */
-    .nudge { margin-top: 1rem; display: flex; align-items: center; gap: 0.75rem; border-radius: 1rem; padding: 0.75rem; font-size: 0.875rem; background: rgba(245, 158, 11, 0.1); box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.3); color: #fde68a; }
-
-    /* controls */
-    .controls { margin-top: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
-    .inp { border-radius: 0.75rem; background: rgba(30, 41, 59, 0.7); padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #fff; box-shadow: inset 0 0 0 1px var(--ring); outline: none; }
-    .inp:focus { box-shadow: inset 0 0 0 2px var(--indigo); }
-    .inp::placeholder { color: var(--muted2); }
-    .search { flex: 1; min-width: 180px; }
-    .filters { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .pill { border-radius: 999px; padding: 0.375rem 0.75rem; font-size: 0.75rem; font-weight: 600; background: rgba(30, 41, 59, 0.5); color: var(--txt); box-shadow: inset 0 0 0 1px var(--ring); transition: 0.1s; cursor: pointer;}
-    .pill:hover { background: rgba(30, 41, 59, 0.9); }
-    .pill.active { background: rgba(99, 102, 241, 0.25); color: #fff; box-shadow: inset 0 0 0 1px var(--indigo); }
-
-    /* grid */
-    .grid { margin-top: 1rem; display: grid; grid-template-columns: 1fr; gap: 1rem; }
-    @media(min-width: 640px) { .grid { grid-template-columns: 1fr 1fr; } }
-    @media(min-width: 1024px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
-
-    /* prospect card */
-    .pcard { position: relative; overflow: hidden; border-radius: 1rem; padding: 1rem; background: var(--panel); box-shadow: inset 0 0 0 1px var(--ring); transition: 0.15s; }
-    .pcard:hover { background: rgba(30, 41, 59, 0.9); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25); }
-    .pcard.boss { box-shadow: inset 0 0 0 1px rgba(217, 70, 239, 0.4); }
-    .pcard.boss:hover { box-shadow: inset 0 0 0 1px rgba(232, 121, 249, 0.7); }
-    .pcard.cold { box-shadow: inset 0 0 0 1px rgba(244, 63, 94, 0.5); animation: pulseSlow 2.4s ease-in-out infinite; }
-    @keyframes pulseSlow { 0%, 100% { box-shadow: inset 0 0 0 1px rgba(244, 63, 94, 0.5), 0 0 0 0 rgba(244, 63, 94, 0); } 50% { box-shadow: inset 0 0 0 1px rgba(244, 63, 94, 0.5), 0 0 0 3px rgba(244, 63, 94, 0.25); } }
-    .crown-bg { position: absolute; right: -1.5rem; top: -1.5rem; font-size: 4.5rem; opacity: 0.1; pointer-events: none; }
-    .pname { font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .badge { flex-shrink: 0; border-radius: 0.375rem; padding: 0.1rem 0.375rem; font-size: 0.625rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
-    .badge.boss { background: rgba(217, 70, 239, 0.2); color: #f0abfc; box-shadow: inset 0 0 0 1px rgba(217, 70, 239, 0.4); }
-    .icon-btn { flex-shrink: 0; border-radius: 0.5rem; padding: 0.35rem; background: transparent; color: var(--muted); opacity: 0; transition: 0.15s; }
-    .pcard:hover .icon-btn { opacity: 1; }
-    .icon-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
-    .metarow { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
-    .tag { border-radius: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 500; background: rgba(255, 255, 255, 0.05); }
-    .tag.xp { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; font-weight: 700; }
-    .stage-sel { cursor: pointer; border-radius: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: 600; border: 0; outline: none; color: #fff; background: #334155; box-shadow: inset 0 0 0 1px var(--ring); }
-    .hpwrap { margin-top: 0.75rem; }
-    .hpbar { height: 0.65rem; width: 100%; overflow: hidden; border-radius: 999px; background: rgba(2, 6, 23, 0.8); box-shadow: inset 0 0 0 1px var(--ring); }
-    .hpbar > i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #f43f5e, #d946ef, #a855f7); transition: width 0.7s; }
-    .hpbar > i.dead { background: linear-gradient(90deg, #34d399, #2dd4bf); }
-    .lastbox { margin-top: 0.75rem; border-radius: 0.75rem; padding: 0.625rem; background: rgba(15, 23, 42, 0.5); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05); }
-    .empty-note { margin-top: 0.75rem; border-radius: 0.75rem; padding: 0.625rem; text-align: center; font-size: 0.75rem; color: var(--muted2); background: rgba(15, 23, 42, 0.4); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05); }
-    .timeline { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.25rem; font-size: 0.9rem; }
-    .logbtn { margin-top: 0.75rem; width: 100%; border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--indigo), var(--sky)); }
-    .logbtn.boss { background: linear-gradient(90deg, var(--fuchsia), var(--violet)); }
-    .logbtn:hover { filter: brightness(1.1); }
-    .logbtn.disabled { background: rgba(51, 65, 85, 0.5); color: var(--muted2); cursor: not-allowed; }
-    .clip2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-    /* backup section */
-    .backup { margin-top: 2rem; border-radius: 1rem; padding: 1rem; background: rgba(30, 41, 59, 0.4); box-shadow: inset 0 0 0 1px var(--ring); }
-
-    /* modal layout */
-    .overlay { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; justify-content: center; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); padding: 0; }
-    @media(min-width: 640px) { .overlay { align-items: center; padding: 1rem; } }
-    .modal { width: 100%; max-width: 32rem; max-height: 92vh; overflow-y: auto; background: #0f172a; border-radius: 1.5rem 1.5rem 0 0; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15); }
-    @media(min-width: 640px) { .modal { border-radius: 1.5rem; } }
-    .modal.boss { box-shadow: inset 0 0 0 1px rgba(217, 70, 239, 0.4); }
-    .modal-head { position: sticky; top: 0; background: #0f172a; display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid var(--ring); z-index: 1; }
-    .modal-head h2 { font-size: 1.125rem; font-weight: 700; color: #fff; }
-    .modal-body { padding: 1rem; }
-    .label { display: block; margin-bottom: 0.25rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
-    .field { width: 100%; border-radius: 0.75rem; background: #1e293b; padding: 0.625rem 0.75rem; font-size: 0.875rem; color: #fff; box-shadow: inset 0 0 0 1px var(--ring); outline: none; margin-bottom: 0.75rem; }
-    .field:focus { box-shadow: inset 0 0 0 2px var(--indigo); }
-    textarea.field { resize: none; }
-    .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.75rem; }
-    .type-btn { display: flex; align-items: center; justify-content: space-between; border-radius: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500; background: rgba(30, 41, 59, 0.6); color: var(--txt); box-shadow: inset 0 0 0 1px var(--ring); cursor: pointer; transition: 0.1s;}
-    .type-btn:hover { background: #1e293b; }
-    .type-btn.sel { background: rgba(99, 102, 241, 0.2); color: #fff; box-shadow: inset 0 0 0 1px var(--indigo); }
-    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .prev-box { margin-bottom: 0.75rem; border-radius: 0.75rem; padding: 0.75rem; background: rgba(30, 41, 59, 0.7); }
-    .submit { width: 100%; border-radius: 0.75rem; padding: 0.75rem 1rem; font-size: 1rem; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--indigo), var(--sky)); transition: 0.15s;}
-    .submit.boss { background: linear-gradient(90deg, var(--fuchsia), var(--violet)); }
-    .submit:hover { filter: brightness(1.1); }
-    .del-btn { border-radius: 0.75rem; padding: 0.75rem 1rem; font-size: 0.875rem; font-weight: 700; background: rgba(244, 63, 94, 0.2); color: #fda4af; box-shadow: inset 0 0 0 1px rgba(244, 63, 94, 0.4); }
-
-    /* achievements */
-    .ach-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
-    @media(min-width: 640px) { .ach-grid { grid-template-columns: 1fr 1fr; } }
-    .ach { display: flex; align-items: center; gap: 0.75rem; border-radius: 0.75rem; padding: 0.75rem; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05); background: rgba(30, 41, 59, 0.4); opacity: 0.6; }
-    .ach.got { background: rgba(245, 158, 11, 0.1); box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.4); opacity: 1; }
-    .ach .emo { font-size: 1.5rem; }
-    .ach.locked .emo { filter: grayscale(1); }
-    .ach .an { font-size: 0.875rem; font-weight: 700; color: var(--muted); margin: 0; }
-    .ach.got .an { color: #fde68a; }
-
-    /* toast notifications */
-    .toast-wrap { position: fixed; left: 0; right: 0; top: 1rem; z-index: 60; display: flex; justify-content: center; padding: 0 1rem; pointer-events: none; }
-    .toast { border-radius: 1rem; padding: 0.75rem 1.25rem; text-align: center; font-size: 0.875rem; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--indigo), var(--fuchsia)); box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.2); animation: toastIn 3.2s ease-in-out forwards; }
-    @keyframes toastIn { 0% { transform: translateY(-20px) scale(0.95); opacity: 0; } 10% { transform: translateY(0) scale(1.03); opacity: 1; } 20% { transform: scale(1); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
-
-    .empty-state { margin-top: 2.5rem; border-radius: 1rem; padding: 2.5rem; text-align: center; color: var(--muted); box-shadow: inset 0 0 0 1px var(--ring); background: rgba(30, 41, 59, 0.4); }
+    @media(max-width:768px) {
+      .sidebar { display: none !important; }
+      .bottom-nav { display: flex !important; }
+      .main-content { padding-bottom: 80px !important; }
+      .grid-4 { grid-template-columns: repeat(2,1fr) !important; }
+      .grid-8 { grid-template-columns: repeat(4,1fr) !important; }
+    }
+    @media(min-width:769px) {
+      .bottom-nav { display: none !important; }
+    }
   </style>
 </head>
 <body>
-  <div id="toast-root"></div>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1 class="title">⚔️ Outreach Arena</h1>
-        <p class="sub" id="subline">Turn every follow-up into a win.</p>
-      </div>
-      <div class="row">
-        <button class="chip-btn amber-btn" id="btn-ach">🏆 <span id="ach-count">0/0</span></button>
-        <button class="btn" id="btn-add">➕ Prospect</button>
-      </div>
-    </header>
 
-    <div class="stats" id="stats"></div>
-    <div id="nudge-slot"></div>
-
-    <div class="controls">
-      <input class="inp search" id="search" placeholder="🔍 Search prospects..." />
-      <select class="inp" id="sort">
-        <option value="heat">Sort: Urgency</option>
-        <option value="xp">Sort: XP</option>
-        <option value="name">Sort: Name</option>
-      </select>
+  <div class="toast-container" id="toastContainer"></div>
+  
+  <div class="modal-overlay" id="levelUpModal" style="display:none">
+    <div class="modal-content animate-level-up">
+      <div style="font-size:64px; margin-bottom:16px" class="animate-float">⭐</div>
+      <h2 class="font-display text-3xl font-bold text-gradient-gold" style="margin-bottom:8px">LEVEL UP!</h2>
+      <p style="font-size:18px; margin-bottom:4px">You've reached <span class="font-display font-bold" style="color:var(--gold); font-size:1.25rem" id="levelUpLevel">Level 1</span></p>
+      <p style="font-size:14px; margin-bottom:24px; color:var(--dark-300)">Your outreach game keeps getting stronger!</p>
+      <button class="btn btn-gold" onclick="closeLevelUp()">Let's Go! 🚀</button>
     </div>
-    <div class="filters" id="filters"></div>
-
-    <div class="grid" id="grid"></div>
-    <div id="empty-slot"></div>
-
-    <div class="backup">
-      <p class="sm" style="font-weight:700; color:#fff; margin:0 0 0.5rem">💾 Save &amp; Backup</p>
-      <p class="xs muted" style="margin:0 0 0.75rem">Progress auto-saves in this browser. Export a backup so a cleared cache never wipes your grind.</p>
-      <div class="row">
-        <button class="chip-btn emerald-btn" id="btn-json">⬇️ Export Backup (.json)</button>
-        <button class="chip-btn sky-btn" id="btn-csv">📊 Export Sheet (.csv)</button>
-        <button class="chip-btn violet-btn" id="btn-import">⬆️ Import Backup</button>
-        <button class="chip-btn rose-btn" id="btn-reset">♻️ Reset Data</button>
-        <input type="file" id="file-import" accept="application/json" class="hidden" />
+  </div>
+  
+  <div class="modal-overlay" id="achievementModal" style="display:none">
+    <div class="modal-content animate-level-up">
+      <div style="font-size:64px; margin-bottom:16px" class="animate-float" id="achieveIcon">🏆</div>
+      <h2 class="font-display text-2xl font-bold text-gradient-gold" style="margin-bottom:8px">Achievement Unlocked!</h2>
+      <p style="font-size:18px; font-weight:600; margin-bottom:4px" id="achieveName">First Blood</p>
+      <p style="font-size:14px; margin-bottom:8px; color:var(--dark-300)" id="achieveDesc">Send your first outreach</p>
+      <p style="font-size:18px; font-weight:bold; margin-bottom:24px; color:var(--gold)" id="achieveXP">+25 XP</p>
+      <button class="btn btn-gold" onclick="closeAchievement()">Awesome! 🎉</button>
+    </div>
+  </div>
+  
+  <div class="modal-overlay" id="confirmModal" style="display:none">
+    <div class="modal-content">
+      <h3 class="font-display font-bold text-lg" style="margin-bottom:12px" id="confirmTitle">Confirm Action</h3>
+      <p style="font-size:14px; margin-bottom:24px; color:var(--dark-300)" id="confirmMessage">Are you sure?</p>
+      <div style="display:flex; gap:12px; justify-content:center">
+        <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+        <button class="btn btn-danger" id="confirmBtn" onclick="confirmAction()">Confirm</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-overlay" id="addProspectModal" style="display:none">
+    <div class="modal-content" style="max-width:600px; text-align:left">
+      <h3 class="font-display font-bold text-lg text-gradient-quest" style="margin-bottom:16px">⚔️ New Quest Entry</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+        <div><label>Company</label><input id="newCompany" placeholder="Company name"></div>
+        <div><label>Contact Name</label><input id="newContact" placeholder="Person's name"></div>
+        <div><label>Email</label><input id="newEmail" type="email" placeholder="email@example.com"></div>
+        <div><label>Industry</label><input id="newIndustry" placeholder="e.g. SaaS, Coaching"></div>
+        <div>
+          <label>Prospect Value</label>
+          <select id="newValue">
+            <option value="low">🔹 Low Value</option>
+            <option value="medium" selected>🔸 Medium Value</option>
+            <option value="high">🔶 High Value</option>
+            <option value="boss">👑 Boss Battle</option>
+          </select>
+        </div>
+        <div><label>First Action Date</label><input id="newDate" type="date"></div>
+        <div style="grid-column:span 2">
+          <label>Action Type</label>
+          <select id="newActionType">
+            <option value="email">📧 Email</option>
+            <option value="call">📞 Phone Call</option>
+            <option value="linkedin">💼 LinkedIn</option>
+            <option value="other">📋 Other</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:20px; justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="closeAddProspect()">Cancel</button>
+        <button class="btn btn-quest" onclick="addProspect()">Start Quest! ⚔️</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-overlay" id="detailModal" style="display:none">
+    <div class="modal-content" style="max-width:700px; max-height:85vh; overflow-y:auto; text-align:left" id="detailContent"></div>
+  </div>
+  
+  <div class="modal-overlay" id="importModal" style="display:none">
+    <div class="modal-content" style="text-align:left">
+      <h3 class="font-display font-bold text-lg text-gradient-boss" style="margin-bottom:12px">📥 Import Data</h3>
+      <p style="font-size:14px; margin-bottom:12px; color:var(--dark-300)">Paste your JSON backup or upload a file.</p>
+      <textarea id="importText" rows="6" placeholder="Paste JSON here..." style="font-family:monospace; font-size:12px"></textarea>
+      <div style="display:flex; gap:10px; margin-top:12px; justify-content:space-between; align-items:center">
+        <div>
+          <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleFileImport(event)">
+          <button class="btn btn-ghost" onclick="document.getElementById('importFile').click()">📁 Upload File</button>
+        </div>
+        <div style="display:flex; gap:10px">
+          <button class="btn btn-ghost" onclick="closeImport()">Cancel</button>
+          <button class="btn btn-primary" onclick="doImport()">Import</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <div id="modal-root"></div>
+  <div style="display:flex; min-height:100vh">
+    <nav class="sidebar" style="width:240px; padding:20px 16px; display:flex; flex-direction:column; gap:4px; position:sticky; top:0; height:100vh; border-right:1px solid var(--dark-600); background:var(--dark-800)">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px; padding:0 4px">
+        <span style="font-size:24px">⚔️</span>
+        <div>
+          <div class="font-display font-bold text-gradient-gold" style="font-size:16px">Outreach Quest</div>
+          <div style="font-size:11px; color:var(--dark-300)">Gamified Tracker</div>
+        </div>
+      </div>
+      
+      <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><span>🏠</span> Dashboard</div>
+      <div class="nav-item" data-tab="prospects" onclick="switchTab('prospects')"><span>👥</span> Prospects</div>
+      <div class="nav-item" data-tab="achievements" onclick="switchTab('achievements')"><span>🏆</span> Achievements</div>
+      <div class="nav-item" data-tab="settings" onclick="switchTab('settings')"><span>⚙️</span> Settings</div>
+      
+      <div class="glass" style="margin-top:auto; padding:16px">
+        <div style="font-size:11px; color:var(--dark-400); margin-bottom:8px; font-weight:600">Quick Stats</div>
+        <div style="display:flex; flex-direction:column; gap:6px; font-size:13px">
+          <div style="display:flex; justify-content:space-between">
+            <span style="color:var(--dark-300)">XP</span>
+            <span class="font-bold" style="color:var(--xp-blue); margin-left:auto" id="sideXP">0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between">
+            <span style="color:var(--dark-300)">Level</span>
+            <span class="font-bold" style="color:var(--gold); margin-left:auto" id="sideLevel">1</span>
+          </div>
+          <div style="display:flex; justify-content:space-between">
+            <span style="color:var(--dark-300)">Streak</span>
+            <span class="font-bold" style="color:var(--fire); margin-left:auto" id="sideStreak">0🔥</span>
+          </div>
+          <div style="display:flex; justify-content:space-between">
+            <span style="color:var(--dark-300)">Prospects</span>
+            <span class="font-bold" style="margin-left:auto" id="sideProspects">0</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+    <main class="main-content" style="flex:1; padding:24px; overflow-y:auto">
+      <div id="pageContent"></div>
+    </main>
+  </div>
+  
+  <nav class="bottom-nav" style="position:fixed; bottom:0; left:0; right:0; background:rgba(18,18,26,.95); backdrop-filter:blur(20px); border-top:1px solid var(--dark-600); display:none; z-index:50">
+    <div style="display:flex; justify-content:space-around; padding:8px 0">
+      <div class="nav-item" style="flex:1; justify-content:center" data-tab="dashboard" onclick="switchTab('dashboard')">
+        <span>🏠</span><span style="font-size:11px">Dashboard</span>
+      </div>
+      <div class="nav-item" style="flex:1; justify-content:center" data-tab="prospects" onclick="switchTab('prospects')">
+        <span>👥</span><span style="font-size:11px">Prospects</span>
+      </div>
+      <div class="nav-item" style="flex:1; justify-content:center" data-tab="achievements" onclick="switchTab('achievements')">
+        <span>🏆</span><span style="font-size:11px">Achieve</span>
+      </div>
+      <div class="nav-item" style="flex:1; justify-content:center" data-tab="settings" onclick="switchTab('settings')">
+        <span>⚙️</span><span style="font-size:11px">Settings</span>
+      </div>
+    </div>
+  </nav>
 
 <script>
 "use strict";
 
-const TOUCHPOINT_TYPES = [
-  {value: "Email", icon: "✉️", baseXp: 10},
-  {value: "LinkedIn DM", icon: "💼", baseXp: 12},
-  {value: "Social Comment", icon: "💬", baseXp: 8},
-  {value: "Voicemail", icon: "📩", baseXp: 15},
-  {value: "Phone Call", icon: "📞", baseXp: 25},
-  {value: "Video Message", icon: "🎥", baseXp: 30},
-  {value: "Referral Ask", icon: "🤝", baseXp: 20},
-  {value: "In-Person / Meeting", icon: "☕", baseXp: 50},
-];
-
-const OUTCOMES = [
-  {value: "No Response", icon: "🕸️", bonusXp: 0},
-  {value: "Opened / Seen", icon: "👀", bonusXp: 5},
-  {value: "Replied", icon: "↩️", bonusXp: 15},
-  {value: "Positive Reply", icon: "😃", bonusXp: 30},
-  {value: "Booked Meeting", icon: "📅", bonusXp: 60},
-  {value: "Not Interested", icon: "🚪", bonusXp: 3},
-  {value: "Closed Won", icon: "💰", bonusXp: 200},
-];
-
-const STAGES = [
-  {value: "New Lead", bg: "#334155"},
-  {value: "Contacted", bg: "#0369a1"},
-  {value: "In Conversation", bg: "#6d28d9"},
-  {value: "Meeting Booked", bg: "#b45309"},
-  {value: "Won", bg: "#047857"},
-  {value: "Lost", bg: "#9f1239"},
-];
-
 const QUEST_NAMES = [
-  "⚔️ First Contact", "🎯 The Opening Move", "💥 Value Bomb", "🔍 The Check-In",
-  "🌊 Persistence Wave", "🧗 Break Through the Wall", "🎁 The Gift Drop",
-  "🛡️ The Last Stand", "🔮 The Long Game", "👑 Final Boss Push"
+  'The First Arrow', 'Echo of Persistence', 'Whisper in the Wind', 'The Final Gambit', 
+  'Breaking the Silence', 'Seal the Alliance', 'Victory or Valhalla', 'The Phantom Follow', 
+  'Shadow Strike', 'The Last Resort'
 ];
 
-function questNameForIndex(i) {
-  if (i < QUEST_NAMES.length) return QUEST_NAMES[i];
-  return "♾️ Relentless Pursuit #" + (i - QUEST_NAMES.length + 1);
-}
-
-const RANKS = [
-  {minLevel: 1, title: "Cold Caller", icon: "🐣"},
-  {minLevel: 3, title: "Prospector", icon: "⛏️"},
-  {minLevel: 5, title: "Connector", icon: "🔗"},
-  {minLevel: 8, title: "Closer", icon: "🎯"},
-  {minLevel: 12, title: "Rainmaker", icon: "🌧️"},
-  {minLevel: 16, title: "Deal Wizard", icon: "🧙"},
-  {minLevel: 20, title: "Outreach Legend", icon: "👑"},
+const QUEST_DESCS = [
+  'Send your first outreach message to the prospect.',
+  'Send your second follow-up. Keep the momentum going!',
+  'Third touchpoint. Most people quit here — not you!',
+  'Fourth follow-up. You\'re a warrior of persistence!',
+  'Fifth touchpoint. Legend status unlocked!',
+  'Sixth touchpoint. This is where champions are made.',
+  'Seventh! You\'ve gone beyond what 95% of people do.',
+  'Ghost hunter mode. They can\'t hide forever.',
+  'Shadow strike — coming from an unexpected angle.',
+  'The nuclear option. Last chance to make contact.'
 ];
 
-function rankForLevel(level) {
-  let c = RANKS[0]; 
-  for (const r of RANKS) if (level >= r.minLevel) c = r; 
-  return c;
-}
+const QUEST_ICONS = ['🏹', '✉️', '🌬️', '🎲', '💥', '🤝', '⚔️', '👻', '🗡️', '💣'];
 
-const ACHIEVEMENTS = [
-  {id: "first_blood", name: "First Blood", icon: "🩸", desc: "Log your very first touchpoint."},
-  {id: "streak_3", name: "Warming Up", icon: "🔥", desc: "Hit a 3-day streak."},
-  {id: "streak_7", name: "On Fire", icon: "🔥🔥", desc: "Hit a 7-day streak."},
-  {id: "streak_30", name: "Unstoppable", icon: "🌋", desc: "Hit a 30-day streak."},
-  {id: "level_5", name: "Rising Star", icon: "⭐", desc: "Reach Level 5."},
-  {id: "level_10", name: "Elite Operator", icon: "💫", desc: "Reach Level 10."},
-  {id: "touch_25", name: "Grinder", icon: "⚙️", desc: "Log 25 total touchpoints."},
-  {id: "touch_100", name: "Centurion", icon: "🏛️", desc: "Log 100 total touchpoints."},
-  {id: "phone_10", name: "Phone Warrior", icon: "📞", desc: "Make 10 phone calls."},
-  {id: "first_reply", name: "It Speaks!", icon: "↩️", desc: "Get your first reply."},
-  {id: "first_meeting", name: "Deal Whisperer", icon: "📅", desc: "Book your first meeting."},
-  {id: "first_win", name: "Ka-Ching", icon: "💰", desc: "Close your first deal."},
-  {id: "boss_slayer", name: "Boss Slayer", icon: "🐉", desc: "Defeat a Boss (win a High-Value prospect)."},
-  {id: "comeback", name: "Necromancer", icon: "🧟", desc: "Revive a cold (red) prospect with a touchpoint."},
-  {id: "all_green", name: "Perfect Garden", icon: "🌿", desc: "Get every active prospect to green heat."},
-  {id: "roster_10", name: "Full Roster", icon: "📇", desc: "Track 10 or more prospects."},
+const ACH_DEFS = [
+  {id:'first_outreach', name:'First Blood', desc:'Send your first outreach', icon:'🩸', category:'outreach', req:1, xp:25},
+  {id:'10_outreaches', name:'Skirmisher', desc:'Send 10 outreaches', icon:'🗡️', category:'outreach', req:10, xp:50},
+  {id:'50_outreaches', name:'Outreach Warrior', desc:'Send 50 outreaches', icon:'⚔️', category:'outreach', req:50, xp:150},
+  {id:'100_outreaches', name:'Outreach Master', desc:'Send 100 outreaches', icon:'🎯', category:'outreach', req:100, xp:300},
+  {id:'5_streak', name:'On Fire!', desc:'Maintain a 5-day streak', icon:'🔥', category:'streak', req:5, xp:50},
+  {id:'14_streak', name:'Streak Lord', desc:'Maintain a 14-day streak', icon:'🔥', category:'streak', req:14, xp:150},
+  {id:'30_streak', name:'Streak Legend', desc:'Maintain a 30-day streak', icon:'🔥', category:'streak', req:30, xp:500},
+  {id:'50_streak', name:'Immortal Flame', desc:'Maintain a 50-day streak', icon:'🔥', category:'streak', req:50, xp:1000},
+  {id:'10_level', name:'Rising Star', desc:'Reach Level 10', icon:'⭐', category:'xp', req:10, xp:100},
+  {id:'25_level', name:'Elite', desc:'Reach Level 25', icon:'💎', category:'xp', req:25, xp:250},
+  {id:'50_level', name:'Grandmaster', desc:'Reach Level 50', icon:'👑', category:'xp', req:50, xp:500},
+  {id:'first_boss', name:'Boss Slayer', desc:'Defeat your first Boss Battle', icon:'💀', category:'boss', req:1, xp:200},
+  {id:'5_bosses', name:'Boss Hunter', desc:'Defeat 5 Boss Battles', icon:'🐉', category:'boss', req:5, xp:500},
+  {id:'10_responses', name:'Charmer', desc:'Get 10 responses', icon:'💌', category:'outreach', req:10, xp:100},
+  {id:'25_responses', name:'Silver Tongue', desc:'Get 25 responses', icon:'🎭', category:'outreach', req:25, xp:250},
+  {id:'first_meeting', name:'Door Opener', desc:'Book your first meeting', icon:'🚪', category:'outreach', req:1, xp:150},
+  {id:'10_meetings', name:'Rainmaker', desc:'Book 10 meetings', icon:'☔', category:'outreach', req:10, xp:400},
+  {id:'first_win', name:'Closer', desc:'Close your first deal', icon:'🤝', category:'special', req:1, xp:300},
+  {id:'all_quests', name:'Completionist', desc:'Complete all 10 quest stages for a prospect', icon:'📜', category:'special', req:1, xp:200}
 ];
 
-const KEY = "outreach_arena_state_v1";
+const STATUS_MAP = {
+  'new': {label:'🆕 New', cls:'status-new'},
+  'contacted': {label:'📧 Contacted', cls:'status-contacted'},
+  'followed_up_1': {label:'↩️ F/U 1', cls:'status-fu1'},
+  'followed_up_2': {label:'↩️ F/U 2', cls:'status-fu2'},
+  'followed_up_3': {label:'↩️ F/U 3', cls:'status-fu3'},
+  'followed_up_4': {label:'↩️ F/U 4', cls:'status-fu4'},
+  'followed_up_5': {label:'↩️ F/U 5', cls:'status-fu5'},
+  'response_received': {label:'💬 Response', cls:'status-response'},
+  'meeting_booked': {label:'📅 Meeting', cls:'status-meeting'},
+  'closed_won': {label:'🏆 Won!', cls:'status-won'},
+  'closed_lost': {label:'❌ Lost', cls:'status-lost'},
+  'ghosted': {label:'👻 Ghosted', cls:'status-ghosted'}
+};
 
-function uid() { 
-  return Math.random().toString(36).slice(2, 10) + Date.now().toString(36); 
-}
+const RESULT_ICONS = {
+  'sent': '📤 Sent',
+  'opened': '👁️ Opened',
+  'replied': '💬 Replied',
+  'call_connected': '📞 Connected',
+  'voicemail': '🎙️ Voicemail',
+  'meeting_booked': '📅 Meeting',
+  'no_response': '😶 No Response'
+};
 
-const SEED = [
-  {company: "Design Your Next Step", contact: "Jen Lewi", email: "jennifer_lewi@yahoo.com", value: "Standard", stage: "New Lead"},
-  {company: "Bay Street Coaching", contact: "Sara Knapp", email: "sara.knapp@baystreetcoaching.com", value: "Standard", stage: "New Lead"},
-  {company: "Next Step Clarity", contact: "Graham Dover", email: "coaching@grahamdover.com", value: "Standard", stage: "New Lead"},
-  {company: "Central Park Executive Coach", contact: "Eileen Springer", email: "eileen@centralparkexecutivecoaching.com", value: "High-Value", stage: "New Lead"},
-  {company: "Jodi Webb Life Coach", contact: "Jodi Webb", email: "Jodi@JodiWebbLifeCoach.com", value: "Standard", stage: "New Lead"},
-  {company: "Mark Collins Coaching", contact: "Mark Collins", email: "info@markcollins.co", value: "Standard", stage: "New Lead"},
-  {company: "Proverbs Leadership", contact: "Mesale Solomon Mendes", email: "mesale.solomon@proverbsleadership.com", value: "High-Value", stage: "New Lead"},
-  {company: "Exalt Coach", contact: "John Beach", email: "john@drjohnbeach.com", value: "Standard", stage: "New Lead"},
-  {company: "Jack Willis Coaching", contact: "Jack Willis", email: "jackwilliscoaching@hotmail.com", value: "Standard", stage: "New Lead"},
-  {company: "Roush Development", contact: "Tammy Roush", email: "tammy@roushdevelopment.com", value: "High-Value", stage: "New Lead"},
-];
+const TYPE_ICONS = {
+  'email': '📧',
+  'call': '📞',
+  'linkedin': '💼',
+  'meeting': '🤝',
+  'other': '📋'
+};
 
-function seedState() {
-  const now = new Date().toISOString();
+function defaultState() {
   return {
-    version: 1, 
-    unlockedAchievements: [], 
-    prospects: SEED.map(s => ({...s, id: uid(), createdAt: now, touchpoints: []}))
+    prospects: [],
+    stats: {
+      totalXP: 0, level: 1, xpForNextLevel: 100, currentStreak: 0, longestStreak: 0, 
+      lastActivityDate: '', totalOutreaches: 0, totalResponses: 0, totalMeetings: 0, 
+      totalWins: 0, totalLosses: 0, bossDefeated: 0, consecutiveDays: [], achievements: []
+    },
+    achievements: ACH_DEFS.map(a => ({...a, unlocked: false, unlockedDate: null})),
+    _leveledUp: false,
+    _newAchievement: null
   };
 }
 
-// Fortified State Loader to prevent crashes on bad missing keys from old states
-function sanitizeState(parsed) {
-  if (!parsed || !parsed.prospects) return seedState();
-  const prospects = parsed.prospects.map(p => ({
-    ...p,
-    touchpoints: p.touchpoints || []
-  }));
-  return {
-    version: parsed.version || 1,
-    unlockedAchievements: parsed.unlockedAchievements || [],
-    prospects: prospects
-  };
-}
+let state = defaultState();
+let currentTab = 'dashboard';
+let selectedProspectId = null;
+let confirmCallback = null;
 
 function loadState() {
   try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return seedState();
-    return sanitizeState(JSON.parse(raw));
-  } catch (e) {
-    return seedState();
+    const r = localStorage.getItem('outreach_quest_data');
+    if (r) {
+      const p = JSON.parse(r);
+      if (!p.achievements || !p.achievements.length) {
+        p.achievements = ACH_DEFS.map(a => ({...a, unlocked: false, unlockedDate: null}));
+      }
+      if (!p.stats) {
+        p.stats = defaultState().stats;
+      }
+      return p;
+    }
+  } catch(e) {
+    console.error("Error loading state:", e);
   }
+  return defaultState();
 }
 
 function saveState() {
   try {
-    localStorage.setItem(KEY, JSON.stringify(state));
-  } catch (e) {
-    // Fail silently in incognito/strict-privacy modes where localStorage is restricted
+    localStorage.setItem('outreach_quest_data', JSON.stringify(state));
+  } catch(e) {
+    console.error("Error saving state:", e);
   }
 }
 
-function xpForTouchpoint(type, outcome) {
-  const t = TOUCHPOINT_TYPES.find(x => x.value === type);
-  const o = OUTCOMES.find(x => x.value === outcome);
-  return (t ? t.baseXp : 10) + (o ? o.bonusXp : 0);
-}
-
-function pXp(p) { return (p.touchpoints || []).reduce((s, t) => s + (t.xp || 0), 0); }
-function totalXp() { return state.prospects.reduce((s, p) => s + pXp(p), 0); }
-function totalTouchpoints() { return state.prospects.reduce((s, p) => s + (p.touchpoints ? p.touchpoints.length : 0), 0); }
-
-function xpToReachLevel(l) { return l <= 1 ? 0 : 50 * (l - 1) * l; }
-function levelInfo(xp) {
-  let level = 1; 
-  while (xp >= xpToReachLevel(level + 1)) level++;
-  const cf = xpToReachLevel(level), nf = xpToReachLevel(level + 1);
-  const into = xp - cf, span = nf - cf;
-  return {level, toNext: nf - xp, progress: span > 0 ? Math.min(100, into / span * 100) : 100};
-}
-
-function localToday() { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }
-function dayKey(d) { return d.toISOString().slice(0, 10); }
-
-function computeStreak() {
-  const days = new Set();
-  state.prospects.forEach(p => (p.touchpoints || []).forEach(t => days.add(t.date)));
-  if (days.size === 0) return 0;
-  
-  const today = localToday(); 
-  const cur = new Date(today);
-  if (!days.has(dayKey(cur))) {
-    cur.setDate(cur.getDate() - 1);
-    if (!days.has(dayKey(cur))) return 0;
-  }
-  
-  let s = 0; 
-  while (days.has(dayKey(cur))) {
-    s++;
-    cur.setDate(cur.getDate() - 1);
-  }
-  return s;
-}
-
-function loggedToday() {
-  const k = dayKey(localToday());
-  return state.prospects.some(p => (p.touchpoints || []).some(t => t.date === k));
-}
-
-function daysSince(dateStr) {
-  const then = new Date(dateStr + "T00:00:00"), now = localToday();
-  return Math.floor((now - then) / 86400000);
-}
-
-const HEAT_META = {
-  green: {dot: "🟢", label: "Hot", text: "#6ee7b7", order: 2},
-  yellow: {dot: "🟡", label: "Cooling", text: "#fde047", order: 3},
-  orange: {dot: "🟠", label: "Slipping", text: "#fdba74", order: 4},
-  red: {dot: "🔴", label: "Going Cold!", text: "#fda4af", order: 5},
-  new: {dot: "⚪", label: "Untouched", text: "#cbd5e1", order: 1},
-  closed: {dot: "🏁", label: "Closed", text: "#94a3b8", order: 6},
-};
-
-function prospectHeat(p) {
-  if (p.stage === "Won" || p.stage === "Lost") return "closed";
-  if (!p.touchpoints || p.touchpoints.length === 0) return "new";
-  const last = [...p.touchpoints].sort((a, b) => a.date < b.date ? 1 : -1)[0];
-  const d = daysSince(last.date);
-  if (d <= 2) return "green"; 
-  if (d <= 5) return "yellow"; 
-  if (d <= 9) return "orange"; 
-  return "red";
-}
-
-function bossState(p) {
-  const maxHp = 500;
-  if (p.stage === "Won") return {maxHp, hp: 0, pct: 0, defeated: true};
-  const dmg = pXp(p); 
-  const hp = Math.max(0, maxHp - dmg);
-  return {maxHp, hp, pct: hp / maxHp * 100, defeated: hp <= 0};
-}
-
-function computeUnlocked() {
-  const xp = totalXp(); 
-  const {level} = levelInfo(xp);
-  const streak = computeStreak(); 
-  const touches = totalTouchpoints();
-  const allTp = state.prospects.flatMap(p => p.touchpoints || []);
-  const phone = allTp.filter(t => t.type === "Phone Call").length;
-  const active = state.prospects.filter(p => p.stage !== "Won" && p.stage !== "Lost");
-  
-  const unlocked = new Set(state.unlockedAchievements || []);
-  const checks = {
-    first_blood: touches >= 1, 
-    streak_3: streak >= 3, 
-    streak_7: streak >= 7, 
-    streak_30: streak >= 30,
-    level_5: level >= 5, 
-    level_10: level >= 10, 
-    touch_25: touches >= 25, 
-    touch_100: touches >= 100,
-    phone_10: phone >= 10,
-    first_reply: allTp.some(t => ["Replied", "Positive Reply", "Booked Meeting", "Closed Won"].includes(t.outcome)),
-    first_meeting: state.prospects.some(p => p.stage === "Meeting Booked" || p.stage === "Won"),
-    first_win: state.prospects.some(p => p.stage === "Won"),
-    boss_slayer: state.prospects.some(p => p.value === "High-Value" && p.stage === "Won"),
-    all_green: active.length > 0 && active.every(p => prospectHeat(p) === "green"),
-    roster_10: state.prospects.length >= 10,
-  };
-  
-  ACHIEVEMENTS.forEach(a => { if (checks[a.id]) unlocked.add(a.id); });
-  return Array.from(unlocked);
-}
-
-function download(filename, content, type) {
-  const blob = new Blob([content], {type});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); 
-  a.href = url; 
-  a.download = filename; 
+function exportState() {
+  const j = JSON.stringify(state, null, 2);
+  const b = new Blob([j], {type: 'application/json'});
+  const u = URL.createObjectURL(b);
+  const a = document.createElement('a');
+  a.href = u;
+  a.download = 'outreach-quest-' + new Date().toISOString().split('T')[0] + '.json';
   a.click();
-  URL.revokeObjectURL(url);
+  URL.revokeObjectURL(u);
+  showToast('Backup downloaded!', 'success');
 }
 
-function exportJson() { 
-  download("outreach-arena-backup-" + dayKey(new Date()) + ".json", JSON.stringify(state, null, 2), "application/json"); 
+function importStateJSON(json) {
+  try {
+    const p = JSON.parse(json);
+    if (!p.prospects || !p.stats) throw new Error("Invalid structure");
+    if (!p.achievements || !p.achievements.length) {
+      p.achievements = ACH_DEFS.map(a => ({...a, unlocked: false, unlockedDate: null}));
+    }
+    state = p;
+    saveState();
+    render();
+    showToast('Data imported successfully!', 'success');
+  } catch(e) {
+    showToast('Invalid data format!', 'warning');
+  }
 }
 
-function csvEscape(v) { 
-  v = String(v || ""); 
-  return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; 
+function resetAll() {
+  state = defaultState();
+  saveState();
+  render();
+  showToast('All data reset!', 'warning');
 }
 
-function exportCsv() {
-  const rows = [["Company", "Contact", "Email", "Value", "Stage", "Touchpoints", "Total XP", "Last Touch Date", "Quest", "Type", "Outcome", "Notes"].join(",")];
-  state.prospects.forEach(p => {
-    const xp = pXp(p);
-    const last = p.touchpoints ? [...p.touchpoints].sort((a, b) => a.date < b.date ? 1 : -1)[0] : null;
-    const lastDate = last ? last.date : "";
-    
-    if (!p.touchpoints || p.touchpoints.length === 0) {
-      rows.push([p.company, p.contact, p.email, p.value, p.stage, 0, 0, "", "", "", "", ""].map(csvEscape).join(","));
-    } else {
-      p.touchpoints.forEach((t, i) => {
-        rows.push([
-          i === 0 ? p.company : "", i === 0 ? p.contact : "", i === 0 ? p.email : "", i === 0 ? p.value : "",
-          i === 0 ? p.stage : "", i === 0 ? p.touchpoints.length : "", i === 0 ? xp : "", i === 0 ? lastDate : "",
-          t.questName, t.type, t.outcome, t.notes
-        ].map(csvEscape).join(","));
-      });
+function xpForLevel(l) {
+  return Math.floor(100 * Math.pow(1.3, l - 1));
+}
+
+function addXP(amount) {
+  state.stats.totalXP += amount;
+  while (state.stats.totalXP >= state.stats.xpForNextLevel) {
+    state.stats.totalXP -= state.stats.xpForNextLevel;
+    state.stats.level++;
+    state.stats.xpForNextLevel = xpForLevel(state.stats.level);
+    state._leveledUp = true;
+  }
+}
+
+function updateStreak(date) {
+  const today = date || new Date().toISOString().split('T')[0];
+  const last = state.stats.lastActivityDate;
+  
+  if (last === today) return;
+  
+  const yest = new Date(new Date(today).getTime() - 864e5).toISOString().split('T')[0];
+  if (last === yest || last === '') {
+    state.stats.currentStreak++;
+  } else if (last !== today) {
+    state.stats.currentStreak = 1;
+  }
+  
+  if (state.stats.currentStreak > state.stats.longestStreak) {
+    state.stats.longestStreak = state.stats.currentStreak;
+  }
+  
+  state.stats.lastActivityDate = today;
+  if (!state.stats.consecutiveDays.includes(today)) {
+    state.stats.consecutiveDays.push(today);
+  }
+}
+
+function unlockAchievement(id) {
+  const a = state.achievements.find(x => x.id === id);
+  if (!a || a.unlocked) return;
+  a.unlocked = true;
+  a.unlockedDate = new Date().toISOString().split('T')[0];
+  state.stats.totalXP += a.xp;
+  state._newAchievement = a;
+}
+
+function checkAchievements() {
+  const s = state.stats;
+  const checks = [
+    ['first_outreach', s.totalOutreaches >= 1],
+    ['10_outreaches', s.totalOutreaches >= 10],
+    ['50_outreaches', s.totalOutreaches >= 50],
+    ['100_outreaches', s.totalOutreaches >= 100],
+    ['10_responses', s.totalResponses >= 10],
+    ['25_responses', s.totalResponses >= 25],
+    ['first_meeting', s.totalMeetings >= 1],
+    ['10_meetings', s.totalMeetings >= 10],
+    ['5_streak', s.currentStreak >= 5],
+    ['14_streak', s.currentStreak >= 14],
+    ['30_streak', s.currentStreak >= 30],
+    ['50_streak', s.currentStreak >= 50],
+    ['10_level', s.level >= 10],
+    ['25_level', s.level >= 25],
+    ['50_level', s.level >= 50],
+    ['first_boss', s.bossDefeated >= 1],
+    ['5_bosses', s.bossDefeated >= 5],
+    ['first_win', s.totalWins >= 1],
+    ['all_quests', state.prospects.some(p => p.questLevel >= 10)]
+  ];
+  
+  checks.forEach(([id, c]) => {
+    if (c && !s.achievements.includes(id)) {
+      s.achievements.push(id);
+      unlockAchievement(id);
     }
   });
-  download("outreach-arena-" + dayKey(new Date()) + ".csv", rows.join("\n"), "text/csv");
 }
 
-function importJson(file) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const p = JSON.parse(reader.result);
-      state = sanitizeState(p);
-      prevLevel = levelInfo(totalXp()).level;
-      prevUnlocked = state.unlockedAchievements.slice();
-      saveState(); 
-      render();
-      toast("✅ Progress imported successfully!");
-    } catch (e) {
-      toast("❌ Could not import that file. It might be corrupted.");
-    }
+function addTouchpoint(pId, type, result, notes) {
+  const p = state.prospects.find(x => x.id === pId);
+  if (!p) return;
+  
+  const xm = {
+    email: p.value === 'boss' ? 20 : 10,
+    call: p.value === 'boss' ? 20 : 15,
+    linkedin: p.value === 'boss' ? 20 : 8,
+    meeting: p.value === 'boss' ? 100 : 50,
+    other: 10
   };
-  reader.readAsText(file);
-}
-
-const $ = (s, r = document) => r.querySelector(s);
-function el(tag, cls, html) { 
-  const e = document.createElement(tag); 
-  if (cls) e.className = cls; 
-  if (html != null) e.innerHTML = html; 
-  return e; 
-}
-
-function esc(s) {
-  return String(s || "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
-}
-
-function typeIcon(t) { const x = TOUCHPOINT_TYPES.find(y => y.value === t); return x ? x.icon : "•"; }
-function outcomeIcon(o) { const x = OUTCOMES.find(y => y.value === o); return x ? x.icon : "•"; }
-function stageBg(st) { const x = STAGES.find(s => s.value === st); return x ? x.bg : "#334155"; }
-
-let toastTimer = null;
-function toast(msg) {
-  const root = $("#toast-root"); 
-  root.innerHTML = "";
-  const w = el("div", "toast-wrap"); 
-  const t = el("div", "toast", esc(msg));
-  w.appendChild(t); 
-  root.appendChild(w);
-  if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { root.innerHTML = ""; }, 3200);
-}
-
-// Ensure safe modals instead of blocked window.confirm() dialogs
-function closeModal() { $("#modal-root").innerHTML = ""; }
-
-function modalShell(titleHtml, bodyEl, boss) {
-  const root = $("#modal-root"); 
-  root.innerHTML = "";
-  const ov = el("div", "overlay");
-  ov.onclick = e => { if (e.target === ov) closeModal(); };
   
-  const m = el("div", "modal" + (boss ? " boss" : ""));
-  const head = el("div", "modal-head");
-  head.innerHTML = `<h2>${titleHtml}</h2>`;
-  
-  const x = el("button", "icon-btn", "✕"); 
-  x.style.opacity = "1"; 
-  x.onclick = closeModal;
-  head.appendChild(x);
-  
-  const body = el("div", "modal-body"); 
-  body.appendChild(bodyEl);
-  
-  m.appendChild(head); 
-  m.appendChild(body); 
-  ov.appendChild(m); 
-  root.appendChild(ov);
-}
-
-// Custom Confirm Prompt (Replaces browser confirm)
-function showConfirm(title, message, confirmBtnText, onConfirm) {
-  const body = el("div");
-  body.innerHTML = `
-    <p style="margin-top:0; color:var(--txt);">${esc(message)}</p>
-    <div class="row" style="margin-top:1.25rem; gap:0.5rem">
-      <button class="submit grow" id="cc-btn-confirm" style="background:linear-gradient(90deg,var(--rose),var(--orange));">${esc(confirmBtnText)}</button>
-      <button class="chip-btn grow" id="cc-btn-cancel" style="padding:0.75rem">Cancel</button>
-    </div>
-  `;
-  body.querySelector("#cc-btn-confirm").onclick = () => {
-    closeModal();
-    if (onConfirm) onConfirm();
+  const tp = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+    type,
+    result,
+    date: new Date().toISOString().split('T')[0],
+    notes: notes || '',
+    xpEarned: xm[type] || 10,
+    questCompleted: true
   };
-  body.querySelector("#cc-btn-cancel").onclick = closeModal;
-  modalShell(`⚠️ ${title}`, body, false);
-}
-
-let state = loadState();
-let filter = "all", sort = "heat", query = "";
-let prevLevel = levelInfo(totalXp()).level;
-let prevUnlocked = state.unlockedAchievements.slice();
-
-const FILTERS = [
-  {id: "all", label: "All"},
-  {id: "cold", label: "🔴 Needs Action"},
-  {id: "boss", label: "👑 Bosses"},
-  {id: "active", label: "Active"},
-  {id: "closed", label: "🏁 Closed"},
-];
-
-function renderStats() {
-  const xp = totalXp(); 
-  const li = levelInfo(xp); 
-  const streak = computeStreak();
-  const didToday = loggedToday();
-  const active = state.prospects.filter(p => p.stage !== "Won" && p.stage !== "Lost");
-  const green = active.filter(p => prospectHeat(p) === "green").length;
-  const red = active.filter(p => prospectHeat(p) === "red").length;
-  const rank = rankForLevel(li.level);
-
-  $("#stats").innerHTML = `
-    <div class="card stat-xp">
-      <div class="row between">
-        <div>
-          <p class="rank">${rank.icon} ${esc(rank.title)}</p>
-          <p class="big">Level ${li.level}</p>
-        </div>
-        <div class="right">
-          <p class="big">⚡ ${xp.toLocaleString()}</p>
-          <p class="xs muted">total XP</p>
-        </div>
-      </div>
-      <div class="bar"><i style="width:${li.progress}%"></i></div>
-      <p class="tiny muted right" style="margin:0.25rem 0 0">${li.toNext.toLocaleString()} XP to Level ${li.level + 1}</p>
-    </div>
-    <div class="card stat-streak ${streak > 0 ? 'on' : ''}">
-      <p class="huge">${streak > 0 ? '🔥' : '🧊'} ${streak}</p>
-      <p class="xs" style="font-weight:600; color:#cbd5e1">day streak</p>
-      <p class="tiny" style="margin:0.25rem 0 0; color:${didToday ? '#6ee7b7' : '#fcd34d'}">${didToday ? '✓ logged today' : '⚠ not logged today'}</p>
-    </div>
-    <div class="card">
-      <p class="xs" style="font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted)">Pipeline Heat</p>
-      <p class="big" style="margin-top:0.25rem">🟢 ${green}</p>
-      <p class="tiny" style="margin:0.25rem 0 0; color:#fda4af">🔴 ${red} going cold ${red > 0 ? '· act now!' : '· all clear'}</p>
-      <p class="tiny muted2">${active.length} active prospects</p>
-    </div>`;
-
-  const ns = $("#nudge-slot"); 
-  ns.innerHTML = "";
-  if (!didToday && active.length > 0) {
-    let msg = streak > 0 ? `<b>Keep your ${streak}-day streak alive!</b>` : `<b>Start a streak — log one now!</b>`;
-    if (red > 0) msg += ` ${red} prospect${red > 1 ? 's are' : ' is'} going cold.`;
-    ns.innerHTML = `<div class="nudge"><span style="font-size:1.25rem">⏰</span><p style="margin:0">You haven't logged a touchpoint today. ${msg}</p></div>`;
-  }
-}
-
-function renderFilters() {
-  const f = $("#filters"); 
-  f.innerHTML = "";
-  FILTERS.forEach(ft => {
-    const b = el("button", "pill" + (filter === ft.id ? " active" : ""), ft.label);
-    b.onclick = () => { filter = ft.id; render(); };
-    f.appendChild(b);
-  });
-}
-
-function prospectCard(p) {
-  const heat = prospectHeat(p); 
-  const hm = HEAT_META[heat];
-  const isBoss = p.value === "High-Value"; 
-  const boss = bossState(p);
-  const xp = pXp(p); 
-  const closed = p.stage === "Won" || p.stage === "Lost";
-  const sorted = p.touchpoints ? [...p.touchpoints].sort((a, b) => a.date < b.date ? 1 : -1) : [];
-  const last = sorted[0]; 
-  const daysAgo = last ? daysSince(last.date) : null;
-
-  const c = el("div", "pcard" + (isBoss ? " boss" : "") + (heat === "red" && !closed ? " cold" : ""));
-
-  let html = "";
-  if (isBoss) html += `<div class="crown-bg">👑</div>`;
-
-  html += `<div class="row between" style="align-items:flex-start; gap:0.75rem">
-    <div style="min-width:0">
-      <div class="row" style="gap:0.5rem">
-        <span style="font-size:1.1rem" title="${hm.label}">${hm.dot}</span>
-        <h3 class="pname">${esc(p.company)}</h3>
-        ${isBoss ? '<span class="badge boss">👑 Boss</span>' : ''}
-      </div>
-      <p class="sm muted" style="margin:0.15rem 0 0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${esc(p.contact)}</p>
-      <a class="xs" href="mailto:${esc(p.email)}" style="display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${esc(p.email)}</a>
-    </div>
-    <button class="icon-btn" data-edit="${p.id}" title="Edit prospect">✏️</button>
-  </div>`;
-
-  html += `<div class="metarow">
-    <select class="stage-sel" data-stage="${p.id}" style="background:${stageBg(p.stage)}">
-      ${STAGES.map(s => `<option value="${s.value}" ${s.value === p.stage ? 'selected' : ''}>${s.value}</option>`).join("")}
-    </select>
-    <span class="tag" style="color:${hm.text}">${hm.label}</span>
-    <span class="tag xp">⚡ ${xp} XP</span>
-    <span class="tag">${p.touchpoints ? p.touchpoints.length : 0} touch${p.touchpoints && p.touchpoints.length === 1 ? '' : 'es'}</span>
-  </div>`;
-
-  if (isBoss && p.stage !== "Lost") {
-    html += `<div class="hpwrap">
-      <div class="row between tiny" style="font-weight:700; margin-bottom:0.25rem">
-        <span style="color:#f0abfc">${boss.defeated ? '🏆 BOSS DEFEATED!' : 'Boss HP'}</span>
-        <span class="muted">${boss.hp}/${boss.maxHp}</span>
-      </div>
-      <div class="hpbar"><i class="${boss.defeated ? 'dead' : ''}" style="width:${boss.defeated ? 100 : boss.pct}%"></i></div>
-    </div>`;
-  }
-
-  if (last) {
-    html += `<div class="lastbox">
-      <div class="row between xs">
-        <span style="font-weight:500; color:#e2e8f0">${esc(last.questName)}</span>
-        <span style="color:${daysAgo > 5 ? '#fda4af' : '#94a3b8'}">${daysAgo === 0 ? 'today' : daysAgo === 1 ? '1 day ago' : daysAgo + ' days ago'}</span>
-      </div>
-      <div class="row xs muted" style="margin-top:0.25rem; gap:0.5rem">
-        <span>${typeIcon(last.type)} ${esc(last.type)}</span><span>·</span>
-        <span>${outcomeIcon(last.outcome)} ${esc(last.outcome)}</span>
-      </div>
-      ${last.notes ? `<p class="xs clip2" style="margin:0.25rem 0 0; font-style:italic; color:#94a3b8">“${esc(last.notes)}”</p>` : ''}
-    </div>`;
-  } else {
-    html += `<p class="empty-note">No touchpoints yet — start the quest! 🎯</p>`;
-  }
-
-  if (p.touchpoints && p.touchpoints.length > 0) {
-    const dots = sorted.slice().reverse().map(t => `<span title="${esc(t.questName)} · ${esc(t.type)} · ${esc(t.outcome)} · ${t.date}">${typeIcon(t.type)}</span>`).join("");
-    html += `<div class="timeline">${dots}</div>`;
-  }
-
-  const label = p.stage === "Won" ? '🏆 Closed Won' : p.stage === "Lost" ? '💀 Closed Lost' : isBoss ? '⚔️ Attack the Boss' : '➕ Log Touchpoint';
-  html += `<button class="logbtn ${closed ? 'disabled' : ''} ${isBoss && !closed ? 'boss' : ''}" data-log="${p.id}" ${closed ? 'disabled' : ''}>${label}</button>`;
-
-  c.innerHTML = html;
-  return c;
-}
-
-function visibleProspects() {
-  let list = state.prospects.slice();
-  if (query.trim()) {
-    const q = query.toLowerCase();
-    list = list.filter(p => p.company.toLowerCase().includes(q) || p.contact.toLowerCase().includes(q) || p.email.toLowerCase().includes(q));
-  }
-  if (filter === "boss") list = list.filter(p => p.value === "High-Value");
-  else if (filter === "cold") list = list.filter(p => ["red", "orange"].includes(prospectHeat(p)));
-  else if (filter === "active") list = list.filter(p => p.stage !== "Won" && p.stage !== "Lost");
-  else if (filter === "closed") list = list.filter(p => p.stage === "Won" || p.stage === "Lost");
   
-  list.sort((a, b) => {
-    if (sort === "name") return a.company.localeCompare(b.company);
-    if (sort === "xp") return pXp(b) - pXp(a);
-    return HEAT_META[prospectHeat(b)].order - HEAT_META[prospectHeat(a)].order;
-  });
-  return list;
-}
-
-function renderGrid() {
-  const g = $("#grid"); 
-  g.innerHTML = "";
-  const list = visibleProspects();
-  list.forEach(p => g.appendChild(prospectCard(p)));
-  
-  const es = $("#empty-slot"); 
-  es.innerHTML = "";
-  if (list.length === 0) es.innerHTML = `<div class="empty-state">No prospects match. Add one or clear filters.</div>`;
-
-  g.querySelectorAll("[data-log]").forEach(b => b.onclick = () => openLog(b.dataset.log));
-  g.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => openEdit(b.dataset.edit));
-  g.querySelectorAll("[data-stage]").forEach(s => s.onchange = () => changeStage(s.dataset.stage, s.value));
-}
-
-function render() {
-  $("#subline").textContent = "Turn every follow-up into a win. " + totalTouchpoints() + " touchpoints logged.";
-  $("#ach-count").textContent = state.unlockedAchievements.length + "/" + ACHIEVEMENTS.length;
-  renderStats(); 
-  renderFilters(); 
-  renderGrid();
-}
-
-function commit() {
-  const now = computeUnlocked();
-  if (now.length !== state.unlockedAchievements.length) {
-    const fresh = now.filter(id => !prevUnlocked.includes(id));
-    state.unlockedAchievements = now;
-    if (fresh.length) {
-      const d = ACHIEVEMENTS.find(a => a.id === fresh[0]);
-      if (d) toast(d.icon + " Achievement Unlocked: " + d.name + "!");
-    }
+  let ns = p.status;
+  if (result === 'replied') ns = 'response_received';
+  else if (result === 'meeting_booked') ns = 'meeting_booked';
+  else if (p.status === 'new' && result === 'sent') ns = 'contacted';
+  else if (result === 'sent') {
+    const ec = p.touchpoints.filter(t => t.type === 'email').length + 1;
+    if (ec <= 5) ns = 'followed_up_' + ec;
   }
-  prevUnlocked = state.unlockedAchievements.slice();
-  const lvl = levelInfo(totalXp()).level;
-  if (lvl > prevLevel) toast("🎉 LEVEL UP! You reached Level " + lvl + "!");
-  prevLevel = lvl;
-  saveState(); 
+  
+  let bd = false;
+  if (p.value === 'boss' && result !== 'no_response') {
+    const dmg = Math.floor(Math.random() * 15) + 5;
+    p.bossHp = Math.max(0, (p.bossHp || 100) - dmg);
+    if (p.bossHp <= 0 && (p.bossHp || 100) > 0) bd = true;
+  }
+  
+  p.touchpoints.push(tp);
+  p.questLevel = Math.min(10, p.questLevel + 1);
+  p.status = ns;
+  p.nextActionDate = new Date(Date.now() + 3 * 864e5).toISOString().split('T')[0];
+  
+  addXP(tp.xpEarned);
+  updateStreak();
+  state.stats.consecutiveDays.push(tp.date);
+  state.stats.totalOutreaches++;
+  
+  if (result === 'replied') state.stats.totalResponses++;
+  if (result === 'meeting_booked') state.stats.totalMeetings++;
+  if (bd) state.stats.bossDefeated++;
+  if (ns === 'closed_won') state.stats.totalWins++;
+  if (ns === 'closed_lost') state.stats.totalLosses++;
+  
+  checkAchievements();
+  saveState();
+  
+  showToast(`+${tp.xpEarned} XP for ${TYPE_ICONS[type]} ${result}`, 'xp');
+  
+  if (state._leveledUp) {
+    showLevelUp();
+    state._leveledUp = false;
+  }
+  if (state._newAchievement) {
+    showAchievement(state._newAchievement);
+    state._newAchievement = null;
+  }
+  
   render();
 }
 
-function changeStage(id, stage) {
-  const p = state.prospects.find(x => x.id === id); 
-  if (!p) return;
-  p.stage = stage;
-  if (stage === "Won") toast(p.value === "High-Value" ? "🐉 BOSS DEFEATED! 🎉" : "💰 Won! 🎉");
-  commit();
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
 
-function openLog(id) {
-  const p = state.prospects.find(x => x.id === id); 
-  if (!p) return;
-  const isBoss = p.value === "High-Value";
-  const touchLength = p.touchpoints ? p.touchpoints.length : 0;
-  const nextQuest = questNameForIndex(touchLength);
+function addProspect() {
+  const co = document.getElementById('newCompany').value.trim() || 'Unknown Company';
+  const cn = document.getElementById('newContact').value.trim() || 'Unknown Contact';
+  const em = document.getElementById('newEmail').value.trim();
+  const ind = document.getElementById('newIndustry').value.trim();
+  const val = document.getElementById('newValue').value;
+  const nd = document.getElementById('newDate').value || new Date().toISOString().split('T')[0];
+  const at = document.getElementById('newActionType').value;
   
-  let type = "Email", outcome = "No Response";
-  let date = dayKey(new Date()), stage = p.stage;
+  state.prospects.push({
+    id: generateId(),
+    company: co,
+    contact: cn,
+    email: em,
+    value: val,
+    status: 'new',
+    touchpoints: [],
+    nextActionDate: nd,
+    nextActionType: at,
+    notes: '',
+    addedDate: new Date().toISOString().split('T')[0],
+    bossHp: val === 'boss' ? 100 : 0,
+    bossMaxHp: val === 'boss' ? 100 : 0,
+    questLevel: 0,
+    tags: [],
+    industry: ind
+  });
+  
+  saveState();
+  closeAddProspect();
+  showToast('New quest added!', 'success');
+  render();
+}
 
-  const body = el("div");
-  body.innerHTML = `
-    <div class="prev-box">
-      <p class="sm muted" style="margin:0">${esc(p.company)} · <span class="muted2">${esc(p.contact)}</span></p>
-      <p style="margin:0.25rem 0 0; font-size:1.1rem; font-weight:700; color:#fff">${esc(nextQuest)}</p>
-    </div>
-    <label class="label">Channel</label>
-    <div class="type-grid" id="type-grid"></div>
-    <label class="label">Outcome</label>
-    <select class="field" id="f-outcome">${OUTCOMES.map(o => `<option value="${o.value}">${o.icon} ${o.value} (+${o.bonusXp} XP)</option>`).join("")}</select>
-    <div class="two">
-      <div><label class="label">Date</label><input type="date" class="field" id="f-date" value="${date}"></div>
-      <div><label class="label">Stage</label><select class="field" id="f-stage">${STAGES.map(s => `<option value="${s.value}" ${s.value === stage ? 'selected' : ''}>${s.value}</option>`).join("")}</select></div>
-    </div>
-    <label class="label">Notes (optional)</label>
-    <textarea class="field" id="f-notes" rows="2" placeholder="What did you say / send? Any next steps?"></textarea>
-    <button class="submit ${isBoss ? 'boss' : ''}" id="f-submit"></button>
+function deleteProspect(id) {
+  showConfirm(
+    'Delete Prospect',
+    'This will permanently remove this prospect and all their data.',
+    () => {
+      state.prospects = state.prospects.filter(p => p.id !== id);
+      saveState();
+      render();
+      showToast('Prospect removed', 'warning');
+    }
+  );
+}
+
+function updateProspectField(id, field, value) {
+  const p = state.prospects.find(x => x.id === id);
+  if (p) {
+    p[field] = value;
+    saveState();
+  }
+}
+
+function showToast(msg, type = 'success') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transition = 'opacity .3s';
+  }, 2500);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function showLevelUp() {
+  document.getElementById('levelUpLevel').textContent = 'Level ' + state.stats.level;
+  document.getElementById('levelUpModal').style.display = 'flex';
+  confettiBurst('level');
+}
+function closeLevelUp() { document.getElementById('levelUpModal').style.display = 'none'; }
+
+function showAchievement(a) {
+  document.getElementById('achieveIcon').textContent = a.icon || '🏆';
+  document.getElementById('achieveName').textContent = a.name;
+  document.getElementById('achieveDesc').textContent = a.desc;
+  document.getElementById('achieveXP').textContent = '+' + a.xp + ' XP';
+  document.getElementById('achievementModal').style.display = 'flex';
+  confettiBurst('achievement');
+}
+function closeAchievement() { document.getElementById('achievementModal').style.display = 'none'; }
+
+function showConfirm(title, msg, cb) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMessage').textContent = msg;
+  confirmCallback = cb;
+  document.getElementById('confirmModal').style.display = 'flex';
+}
+function closeConfirm() {
+  document.getElementById('confirmModal').style.display = 'none';
+  confirmCallback = null;
+}
+function confirmAction() {
+  if (confirmCallback) confirmCallback();
+  closeConfirm();
+}
+
+function closeAddProspect() {
+  document.getElementById('addProspectModal').style.display = 'none';
+  ['newCompany', 'newContact', 'newEmail', 'newIndustry'].forEach(id => document.getElementById(id).value = '');
+}
+function openAddProspect() {
+  document.getElementById('newDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('addProspectModal').style.display = 'flex';
+}
+
+function closeImport() { document.getElementById('importModal').style.display = 'none'; }
+function openImport() { document.getElementById('importModal').style.display = 'flex'; }
+function doImport() {
+  const t = document.getElementById('importText').value.trim();
+  if (t) importStateJSON(t);
+  closeImport();
+}
+
+function handleFileImport(ev) {
+  const f = ev.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    importStateJSON(e.target.result);
+    closeImport();
+  };
+  r.readAsText(f);
+}
+
+function confettiBurst(type) {
+  const colors = type === 'boss' 
+    ? ['#a855f7', '#6366f1', '#8b5cf6', '#c084fc'] 
+    : type === 'level' 
+    ? ['#4facfe', '#00f2fe', '#43e97b', '#38f9d7'] 
+    : ['#ffd700', '#ffaa00', '#ff6b35', '#43e97b', '#4facfe'];
+    
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    el.style.cssText = `
+      position:fixed; width:${Math.random() * 8 + 4}px; height:${Math.random() * 8 + 4}px; 
+      background:${colors[Math.floor(Math.random() * colors.length)]}; 
+      left:${Math.random() * 100}vw; top:-10px; 
+      border-radius:${Math.random() > 0.5 ? '50%' : '2px'}; 
+      z-index:9999; pointer-events:none;
+    `;
+    document.body.appendChild(el);
+    const dur = Math.random() * 2000 + 1500;
+    const xD = (Math.random() - 0.5) * 200;
+    el.animate([
+      { transform: 'translateY(0) translateX(0) rotate(0deg)', opacity: 1 },
+      { transform: `translateY(${window.innerHeight + 50}px) translateX(${xD}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+    ], { duration: dur, easing: 'cubic-bezier(.25,.46,.45,.94)' });
+    setTimeout(() => el.remove(), dur);
+  }
+}
+
+function escHtml(t) {
+  const d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  selectedProspectId = null;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+  render();
+}
+
+function render() {
+  updateSideStats();
+  const c = document.getElementById('pageContent');
+  switch (currentTab) {
+    case 'dashboard': c.innerHTML = renderDashboard(); break;
+    case 'prospects': c.innerHTML = selectedProspectId ? renderDetail() : renderProspects(); break;
+    case 'achievements': c.innerHTML = renderAchievements(); break;
+    case 'settings': c.innerHTML = renderSettings(); break;
+  }
+}
+
+function updateSideStats() {
+  document.getElementById('sideXP').textContent = state.stats.totalXP.toLocaleString();
+  document.getElementById('sideLevel').textContent = state.stats.level;
+  document.getElementById('sideStreak').textContent = state.stats.currentStreak + '🔥';
+  document.getElementById('sideProspects').textContent = state.prospects.length;
+}
+
+function renderDashboard() {
+  const s = state.stats;
+  const ap = state.prospects.filter(p => !['closed_won', 'closed_lost', 'ghosted'].includes(p.status)).length;
+  const rr = s.totalOutreaches > 0 ? Math.round(s.totalResponses / s.totalOutreaches * 100) : 0;
+  const cr = s.totalOutreaches > 0 ? Math.round(s.totalWins / s.totalOutreaches * 100) : 0;
+  const today = new Date().toISOString().split('T')[0];
+  const op = state.prospects.filter(p => p.nextActionDate && p.nextActionDate < today && !['closed_won', 'closed_lost', 'ghosted'].includes(p.status));
+  const bp = state.prospects.filter(p => p.value === 'boss' && !['closed_won', 'closed_lost', 'ghosted'].includes(p.status));
+  const ua = state.achievements.filter(a => a.unlocked);
+  const tAxp = ua.reduce((x, a) => x + a.xp, 0);
+  const xpPct = s.xpForNextLevel > 0 ? Math.round(s.totalXP / s.xpForNextLevel * 100) : 0;
+
+  let html = `
+    <div class="animate-fade-in-up" style="max-width:900px">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px">
+        <div>
+          <h1 class="font-display text-3xl font-bold text-gradient-gold">Outreach Quest</h1>
+          <p style="color:var(--dark-300); font-size:14px">Gamified Outreach Tracker</p>
+        </div>
+        <div style="width:200px">
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px">
+            <span class="font-display text-xs" style="color:var(--xp-blue)">LVL ${s.level}</span>
+            <span style="font-size:12px; color:var(--dark-300)">${s.totalXP} / ${s.xpForNextLevel} XP</span>
+          </div>
+          <div style="width:100%; height:10px; background:var(--dark-700); border-radius:99px; overflow:hidden; border:1px solid var(--dark-600)">
+            <div class="xp-bar-fill" style="width:${xpPct}%; height:100%; background:linear-gradient(90deg,#4facfe,#00f2fe,#43e97b); border-radius:99px; position:relative">
+              <div style="position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent); background-size:200% 100%; animation:shimmer 2s infinite"></div>
+            </div>
+          </div>
+        </div>
+      </div>
   `;
 
-  const tg = body.querySelector("#type-grid");
-  function renderTypes() {
-    tg.innerHTML = "";
-    TOUCHPOINT_TYPES.forEach(t => {
-      const b = el("button", "type-btn" + (type === t.value ? " sel" : ""), `<span>${t.icon} ${t.value}</span><span style="font-size:0.65rem; color:#a5b4fc">+${t.baseXp}</span>`);
-      b.onclick = () => { type = t.value; renderTypes(); updatePreview(); };
-      tg.appendChild(b);
-    });
+  if (op.length > 0) {
+    html += `
+      <div class="glass" style="padding:16px; border-left:4px solid var(--health-red); margin-bottom:16px">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
+          <span style="font-size:20px">⚠️</span>
+          <span style="font-weight:bold; color:var(--health-red)">Action Required!</span>
+          <span style="font-size:13px; color:var(--dark-300)">${op.length} prospect${op.length > 1 ? 's' : ''} need follow-up</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px">
+          ${op.slice(0, 5).map(p => `<span style="padding:4px 10px; background:rgba(255,71,87,.1); color:var(--health-red); border-radius:4px; font-size:12px; font-weight:500">${escHtml(p.contact)} (${escHtml(p.company)})</span>`).join('')}
+          ${op.length > 5 ? `<span style="font-size:12px; color:var(--dark-300)">+${op.length - 5} more</span>` : ''}
+        </div>
+      </div>
+    `;
   }
-  renderTypes();
 
-  const subBtn = body.querySelector("#f-submit");
-  function updatePreview() {
-    const xp = xpForTouchpoint(type, outcome);
-    subBtn.textContent = (isBoss ? "💥 Strike" : "✅ Complete Quest") + " · +" + xp + " XP";
-  }
-  
-  body.querySelector("#f-outcome").onchange = e => { outcome = e.target.value; updatePreview(); };
-  updatePreview();
+  const cards = [
+    { l: 'Total XP', v: s.totalXP.toLocaleString(), i: '✨', c: 'var(--xp-blue)' },
+    { l: 'Level', v: s.level, i: '🏆', c: 'var(--gold)' },
+    { l: 'Streak', v: s.currentStreak + '🔥', i: '', c: 'var(--fire)' },
+    { l: 'Outreaches', v: s.totalOutreaches, i: '', c: '#22d3ee' },
+    { l: 'Responses', v: s.totalResponses, i: '💬', c: '#4ade80' },
+    { l: 'Meetings', v: s.totalMeetings, i: '🤝', c: '#c084fc' },
+    { l: 'Wins', v: s.totalWins, i: '', c: 'var(--gold)' },
+    { l: 'Active', v: ap, i: '👥', c: '#60a5fa' }
+  ];
 
-  subBtn.onclick = () => {
-    date = body.querySelector("#f-date").value;
-    stage = body.querySelector("#f-stage").value;
-    const notes = body.querySelector("#f-notes").value.trim();
-    const xp = xpForTouchpoint(type, outcome);
-    const tp = {id: uid(), questName: nextQuest, type, outcome, date, notes, xp};
+  html += `
+    <div class="grid-4" style="margin-bottom:20px">
+      ${cards.map(c => `
+        <div class="glass card-hover" style="padding:16px">
+          <div style="font-size:24px; margin-bottom:4px">${c.i}</div>
+          <div class="font-display font-bold text-lg" style="color:${c.c}">${c.v}</div>
+          <div style="font-size:12px; color:var(--dark-300)">${c.l}</div>
+        </div>
+      `).join('')}
+    </div>
     
-    let finalStage = stage;
-    if (outcome === "Closed Won") finalStage = "Won";
-    else if (outcome === "Booked Meeting") finalStage = "Meeting Booked";
-    else if (outcome === "Not Interested") finalStage = "Lost";
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px">
+      <div class="glass" style="padding:20px">
+        <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">🔥 Your Streak</h3>
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px">
+          ${s.currentStreak > 0 ? '<span class="animate-fire-glow" style="font-size:28px">🔥</span>' : ''}
+          <span class="font-display font-bold text-xl" style="color:${s.currentStreak > 0 ? 'var(--streak-orange)' : 'var(--dark-300)'}">${s.currentStreak} day streak</span>
+          <span style="font-size:13px; color:var(--dark-300)">Longest: <span style="color:var(--fire); font-weight:bold">${s.longestStreak}</span></span>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px">
+          ${[5, 14, 30, 50].map(m => `
+            <div style="text-align:center; padding:8px; border-radius:8px; font-size:12px; font-weight:bold; ${s.currentStreak >= m ? 'background:rgba(255,107,53,.2); color:var(--fire); border:1px solid rgba(255,107,53,.3)' : 'background:var(--dark-700); color:var(--dark-400); border:1px solid var(--dark-600)'}">
+              ${m}d
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div class="glass" style="padding:20px">
+        <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">👑 Boss Battles</h3>
+        ${bp.length > 0 
+          ? bp.slice(0, 3).map(p => {
+              const hp = Math.round(p.bossHp / p.bossMaxHp * 100);
+              return `
+                <div style="display:flex; align-items:center; justify-content:space-between; background:var(--dark-700); border-radius:8px; padding:10px; margin-bottom:8px">
+                  <div>
+                    <div style="font-size:13px; font-weight:500">${escHtml(p.contact)}</div>
+                    <div style="font-size:11px; color:var(--dark-300)">${escHtml(p.company)}</div>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px">
+                    <span style="font-size:11px; color:var(--boss-purple)">HP</span>
+                    <div style="width:80px; height:8px; background:var(--dark-600); border-radius:99px; overflow:hidden">
+                      <div style="width:${hp}%; height:100%; background:${hp > 60 ? 'var(--health-red)' : hp > 30 ? 'var(--streak-orange)' : 'var(--gold)'}; border-radius:99px; transition:width .5s"></div>
+                    </div>
+                    <span style="font-size:11px; color:var(--dark-300)">${p.bossHp}/${p.bossMaxHp}</span>
+                  </div>
+                </div>
+              `;
+            }).join('')
+          : '<p style="font-size:13px; color:var(--dark-300)">No active boss battles. Mark prospects as "Boss" to start!</p>'
+        }
+      </div>
+    </div>
+    
+    <div class="glass" style="padding:20px; margin-bottom:20px">
+      <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">📊 Performance</h3>
+      <div class="grid-4">
+        <div style="text-align:center">
+          <div class="font-display font-bold text-2xl text-gradient-blue">${rr}%</div>
+          <div style="font-size:12px; color:var(--dark-300); margin-top:4px">Response Rate</div>
+        </div>
+        <div style="text-align:center">
+          <div class="font-display font-bold text-2xl text-gradient-quest">${cr}%</div>
+          <div style="font-size:12px; color:var(--dark-300); margin-top:4px">Conversion Rate</div>
+        </div>
+        <div style="text-align:center">
+          <div class="font-display font-bold text-2xl text-gradient-boss">${s.bossDefeated}</div>
+          <div style="font-size:12px; color:var(--dark-300); margin-top:4px">Bosses Defeated</div>
+        </div>
+        <div style="text-align:center">
+          <div class="font-display font-bold text-2xl text-gradient-gold">${tAxp}</div>
+          <div style="font-size:12px; color:var(--dark-300); margin-top:4px">Achievement XP</div>
+        </div>
+      </div>
+    </div>
+  `;
 
-    const wasRed = prospectHeat(p) === "red";
-    if (!p.touchpoints) p.touchpoints = [];
-    p.touchpoints.push(tp); 
-    p.stage = finalStage;
-    if (wasRed && !state.unlockedAchievements.includes("comeback")) state.unlockedAchievements.push("comeback");
+  html += renderHeatMap();
 
-    if (finalStage === "Won") toast(isBoss ? "🐉 BOSS DEFEATED! Massive win! 🎉" : "💰 Deal Closed Won! 🎉");
-    else toast('⚡ +' + xp + ' XP · "' + nextQuest + '" complete!');
+  html += `
+    <div class="glass" style="padding:20px; margin-top:20px">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px">
+        <h3 class="font-display font-bold text-lg">🏅 Achievements</h3>
+        <span style="font-size:13px; color:var(--dark-300)">${ua.length}/${state.achievements.length} unlocked</span>
+      </div>
+      <div class="grid-8">
+        ${state.achievements.slice(0, 16).map(a => `
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; ${a.unlocked ? '' : 'opacity:.35'}">
+            <div style="width:48px; height:48px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px; ${a.unlocked ? 'background:rgba(255,215,0,.15); border:1px solid rgba(255,215,0,.3)' : 'background:var(--dark-700); border:1px solid var(--dark-600)'}">
+              ${a.unlocked ? a.icon : '🔒'}
+            </div>
+            <span style="font-size:10px; text-align:center; max-width:64px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap" title="${a.name}">${escHtml(a.name)}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
 
-    closeModal(); 
-    commit();
-  };
+  const atp = state.prospects.flatMap(p => p.touchpoints.map(t => ({...t, contact: p.contact, company: p.company, status: p.status})))
+    .sort((a, b) => new Date(b.date).localeCompare(new Date(a.date)))
+    .slice(0, 8);
 
-  modalShell(isBoss ? "⚔️ Attack the Boss" : "🎯 New Quest", body, isBoss);
+  html += `
+    <div class="glass" style="padding:20px; margin-top:20px">
+      <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">📋 Recent Activity</h3>
+      ${!atp.length 
+        ? '<p style="text-align:center; color:var(--dark-300); padding:32px">No activity yet. Add your first prospect!</p>'
+        : atp.map(t => {
+            const sm = STATUS_MAP[t.status] || STATUS_MAP.new;
+            return `
+              <div style="display:flex; align-items:center; gap:12px; background:rgba(26,26,46,.3); border-radius:8px; padding:10px; margin-bottom:6px">
+                <span style="font-size:18px">${TYPE_ICONS[t.type] || '📋'}</span>
+                <div style="flex:1; min-width:0">
+                  <div style="font-size:13px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${escHtml(t.contact)} <span style="color:var(--dark-400)">(${escHtml(t.company)})</span></div>
+                  <div style="font-size:11px; color:var(--dark-400)">${t.date} • ${RESULT_ICONS[t.result] || t.result}</div>
+                </div>
+                <span class="${sm.cls}" style="padding:3px 8px; border-radius:99px; font-size:11px; font-weight:500">${sm.label}</span>
+              </div>
+            `;
+          }).join('')
+      }
+    </div>
+  </div>`;
+  
+  return html;
 }
 
-function openEdit(id) {
-  const p = id ? state.prospects.find(x => x.id === id) : null;
-  const body = el("div");
-  body.innerHTML = `
-    <label class="label">Company</label>
-    <input class="field" id="p-company" placeholder="Acme Coaching" value="${p ? esc(p.company) : ''}">
-    <label class="label">Contact</label>
-    <input class="field" id="p-contact" placeholder="Jane Doe" value="${p ? esc(p.contact) : ''}">
-    <label class="label">Email</label>
-    <input class="field" id="p-email" placeholder="jane@acme.com" value="${p ? esc(p.email) : ''}">
-    <div class="two">
-      <div><label class="label">Value</label>
-        <select class="field" id="p-value">
-          <option value="Standard" ${p && p.value === 'Standard' ? 'selected' : ''}>Standard</option>
-          <option value="High-Value" ${p && p.value === 'High-Value' ? 'selected' : ''}>👑 High-Value (Boss)</option>
+function renderHeatMap() {
+  const counts = {};
+  state.stats.consecutiveDays.forEach(d => { counts[d] = (counts[d] || 0) + 1; });
+  const today = new Date();
+  const sd = new Date(today.getTime() - 83 * 864e5);
+  const sd2 = sd.getDay();
+  let weeks = [], cw = [];
+  
+  for (let i = 0; i < sd2; i++) cw.push('');
+  for (let i = 0; i < 84; i++) {
+    const d = new Date(sd.getTime() + i * 864e5);
+    const k = d.toISOString().split('T')[0];
+    cw.push(k);
+    if (d.getDay() === 6 || i === 83) {
+      weeks.push(cw);
+      cw = [];
+    }
+  }
+
+  return `
+    <div class="glass" style="padding:20px; margin-bottom:20px">
+      <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">🟢 Activity Heat Map</h3>
+      <div style="display:flex; gap:16px; align-items:flex-start">
+        <div style="display:flex; flex-direction:column; justify-content:space-between; height:112px">
+          ${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => `<span style="font-size:10px; color:var(--dark-400); height:14px; display:flex; align-items:center">${d}</span>`).join('')}
+        </div>
+        <div style="display:flex; gap:3px; overflow-x:auto; flex:1">
+          ${weeks.map(w => `
+            <div style="display:flex; flex-direction:column; gap:3px">
+              ${w.map(day => {
+                const c = day ? (counts[day] || 0) : 0;
+                const hc = c === 0 ? 'heat-0' : c === 1 ? 'heat-1' : c === 2 ? 'heat-2' : c === 3 ? 'heat-3' : 'heat-4';
+                return `<div class="${hc}" style="width:14px; height:14px; border-radius:3px; ${day && counts[day] ? 'cursor:pointer' : ''}" title="${day ? day + ': ' + (counts[day] || 0) + ' action(s)' : ''}"></div>`;
+              }).join('')}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; margin-top:12px; justify-content:flex-end">
+        <span style="font-size:11px; color:var(--dark-400)">Less</span>
+        ${['heat-0', 'heat-1', 'heat-2', 'heat-3', 'heat-4'].map(c => `<div class="${c}" style="width:12px; height:12px; border-radius:2px"></div>`).join('')}
+        <span style="font-size:11px; color:var(--dark-400)">More</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderProspects() {
+  setTimeout(filterProspects, 0); // Defer filtering slightly to allow DOM to catch up
+  return `
+    <div class="animate-fade-in-up" style="max-width:900px">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px">
+        <div>
+          <h1 class="font-display text-2xl font-bold text-gradient-quest">Prospects</h1>
+          <p style="color:var(--dark-300); font-size:14px">${state.prospects.length} prospects</p>
+        </div>
+        <button class="btn btn-quest" onclick="openAddProspect()">+ Add Prospect</button>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px">
+        <input id="searchInput" placeholder="🔍 Search prospects..." style="flex:1; min-width:180px" oninput="filterProspects()">
+        <select id="filterSelect" onchange="filterProspects()" style="width:auto">
+          <option value="all">📋 All Prospects</option>
+          <option value="active">✅ Active</option>
+          <option value="boss">👑 Boss Battles</option>
+          <option value="overdue">⚠️ Overdue</option>
+          <option value="new">🆕 New</option>
+          <option value="contacted">📧 Contacted</option>
+          <option value="response_received">💬 Responses</option>
+          <option value="meeting_booked">📅 Meetings</option>
+          <option value="closed_won">🏆 Won</option>
+          <option value="closed_lost">❌ Lost</option>
+        </select>
+        <select id="sortSelect" onchange="filterProspects()" style="width:auto">
+          <option value="date">Sort: Date</option>
+          <option value="name">Sort: Name</option>
+          <option value="value">Sort: Value</option>
+          <option value="status">Sort: Status</option>
         </select>
       </div>
-      <div><label class="label">Stage</label>
-        <select class="field" id="p-stage">${STAGES.map(s => `<option value="${s.value}" ${p && p.stage === s.value ? 'selected' : ''}>${s.value}</option>`).join("")}</select>
-      </div>
-    </div>
-    <div class="row" style="margin-top:0.5rem; gap:0.5rem">
-      <button class="submit grow" id="p-save">Save</button>
-      ${p ? '<button class="del-btn" id="p-del">🗑️</button>' : ''}
+      <div id="prospectList"></div>
     </div>
   `;
+}
+
+function filterProspects() {
+  const searchInput = document.getElementById('searchInput');
+  const search = (searchInput ? searchInput.value : '').toLowerCase();
   
-  body.querySelector("#p-save").onclick = () => {
-    const company = body.querySelector("#p-company").value.trim();
-    const contact = body.querySelector("#p-contact").value.trim();
-    const email = body.querySelector("#p-email").value.trim();
-    const value = body.querySelector("#p-value").value;
-    const stage = body.querySelector("#p-stage").value;
-    
-    if (!company && !contact) return;
-    
-    if (p) {
-      p.company = company; p.contact = contact; p.email = email; p.value = value; p.stage = stage;
-    } else {
-      state.prospects.unshift({
-        company, contact, email, value, stage, id: uid(), 
-        createdAt: new Date().toISOString(), touchpoints: []
-      });
-      toast("📇 New prospect added to the arena!");
-    }
-    closeModal(); 
-    commit();
-  };
+  const filterSelect = document.getElementById('filterSelect');
+  const filter = filterSelect ? filterSelect.value : 'all';
   
-  if (p) {
-    body.querySelector("#p-del").onclick = () => {
-      showConfirm("Delete Prospect", `Are you sure you want to delete ${p.company}? This cannot be undone.`, "Delete Permanently", () => {
-        state.prospects = state.prospects.filter(x => x.id !== p.id);
-        commit();
-      });
-    };
+  const sortSelect = document.getElementById('sortSelect');
+  const sort = sortSelect ? sortSelect.value : 'date';
+  
+  const today = new Date().toISOString().split('T')[0];
+  
+  let f = state.prospects.filter(p => {
+    if (filter === 'all') return true;
+    if (filter === 'active') return !['closed_won', 'closed_lost', 'ghosted'].includes(p.status);
+    if (filter === 'boss') return p.value === 'boss';
+    if (filter === 'overdue') return p.nextActionDate && p.nextActionDate < today && !['closed_won', 'closed_lost', 'ghosted'].includes(p.status);
+    return p.status === filter;
+  });
+  
+  if (search) {
+    f = f.filter(p => 
+      p.company.toLowerCase().includes(search) || 
+      p.contact.toLowerCase().includes(search) || 
+      p.email.toLowerCase().includes(search)
+    );
   }
   
-  modalShell(p ? "✏️ Edit Prospect" : "➕ New Prospect", body, false);
-}
-
-function openAchievements() {
-  const body = el("div");
-  const grid = el("div", "ach-grid");
-  ACHIEVEMENTS.forEach(a => {
-    const got = state.unlockedAchievements.includes(a.id);
-    const d = el("div", "ach " + (got ? "got" : "locked"));
-    d.innerHTML = `<span class="emo">${a.icon}</span><div style="min-width:0"><p class="an">${got ? esc(a.name) : "???"}</p><p class="xs muted" style="margin:0.1rem 0 0">${esc(a.desc)}</p></div>`;
-    grid.appendChild(d);
+  const vo = { boss: 0, high: 1, medium: 2, low: 3 };
+  f.sort((a, b) => {
+    if (sort === 'name') return a.contact.localeCompare(b.contact);
+    if (sort === 'value') return vo[a.value] - vo[b.value];
+    if (sort === 'status') return a.status.localeCompare(b.status);
+    return new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime();
   });
-  body.appendChild(grid);
-  modalShell(`🏆 Achievements <span style="font-size:0.875rem; font-weight:400; color:#94a3b8">${state.unlockedAchievements.length}/${ACHIEVEMENTS.length}</span>`, body, false);
+  
+  const c = document.getElementById('prospectList');
+  if (!c) return;
+  
+  if (!f.length) {
+    c.innerHTML = `
+      <div class="glass" style="padding:48px; text-align:center">
+        <div style="font-size:40px; margin-bottom:12px">📭</div>
+        <p style="color:var(--dark-300)">No prospects found. ${search ? 'Try a different search.' : 'Add your first prospect!'}</p>
+      </div>
+    `;
+    return;
+  }
+  
+  c.innerHTML = f.map(p => {
+    const sm = STATUS_MAP[p.status] || STATUS_MAP.new;
+    const vn = { low: '🔹 Low', medium: '🔸 Medium', high: '🔶 High', boss: '👑 BOSS' }[p.value];
+    const vc = { low: 'value-low', medium: 'value-medium', high: 'value-high', boss: 'value-boss' }[p.value];
+    const qi = QUEST_ICONS[Math.min(p.questLevel - 1, 9)] || '🏹';
+    const qn = QUEST_NAMES[Math.min(p.questLevel - 1, 9)] || 'The Final Gambit';
+    const io = p.nextActionDate && p.nextActionDate < today && !['closed_won', 'closed_lost', 'ghosted'].includes(p.status);
+    
+    return `
+      <div class="glass card-hover" style="padding:14px; margin-bottom:8px; cursor:pointer; ${io ? 'border-left:3px solid var(--health-red)' : ''}" onclick="viewProspect('${p.id}')">
+        <div style="display:flex; align-items:start; justify-content:space-between; gap:12px">
+          <div style="flex:1; min-width:0">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px">
+              ${p.value === 'boss' ? '<span style="font-size:16px" class="animate-float">👑</span>' : ''}
+              <span style="font-weight:600; font-size:14px">${escHtml(p.contact)}</span>
+              <span style="color:var(--dark-400); font-size:13px"> • ${escHtml(p.company)}</span>
+              ${io ? '<span style="font-size:11px; color:var(--health-red); background:rgba(255,71,87,.15); padding:2px 6px; border-radius:4px">⚠️ Overdue</span>' : ''}
+            </div>
+            <div style="font-size:12px; color:var(--dark-300); margin-bottom:6px">
+              ${escHtml(p.email)} ${p.industry ? ' • ' + escHtml(p.industry) : ''}
+            </div>
+            <div style="display:flex; align-items:center; gap:8px">
+              <span style="font-size:11px; color:var(--quest-cyan)">${qi} ${qn}</span>
+              <div style="flex:1; height:4px; background:var(--dark-600); border-radius:99px; overflow:hidden; max-width:100px">
+                <div style="width:${(p.questLevel / 10 * 100)}%; height:100%; background:linear-gradient(90deg,var(--quest-cyan),var(--xp-green)); border-radius:99px"></div>
+              </div>
+              <span style="font-size:10px; color:var(--dark-400)">${p.questLevel}/10</span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0">
+            <div style="display:flex; gap:6px; align-items:center">
+              <span class="${vc}" style="font-size:11px; font-weight:bold">${vn}</span>
+              <span class="${sm.cls}" style="padding:3px 8px; border-radius:99px; font-size:11px; font-weight:500">${sm.label}</span>
+            </div>
+            <span style="font-size:11px; color:var(--dark-400)">${p.touchpoints.length} touchpoints</span>
+            ${p.nextActionDate ? `<span style="font-size:11px; color:var(--dark-400)">Next: ${p.nextActionType} on ${p.nextActionDate}</span>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
-$("#btn-add").onclick = () => openEdit(null);
-$("#btn-ach").onclick = openAchievements;
-$("#btn-json").onclick = exportJson;
-$("#btn-csv").onclick = exportCsv;
-$("#btn-import").onclick = () => $("#file-import").click();
+function viewProspect(id) {
+  selectedProspectId = id;
+  currentTab = 'prospects';
+  render();
+}
 
-$("#file-import").onchange = e => {
-  const f = e.target.files[0]; 
-  if (f) importJson(f); 
-  e.target.value = "";
-};
+function renderDetail() {
+  const p = state.prospects.find(x => x.id === selectedProspectId);
+  if (!p) {
+    selectedProspectId = null;
+    return renderProspects();
+  }
+  
+  const qi = QUEST_ICONS[Math.min(p.questLevel - 1, 9)] || '🏹';
+  const qn = QUEST_NAMES[Math.min(p.questLevel - 1, 9)] || 'The Final Gambit';
+  const qd = QUEST_DESCS[Math.min(p.questLevel - 1, 9)] || '';
+  const xm = {
+    email: p.value === 'boss' ? 20 : 10,
+    call: p.value === 'boss' ? 20 : 15,
+    linkedin: p.value === 'boss' ? 20 : 8,
+    meeting: p.value === 'boss' ? 100 : 50,
+    other: 10
+  };
 
-$("#btn-reset").onclick = () => {
-  showConfirm("Reset Tracker", "Reset everything to the starter roster? It is highly recommended to export a backup first!", "Yes, Reset Data", () => {
-    state = seedState();
-    prevLevel = 1;
-    prevUnlocked = [];
+  let html = `
+    <div class="animate-slide-in-right" style="max-width:700px">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px">
+        <button class="btn btn-ghost" onclick="selectedProspectId=null; render()" style="padding:8px 12px">← Back</button>
+        <div style="flex:1; min-width:0">
+          <div style="display:flex; align-items:center; gap:8px">
+            ${p.value === 'boss' ? '<span style="font-size:20px" class="animate-float">👑</span>' : ''}
+            <h1 class="font-display text-xl font-bold" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${escHtml(p.contact)}</h1>
+          </div>
+          <p style="color:var(--dark-300); font-size:13px">${escHtml(p.company)} • ${escHtml(p.email)}</p>
+        </div>
+        <button class="btn btn-ghost" onclick="deleteProspect('${p.id}')" style="padding:8px 12px; color:var(--dark-400)">🗑️</button>
+      </div>
+
+      <div class="glass" style="padding:20px; margin-bottom:16px">
+        <div style="display:flex; align-items:start; justify-content:space-between; margin-bottom:12px">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px">
+              <span style="font-size:20px">${qi}</span>
+              <h2 class="font-display font-bold text-lg text-gradient-quest">${qn}</h2>
+            </div>
+            <p style="color:var(--dark-300); font-size:13px">${qd}</p>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:11px; color:var(--dark-400)">Quest Progress</div>
+            <div class="font-display font-bold text-xl" style="color:var(--quest-cyan)">${p.questLevel}/10</div>
+          </div>
+        </div>
+        <div style="width:100%; height:6px; background:var(--dark-600); border-radius:99px; overflow:hidden; margin-bottom:16px">
+          <div style="width:${(p.questLevel / 10 * 100)}%; height:100%; background:linear-gradient(90deg,var(--quest-cyan),var(--xp-green)); border-radius:99px; transition:width .5s"></div>
+        </div>
+  `;
+
+  if (p.value === 'boss') {
+    const hp = Math.round(p.bossHp / p.bossMaxHp * 100);
+    html += `
+        <div style="background:var(--dark-700); border-radius:8px; padding:12px; margin-bottom:16px">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px">
+            <span style="font-size:20px" class="animate-boss-attack">👹</span>
+            <div style="flex:1">
+              <div style="font-weight:bold; color:var(--boss-purple)">BOSS BATTLE</div>
+              <div style="font-size:11px; color:var(--dark-300)">${escHtml(p.company)} - ${escHtml(p.contact)}</div>
+            </div>
+            ${p.bossHp <= 0 ? '<span style="color:var(--gold); font-weight:bold">DEFEATED!</span>' : ''}
+          </div>
+          <div style="display:flex; align-items:center; gap:8px">
+            <span style="font-size:11px; font-weight:bold; color:var(--health-red)">BOSS HP</span>
+            <div style="flex:1; height:12px; background:var(--dark-600); border-radius:99px; overflow:hidden; border:1px solid var(--dark-600)">
+              <div style="width:${hp}%; height:100%; background:${hp > 60 ? 'var(--health-red)' : hp > 30 ? 'var(--streak-orange)' : 'var(--gold)'}; border-radius:99px; transition:width .5s"></div>
+            </div>
+            <span style="font-size:11px; color:var(--dark-300)">${p.bossHp}/${p.bossMaxHp}</span>
+          </div>
+        </div>
+    `;
+  }
+
+  const statuses = Object.entries(STATUS_MAP).map(([k, v]) => `<option value="${k}"${p.status === k ? ' selected' : ''}>${v.label}</option>`).join('');
+  const valName = { low: '🔹 Low', medium: '🔸 Medium', high: '🔶 High', boss: '👑 BOSS' }[p.value];
+  const valClass = { low: 'value-low', medium: 'value-medium', high: 'value-high', boss: 'value-boss' }[p.value];
+
+  html += `
+        <div style="display:flex; gap:12px; align-items:center">
+          <div style="flex:1">
+            <label>Status</label>
+            <select onchange="updateProspectField('${p.id}', 'status', this.value); render()" style="width:100%">${statuses}</select>
+          </div>
+          <div>
+            <label>Value</label>
+            <span class="${valClass}" style="font-size:13px; font-weight:bold">${valName}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass" style="padding:20px; margin-bottom:16px">
+        <h3 class="font-display font-bold text-lg text-gradient-quest" style="margin-bottom:12px">⚡ Log Touchpoint</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+          <div>
+            <label>Type</label>
+            <select id="tpType">
+              <option value="email">📧 Email</option>
+              <option value="call">📞 Phone Call</option>
+              <option value="linkedin">💼 LinkedIn</option>
+              <option value="meeting">🤝 Meeting</option>
+              <option value="other">📋 Other</option>
+            </select>
+          </div>
+          <div>
+            <label>Result</label>
+            <select id="tpResult">
+              <option value="sent">📤 Sent</option>
+              <option value="opened">👁️ Opened</option>
+              <option value="replied">💬 Replied</option>
+              <option value="no_response">😶 No Response</option>
+              <option value="call_connected">📞 Connected</option>
+              <option value="voicemail">🎙️ Voicemail</option>
+              <option value="meeting_booked">📅 Meeting Booked</option>
+            </select>
+          </div>
+          <div style="grid-column:span 2">
+            <label>Notes (optional)</label>
+            <input id="tpNotes" placeholder="What was discussed?">
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:14px; justify-content:flex-end">
+          <button class="btn btn-quest" onclick="handleLogTouchpoint('${p.id}')">+${xm.email || 10} XP • Log It! ⚔️</button>
+        </div>
+      </div>
+
+      <div class="glass" style="padding:20px; margin-bottom:16px">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px">
+          <h3 class="font-display font-bold">📝 Notes</h3>
+          <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px" onclick="toggleEditNotes('${p.id}')">Edit</button>
+        </div>
+        <div id="notesArea">
+          ${p.notes ? `<p style="color:var(--dark-300); font-size:13px; white-space:pre-wrap">${escHtml(p.notes)}</p>` : '<p style="color:var(--dark-400); font-size:13px">No notes yet.</p>'}
+        </div>
+      </div>
+
+      <div class="glass" style="padding:20px">
+        <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">📜 Touchpoint History (${p.touchpoints.length})</h3>
+  `;
+
+  if (!p.touchpoints.length) {
+    html += '<p style="text-align:center; color:var(--dark-300); padding:32px">No touchpoints yet. Start your first quest!</p>';
+  } else {
+    const sorted = [...p.touchpoints].reverse();
+    sorted.forEach((t, i) => {
+      const rc = { replied: 'result-replied', meeting_booked: 'result-meeting-booked', no_response: 'result-no-response' }[t.result] || 'result-sent';
+      const typeIcon = TYPE_ICONS[t.type] || '📋';
+      const resIcon = RESULT_ICONS[t.result] || t.result;
+      
+      html += `
+        <div style="display:flex; gap:12px; margin-bottom:12px; ${i < sorted.length - 1 ? '' : 'margin-bottom:0'}">
+          <div style="display:flex; flex-direction:column; align-items:center">
+            <div style="width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; ${t.result === 'replied' || t.result === 'meeting_booked' ? 'background:rgba(74,222,128,.15); color:var(--xp-green)' : t.result === 'no_response' ? 'background:rgba(107,114,128,.15); color:var(--dark-400)' : 'background:rgba(96,165,250,.15); color:var(--xp-blue)'}">
+              ${typeIcon}
+            </div>
+            ${i < sorted.length - 1 ? '<div style="width:2px; flex:1; background:var(--dark-600); margin-top:4px"></div>' : ''}
+          </div>
+          <div style="flex:1; background:var(--dark-700); border-radius:8px; padding:12px">
+            <div style="display:flex; align-items:center; justify-content:space-between">
+              <span style="font-size:13px; font-weight:500; text-transform:capitalize">${t.type}</span>
+              <span class="${rc}" style="font-size:12px; font-weight:500">${resIcon}</span>
+            </div>
+            ${t.notes ? `<p style="font-size:12px; color:var(--dark-300); margin-top:4px">${escHtml(t.notes)}</p>` : ''}
+            <div style="display:flex; align-items:center; gap:8px; margin-top:4px">
+              <span style="font-size:11px; color:var(--dark-400)">${t.date}</span>
+              <span style="font-size:11px; color:var(--xp-blue); font-weight:500">+${t.xpEarned} XP</span>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  html += '</div></div>';
+  return html;
+}
+
+function handleLogTouchpoint(pId) {
+  addTouchpoint(pId, document.getElementById('tpType').value, document.getElementById('tpResult').value, document.getElementById('tpNotes').value);
+}
+
+function toggleEditNotes(pId) {
+  const p = state.prospects.find(x => x.id === pId);
+  if (!p) return;
+  const a = document.getElementById('notesArea');
+  if (a.querySelector('textarea')) {
+    p.notes = document.getElementById('editNotesInput').value;
     saveState();
     render();
-    toast("♻️ Arena has been reset!");
+  } else {
+    a.innerHTML = `<textarea id="editNotesInput" style="width:100%; min-height:80px; font-family:Inter,sans-serif" placeholder="Add notes...">${escHtml(p.notes || '')}</textarea>`;
+    document.getElementById('editNotesInput').focus();
+  }
+}
+
+function renderAchievements() {
+  const s = state.stats;
+  const ua = state.achievements.filter(a => a.unlocked);
+  const tAxp = ua.reduce((x, a) => x + a.xp, 0);
+  const pct = Math.round(ua.length / state.achievements.length * 100);
+
+  let html = `
+    <div class="animate-fade-in-up" style="max-width:900px">
+      <div style="margin-bottom:20px">
+        <h1 class="font-display text-2xl font-bold text-gradient-gold">🏆 Achievement Hall</h1>
+        <p style="color:var(--dark-300); font-size:14px">${ua.length}/${state.achievements.length} unlocked • ${pct}% complete</p>
+      </div>
+
+      <div class="glass" style="padding:16px; margin-bottom:16px">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px">
+          <span style="font-size:14px; font-weight:500">Completion Progress</span>
+          <span style="font-size:14px; font-weight:bold; color:var(--gold)">${pct}%</span>
+        </div>
+        <div style="width:100%; height:10px; background:var(--dark-700); border-radius:99px; overflow:hidden">
+          <div style="width:${pct}%; height:100%; background:linear-gradient(90deg,var(--gold),var(--streak-orange),var(--gold)); border-radius:99px; transition:width .5s"></div>
+        </div>
+        <div style="display:flex; gap:16px; margin-top:10px; font-size:13px; color:var(--dark-300)">
+          <span>Unlocked: <span style="color:var(--gold); font-weight:bold">${ua.length}</span></span>
+          <span>Locked: <span style="color:var(--dark-400); font-weight:bold">${state.achievements.length - ua.length}</span></span>
+          <span>XP Earned: <span style="color:var(--xp-blue); font-weight:bold">${tAxp}</span></span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap" id="achieveFilters">
+        ${[
+          {id:'all', l:'📋 All'}, {id:'outreach', l:'⚔️ Outreach'}, {id:'streak', l:'🔥 Streak'}, 
+          {id:'xp', l:'⭐ XP'}, {id:'boss', l:'💀 Boss'}, {id:'special', l:'✨ Special'}
+        ].map(c => `<button class="tab-btn ${c.id === 'all' ? 'active' : ''}" onclick="filterAchievements('${c.id}', this)">${c.l}</button>`).join('')}
+      </div>
+      
+      <div class="grid-8" id="achieveGrid">
+        ${state.achievements.map(a => {
+          const gp = () => {
+            switch(a.category) {
+              case 'streak': return Math.min(100, s.currentStreak / a.req * 100);
+              case 'xp': return Math.min(100, s.level / a.req * 100);
+              case 'boss': return Math.min(100, s.bossDefeated / a.req * 100);
+              case 'outreach': 
+                if(a.req <= 10 && a.id !== '10_responses' && a.id !== '10_meetings') return Math.min(100, s.totalOutreaches / a.req * 100);
+                if(a.req <= 25 && a.id.includes('responses')) return Math.min(100, s.totalResponses / a.req * 100);
+                if(a.id.includes('meetings')) return Math.min(100, s.totalMeetings / a.req * 100);
+                return Math.min(100, s.totalOutreaches / a.req * 100); // fallback
+              case 'special': 
+                return a.id === 'first_win' ? Math.min(100, s.totalWins / a.req * 100) : (state.prospects.some(x => x.questLevel >= 10) ? 100 : 0);
+              default: return 0;
+            }
+          };
+          const prog = gp();
+          
+          return `
+            <div class="glass card-hover" style="padding:16px; text-align:center; ${a.unlocked ? 'border-color:rgba(255,215,0,.2)' : 'opacity:.5'}" onclick="${a.unlocked ? "confettiBurst('achievement')" : ""}">
+              <div style="font-size:36px; margin-bottom:8px; ${a.unlocked ? '' : 'filter:grayscale(1)'}">${a.unlocked ? a.icon : '🔒'}</div>
+              <h3 style="font-weight:bold; font-size:13px; margin-bottom:4px; ${a.unlocked ? 'color:var(--gold)' : 'color:var(--dark-400)'}">${escHtml(a.name)}</h3>
+              <p style="font-size:11px; color:var(--dark-300); margin-bottom:8px; min-height:28px">${escHtml(a.desc)}</p>
+              <div style="display:flex; align-items:center; justify-content:space-between">
+                <span style="font-size:11px; color:var(--xp-blue); font-weight:500">+${a.xp} XP</span>
+                ${a.unlockedDate ? `<span style="font-size:10px; color:var(--dark-400)">${a.unlockedDate}</span>` : ''}
+              </div>
+              ${a.unlocked 
+                ? '<div style="margin-top:8px; width:100%; height:3px; background:rgba(255,215,0,.2); border-radius:99px"><div style="width:100%; height:100%; background:var(--gold); border-radius:99px"></div></div>' 
+                : `<div style="margin-top:8px"><div style="font-size:10px; color:var(--dark-400); margin-bottom:3px">${Math.round(prog)}%</div><div style="width:100%; height:3px; background:var(--dark-600); border-radius:99px; overflow:hidden"><div style="width:${prog}%; height:100%; background:var(--dark-400); border-radius:99px; transition:width .3s"></div></div></div>`
+              }
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <div class="glass" style="padding:20px; margin-top:20px">
+        <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">📊 Your Stats</h3>
+        <div class="grid-4">
+          <div style="text-align:center; padding:12px; background:var(--dark-700); border-radius:8px">
+            <div class="font-display font-bold text-xl" style="color:var(--xp-blue)">${s.totalXP.toLocaleString()}</div>
+            <div style="font-size:11px; color:var(--dark-400); margin-top:4px">Total XP</div>
+          </div>
+          <div style="text-align:center; padding:12px; background:var(--dark-700); border-radius:8px">
+            <div class="font-display font-bold text-xl" style="color:var(--gold)">${s.level}</div>
+            <div style="font-size:11px; color:var(--dark-400); margin-top:4px">Level</div>
+          </div>
+          <div style="text-align:center; padding:12px; background:var(--dark-700); border-radius:8px">
+            <div class="font-display font-bold text-xl" style="color:var(--fire)">${s.longestStreak}</div>
+            <div style="font-size:11px; color:var(--dark-400); margin-top:4px">Best Streak</div>
+          </div>
+          <div style="text-align:center; padding:12px; background:var(--dark-700); border-radius:8px">
+            <div class="font-display font-bold text-xl" style="color:var(--boss-purple)">${s.bossDefeated}</div>
+            <div style="font-size:11px; color:var(--dark-400); margin-top:4px">Bosses Slain</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  return html;
+}
+
+function filterAchievements(cat, btn) {
+  document.querySelectorAll('#achieveFilters .tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const cards = document.querySelectorAll('#achieveGrid > div');
+  state.achievements.forEach((a, i) => {
+    if (cards[i]) cards[i].style.display = (cat === 'all' || a.category === cat) ? '' : 'none';
   });
-};
+}
 
-$("#search").oninput = e => { query = e.target.value; renderGrid(); };
-$("#sort").onchange = e => { sort = e.target.value; renderGrid(); };
+function renderSettings() {
+  const ttp = state.prospects.reduce((s, p) => s + p.touchpoints.length, 0);
+  const ua = state.achievements.filter(a => a.unlocked).length;
 
-// Boot the application
-render();
+  return `
+    <div class="animate-fade-in-up" style="max-width:700px">
+      <div style="margin-bottom:20px">
+        <h1 class="font-display text-2xl font-bold text-gradient-boss">⚙️ Settings & Data</h1>
+        <p style="color:var(--dark-300); font-size:14px">Manage your quest data</p>
+      </div>
+
+      <div class="glass" style="padding:20px; margin-bottom:16px">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px">
+          <span style="font-size:18px">💾</span>
+          <h3 class="font-display font-bold text-lg">Data Overview</h3>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:8px">
+          ${[
+            {l: 'Prospects', v: state.prospects.length},
+            {l: 'Touchpoints', v: ttp},
+            {l: 'Total XP', v: state.stats.totalXP.toLocaleString()},
+            {l: 'Level', v: state.stats.level},
+            {l: 'Achievements', v: ua + '/' + state.achievements.length}
+          ].map(s => `
+            <div style="text-align:center; padding:10px; background:var(--dark-700); border-radius:8px">
+              <div style="font-size:18px; font-weight:bold">${s.v}</div>
+              <div style="font-size:11px; color:var(--dark-400); margin-top:4px">${s.l}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="glass" style="padding:20px; margin-bottom:16px">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
+          <span style="font-size:18px">📤</span>
+          <h3 class="font-display font-bold text-lg">Export Progress</h3>
+        </div>
+        <p style="font-size:13px; color:var(--dark-300); margin-bottom:12px">Download a backup of all your data. Save this file somewhere safe — you can import it later to restore your progress.</p>
+        <button class="btn btn-primary" onclick="exportState()">📥 Download Backup JSON</button>
+      </div>
+
+      <div class="glass" style="padding:20px; margin-bottom:16px">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
+          <span style="font-size:18px">📥</span>
+          <h3 class="font-display font-bold text-lg">Import Progress</h3>
+        </div>
+        <p style="font-size:13px; color:var(--dark-300); margin-bottom:12px">Restore from a previous backup or import data from another device.</p>
+        <div style="display:flex; gap:10px">
+          <button class="btn btn-ghost" onclick="openImport()">📝 Paste JSON</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('importFile2').click()">📁 Upload File</button>
+          <input type="file" id="importFile2" accept=".json" style="display:none" onchange="handleFileImport(event)">
+        </div>
+      </div>
+
+      <div class="glass" style="padding:20px; margin-bottom:16px; border:1px solid rgba(255,71,87,.2)">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
+          <span style="font-size:18px">🗑️</span>
+          <h3 class="font-display font-bold text-lg" style="color:var(--health-red)">Reset All Data</h3>
+        </div>
+        <p style="font-size:13px; color:var(--dark-300); margin-bottom:12px">This will permanently delete ALL your progress, prospects, and achievements. This cannot be undone.</p>
+        <button class="btn btn-danger" onclick="showConfirm('Reset All Data', 'This will permanently delete ALL your progress. Are you sure?', resetAll)">⚠️ Reset Everything</button>
+      </div>
+
+      <div class="glass" style="padding:20px">
+        <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">💡 Tips</h3>
+        <ul style="font-size:13px; color:var(--dark-300); line-height:1.8; list-style:none; padding:0">
+          <li>• Export your data regularly as a backup</li>
+          <li>• Mark high-value prospects as "Boss" to earn bonus XP</li>
+          <li>• Keep your streak alive by logging at least one touchpoint daily</li>
+          <li>• Boss Battles deal damage with each touchpoint — keep hitting them!</li>
+          <li>• Complete all 10 quest stages for a prospect to unlock the Completionist badge</li>
+          <li>• Overdue prospects show red alerts on the dashboard</li>
+          <li>• Each touchpoint type earns different XP (Meeting = 50+, Boss = bonus!)</li>
+          <li>• The heat map shows your daily activity over the last 12 weeks</li>
+        </ul>
+      </div>
+    </div>
+  `;
+}
+
+function init() {
+  state = loadState();
+  render();
+  document.getElementById('newDate').value = new Date().toISOString().split('T')[0];
+  
+  const today = new Date().toISOString().split('T')[0];
+  const od = state.prospects.some(p => p.nextActionDate && p.nextActionDate < today && !['closed_won', 'closed_lost', 'ghosted'].includes(p.status));
+  if (od) setTimeout(() => showToast('⚠️ You have overdue follow-ups!', 'warning'), 1000);
+}
+
+// Start application
+init();
 </script>
 </body>
 </html>

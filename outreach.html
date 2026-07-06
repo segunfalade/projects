@@ -567,6 +567,16 @@ function loadState() {
       }
       if (!p.stats) {
         p.stats = defaultState().stats;
+      } else {
+        // Safely merge default stats to ensure new properties like consecutiveDays exist
+        p.stats = { ...defaultState().stats, ...p.stats };
+      }
+      
+      // Ensure all older prospects have a touchpoints array to prevent crashes
+      if (p.prospects) {
+        p.prospects.forEach(pr => {
+          if (!pr.touchpoints) pr.touchpoints = [];
+        });
       }
       return p;
     }
@@ -1147,7 +1157,9 @@ function renderDashboard() {
 
 function renderHeatMap() {
   const counts = {};
-  state.stats.consecutiveDays.forEach(d => { counts[d] = (counts[d] || 0) + 1; });
+  if (state.stats.consecutiveDays) {
+    state.stats.consecutiveDays.forEach(d => { counts[d] = (counts[d] || 0) + 1; });
+  }
   const today = new Date();
   const sd = new Date(today.getTime() - 83 * 864e5);
   const sd2 = sd.getDay();
@@ -1190,18 +1202,18 @@ function renderHeatMap() {
       </div>
     </div>
   `;
-}
 
-function renderProspects() {
-  setTimeout(filterProspects, 0); // Defer filtering slightly to allow DOM to catch up
-  return `
-    <div class="animate-fade-in-up" style="max-width:900px">
-      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px">
-        <div>
-          <h1 class="font-display text-2xl font-bold text-gradient-quest">Prospects</h1>
-          <p style="color:var(--dark-300); font-size:14px">${state.prospects.length} prospects</p>
-        </div>
-        <button class="btn btn-quest" onclick="openAddProspect()">+ Add Prospect</button>
+  // Safely collect touchpoints without using flatMap (for older browser compatibility)
+  const atp = state.prospects.reduce((acc, p) => {
+    const tpList = (p.touchpoints || []).map(t => ({...t, contact: p.contact, company: p.company, status: p.status}));
+    return acc.concat(tpList);
+  }, [])
+  .sort((a, b) => new Date(b.date).localeCompare(new Date(a.date)))
+  .slice(0, 8);
+
+  html += `
+    <div class="glass" style="padding:20px; margin-top:20px">
+      <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">📋 Recent Activity</h3>
       </div>
       <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px">
         <input id="searchInput" placeholder="🔍 Search prospects..." style="flex:1; min-width:180px" oninput="filterProspects()">

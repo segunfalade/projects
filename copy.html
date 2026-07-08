@@ -12,18 +12,19 @@ body{font-family:system-ui,-apple-system,sans-serif;background:linear-gradient(1
 .hdr-row{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0;flex-wrap:wrap;gap:1rem}
 .hdr h1{font-size:2rem;font-weight:800;background:linear-gradient(90deg,#c084fc,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .hdr p{color:#94a3b8;font-size:.875rem}
-.btn{padding:.5rem 1rem;border-radius:.5rem;font-weight:600;border:none;cursor:pointer;transition:all .2s;font-size:.875rem;display:inline-flex;align-items:center;gap:.35rem}
-.btn-purple{background:#7c3aed;color:#fff}.btn-purple:hover{background:#6d28d9;transform:translateY(-1px)}
-.btn-green{background:#16a34a;color:#fff}.btn-green:hover{background:#15803d;transform:translateY(-1px)}
+.btn{padding:.5rem 1rem;border-radius:.5rem;font-weight:600;border:none;cursor:pointer;transition:all .2s;font-size:.875rem}
+.btn-purple{background:#7c3aed;color:#fff}.btn-purple:hover{background:#6d28d9}
+.btn-green{background:#16a34a;color:#fff}.btn-green:hover{background:#15803d}
 .btn-red{background:#dc2626;color:#fff}.btn-red:hover{background:#b91c1c}
 .btn-slate{background:#334155;color:#e2e8f0}.btn-slate:hover{background:#475569}
-.btn-xs{padding:.2rem .5rem;font-size:.65rem;border-radius:.3rem}
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;padding:1.5rem 0}
 @media(min-width:768px){.stat-grid{grid-template-columns:repeat(4,1fr)}}
 .stat-card{border-radius:.75rem;padding:1.25rem;border:1px solid rgba(168,85,247,.2)}
 .stat-card.a{background:linear-gradient(135deg,#6d28d9,#7c3aed)}.stat-card.b{background:linear-gradient(135deg,#1d4ed8,#2563eb)}
 .stat-card.c{background:linear-gradient(135deg,#b91c1c,#dc2626)}.stat-card.d{background:linear-gradient(135deg,#15803d,#16a34a)}
 .stat-card .lbl{font-size:.75rem;font-weight:600;opacity:.8}.stat-card .val{font-size:2rem;font-weight:800;margin-top:.25rem}
+.stat-card .prog{width:100%;height:.375rem;background:rgba(0,0,0,.3);border-radius:9999px;margin-top:.5rem;overflow:hidden}
+.stat-card .prog-fill{height:100%;background:#fbbf24;border-radius:9999px;transition:width .5s}
 .tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
 .tab-btn{padding:.5rem 1rem;border-radius:.5rem;font-weight:600;border:none;cursor:pointer;font-size:.8rem;transition:all .2s;background:#1e293b;color:#cbd5e1}
 .tab-btn:hover{background:#334155}
@@ -40,60 +41,35 @@ input:focus,select:focus,textarea:focus{border-color:#7c3aed}
 .status-not{background:rgba(100,116,139,.3);color:#94a3b8}
 .status-prog{background:rgba(59,130,246,.3);color:#93c5fd}
 .status-done{background:rgba(34,197,94,.3);color:#86efac}
+.status-won{background:rgba(34,197,94,.3);color:#86efac}
+.status-lost{background:rgba(239,68,68,.3);color:#fca5a5}
 .xp-badge{font-size:.75rem;font-weight:700;color:#c084fc}
+.heat-grid{display:flex;gap:2px;overflow-x:auto;padding:.5rem 0}
+.heat-col{display:flex;flex-direction:column;gap:2px}
 .heat-cell{width:14px;height:14px;border-radius:2px;cursor:pointer;transition:transform .15s}
 .heat-cell:hover{transform:scale(1.3);z-index:2;box-shadow:0 0 6px rgba(255,255,255,.4)}
 .heat-i0{background:#1e293b}.heat-i1{background:#14532d}.heat-i2{background:#166534}.heat-i3{background:#15803d}.heat-i4{background:#16a34a}.heat-i5{background:#22c55e}
-.badge-unlocked{display:flex;flex-direction:column;align-items:center;padding:1rem;background:linear-gradient(135deg,#b45309,#d97706);border-radius:.75rem;border:2px solid #fcd34d;text-align:center;transition:transform .15s}
+.badge-unlocked{display:flex;flex-direction:column;align-items:center;padding:1rem;background:linear-gradient(135deg,#b45309,#d97706);border-radius:.75rem;border:2px solid #fcd34d;text-align:center;cursor:default;transition:transform .15s}
 .badge-unlocked:hover{transform:scale(1.05)}
-.badge-locked{display:flex;flex-direction:column;align-items:center;padding:1rem;background:#1e293b;border-radius:.75rem;border:1px solid #334155;text-align:center;opacity:.5}
+.badge-locked{display:flex;flex-direction:column;align-items:center;padding:1rem;background:#1e293b;border-radius:.75rem;border:1px solid #334155;text-align:center;opacity:.5;cursor:default}
 .badge-ico{font-size:2.25rem;margin-bottom:.25rem}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
-.modal{background:#1e293b;border-radius:1rem;padding:1.5rem;border:1px solid rgba(168,85,247,.4);max-width:520px;width:100%;max-height:90vh;overflow-y:auto}
+.modal{background:#1e293b;border-radius:1rem;padding:1.5rem;border:1px solid rgba(168,85,247,.4);max-width:480px;width:100%;max-height:90vh;overflow-y:auto}
 .level-bar{width:100%;height:.5rem;background:rgba(0,0,0,.3);border-radius:9999px;overflow:hidden;margin-top:.25rem}
 .level-bar-fill{height:100%;background:linear-gradient(90deg,#c084fc,#f472b6);border-radius:9999px;transition:width .5s}
-.toast{position:fixed;top:1rem;right:1rem;background:#1e293b;border:1px solid #7c3aed;border-radius:.5rem;padding:.75rem 1rem;z-index:200;animation:slideIn .3s ease;font-weight:600;font-size:.9rem;max-width:320px}
+.toast{position:fixed;top:1rem;right:1rem;background:#1e293b;border:1px solid #7c3aed;border-radius:.5rem;padding:.75rem 1rem;z-index:200;animation:slideIn .3s ease;font-weight:600;font-size:.9rem}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 @media(max-width:640px){.hdr h1{font-size:1.25rem}.stat-card .val{font-size:1.5rem}}
-/* Phase cards */
-.phase-header{cursor:pointer;border-radius:.75rem;padding:1rem 1.25rem;margin-bottom:.75rem;transition:all .2s;border:1px solid}
-.phase-header:hover{filter:brightness(1.15)}
-.phase-header.p1{background:linear-gradient(135deg,#1e3a5f,#1e40af);border-color:rgba(59,130,246,.4)}
-.phase-header.p2{background:linear-gradient(135deg,#3b0764,#6d28d9);border-color:rgba(139,92,246,.4)}
-.phase-header.p3{background:linear-gradient(135deg,#450a0a,#991b1b);border-color:rgba(239,68,68,.4)}
-.phase-header.p4{background:linear-gradient(135deg,#064e3b,#047857);border-color:rgba(52,211,153,.4)}
-.phase-header .phase-meta{display:flex;gap:.75rem;flex-wrap:wrap;font-size:.7rem;margin-top:.25rem}
-.phase-header .phase-meta span{background:rgba(0,0,0,.25);padding:.15rem .5rem;border-radius:.25rem}
-/* Micro-quest card */
-.mq-card{background:#0f172a;border-radius:.5rem;padding:.75rem 1rem;margin-bottom:.4rem;border-left:3px solid;transition:all .15s;cursor:pointer;display:flex;align-items:center;gap:.75rem}
-.mq-card:hover{background:#1e293b;transform:translateX(3px)}
-.mq-card.done{opacity:.5;border-left-color:#22c55e!important}
-.mq-card.done .mq-title{text-decoration:line-through}
-.mq-ico{font-size:1.25rem;flex-shrink:0}
-.mq-body{flex:1;min-width:0}
-.mq-title{font-size:.82rem;font-weight:600}
-.mq-meta{font-size:.65rem;color:#94a3b8;margin-top:2px}
-.mq-right{text-align:right;flex-shrink:0}
-.mq-xp{font-weight:700;font-size:.8rem;color:#c084fc}
-.mq-time{font-size:.6rem;color:#64748b}
-.mq-check{width:28px;height:28px;border-radius:50%;border:2px solid #475569;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.9rem;flex-shrink:0}
-.mq-check:hover{border-color:#22c55e;background:rgba(34,197,94,.15)}
-.mq-check.done{background:#22c55e;border-color:#22c55e;color:#fff}
-/* Phase progress ring */
-.phase-progress{display:flex;align-items:center;gap:.5rem}
-.phase-progress .ring{width:40px;height:40px;border-radius:50%;border:3px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;flex-shrink:0}
-/* Pulse animation for new completions */
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
-.pulse{animation:pulse .6s ease}
 </style>
 </head>
 <body>
+
 <header class="hdr">
   <div class="container">
     <div class="hdr-row">
       <div>
         <h1>📚 Copy Master Arena</h1>
-        <p>15-min micro-quests → rapid dopamine → unstoppable momentum</p>
+        <p>Master the copywriting niche through gamified practice</p>
       </div>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap">
         <button class="btn btn-green" onclick="exportData()">💾 Export</button>
@@ -103,48 +79,59 @@ input:focus,select:focus,textarea:focus{border-color:#7c3aed}
     </div>
   </div>
 </header>
+
 <div id="toast" style="display:none"></div>
+
 <div id="modalOverlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()"></div>
+
 <main class="container" style="padding-top:1.5rem;padding-bottom:3rem">
+
 <div class="stat-grid" id="statsPanel"></div>
+
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('arena')">⚔️ Arena</button>
-  <button class="tab-btn" onclick="switchTab('campaigns')">📋 Campaigns</button>
-  <button class="tab-btn" onclick="switchTab('microquests')">🎯 Micro-Quests</button>
+  <button class="tab-btn active" onclick="switchTab('overview')">📊 Overview</button>
+  <button class="tab-btn" onclick="switchTab('projects')">📋 Projects</button>
+  <button class="tab-btn" onclick="switchTab('quests')">🎯 Quests</button>
   <button class="tab-btn" onclick="switchTab('battles')">👑 Battles</button>
+  <button class="tab-btn" onclick="switchTab('practices')">🎯 Practices</button>
   <button class="tab-btn" onclick="switchTab('achievements')">🏆 Badges</button>
   <button class="tab-btn" onclick="switchTab('heatmap')">🔥 Heatmap</button>
 </div>
+
 <div id="tabContent"></div>
+
 </main>
+
 <script>
-// ═══════════════════════════════════════════
-// DATA STORE
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════
+// DATA STORE (localStorage)
+// ═══════════════════════════════════════
 const STORAGE_KEY = 'copymaster_data';
 let data = loadData();
+
 function defaultData(){ return {
   user:{id:'user-1',xp:0,level:1,streakDays:0,lastActivityDate:null},
-  campaigns:[],
+  projects:[],
   quests:[],
   bossBattles:[],
   practices:[],
   achievements:[]
 }}
+
 function loadData(){
-  try{ const d=JSON.parse(localStorage.getItem(STORAGE_KEY));
-    // Migrate old 'projects' key to 'campaigns'
-    if(d&&d.projects&&!d.campaigns){ d.campaigns=d.projects; delete d.projects; }
-    // Migrate old quests without phase/time fields
-    if(d&&d.quests){ d.quests.forEach(q=>{ if(!q.phase) q.phase='phase3'; if(!q.timeEstimate) q.timeEstimate='25-40 min'; }); }
-    return d||defaultData();
-  }catch(e){ return defaultData(); }
+  try{ 
+    const d=JSON.parse(localStorage.getItem(STORAGE_KEY)); 
+    // Merge existing data with defaultData to prevent missing properties on updates
+    return d ? { ...defaultData(), ...d } : defaultData(); 
+  }
+  catch(e){ return defaultData(); }
 }
 function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); }
-// ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════
 // CONSTANTS
-// ═══════════════════════════════════════════
-const CAMPAIGN_TEMPLATES=[
+// ═══════════════════════════════════════
+const PROJECT_TEMPLATES=[
   {n:1,title:'The Application-Funnel Sales Page',desc:'High-ticket coach ($3K–$10K) application-based funnel — full sales page + application form',xp:500},
   {n:2,title:'The 5-Day Challenge Funnel',desc:'Free 5-day challenge to sell $497–$997 course — registration page + 5 emails + pitch',xp:500},
   {n:3,title:'The Webinar/VSL Script',desc:'Live/automated webinar script — hook, story, content, pitch, close',xp:600},
@@ -153,499 +140,339 @@ const CAMPAIGN_TEMPLATES=[
   {n:6,title:'The Founder Story / About Page',desc:'About page copy turning personal story into a trust-building sales asset',xp:400},
   {n:7,title:'The LinkedIn Ghostwriting Pack',desc:'5 LinkedIn posts in fictional educator voice building toward a launch',xp:350}
 ];
-// MICRO-QUEST TEMPLATES BY PHASE
-const PHASES = [
-  {id:'phase1',label:'Phase 1: Research & Diagnostics',ico:'🔍',color:'#3b82f6',bg:'p1',time:'15–20 min each'},
-  {id:'phase2',label:'Phase 2: Strategy & Positioning',ico:'🧠',color:'#8b5cf6',bg:'p2',time:'20–30 min each'},
-  {id:'phase3',label:'Phase 3: Human-Centric Drafting',ico:'✍️',color:'#ef4444',bg:'p3',time:'25–40 min each'},
-  {id:'phase4',label:'Phase 4: Outreach & Administration',ico:'📨',color:'#34d399',bg:'p4',time:'15 min each'}
+
+const PRACTICE_CATEGORIES=[
+  {cat:'research',label:'🔍 Research Habit',desc:'Live inside the niche — follow coaches, join challenges, build swipe file',examples:['Followed 3 coaches','Watched a webinar','Screenshot a sales page','Joined a free challenge','Analyzed a competitor funnel']},
+  {cat:'frameworks',label:'📐 Frameworks',desc:'Master PAS, AIDA, Hero\'s Journey, Star-Story-Solution, 4Ps, StoryBrand',examples:['Diagrammed PAS example','Applied AIDA framework','Studied Hero\'s Journey','Applied Star-Story-Solution','Applied the 4 Ps framework','Applied StoryBrand Framework']},
+  {cat:'voice-matching',label:'🎤 Voice Matching',desc:'Sound like your coach, not like yourself',examples:['Created voice profile','Read copy aloud in their voice','Analyzed sentence length/style','Watched 3+ hours of coach content','Wrote voice profile document']},
+  {cat:'offer-literacy',label:'💰 Offer Literacy',desc:'Understand coaching biz models — front-end, core, high-ticket',examples:['Mapped a full funnel','Studied launch model','Analyzed pricing strategy','Compared 3 coaching businesses','Mapped opt-in to checkout flow']},
+  {cat:'content-discipline',label:'📝 Content Discipline',desc:'2–3 LinkedIn posts/week, 1 long-form analysis/month',examples:['Posted a teardown','Posted an insight','Published long-form analysis','Shared spec work reveal','Engaged with coach content']},
+  {cat:'feedback',label:'💬 Feedback Loop',desc:'Get critique from community and real coaches',examples:['Shared in Copy Chief','Got feedback from a coach','Posted on X/Twitter','Shared in Copyhackers group','Asked a coach for review']}
 ];
-const MICRO_QUEST_TEMPLATES = {
-  phase1: [
-    {questName:'The Slop Sweep',desc:'Audit a competitor\'s page and highlight 3 pieces of generic "AI slop" — cliché phrases, templated structures, or hollow claims.',xp:50,time:'15 min'},
-    {questName:'The Skepticism Check',desc:'Run a quick Trust Funnel diagnostic on a prospect\'s landing page. Find exactly where user trust leaks out (vague claims, missing social proof, weak guarantees).',xp:50,time:'20 min'},
-    {questName:'VoC Mining',desc:'Extract 3 strong, human-centric Voice of Customer quotes from reviews, support tickets, Reddit threads, or testimonials.',xp:50,time:'15 min'},
-    {questName:'Friction Hunting',desc:'Map the exact step-by-step flow a user takes from a SaaS opt-in to checkout. Note every point of friction, confusion, or drop-off.',xp:50,time:'20 min'},
-    {questName:'Competitor Swipe Scan',desc:'Screenshot 5 competitors\' hero sections. Tag each by mechanism (challenge, webinar, application, evergreen).',xp:40,time:'15 min'},
-    {questName:'Reddit Deep-Dive',desc:'Read 10 threads in the target niche subreddit. Collect the exact language users use to describe their frustrations.',xp:40,time:'20 min'}
-  ],
-  phase2: [
-    {questName:'The Switch Map',desc:'Outline the specific "Curious → Converted" psychological journey for one target persona. What flips the switch at each stage?',xp:75,time:'25 min'},
-    {questName:'Angle Generation',desc:'Write 5 vastly different headline angles (e.g. one focused on speed, one on trust deficit, one on cost of inaction, one on identity, one on specificity).',xp:75,time:'20 min'},
-    {questName:'Wireframing the Flow',desc:'Block out the bare-bones sections of a landing page (Hero, Social Proof, Agitation, Solution, FAQs) — no body copy, just section labels and purpose notes.',xp:60,time:'20 min'},
-    {questName:'The Verification Pitch',desc:'Draft the core value proposition for a PropTech or trust-verified platform, focused entirely on user security and verified outcomes.',xp:75,time:'25 min'},
-    {questName:'Objection Storming',desc:'Brainstorm every possible objection a prospect might have. Group by category: price, trust, effort, risk, and competition.',xp:50,time:'20 min'},
-    {questName:'Promise Ladder',desc:'Map the promise hierarchy: Primary promise → Supporting promises → Micro-promises per section. Each one must be provable.',xp:60,time:'20 min'}
-  ],
-  phase3: [
-    {questName:'Hero Section Strike',desc:'Draft ONLY the H1, subheadline, and primary Call-to-Action button. Nothing else. Make every word earn its place.',xp:100,time:'25 min'},
-    {questName:'The Agitator',desc:'Write the specific section that validates the user\'s current frustrations and pain points. Make them feel seen before you offer the solution.',xp:100,time:'30 min'},
-    {questName:'Feature Translation',desc:'Take one technical software feature and translate it into a purely human-centric, benefit-driven paragraph. No jargon.',xp:100,time:'25 min'},
-    {questName:'The Micro-Copy Polish',desc:'Review the completed draft and punch up: button text, form field labels, guarantee badges, and trust signals. Small words, big impact.',xp:80,time:'30 min'},
-    {questName:'Social Proof Section',desc:'Structure the testimonial/testimonial section. Use Star-Story-Solution framework for each one. Include specific results.',xp:100,time:'35 min'},
-    {questName:'The Close',desc:'Write the final push section: urgency, risk reversal, specific CTA. Make the alternative to buying feel irresponsible.',xp:90,time:'25 min'},
-    {questName:'Voice Read-Aloud',desc:'Read your entire draft aloud in the client\'s voice. Mark every sentence that sounds like you instead of them. Revise.',xp:70,time:'20 min'}
-  ],
-  phase4: [
-    {questName:'The Teardown Hook',desc:'Write a personalized, 3-line cold email hook based on the Trust Funnel diagnostic you ran earlier. Lead with insight, not introduction.',xp:50,time:'15 min'},
-    {questName:'Package Assembly',desc:'Compile your research, headline ideas, and voice profile into a clean pitch package ready to send to a targeted prospect.',xp:50,time:'15 min'},
-    {questName:'LinkedIn Insight Post',desc:'Write and schedule one LinkedIn post sharing a lesson from your latest research — teach something, don\'t sell.',xp:40,time:'15 min'},
-    {questName:'Follow-Up Audit',desc:'Review all outstanding pitches. Draft polite, value-adding follow-ups for any older than 5 days.',xp:30,time:'15 min'}
-  ]
-};
+
 const BADGE_TEMPLATES=[
-  {name:'First Blood',icon:'🎮',desc:'Started your first campaign'},
-  {name:'Campaign Master',icon:'✅',desc:'Completed your first campaign'},
-  {name:'Trio Achiever',icon:'🎯',desc:'Completed 3 campaigns'},
-  {name:'Niche Expert',icon:'🏆',desc:'Completed all 7 campaigns'},
+  {name:'First Blood',icon:'🎮',desc:'Started your first spec project'},
+  {name:'Project Master',icon:'✅',desc:'Completed your first spec project'},
+  {name:'Trio Achiever',icon:'🎯',desc:'Completed 3 spec projects'},
+  {name:'Niche Expert',icon:'🏆',desc:'Completed all 7 spec projects'},
   {name:'Battle Winner',icon:'⚔️',desc:'Won your first boss battle'},
   {name:'Deal Maker',icon:'💰',desc:'Won 5 boss battles worth $5k+'},
   {name:'Habit Keeper',icon:'🔥',desc:'7-day practice streak'},
-  {name:'Micro-Quest Machine',icon:'⚡',desc:'Completed 25 micro-quests'},
-  {name:'Research Hound',icon:'🔍',desc:'Completed 10 Phase 1 micro-quests'},
-  {name:'Strategy Architect',icon:'🧠',desc:'Completed 10 Phase 2 micro-quests'},
-  {name:'Drafting Swordsman',icon:'✍️',desc:'Completed 10 Phase 3 micro-quests'},
-  {name:'Closer',icon:'📨',desc:'Completed 5 Phase 4 micro-quests'},
+  {name:'Researcher',icon:'🔍',desc:'Completed 10 research activities'},
+  {name:'Framework Scholar',icon:'📐',desc:'Completed 10 framework studies'},
+  {name:'Voice Master',icon:'🎤',desc:'Completed 5 voice-matching exercises'},
+  {name:'Content Creator',icon:'📝',desc:'Completed 10 content pieces'},
   {name:'Level 5 Master',icon:'⭐',desc:'Reached Level 5'},
-  {name:'XP Collector',icon:'💎',desc:'Earned 10,000 XP'},
-  {name:'Speed Demon',icon:'⏱️',desc:'Complete 3 micro-quests in a single day'},
-  {name:'Consistency King',icon:'👑',desc:'30-day activity streak'},
-  {name:'Full Cycle',icon:'🔄',desc:'Complete at least 1 micro-quest from all 4 phases'},
-  {name:'Deep Work',icon:'🏋️',desc:'Complete a Phase 3 micro-quest (drafting) 3 days in a row'}
+  {name:'XP Collector',icon:'⚡',desc:'Earned 10,000 XP'},
+  {name:'Speedrunner',icon:'⏱️',desc:'Finish a project within 24 hours of starting'},
+  {name:'Consistency King',icon:'👑',desc:'30-day practice streak'}
 ];
-// ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════
 // HELPERS
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════
 const uid = () => 'id_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
 const fmtDate = d => d ? new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
 const fmtShort = d => d ? new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
-const todayStr = () => new Date().toISOString().split('T')[0];
+
+// Helper to get local date string safely avoiding timezone drift
+const getLocalDateString = (dateObj) => {
+  const off = dateObj.getTimezoneOffset() * 60000;
+  return new Date(dateObj.getTime() - off).toISOString().split('T')[0];
+};
+const todayStr = () => getLocalDateString(new Date());
+
 function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg;el.style.display='block';
   setTimeout(()=>el.style.display='none',2500);
 }
-let xpQueue=0, xpTimer=null;
+
 function addXP(n){
-  xpQueue+=n;
-  if(xpTimer) return;
-  xpTimer=setTimeout(()=>{
-    const total=xpQueue; xpQueue=0; xpTimer=null;
-    data.user.xp += total;
-    const newLevel = 1+Math.floor(data.user.xp/1000);
-    if(newLevel > data.user.level){ data.user.level=newLevel; toast('🎉 LEVEL UP! You are now Level '+newLevel+'!'); }
-    else toast('⚡ +'+total+' XP earned!');
-    refreshAll();
-  },150);
+  data.user.xp += n;
+  const newLevel = 1+Math.floor(data.user.xp/1000);
+  if(newLevel > data.user.level){ data.user.level=newLevel; toast('🎉 Level Up! You are now Level '+newLevel+'!'); }
 }
+
 function recordActivity(){
   const today=todayStr();
   if(data.user.lastActivityDate){
-    const last=new Date(data.user.lastActivityDate).toISOString().split('T')[0];
+    // Use local string representation to calculate exact day diff
+    const lastDateObj = new Date(data.user.lastActivityDate);
+    const last = getLocalDateString(lastDateObj);
+    
     const diff=Math.floor((new Date(today)-new Date(last))/(86400000));
     if(diff===1) data.user.streakDays++;
     else if(diff>1) data.user.streakDays=1;
   } else data.user.streakDays=1;
   data.user.lastActivityDate=new Date().toISOString();
 }
+
 function checkAchievements(){
   const unlocked=data.achievements.map(a=>a.badgeName);
   const add=(name,icon,desc)=>{
     if(!unlocked.includes(name)){ data.achievements.push({id:uid(),badgeName:name,icon,description:desc,unlockedAt:new Date().toISOString()}); toast('🏆 Badge Unlocked: '+name); }
   };
-  const campsDone=data.campaigns.filter(p=>p.status==='completed').length;
-  const campsStarted=data.campaigns.length;
+  const pDone=data.projects.filter(p=>p.status==='completed').length;
+  const pStarted=data.projects.length;
   const battlesWon=data.bossBattles.filter(b=>b.stage==='won').length;
-  const wonValue=data.bossBattles.filter(b=>b.stage==='won').reduce((s,b)=>s+(b.value||0),0);
-  const questsDone=data.quests.filter(q=>q.status==='completed').length;
-  const p1Done=data.quests.filter(q=>q.status==='completed'&&q.phase==='phase1').length;
-  const p2Done=data.quests.filter(q=>q.status==='completed'&&q.phase==='phase2').length;
-  const p3Done=data.quests.filter(q=>q.status==='completed'&&q.phase==='phase3').length;
-  const p4Done=data.quests.filter(q=>q.status==='completed'&&q.phase==='phase4').length;
-  // Speed demon: 3 quests completed today
-  const todayDone=data.quests.filter(q=>q.status==='completed'&&q.completedAt&&q.completedAt.split('T')[0]===todayStr()).length;
-  // Full cycle: at least 1 from each phase
-  const fullCycle=p1Done>=1&&p2Done>=1&&p3Done>=1&&p4Done>=1;
-  // Deep work: 3 consecutive days of phase3
-  let deepWork=false;
-  const p3Completed=data.quests.filter(q=>q.status==='completed'&&q.phase==='phase3'&&q.completedAt).map(q=>q.completedAt.split('T')[0]).sort();
-  if(p3Completed.length>=3){
-    for(let i=2;i<p3Completed.length;i++){
-      const d1=new Date(p3Completed[i-2]),d2=new Date(p3Completed[i-1]),d3=new Date(p3Completed[i]);
-      if((d2-d1)/(86400000)===1&&(d3-d2)/(86400000)===1){ deepWork=true; break; }
-    }
-  }
-  if(campsStarted>=1) add('First Blood','🎮','Started your first campaign');
-  if(campsDone>=1) add('Campaign Master','✅','Completed your first campaign');
-  if(campsDone>=3) add('Trio Achiever','🎯','Completed 3 campaigns');
-  if(campsDone>=7) add('Niche Expert','🏆','Completed all 7 campaigns');
+  const wonValue=data.bossBattles.filter(b=>b.stage==='won').reduce((s,b)=>s+(Number(b.value)||0),0);
+  const practices=data.practices;
+  const researchCount=practices.filter(p=>p.category==='research').length;
+  const frameworkCount=practices.filter(p=>p.category==='frameworks').length;
+  const voiceCount=practices.filter(p=>p.category==='voice-matching').length;
+  const contentCount=practices.filter(p=>p.category==='content-discipline').length;
+
+  if(pStarted>=1) add('First Blood','🎮','Started your first spec project');
+  if(pDone>=1) add('Project Master','✅','Completed your first spec project');
+  if(pDone>=3) add('Trio Achiever','🎯','Completed 3 spec projects');
+  if(pDone>=7) add('Niche Expert','🏆','Completed all 7 spec projects');
   if(battlesWon>=1) add('Battle Winner','⚔️','Won your first boss battle');
   if(battlesWon>=5&&wonValue>=5000) add('Deal Maker','💰','Won 5 boss battles worth $5k+');
-  if(data.user.streakDays>=7) add('Habit Keeper','🔥','7-day streak');
-  if(questsDone>=25) add('Micro-Quest Machine','⚡','Completed 25 micro-quests');
-  if(p1Done>=10) add('Research Hound','🔍','Completed 10 Phase 1 micro-quests');
-  if(p2Done>=10) add('Strategy Architect','🧠','Completed 10 Phase 2 micro-quests');
-  if(p3Done>=10) add('Drafting Swordsman','✍️','Completed 10 Phase 3 micro-quests');
-  if(p4Done>=5) add('Closer','📨','Completed 5 Phase 4 micro-quests');
+  if(data.user.streakDays>=7) add('Habit Keeper','🔥','7-day practice streak');
+  if(researchCount>=10) add('Researcher','🔍','Completed 10 research activities');
+  if(frameworkCount>=10) add('Framework Scholar','📐','Completed 10 framework studies');
+  if(voiceCount>=5) add('Voice Master','🎤','Completed 5 voice-matching exercises');
+  if(contentCount>=10) add('Content Creator','📝','Completed 10 content pieces');
   if(data.user.level>=5) add('Level 5 Master','⭐','Reached Level 5');
-  if(data.user.xp>=10000) add('XP Collector','💎','Earned 10,000 XP');
-  if(todayDone>=3) add('Speed Demon','⏱️','Complete 3 micro-quests in a single day');
-  if(data.user.streakDays>=30) add('Consistency King','👑','30-day streak');
-  if(fullCycle) add('Full Cycle','🔄','Complete at least 1 micro-quest from all 4 phases');
-  if(deepWork) add('Deep Work','🏋️','Complete a Phase 3 micro-quest 3 days in a row');
+  if(data.user.xp>=10000) add('XP Collector','⚡','Earned 10,000 XP');
+  if(data.user.streakDays>=30) add('Consistency King','👑','30-day practice streak');
 }
+
 function refreshAll(){ renderStats(); renderTab(); saveData(); }
-// ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════
 // STATS PANEL
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════
 function renderStats(){
   const u=data.user;
   const xpNext=u.xp%1000;
   const pct=(xpNext/1000*100).toFixed(0);
-  const mqDone=data.quests.filter(q=>q.status==='completed').length;
-  const mqToday=data.quests.filter(q=>q.status==='completed'&&q.completedAt&&q.completedAt.split('T')[0]===todayStr()).length;
   document.getElementById('statsPanel').innerHTML=`
-    <div class="stat-card a"><div class="lbl">⚡ Total XP</div><div class="val">${(u.xp/1000).toFixed(1)}k</div><div class="lbl" style="margin-top:.25rem">${xpNext}/1000 to next level</div><div class="level-bar"><div class="level-bar-fill" style="width:${pct}%"></div></div></div>
-    <div class="stat-card b"><div class="lbl">⭐ Level ${u.level}</div><div class="val">${mqDone}</div><div class="lbl" style="margin-top:.25rem">micro-quests completed</div></div>
-    <div class="stat-card c"><div class="lbl">🔥 Streak</div><div class="val">${u.streakDays}</div><div class="lbl" style="margin-top:.25rem">${u.streakDays>=7?'🏆 Habit Keeper!':(7-u.streakDays)+' days to badge'} · Today: ${mqToday}</div></div>
-    <div class="stat-card d"><div class="lbl">📋 Campaigns</div><div class="val" style="font-size:1.5rem">${data.campaigns.filter(p=>p.status==='completed').length}/${CAMPAIGN_TEMPLATES.length}</div><div class="lbl" style="margin-top:.25rem">${data.campaigns.filter(p=>p.status==='in-progress').length} in progress</div></div>
+    <div class="stat-card a"><div class="lbl">⚡ Total XP</div><div class="val">${(u.xp/1000).toFixed(1)}k</div><div class="lbl" style="margin-top:.25rem">${u.xp%1000}/1000 to next level</div><div class="level-bar"><div class="level-bar-fill" style="width:${pct}%"></div></div></div>
+    <div class="stat-card b"><div class="lbl">⭐ Level</div><div class="val">${u.level}</div><div class="lbl" style="margin-top:.25rem">${(u.level*1000)-u.xp} XP needed for Level ${u.level+1}</div></div>
+    <div class="stat-card c"><div class="lbl">🔥 Streak</div><div class="val">${u.streakDays}</div><div class="lbl" style="margin-top:.25rem">${u.streakDays>=7?'🏆 Habit Keeper!':(7-u.streakDays)+' days to badge'}</div></div>
+    <div class="stat-card d"><div class="lbl">💪 Status</div><div class="val" style="font-size:1.5rem">${u.level>=5?'🦾 Master':'🎮 Active'}</div><div class="lbl" style="margin-top:.25rem">Projects: ${data.projects.filter(p=>p.status==='completed').length}/${PROJECT_TEMPLATES.length}</div></div>
   `;
 }
-// ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════
 // TAB SWITCHING
-// ═══════════════════════════════════════════
-let currentTab='arena';
+// ═══════════════════════════════════════
+let currentTab='overview';
 function switchTab(tab){
   currentTab=tab;
-  document.querySelectorAll('.tab-btn').forEach(b=>{
-    const txt=b.textContent.toLowerCase();
-    b.classList.toggle('active',
-      (tab==='arena'&&txt.includes('arena'))||
-      (tab==='campaigns'&&txt.includes('campaign'))||
-      (tab==='microquests'&&txt.includes('micro'))||
-      (tab==='battles'&&txt.includes('battle'))||
-      (tab==='achievements'&&txt.includes('badge'))||
-      (tab==='heatmap'&&txt.includes('heatmap'))
-    );
-  });
+  
+  // Safely manage tab active states via precise selector instead of inner text
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const activeBtn = document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`);
+  if(activeBtn) activeBtn.classList.add('active');
+  
   renderTab();
 }
 function renderTab(){
   const el=document.getElementById('tabContent');
   switch(currentTab){
-    case 'arena': el.innerHTML=renderArena(); break;
-    case 'campaigns': el.innerHTML=renderCampaigns(); break;
-    case 'microquests': el.innerHTML=renderMicroQuests(); break;
+    case 'overview': el.innerHTML=renderOverview(); break;
+    case 'projects': el.innerHTML=renderProjects(); break;
+    case 'quests': el.innerHTML=renderQuests(); break;
     case 'battles': el.innerHTML=renderBattles(); break;
+    case 'practices': el.innerHTML=renderPractices(); break;
     case 'achievements': el.innerHTML=renderAchievements(); break;
     case 'heatmap': el.innerHTML=renderHeatmap(); break;
   }
 }
-// ═══════════════════════════════════════════
-// ARENA (Overview + Daily Micro-Quests)
-// ═══════════════════════════════════════════
-function renderArena(){
-  let h='';
-  // DAILY SPOTLIGHT — recommended micro-quests
-  const allActiveMQ=data.quests.filter(q=>q.status!=='completed');
-  h+=`<div class="card" style="background:linear-gradient(135deg,#3b0764,#1e1b4b);border-color:rgba(168,85,247,.4);margin-bottom:1.5rem">
-    <div class="flex-between"><h3 style="margin:0">⚔️ Today\'s Arena</h3><span style="font-size:.8rem;color:#94a3b8">${allActiveMQ.length} micro-quests waiting</span></div>
-    <p style="font-size:.8rem;margin:.5rem 0 1rem">Knock out a 15-minute micro-quest. Keep the streak alive. Earn dopamine.</p>`;
-  // Show next 4 incomplete quests
-  if(allActiveMQ.length){
-    const show=allActiveMQ.slice(0,4);
-    show.forEach(q=>{
-      const ph=PHASES.find(p=>p.id===q.phase)||PHASES[0];
-      h+=`<div class="mq-card" style="border-left-color:${ph.color}" onclick="completeQuest('${q.id}')">
-        <div class="mq-ico">${ph.ico}</div>
-        <div class="mq-body"><div class="mq-title">${q.questName||'(untitled)'}</div><div class="mq-meta">${ph.label.split(':')[0]} · ${q.timeEstimate||'15 min'}</div></div>
-        <div class="mq-right"><div class="mq-xp">+${q.xpReward||50}</div><div class="mq-time">XP</div></div>
-        <div class="mq-check" title="Complete now">✓</div>
-      </div>`;
-    });
-  } else {
-    h+=`<p style="font-size:.8rem;color:#86efac">🎉 All micro-quests complete! Add more or start a new campaign.</p>`;
-  }
-  h+=`<div style="display:flex;gap:.5rem;margin-top:1rem">
-    <button class="btn btn-purple" onclick="switchTab('microquests')">🎯 View All Micro-Quests</button>
-    <button class="btn btn-slate" onclick="showQuickAddMQ()">+ Quick Add</button>
-  </div></div>`;
-  // Phase progress overview
-  h+=`<div class="grid2" style="margin-bottom:1.5rem">`;
-  PHASES.forEach(ph=>{
-    const total=data.quests.filter(q=>q.phase===ph.id).length;
-    const done=data.quests.filter(q=>q.phase===ph.id&&q.status==='completed').length;
-    h+=`<div class="card phase-header ${ph.bg}" style="cursor:default;margin-bottom:0" onclick="switchTab('microquests')">
-      <div class="flex-between"><span style="font-weight:700;font-size:1rem">${ph.ico} ${ph.label}</span><span style="font-size:.75rem;opacity:.8">${done}/${total}</span></div>
-      <div class="phase-meta"><span>⏱ ${ph.time}</span><span>+50–100 XP</span></div>
-      <div class="level-bar" style="margin-top:.5rem"><div class="level-bar-fill" style="width:${total?Math.round(done/total*100):0}%;background:${ph.color}"></div></div>
-    </div>`;
-  });
-  h+=`</div>`;
-  // Campaigns compact + Battles compact
-  h+=`<div class="grid2">${renderCampaignsCompact()}${renderBattlesCompact()}</div>`;
-  // Recent completions
-  const recentDone=data.quests.filter(q=>q.status==='completed'&&q.completedAt).sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt)).slice(0,5);
-  if(recentDone.length){
-    h+=`<div class="card" style="margin-top:1.5rem"><h3 style="margin:0 0 .75rem">✅ Recent Completions</h3>`;
-    recentDone.forEach(q=>{
-      h+=`<div style="display:flex;align-items:center;gap:.5rem;padding:.4rem 0;font-size:.8rem;border-bottom:1px solid rgba(255,255,255,.05)">
-        <span>✅</span><span style="flex:1">${q.questName||'(untitled)'}</span><span style="color:#86efac">+${q.xpReward||50} XP</span><span style="color:#64748b;font-size:.7rem">${fmtShort(q.completedAt)}</span>
-      </div>`;
-    });
-    h+=`</div>`;
-  }
-  return h;
+
+// ═══════════════════════════════════════
+// OVERVIEW
+// ═══════════════════════════════════════
+function renderOverview(){
+  return `<div class="grid2">${renderProjectsCompact()}${renderBattlesCompact()}</div>`;
 }
-function renderCampaignsCompact(){
-  const camps=data.campaigns.sort((a,b)=>a.projectNumber-b.projectNumber);
-  let h=`<div><div class="flex-between" style="margin-bottom:1rem"><h3 style="margin:0">📋 Campaigns</h3><button class="btn btn-purple btn-xs" onclick="switchTab('campaigns')">View All</button></div>`;
-  if(!camps.length) h+=`<div class="card"><p>No campaigns yet. Start one!</p></div>`;
-  else camps.slice(0,3).forEach(p=>{
+
+function renderProjectsCompact(){
+  const projs=data.projects.sort((a,b)=>a.projectNumber-b.projectNumber);
+  let h=`<div><div class="flex-between" style="margin-bottom:1rem"><h3 style="margin:0">📋 Spec Projects</h3><button class="btn btn-purple" onclick="switchTab('projects')">View All</button></div>`;
+  if(!projs.length) h+=`<div class="card"><p>No projects yet. Go to Projects tab to start!</p></div>`;
+  else projs.forEach(p=>{
+    const s=p.status==='completed'?'status-done':p.status==='in-progress'?'status-prog':'status-not';
     const ico=p.status==='completed'?'✅':p.status==='in-progress'?'🔄':'⏳';
-    const cls=p.status==='completed'?'status-done':p.status==='in-progress'?'status-prog':'status-not';
-    h+=`<div class="card" style="padding:.75rem 1rem"><div class="flex-between"><span class="tag ${cls}">${ico} ${(p.status||'not-started').replace('-',' ')}</span><span class="xp-badge">+${p.xpReward} XP</span></div><div style="font-weight:600;font-size:.85rem;margin:.25rem 0">P${p.projectNumber}: ${p.title}</div></div>`;
+    h+=`<div class="card"><div class="flex-between"><span class="tag ${s}">${ico} ${p.status.replace('-',' ')}</span><span class="xp-badge">+${p.xpReward} XP</span></div><h4 style="margin:.25rem 0;font-size:.9rem">P${p.projectNumber}: ${p.title}</h4><p style="font-size:.75rem">${p.description||''}</p></div>`;
   });
   h+=`</div>`;return h;
 }
+
 function renderBattlesCompact(){
-  const battles=data.bossBattles, active=battles.filter(b=>b.stage!=='won'&&b.stage!=='lost'), won=battles.filter(b=>b.stage==='won');
-  let h=`<div><div class="flex-between" style="margin-bottom:1rem"><h3 style="margin:0">👑 Boss Battles</h3><button class="btn btn-purple btn-xs" onclick="switchTab('battles')">View All</button></div>`;
-  if(won.length) h+=`<div class="card" style="background:linear-gradient(135deg,#14532d,#166534);border-color:rgba(74,222,128,.4);padding:.75rem 1rem"><p style="font-weight:700;font-size:.85rem">🏆 Won: ${won.length} · $${won.reduce((s,b)=>s+(b.value||0),0).toLocaleString()}</p></div>`;
-  if(!active.length&&!won.length) h+=`<div class="card"><p>No battles yet.</p></div>`;
-  else active.slice(0,2).forEach(b=>{
-    const sc=getBattleStage(b.stage);
-    h+=`<div class="card" style="padding:.75rem 1rem;border-left:3px solid ${sc.color}"><div class="flex-between"><span style="font-size:.85rem">${sc.ico} <b>${b.prospectName||'?'}</b></span><span style="font-weight:700;font-size:.85rem">$${(b.value||0).toLocaleString()}</span></div></div>`;
+  const battles=data.bossBattles;
+  const active=battles.filter(b=>b.stage!=='won'&&b.stage!=='lost');
+  const won=battles.filter(b=>b.stage==='won');
+  let h=`<div><div class="flex-between" style="margin-bottom:1rem"><h3 style="margin:0">👑 Boss Battles</h3><button class="btn btn-purple" onclick="switchTab('battles')">View All</button></div>`;
+  if(won.length) h+=`<div class="card" style="background:linear-gradient(135deg,#14532d,#166534);border-color:rgba(74,222,128,.4)"><p style="font-weight:700">🏆 Won: ${won.length} · $${won.reduce((s,b)=>s+(Number(b.value)||0),0).toLocaleString()}</p></div>`;
+  if(!active.length && !won.length) h+=`<div class="card"><p>No boss battles yet. Go to Battles tab!</p></div>`;
+  else active.slice(0,3).forEach(b=>{
+    const sc=getBattleStageClass(b.stage);
+    h+=`<div class="card" style="border-left:3px solid ${sc.color}"><div class="flex-between"><span>${sc.ico} <b>${b.prospectName||'?'}</b></span><span style="font-weight:700">$${(Number(b.value)||0).toLocaleString()}</span></div><p style="font-size:.75rem">${b.prospectNiche||''} · ${b.stage.replace('-',' ')}</p></div>`;
   });
   h+=`</div>`;return h;
 }
-function getBattleStage(stage){
+
+function getBattleStageClass(stage){
   const m={won:{ico:'🏆',color:'#22c55e'},lost:{ico:'💀',color:'#ef4444'},negotiation:{ico:'⚔️',color:'#f59e0b'},proposal:{ico:'📋',color:'#3b82f6'},'initial-outreach':{ico:'🎯',color:'#8b5cf6'}};
   return m[stage]||{ico:'🎯',color:'#8b5cf6'};
 }
-// ═══════════════════════════════════════════
-// CAMPAIGNS (formerly Projects)
-// ═══════════════════════════════════════════
-function renderCampaigns(){
-  const camps=data.campaigns.sort((a,b)=>a.projectNumber-b.projectNumber);
-  let h=`<div class="flex-between" style="margin-bottom:1rem"><h3>📋 Campaigns (${camps.filter(p=>p.status==='completed').length}/${CAMPAIGN_TEMPLATES.length} done)</h3><button class="btn btn-purple" onclick="showAddCampaignModal()">+ New Campaign</button></div>`;
-  if(!camps.length) h+=`<div class="card" style="text-align:center;padding:3rem"><p style="font-size:1.25rem;margin-bottom:.5rem">🏰 No campaigns started yet!</p><p>Each campaign is an epic — broken into bite-sized micro-quests across 4 phases.</p><button class="btn btn-purple" style="margin-top:1rem" onclick="showAddCampaignModal()">Launch First Campaign</button></div>`;
-  camps.forEach(p=>{
+
+// ═══════════════════════════════════════
+// PROJECTS
+// ═══════════════════════════════════════
+function renderProjects(){
+  const projs=data.projects.sort((a,b)=>a.projectNumber-b.projectNumber);
+  let h=`<div class="flex-between" style="margin-bottom:1rem"><h3>📋 Spec Projects (${projs.filter(p=>p.status==='completed').length}/${PROJECT_TEMPLATES.length} done)</h3><button class="btn btn-purple" onclick="showAddProjectModal()">+ New Project</button></div>`;
+  if(!projs.length) h+=`<div class="card" style="text-align:center;padding:2rem"><p style="font-size:1.25rem">No projects started yet!</p><p style="margin-top:.5rem">Click "+ New Project" to begin your journey.</p></div>`;
+  projs.forEach(p=>{
     const s=p.status==='completed'?'status-done':p.status==='in-progress'?'status-prog':'status-not';
     const ico=p.status==='completed'?'✅':p.status==='in-progress'?'🔄':'⏳';
-    const questsForCamp=data.quests.filter(q=>q.projectId===p.id);
-    const qDone=questsForCamp.filter(q=>q.status==='completed').length;
-    h+=`<div class="card"><div class="flex-between"><span class="tag ${s}">${ico} ${(p.status||'not-started').replace('-',' ')}</span><span class="xp-badge">+${p.xpReward} XP</span></div>
-    <h4 style="margin:.25rem 0">Campaign ${p.projectNumber}: ${p.title}</h4><p style="font-size:.8rem;margin-bottom:.5rem">${p.description||''}</p>
-    ${questsForCamp.length?`<div style="font-size:.75rem;color:#94a3b8;margin-bottom:.5rem">🎯 ${qDone}/${questsForCamp.length} micro-quests done</div>`:''}
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
-      <select onchange="updateCampaignStatus('${p.id}',this.value)" style="max-width:160px;margin:0">
-        <option value="not-started" ${p.status==='not-started'?'selected':''}>Not Started</option>
-        <option value="in-progress" ${p.status==='in-progress'?'selected':''}>In Progress</option>
-        <option value="completed" ${p.status==='completed'?'selected':''}>Completed ✓</option>
-      </select>
-      <button class="btn btn-slate btn-xs" onclick="showAddMQToCampaign('${p.id}')">+ Micro-Quests</button>
-      <button class="btn btn-red btn-xs" onclick="deleteCampaign('${p.id}')">🗑</button>
-    </div>
-    <p style="font-size:.7rem;color:#64748b;margin-top:.5rem">Created: ${fmtDate(p.createdAt)} ${p.completedAt?'· Done: '+fmtDate(p.completedAt):''}</p></div>`;
+    h+=`<div class="card"><div class="flex-between"><span class="tag ${s}">${ico} ${(p.status||'not-started').replace('-',' ')}</span><span class="xp-badge">+${p.xpReward} XP</span></div><h4 style="margin:.25rem 0">Project ${p.projectNumber}: ${p.title}</h4><p style="font-size:.8rem;margin-bottom:.5rem">${p.description||''}</p>
+    <select onchange="updateProjectStatus('${p.id}',this.value)" style="max-width:200px">
+      <option value="not-started" ${p.status==='not-started'?'selected':''}>Not Started</option>
+      <option value="in-progress" ${p.status==='in-progress'?'selected':''}>In Progress</option>
+      <option value="completed" ${p.status==='completed'?'selected':''}>Completed ✓</option>
+    </select>
+    <p style="font-size:.7rem;color:#64748b;margin-top:.5rem">Created: ${fmtDate(p.createdAt)} ${p.completedAt?'· Done: '+fmtDate(p.completedAt):''}</p>
+    <button class="btn btn-red" style="margin-top:.5rem;font-size:.7rem;padding:.25rem .5rem" onclick="deleteProject('${p.id}')">🗑 Delete</button></div>`;
   });
   return h;
 }
-function showAddCampaignModal(){
-  let h=`<div class="modal"><h3 style="margin-bottom:1rem">🏰 Launch a Campaign</h3><p style="font-size:.8rem;color:#94a3b8;margin-bottom:1rem">Each campaign is an epic broken into 15–40 min micro-quests across 4 phases.</p>`;
-  CAMPAIGN_TEMPLATES.forEach(t=>{
-    const exists=data.campaigns.find(p=>p.projectNumber===t.n);
-    h+=`<button class="btn btn-slate" style="width:100%;text-align:left;margin-bottom:.5rem" ${exists?'disabled':''} onclick="addCampaign(${t.n},'${t.title.replace(/'/g,"\\'")}','${t.desc.replace(/'/g,"\\'")}',${t.xp})">${exists?'✅ ':''}Campaign ${t.n}: ${t.title} <span style="color:#c084fc;float:right">+${t.xp} XP</span></button>`;
+
+function showAddProjectModal(){
+  let h=`<div class="modal"><h3 style="margin-bottom:1rem">Select a Project to Start</h3>`;
+  PROJECT_TEMPLATES.forEach(t=>{
+    const exists=data.projects.find(p=>p.projectNumber===t.n);
+    h+=`<button class="btn btn-slate" style="width:100%;text-align:left;margin-bottom:.5rem" ${exists?'disabled':''} onclick="addProject(${t.n},'${t.title.replace(/'/g,"\\'")}','${t.desc.replace(/'/g,"\\'")}',${t.xp})">${exists?'✅ ':''}Project ${t.n}: ${t.title} <span style="color:#c084fc;float:right">+${t.xp} XP</span></button>`;
   });
   h+=`<button class="btn btn-slate" style="width:100%;margin-top:.5rem" onclick="closeModal()">Cancel</button></div>`;
   showModal(h);
 }
-function addCampaign(n,title,desc,xp){
-  data.campaigns.push({id:uid(),userId:'user-1',projectNumber:n,title,description:desc,status:'in-progress',completedAt:null,dueDate:null,xpReward:xp,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
-  addXP(20); recordActivity(); checkAchievements(); refreshAll(); closeModal(); toast('🏰 Campaign launched! +20 XP · Add micro-quests to break it down');
+
+function addProject(n,title,desc,xp){
+  data.projects.push({id:uid(),userId:'user-1',projectNumber:n,title,description:desc,status:'not-started',completedAt:null,dueDate:null,xpReward:xp,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  addXP(50); recordActivity(); checkAchievements(); refreshAll(); closeModal(); toast('📋 Project '+n+' started! +50 XP');
 }
-function updateCampaignStatus(id,status){
-  const p=data.campaigns.find(p=>p.id===id); if(!p) return;
+
+function updateProjectStatus(id,status){
+  const p=data.projects.find(p=>p.id===id); if(!p) return;
   const oldStatus=p.status;
   p.status=status;
-  if(status==='completed'&&oldStatus!=='completed'){ p.completedAt=new Date().toISOString(); addXP(p.xpReward); toast('🏆 Campaign completed! +'+p.xpReward+' XP'); }
+  if(status==='completed'&&oldStatus!=='completed'){ p.completedAt=new Date().toISOString(); addXP(p.xpReward); toast('🏆 Project completed! +'+p.xpReward+' XP');
+    // speedrunner check
+    const created=new Date(p.createdAt); const completed=new Date(p.completedAt);
+    const hours=(completed-created)/3600000;
+    if(hours<=24 && !data.achievements.find(a=>a.badgeName==='Speedrunner')){
+      data.achievements.push({id:uid(),badgeName:'Speedrunner',icon:'⏱️',description:'Finish a project within 24 hours of starting',unlockedAt:new Date().toISOString()});
+      toast('🏆 Badge: Speedrunner!');
+    }
+  }
+  if(status==='in-progress'&&oldStatus==='completed'){ p.completedAt=null; }
   p.updatedAt=new Date().toISOString();
   recordActivity(); checkAchievements(); refreshAll();
 }
-function deleteCampaign(id){ if(confirm('Delete this campaign and its micro-quests?')){ data.campaigns=data.campaigns.filter(p=>p.id!==id); data.quests=data.quests.filter(q=>q.projectId!==id); refreshAll(); toast('🗑 Campaign deleted'); }}
-// ═══════════════════════════════════════════
-// MICRO-QUESTS (THE HEART)
-// ═══════════════════════════════════════════
-function renderMicroQuests(){
+
+function deleteProject(id){
+  if(!confirm('Delete this project?')) return;
+  data.projects=data.projects.filter(p=>p.id!==id);
+  data.quests=data.quests.filter(q=>q.projectId!==id);
+  refreshAll(); toast('🗑 Project deleted');
+}
+
+// ═══════════════════════════════════════
+// QUESTS
+// ═══════════════════════════════════════
+function renderQuests(){
   const quests=data.quests;
-  const done=quests.filter(q=>q.status==='completed').length;
-  let h=`<div class="flex-between" style="margin-bottom:1rem"><h3>🎯 Micro-Quests (${done}/${quests.length||0})</h3><button class="btn btn-purple" onclick="showQuickAddMQ()">+ Quick Add</button></div>`;
-  h+=`<p style="font-size:.8rem;color:#94a3b8;margin-bottom:1rem">Each micro-quest is 15–40 minutes. Complete one, get a dopamine hit, keep your streak alive.</p>`;
-  // Phase sections
-  PHASES.forEach(ph=>{
-    const phaseQuests=quests.filter(q=>q.phase===ph.id);
-    const phaseDone=phaseQuests.filter(q=>q.status==='completed').length;
-    const active=phaseQuests.filter(q=>q.status!=='completed');
-    h+=`<div class="phase-header ${ph.bg}" onclick="togglePhase('${ph.id}')" style="margin-bottom:.5rem">
-      <div class="flex-between"><span style="font-weight:700;font-size:1.05rem">${ph.ico} ${ph.label}</span>
-        <div class="phase-progress"><div class="ring" style="border-color:${ph.color};color:${ph.color}">${phaseQuests.length?Math.round(phaseDone/phaseQuests.length*100):0}%</div><span style="font-size:.75rem;opacity:.8">${phaseDone}/${phaseQuests.length} done</span></div>
-      </div>
-      <div class="phase-meta"><span>⏱ ${ph.time}</span><span>+50–100 XP each</span></div>
-    </div>`;
-    h+=`<div id="phase-${ph.id}" style="margin-bottom:1rem">`;
-    if(!active.length){
-      h+=`<div style="padding:.75rem;text-align:center;color:#64748b;font-size:.8rem">No active quests in this phase. <button class="btn btn-slate btn-xs" onclick="event.stopPropagation();showAddMQModal('${ph.id}')">+ Add one</button></div>`;
-    } else {
-      active.forEach(q=>{
-        const camp=data.campaigns.find(c=>c.id===q.projectId);
-        h+=`<div class="mq-card" style="border-left-color:${ph.color}" id="mq-${q.id}">
-          <div class="mq-ico">${ph.ico}</div>
-          <div class="mq-body">
-            <div class="mq-title">${q.questName||'(untitled)'}</div>
-            <div class="mq-meta">${q.description||''} ${camp?'· 📋 '+camp.title:''}</div>
-          </div>
-          <div class="mq-right"><div class="mq-xp">+${q.xpReward||50}</div><div class="mq-time">${q.timeEstimate||'15 min'}</div></div>
-          <div class="mq-check" onclick="event.stopPropagation();completeQuest('${q.id}')" title="Complete now!">✓</div>
-        </div>`;
-      });
-    }
-    h+=`</div>`;
+  let h=`<div class="flex-between" style="margin-bottom:1rem"><h3>🎯 Quests (${quests.filter(q=>q.status==='completed').length}/${quests.length||0} done)</h3><button class="btn btn-purple" onclick="showAddQuestModal()">+ New Quest</button></div>`;
+  if(!quests.length) h+=`<div class="card" style="text-align:center;padding:2rem"><p>No quests yet. Add quests to break down your projects!</p></div>`;
+  quests.forEach(q=>{
+    const s=q.status==='completed'?'status-done':q.status==='in-progress'?'status-prog':'status-not';
+    const ico=q.status==='completed'?'✅':q.status==='in-progress'?'🔄':'⏳';
+    const prioColor=q.priority==='high'?'#ef4444':q.priority==='normal'?'#f59e0b':'#22c55e';
+    h+=`<div class="card"><div class="flex-between"><span class="tag ${s}">${ico} ${(q.status||'not-started').replace('-',' ')}</span><span style="font-size:.65rem;padding:.25rem .5rem;border-radius:.25rem;background:${prioColor}33;color:${prioColor}">${q.priority||'normal'}</span></div><h4 style="margin:.25rem 0">${q.questName||'(untitled)'}</h4><p style="font-size:.8rem">${q.description||''}</p>
+    <select onchange="updateQuestStatus('${q.id}',this.value)" style="max-width:200px">
+      <option value="not-started" ${q.status==='not-started'?'selected':''}>Not Started</option>
+      <option value="in-progress" ${q.status==='in-progress'?'selected':''}>In Progress</option>
+      <option value="completed" ${q.status==='completed'?'selected':''}>Completed ✓</option>
+    </select>
+    <p style="font-size:.7rem;color:#64748b;margin-top:.25rem">+${q.xpReward||100} XP</p>
+    <button class="btn btn-red" style="margin-top:.25rem;font-size:.7rem;padding:.25rem .5rem" onclick="deleteQuest('${q.id}')">🗑</button></div>`;
   });
-  // Completed section
-  const completedQuests=quests.filter(q=>q.status==='completed').sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt));
-  if(completedQuests.length){
-    h+=`<details style="margin-top:1.5rem"><summary style="cursor:pointer;font-weight:700;font-size:1rem;margin-bottom:.75rem">✅ Completed (${completedQuests.length})</summary>`;
-    completedQuests.forEach(q=>{
-      const ph=PHASES.find(p=>p.id===q.phase)||PHASES[0];
-      h+=`<div class="mq-card done" style="border-left-color:#22c55e"><div class="mq-ico">${ph.ico}</div><div class="mq-body"><div class="mq-title">${q.questName||'(untitled)'}</div><div class="mq-meta">${fmtShort(q.completedAt)}</div></div><div class="mq-right"><div class="mq-xp" style="color:#86efac">+${q.xpReward||50}</div></div></div>`;
-    });
-    h+=`</details>`;
-  }
-  // Template buttons
-  h+=`<div class="card" style="margin-top:1.5rem;text-align:center"><h4 style="margin-bottom:.5rem">📦 Load Micro-Quest Templates</h4><p style="font-size:.8rem;margin-bottom:.75rem">Pre-built micro-quests tailored for high-stakes conversions. Pick a phase to browse.</p><div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center">`;
-  PHASES.forEach(ph=>{
-    h+=`<button class="btn btn-slate btn-xs" onclick="showTemplateBrowser('${ph.id}')">${ph.ico} ${ph.label.split(':')[0]}</button>`;
-  });
-  h+=`</div></div>`;
   return h;
 }
-function completeQuest(id){
-  const q=data.quests.find(q=>q.id===id); if(!q) return;
-  if(q.status==='completed') return;
-  q.status='completed'; q.completedAt=new Date().toISOString(); q.updatedAt=new Date().toISOString();
-  addXP(q.xpReward||50); recordActivity(); checkAchievements(); refreshAll();
-  // Pulse animation
-  setTimeout(()=>{
-    const el=document.getElementById('mq-'+id);
-    if(el) el.classList.add('pulse');
-  },100);
-}
-function togglePhase(pid){
-  const el=document.getElementById('phase-'+pid);
-  if(el) el.style.display=el.style.display==='none'?'block':'none';
-}
-function showTemplateBrowser(phaseId){
-  const templates=MICRO_QUEST_TEMPLATES[phaseId]||[];
-  const ph=PHASES.find(p=>p.id===phaseId)||{};
-  const camps=data.campaigns;
-  let h=`<div class="modal"><h3 style="margin-bottom:.5rem">${ph.ico} ${ph.label} Templates</h3><p style="font-size:.8rem;color:#94a3b8;margin-bottom:1rem">Click to add to your active micro-quests. Assign to a campaign.</p>`;
-  h+=`<select id="tmplCampaign" style="margin-bottom:1rem"><option value="">No campaign (standalone)</option>`;
-  camps.forEach(c=>h+=`<option value="${c.id}">Campaign ${c.projectNumber}: ${c.title}</option>`);
-  h+=`</select>`;
-  templates.forEach(t=>{
-    h+=`<button class="btn btn-slate" style="width:100%;text-align:left;margin-bottom:.35rem" onclick="addMicroQuest('${phaseId}','${t.questName.replace(/'/g,"\\'")}','${t.desc.replace(/'/g,"\\'")}',${t.xp},'${t.time}',document.getElementById('tmplCampaign').value)">
-      <div style="display:flex;justify-content:space-between;align-items:center"><span><b>${t.questName}</b></span><span style="color:#c084fc;font-size:.8rem">+${t.xp} XP · ⏱ ${t.time}</span></div>
-      <div style="font-size:.72rem;color:#94a3b8;margin-top:2px">${t.desc}</div>
-    </button>`;
-  });
-  h+=`<button class="btn btn-slate" style="width:100%;margin-top:.75rem" onclick="closeModal()">Close</button></div>`;
+
+function showAddQuestModal(){
+  const projects=data.projects;
+  let h=`<div class="modal"><h3 style="margin-bottom:1rem">Add New Quest</h3><form onsubmit="event.preventDefault();submitQuest(this);">`;
+  h+=`<input name="questName" placeholder="Quest name (e.g. The Application Hook)" required>`;
+  h+=`<input name="desc" placeholder="Description (optional)">`;
+  h+=`<select name="projectId"><option value="">No project (standalone)</option>`;
+  projects.forEach(p=>h+=`<option value="${p.id}">P${p.projectNumber}: ${p.title}</option>`);
+  h+=`</select><select name="priority"><option value="normal">Normal</option><option value="low">Low</option><option value="high">High</option></select>`;
+  h+=`<button class="btn btn-purple" style="width:100%">Create Quest</button></form><button class="btn btn-slate" style="width:100%;margin-top:.5rem" onclick="closeModal()">Cancel</button></div>`;
   showModal(h);
 }
-function addMicroQuest(phaseId,questName,desc,xp,time,campaignId){
-  data.quests.push({id:uid(),userId:'user-1',projectId:campaignId||'',questName,description:desc,status:'not-started',priority:'normal',phase:phaseId,timeEstimate:time,xpReward:xp,completedAt:null,dueDate:null,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
-  refreshAll(); toast('🎯 Micro-quest added: '+questName);
-}
-function showQuickAddMQ(){
-  const camps=data.campaigns;
-  let h=`<div class="modal"><h3 style="margin-bottom:1rem">🎯 Quick Add Micro-Quest</h3><form onsubmit="event.preventDefault();submitCustomMQ(this);">`;
-  h+=`<input name="questName" placeholder="Quest name (e.g. Hero Section Strike)" required>`;
-  h+=`<input name="desc" placeholder="Short description (optional)">`;
-  h+=`<select name="phase"><option value="phase1">🔍 Phase 1: Research & Diagnostics (15-20 min)</option><option value="phase2">🧠 Phase 2: Strategy & Positioning (20-30 min)</option><option value="phase3" selected>✍️ Phase 3: Human-Centric Drafting (25-40 min)</option><option value="phase4">📨 Phase 4: Outreach & Administration (15 min)</option></select>`;
-  h+=`<select name="time"><option value="15 min">15 min</option><option value="20 min">20 min</option><option value="25 min">25 min</option><option value="30 min">30 min</option><option value="35 min">35 min</option><option value="40 min">40 min</option></select>`;
-  h+=`<select name="xp"><option value="50">50 XP</option><option value="75">75 XP</option><option value="100" selected>100 XP</option></select>`;
-  h+=`<select name="campaignId"><option value="">No campaign (standalone)</option>`;
-  camps.forEach(c=>h+=`<option value="${c.id}">Campaign ${c.projectNumber}: ${c.title}</option>`);
-  h+=`</select>`;
-  h+=`<button class="btn btn-purple" style="width:100%">Add Micro-Quest</button></form><button class="btn btn-slate" style="width:100%;margin-top:.5rem" onclick="closeModal()">Cancel</button></div>`;
-  showModal(h);
-}
-function submitCustomMQ(form){
+
+function submitQuest(form){
   const fd=new FormData(form);
-  data.quests.push({id:uid(),userId:'user-1',projectId:fd.get('campaignId')||'',questName:fd.get('questName'),description:fd.get('desc')||'',status:'not-started',priority:'normal',phase:fd.get('phase')||'phase3',timeEstimate:fd.get('time')||'25 min',xpReward:parseInt(fd.get('xp'))||100,completedAt:null,dueDate:null,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
-  refreshAll(); closeModal(); toast('🎯 Micro-quest added!');
+  data.quests.push({id:uid(),userId:'user-1',projectId:fd.get('projectId')||'',questName:fd.get('questName'),description:fd.get('desc')||'',status:'not-started',priority:fd.get('priority')||'normal',xpReward:100,completedAt:null,dueDate:null,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  addXP(20); recordActivity(); checkAchievements(); refreshAll(); closeModal(); toast('🎯 Quest created! +20 XP');
 }
-function showAddMQToCampaign(campaignId){
-  const camp=data.campaigns.find(c=>c.id===campaignId); if(!camp) return;
-  let h=`<div class="modal"><h3 style="margin-bottom:.5rem">Add Micro-Quests to Campaign ${camp.projectNumber}</h3><p style="font-size:.8rem;color:#94a3b8;margin-bottom:1rem">Select phase, then pick templates or add custom.</p>`;
-  PHASES.forEach(ph=>{
-    h+=`<button class="btn btn-slate" style="width:100%;text-align:left;margin-bottom:.35rem" onclick="showTemplateBrowserForCamp('${ph.id}','${campaignId}')">${ph.ico} ${ph.label} <span style="color:#94a3b8;font-size:.7rem">(${ph.time})</span></button>`;
-  });
-  h+=`<button class="btn btn-purple" style="width:100%;margin-top:.5rem" onclick="closeModal();showQuickAddMQSpecific('${campaignId}')">+ Custom Micro-Quest</button>`;
-  h+=`<button class="btn btn-slate" style="width:100%;margin-top:.5rem" onclick="closeModal()">Done</button></div>`;
-  showModal(h);
-}
-function showTemplateBrowserForCamp(phaseId,campaignId){
-  const templates=MICRO_QUEST_TEMPLATES[phaseId]||[];
-  const ph=PHASES.find(p=>p.id===phaseId)||{};
-  let h=`<div class="modal"><h3 style="margin-bottom:.5rem">${ph.ico} ${ph.label}</h3>`;
-  templates.forEach(t=>{
-    h+=`<button class="btn btn-slate" style="width:100%;text-align:left;margin-bottom:.35rem" onclick="addMicroQuest('${phaseId}','${t.questName.replace(/'/g,"\\'")}','${t.desc.replace(/'/g,"\\'")}',${t.xp},'${t.time}','${campaignId}');closeModal();">
-      <div style="display:flex;justify-content:space-between"><span><b>${t.questName}</b></span><span style="color:#c084fc;font-size:.8rem">+${t.xp} XP · ⏱ ${t.time}</span></div>
-      <div style="font-size:.72rem;color:#94a3b8">${t.desc}</div>
-    </button>`;
-  });
-  h+=`<button class="btn btn-slate" style="width:100%;margin-top:.5rem" onclick="closeModal()">Back</button></div>`;
-  showModal(h);
-}
+
 function updateQuestStatus(id,status){
   const q=data.quests.find(q=>q.id===id); if(!q) return;
-  const old=q.status;
+  const oldStatus=q.status;
   q.status=status;
-  if(status==='completed'&&old!=='completed'){ q.completedAt=new Date().toISOString(); addXP(q.xpReward||50); toast('✅ Micro-quest done! +'+(q.xpReward||50)+' XP'); }
+  if(status==='completed'&&oldStatus!=='completed'){ q.completedAt=new Date().toISOString(); addXP(q.xpReward||100); toast('✅ Quest completed! +'+(q.xpReward||100)+' XP'); }
+  if(status==='in-progress'&&oldStatus==='completed') q.completedAt=null;
   q.updatedAt=new Date().toISOString();
   recordActivity(); checkAchievements(); refreshAll();
 }
-function deleteQuest(id){ if(confirm('Delete this micro-quest?')){ data.quests=data.quests.filter(q=>q.id!==id); refreshAll(); toast('🗑 Deleted'); }}
-// ═══════════════════════════════════════════
+
+function deleteQuest(id){ if(confirm('Delete this quest?')){ data.quests=data.quests.filter(q=>q.id!==id); refreshAll(); toast('🗑 Quest deleted'); }}
+
+// ═══════════════════════════════════════
 // BOSS BATTLES
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════
 function renderBattles(){
   const battles=data.bossBattles;
   const active=battles.filter(b=>b.stage!=='won'&&b.stage!=='lost');
   const won=battles.filter(b=>b.stage==='won');
   const lost=battles.filter(b=>b.stage==='lost');
   let h=`<div class="flex-between" style="margin-bottom:1rem"><h3>👑 Boss Battles</h3><button class="btn btn-purple" onclick="showAddBattleModal()">⚔️ New Battle</button></div>`;
-  if(won.length) h+=`<div class="card" style="background:linear-gradient(135deg,#14532d,#166534);border-color:rgba(74,222,128,.4);margin-bottom:1rem"><p style="font-weight:700">🏆 Won: ${won.length} · Total Revenue: $${won.reduce((s,b)=>s+(b.value||0),0).toLocaleString()}</p></div>`;
+  if(won.length) h+=`<div class="card" style="background:linear-gradient(135deg,#14532d,#166534);border-color:rgba(74,222,128,.4);margin-bottom:1rem"><p style="font-weight:700">🏆 Won: ${won.length} · Total Revenue: $${won.reduce((s,b)=>s+(Number(b.value)||0),0).toLocaleString()}</p></div>`;
+
   if(!active.length&&!won.length&&!lost.length) h+=`<div class="card" style="text-align:center;padding:2rem"><p>No boss battles yet. Track high-value prospects here!</p></div>`;
-  h+=`<h4 style="margin-bottom:.5rem">Active (${active.length})</h4>`;
-  active.forEach(b=>{
-    const sc=getBattleStage(b.stage);
-    h+=`<div class="card" style="border-left:3px solid ${sc.color}"><div class="flex-between"><span>${sc.ico} <b>${b.prospectName||'?'}</b></span><span style="font-weight:700">$${(b.value||0).toLocaleString()}</span></div><p style="font-size:.8rem">${b.prospectNiche||''}</p>
-    <select onchange="updateBattleStage('${b.id}',this.value)" style="max-width:200px">
-      <option value="initial-outreach" ${b.stage==='initial-outreach'?'selected':''}>Initial Outreach</option>
-      <option value="proposal" ${b.stage==='proposal'?'selected':''}>Proposal Sent</option>
-      <option value="negotiation" ${b.stage==='negotiation'?'selected':''}>Negotiation</option>
-      <option value="won" ${b.stage==='won'?'selected':''}>Won! 🏆</option>
-      <option value="lost" ${b.stage==='lost'?'selected':''}>Lost</option>
-    </select><p style="font-size:.7rem;color:#64748b;margin-top:.25rem">+${b.xpReward||200} XP · ${fmtShort(b.createdAt)}</p>
-    <button class="btn btn-red btn-xs" onclick="deleteBattle('${b.id}')">🗑</button></div>`;
-  });
+
+  if(active.length){
+    h+=`<h4 style="margin-bottom:.5rem">Active (${active.length})</h4>`;
+    active.forEach(b=>{
+      const sc=getBattleStageClass(b.stage);
+      h+=`<div class="card" style="border-left:3px solid ${sc.color}"><div class="flex-between"><span>${sc.ico} <b>${b.prospectName||'?'}</b></span><span style="font-weight:700">$${(Number(b.value)||0).toLocaleString()}</span></div><p style="font-size:.8rem">${b.prospectNiche||''}</p>
+      <select onchange="updateBattleStage('${b.id}',this.value)" style="max-width:200px">
+        <option value="initial-outreach" ${b.stage==='initial-outreach'?'selected':''}>Initial Outreach</option>
+        <option value="proposal" ${b.stage==='proposal'?'selected':''}>Proposal Sent</option>
+        <option value="negotiation" ${b.stage==='negotiation'?'selected':''}>Negotiation</option>
+        <option value="won" ${b.stage==='won'?'selected':''}>Won! 🏆</option>
+        <option value="lost" ${b.stage==='lost'?'selected':''}>Lost</option>
+      </select>
+      <p style="font-size:.7rem;color:#64748b;margin-top:.25rem">+${b.xpReward||200} XP · Created: ${fmtShort(b.createdAt)}</p>
+      <button class="btn btn-red" style="margin-top:.25rem;font-size:.7rem;padding:.25rem .5rem" onclick="deleteBattle('${b.id}')">🗑</button></div>`;
+    });
+  }
+
   if(won.length){ h+=`<h4 style="margin:.75rem 0 .5rem">🏆 Won (${won.length})</h4>`;
-    won.forEach(b=>h+=`<div class="card" style="border-left:3px solid #22c55e"><div class="flex-between"><span>🏆 <b>${b.prospectName||'?'}</b></span><span style="font-weight:700;color:#86efac">$${(b.value||0).toLocaleString()}</span></div><p style="font-size:.7rem;color:#64748b">Won: ${fmtDate(b.wonAt)}</p></div>`); }
+    won.forEach(b=>h+=`<div class="card" style="border-left:3px solid #22c55e"><div class="flex-between"><span>🏆 <b>${b.prospectName||'?'}</b></span><span style="font-weight:700;color:#86efac">$${(Number(b.value)||0).toLocaleString()}</span></div><p style="font-size:.7rem;color:#64748b">Won: ${fmtDate(b.wonAt)}</p></div>`); }
   if(lost.length){ h+=`<h4 style="margin:.75rem 0 .5rem">💀 Lost (${lost.length})</h4>`;
-    lost.forEach(b=>h+=`<div class="card" style="opacity:.6"><span>💀 <b>${b.prospectName||'?'}</b> — $${(b.value||0).toLocaleString()}</span></div>`); }
+    lost.forEach(b=>h+=`<div class="card" style="opacity:.6"><span>💀 <b>${b.prospectName||'?'}</b> — $${(Number(b.value)||0).toLocaleString()}</span></div>`); }
   return h;
 }
+
 function showAddBattleModal(){
   let h=`<div class="modal"><h3 style="margin-bottom:1rem">⚔️ New Boss Battle</h3><form onsubmit="event.preventDefault();submitBattle(this);">`;
   h+=`<input name="prospectName" placeholder="Prospect Name" required>`;
@@ -654,119 +481,252 @@ function showAddBattleModal(){
   h+=`<button class="btn btn-purple" style="width:100%">Enter Battle 🎯</button></form><button class="btn btn-slate" style="width:100%;margin-top:.5rem" onclick="closeModal()">Cancel</button></div>`;
   showModal(h);
 }
+
 function submitBattle(form){
-  const fd=new FormData(form); const v=parseInt(fd.get('value'))||0;
+  const fd=new FormData(form);
+  const v=parseInt(fd.get('value'))||0;
   data.bossBattles.push({id:uid(),userId:'user-1',prospectName:fd.get('prospectName'),prospectNiche:fd.get('prospectNiche'),stage:'initial-outreach',value:v,xpReward:Math.min(v,500),wonAt:null,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
   addXP(20); recordActivity(); checkAchievements(); refreshAll(); closeModal(); toast('⚔️ Battle entered! +20 XP');
 }
+
 function updateBattleStage(id,stage){
   const b=data.bossBattles.find(b=>b.id===id); if(!b) return;
-  if(stage==='won'&&b.stage!=='won'){ b.wonAt=new Date().toISOString(); addXP(b.xpReward||200); toast('🏆 Battle won! +'+(b.xpReward||200)+' XP'); }
-  b.stage=stage; b.updatedAt=new Date().toISOString();
+  const oldStage=b.stage;
+  b.stage=stage;
+  if(stage==='won'&&oldStage!=='won'){ b.wonAt=new Date().toISOString(); addXP(b.xpReward||200); toast('🏆 Battle won! +'+(b.xpReward||200)+' XP'); }
+  b.updatedAt=new Date().toISOString();
   recordActivity(); checkAchievements(); refreshAll();
 }
+
 function deleteBattle(id){ if(confirm('Delete this battle?')){ data.bossBattles=data.bossBattles.filter(b=>b.id!==id); refreshAll(); toast('🗑 Battle deleted'); }}
-// ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════
+// PRACTICES
+// ═══════════════════════════════════════
+function renderPractices(){
+  const acts=data.practices;
+  let h=`<h3 style="margin-bottom:1rem">🎯 Practice Hub — ${acts.length} completed</h3>`;
+  h+=`<div class="card" style="background:linear-gradient(135deg,#3b0764,#1e1b4b);border-color:rgba(168,85,247,.3);margin-bottom:1rem"><p style="font-weight:700">📊 ${acts.length} practices · ${Math.min(50-acts.length,50)} to mastery milestone</p><div class="level-bar" style="margin-top:.5rem"><div class="level-bar-fill" style="width:${Math.min((acts.length/50)*100,100)}%"></div></div></div>`;
+  h+=`<div class="grid2">`;
+  PRACTICE_CATEGORIES.forEach(cat=>{
+    const count=acts.filter(a=>a.category===cat.cat).length;
+    h+=`<div class="card" style="cursor:pointer" onclick="showPracticeModal('${cat.cat}')"><div class="flex-between"><span style="font-weight:700">${cat.label}</span><span style="color:#c084fc;font-weight:700">${count}</span></div><p style="font-size:.75rem">${cat.desc}</p><span class="xp-badge">+50 XP each</span></div>`;
+  });
+  h+=`</div>`;
+
+  if(acts.length){
+    h+=`<h4 style="margin:1.5rem 0 .5rem">Recent Practices</h4>`;
+    acts.slice().reverse().slice(0,10).forEach(a=>{
+      const cat=PRACTICE_CATEGORIES.find(c=>c.cat===a.category);
+      h+=`<div class="card" style="padding:.75rem"><span style="font-weight:600;font-size:.85rem">${cat?cat.label.split(' ')[1]:''} ${a.activity}</span> <span style="font-size:.7rem;color:#64748b;float:right">${fmtShort(a.completedAt)}</span></div>`;
+    });
+  }
+  return h;
+}
+
+function showPracticeModal(cat){
+  const category=PRACTICE_CATEGORIES.find(c=>c.cat===cat);
+  let h=`<div class="modal"><h3 style="margin-bottom:.5rem">${category.label}</h3><p style="font-size:.8rem;color:#94a3b8;margin-bottom:1rem">${category.desc}</p><p style="font-size:.75rem;font-weight:600;color:#94a3b8;margin-bottom:.5rem">Quick Actions:</p>`;
+  category.examples.forEach(ex=>{
+    h+=`<button class="btn btn-slate" style="width:100%;text-align:left;margin-bottom:.25rem" onclick="logPractice('${cat}','${ex.replace(/'/g,"\\'")}')">✓ ${ex}</button>`;
+  });
+  h+=`<form onsubmit="event.preventDefault();logPractice('${cat}',this.custom.value);this.custom.value='';"><div style="display:flex;gap:.25rem;margin-top:.75rem"><input name="custom" placeholder="Custom activity..." style="flex:1"><button class="btn btn-purple">Add</button></div></form>`;
+  h+=`<button class="btn btn-slate" style="width:100%;margin-top:.5rem" onclick="closeModal()">Close</button></div>`;
+  showModal(h);
+}
+
+function logPractice(category,activity){
+  if(!activity||!activity.trim()) return;
+  data.practices.push({id:uid(),userId:'user-1',category,activity:activity.trim(),notes:'',xpReward:50,completedAt:new Date().toISOString()});
+  addXP(50); recordActivity(); checkAchievements(); refreshAll();
+  if(document.getElementById('modalOverlay').style.display==='flex') closeModal();
+  toast('✅ Practice logged: '+activity.trim().substring(0,40)+' +50 XP');
+}
+
+// ═══════════════════════════════════════
 // ACHIEVEMENTS
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════
 function renderAchievements(){
   const unlocked=new Set(data.achievements.map(a=>a.badgeName));
   const unlockedBadges=data.achievements;
   const lockedBadges=BADGE_TEMPLATES.filter(b=>!unlocked.has(b.name));
   let h=`<h3 style="margin-bottom:1rem">🏆 Achievements — ${unlockedBadges.length}/${BADGE_TEMPLATES.length}</h3>`;
   h+=`<div class="card" style="background:linear-gradient(135deg,#78350f,#92400e);border-color:rgba(251,191,36,.3);margin-bottom:1rem"><p style="font-weight:700">🎖️ ${unlockedBadges.length}/${BADGE_TEMPLATES.length} Badges Unlocked</p><div class="level-bar" style="margin-top:.5rem;background:rgba(0,0,0,.3)"><div class="level-bar-fill" style="width:${(unlockedBadges.length/BADGE_TEMPLATES.length)*100}%;background:linear-gradient(90deg,#fcd34d,#fbbf24)"></div></div></div>`;
-  if(unlockedBadges.length){ h+=`<h4 style="margin-bottom:.5rem">🌟 Unlocked</h4><div class="grid3">`;
+
+  if(unlockedBadges.length){
+    h+=`<h4 style="margin-bottom:.5rem">🌟 Unlocked</h4><div class="grid3">`;
     unlockedBadges.forEach(a=>h+=`<div class="badge-unlocked"><div class="badge-ico">${a.icon}</div><div style="font-weight:700;font-size:.8rem">${a.badgeName}</div><div style="font-size:.65rem;opacity:.8;margin-top:.25rem">${a.description}</div><div style="font-size:.6rem;margin-top:.25rem;opacity:.7">${fmtDate(a.unlockedAt)}</div></div>`);
-    h+=`</div>`; }
-  if(lockedBadges.length){ h+=`<h4 style="margin:1rem 0 .5rem">🔒 Locked</h4><div class="grid3">`;
+    h+=`</div>`;
+  }
+
+  if(lockedBadges.length){
+    h+=`<h4 style="margin:1rem 0 .5rem">🔒 Locked</h4><div class="grid3">`;
     lockedBadges.forEach(b=>h+=`<div class="badge-locked"><div class="badge-ico" style="opacity:.3">${b.icon}</div><div style="font-weight:700;font-size:.8rem;opacity:.6">${b.name}</div><div style="font-size:.65rem;opacity:.5;margin-top:.25rem">${b.desc}</div></div>`);
-    h+=`</div>`; }
+    h+=`</div>`;
+  }
+
+  h+=`<div class="card" style="margin-top:1.5rem"><h4>💡 Pro Tip</h4><p style="font-size:.8rem">Badges auto-unlock when you hit milestones. Focus on completing projects, logging practices, and winning boss battles!</p></div>`;
   return h;
 }
-// ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════
 // HEATMAP
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════
 function renderHeatmap(){
-  const acts=[...data.practices,...data.quests.filter(q=>q.status==='completed')];
-  const today=new Date(); const start=new Date(today); start.setDate(start.getDate()-83);
+  const acts=data.practices;
+  
+  // Create safe local dates to avoid timezone drifting for the last 84 days
+  const todayDate = new Date();
+  const start = new Date(todayDate);
+  start.setDate(start.getDate() - 83);
+  
   const heatData={};
-  for(let i=0;i<84;i++){ const d=new Date(start); d.setDate(d.getDate()+i); heatData[d.toISOString().split('T')[0]]=0; }
-  acts.forEach(a=>{ const ds=(a.completedAt||a.completed_at||'').split('T')[0]; if(heatData[ds]!==undefined) heatData[ds]++; });
-  const weeks=[]; let cur={};
+  for(let i=0;i<84;i++){ 
+    const d=new Date(start); 
+    d.setDate(d.getDate()+i); 
+    heatData[getLocalDateString(d)] = 0; 
+  }
+  
+  acts.forEach(a=>{ 
+    const dObj = new Date(a.completedAt);
+    const ds = getLocalDateString(dObj);
+    if(heatData[ds]!==undefined) heatData[ds]++; 
+  });
+
+  // Build week columns
+  const weeks=[];
+  let cur={};
   for(let i=0;i<84;i++){
-    const d=new Date(start); d.setDate(d.getDate()+i); const ds=d.toISOString().split('T')[0];
-    cur[ds]=heatData[ds]; if(d.getDay()===6){ weeks.push(cur); cur={}; }
+    const d=new Date(start); d.setDate(d.getDate()+i);
+    const ds=getLocalDateString(d);
+    cur[ds]=heatData[ds];
+    if(d.getDay()===6){ weeks.push(cur); cur={}; }
   }
   if(Object.keys(cur).length) weeks.push(cur);
+
   const getClass=c=>c>=5?'heat-i5':c>=4?'heat-i4':c>=3?'heat-i3':c>=2?'heat-i2':c>=1?'heat-i1':'heat-i0';
   const total=Object.values(heatData).reduce((a,b)=>a+b,0);
   const activeDays=Object.values(heatData).filter(c=>c>0).length;
   const bestDay=Math.max(...Object.values(heatData));
+
   let h=`<h3 style="margin-bottom:1rem">🔥 84-Day Activity Heatmap</h3>`;
-  h+=`<div class="card" style="background:linear-gradient(135deg,#14532d,#166534);border-color:rgba(74,222,128,.3);margin-bottom:1rem"><p style="font-weight:700">📊 ${total} activities · ${activeDays} active days · avg ${(total/84).toFixed(1)}/day · best day: ${bestDay}</p></div>`;
+  h+=`<div class="card" style="background:linear-gradient(135deg,#14532d,#166534);border-color:rgba(74,222,128,.3);margin-bottom:1rem"><p style="font-weight:700">📊 ${total} activities · ${activeDays} active days · avg ${(total/84).toFixed(1)}/day</p></div>`;
+
+  // Day labels
   h+=`<div style="display:flex;gap:1px;overflow-x:auto"><div style="display:flex;flex-direction:column;gap:2px;margin-right:2px">`;
-  ['S','M','T','W','T','F','S'].forEach(d=>h+=`<div style="width:14px;height:14px;font-size:.5rem;color:#64748b;text-align:center;line-height:14px">${d}</div>`);
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>h+=`<div style="width:14px;height:14px;font-size:.5rem;color:#64748b;text-align:center;line-height:14px">${d[0]}</div>`);
   h+=`</div>`;
-  weeks.forEach(w=>{ h+=`<div style="display:flex;flex-direction:column;gap:2px">`;
-    [0,1,2,3,4,5,6].forEach(di=>{ const keys=Object.keys(w); const dk=keys[di]||''; const c=dk?w[dk]:-1;
+
+  weeks.forEach(w=>{
+    h+=`<div class="heat-col">`;
+    [0,1,2,3,4,5,6].forEach(di=>{
+      const keys=Object.keys(w);
+      const dk=keys[di]||'';
+      const c=dk?w[dk]:-1;
       if(c>=0) h+=`<div class="heat-cell ${getClass(c)}" title="${dk}: ${c} activities"></div>`;
       else h+=`<div style="width:14px;height:14px;opacity:.1;background:#1e293b;border-radius:2px"></div>`;
-    }); h+=`</div>`;
-  }); h+=`</div>`;
+    });
+    h+=`</div>`;
+  });
+  h+=`</div>`;
+
+  // Legend
   h+=`<div style="display:flex;align-items:center;gap:.75rem;margin-top:1rem;font-size:.7rem;color:#94a3b8"><span>Less</span><div class="heat-cell heat-i0"></div><div class="heat-cell heat-i1"></div><div class="heat-cell heat-i2"></div><div class="heat-cell heat-i3"></div><div class="heat-cell heat-i4"></div><div class="heat-cell heat-i5"></div><span>More</span></div>`;
+
+  // Stats
+  h+=`<div class="grid2" style="margin-top:1.5rem">
+    <div class="card"><h4>📈 Statistics</h4>
+      <div style="display:flex;justify-content:space-between;padding:.25rem 0"><span style="color:#94a3b8">Total:</span><span style="color:#c084fc;font-weight:700">${total}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.25rem 0"><span style="color:#94a3b8">Active Days:</span><span style="color:#86efac;font-weight:700">${activeDays}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.25rem 0"><span style="color:#94a3b8">Average/Day:</span><span style="color:#93c5fd;font-weight:700">${(total/84).toFixed(1)}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:.25rem 0"><span style="color:#94a3b8">Best Day:</span><span style="color:#fcd34d;font-weight:700">${bestDay}</span></div>
+    </div>
+    <div class="card"><h4>💡 Consistency Tips</h4>
+      <ul style="font-size:.8rem;color:#94a3b8;padding-left:1rem">
+        <li style="margin-bottom:.25rem">Aim for at least one activity per day</li>
+        <li style="margin-bottom:.25rem">Darker green = more activities. Push your limits!</li>
+        <li style="margin-bottom:.25rem">Consistency beats perfection — even one small practice counts</li>
+        <li>Build a 7-day streak to unlock the &quot;Habit Keeper&quot; badge</li>
+      </ul>
+    </div>
+  </div>`;
   return h;
 }
-// ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════
 // MODAL
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════
 function showModal(html){
-  document.getElementById('modalOverlay').innerHTML='<div class="modal">'+html+'</div>';
+  // Removed the extra `<div class="modal">` wrapper since your HTML strings already provide it
+  document.getElementById('modalOverlay').innerHTML=html;
   document.getElementById('modalOverlay').style.display='flex';
 }
 function closeModal(){
   document.getElementById('modalOverlay').style.display='none';
   document.getElementById('modalOverlay').innerHTML='';
 }
-// ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════
 // EXPORT / IMPORT
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════
 function exportData(){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download='copywriting-progress-'+todayStr()+'.json';a.click();
-  URL.revokeObjectURL(url); toast('💾 Data exported!');
+  URL.revokeObjectURL(url);
+  toast('💾 Data exported!');
 }
+
 function showImport(){
-  let h=`<div class="modal"><h3 style="margin-bottom:1rem">📥 Import Progress</h3><p style="font-size:.8rem;color:#94a3b8;margin-bottom:1rem">Paste your exported JSON or select a file.</p>`;
+  let h=`<div class="modal"><h3 style="margin-bottom:1rem">📥 Import Progress</h3><p style="font-size:.8rem;color:#94a3b8;margin-bottom:1rem">Paste your exported JSON below or select a file.</p>`;
   h+=`<input type="file" id="importFile" accept=".json" onchange="handleImportFile(this)" style="margin-bottom:.75rem">`;
   h+=`<textarea id="importText" placeholder="Or paste JSON here..." style="min-height:120px;margin-bottom:.75rem"></textarea>`;
   h+=`<button class="btn btn-purple" style="width:100%;margin-bottom:.5rem" onclick="doImport()">Import</button>`;
   h+=`<button class="btn btn-red" style="width:100%" onclick="closeModal()">Cancel</button><p style="font-size:.7rem;color:#ef4444;margin-top:.5rem">⚠ This will replace all current data!</p></div>`;
   showModal(h);
 }
-function handleImportFile(input){ const file=input.files[0]; if(!file) return; const r=new FileReader(); r.onload=function(e){ document.getElementById('importText').value=e.target.result; }; r.readAsText(file); }
+
+function handleImportFile(input){
+  const file=input.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    document.getElementById('importText').value=e.target.result;
+  };
+  reader.readAsText(file);
+}
+
 function doImport(){
   const text=document.getElementById('importText')?.value;
   if(!text){ toast('❌ Please paste JSON data first'); return; }
   try{
     const imported=JSON.parse(text);
-    if(!imported.user){ toast('❌ Invalid data format'); return; }
-    if(!confirm('⚠ This will replace ALL current data. Continue?')) return;
+    if(!imported.user||!imported.projects){ toast('❌ Invalid data format'); return; }
+    if(!confirm('⚠ This will replace ALL current data with the imported data. Continue?')) return;
     data=imported;
-    if(data.projects&&!data.campaigns){ data.campaigns=data.projects; delete data.projects; }
-    if(data.quests){ data.quests.forEach(q=>{ if(!q.phase) q.phase='phase3'; if(!q.timeEstimate) q.timeEstimate='25 min'; }); }
-    saveData(); refreshAll(); closeModal(); toast('📥 Data imported!');
-  }catch(e){ toast('❌ Invalid JSON format'); }
+    saveData();
+    refreshAll();
+    closeModal();
+    toast('📥 Data imported successfully!');
+  }catch(e){
+    toast('❌ Invalid JSON format');
+  }
 }
+
 function resetAll(){
-  if(!confirm('⚠ DELETE all progress?')) return;
-  if(!confirm('Final confirmation: ALL data lost. Continue?')) return;
-  data=defaultData(); saveData(); refreshAll(); toast('🔄 Reset complete');
+  if(!confirm('⚠ WARNING: This will DELETE all your progress! Are you sure?')) return;
+  if(!confirm('Final confirmation: ALL data will be lost. Continue?')) return;
+  data=defaultData();
+  saveData();
+  refreshAll();
+  toast('🔄 All data has been reset');
 }
-// ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════
-renderStats(); renderTab();
+// ═══════════════════════════════════════
+renderStats();
+renderTab();
 </script>
 </body>
 </html>

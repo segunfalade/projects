@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Natasha Adefala helps social media managers build better businesses with practical systems, strategy, and AI.">
+  <title>Natasha Adefala</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .hero-bg {
+      background-image:
+        linear-gradient(90deg, rgba(8, 12, 25, 0.92) 0%, rgba(8, 12, 25, 0.72) 47%, rgba(8, 12, 25, 0.26) 100%),
+        url('https://segunfalade.github.io/assets/natasha/fala.png');
+      background-position: center 18%;
+      background-size: cover;
+    }
+    @media (max-width: 768px) {
+      .hero-bg {
+        background-image:
+          linear-gradient(180deg, rgba(8, 12, 25, 0.94) 0%, rgba(8, 12, 25, 0.78) 56%, rgba(8, 12, 25, 0.62) 100%),
+          url('https://segunfalade.github.io/assets/natasha/fala.png');
+        background-position: center top;
+      }
+    }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 800ms ease, transform 800ms ease; }
+    .reveal.show { opacity: 1; transform: translateY(0); }
+    .float-slow { animation: floatSlow 6s ease-in-out infinite; }
+    .shine { position: relative; overflow: hidden; }
+    .shine::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-120%);
+      background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.2) 48%, transparent 75%);
+      animation: shine 4.8s ease-in-out infinite;
+    }
+    @keyframes floatSlow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes shine { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+  </style>
+</head>
+<body class="bg-[#fffaf2] text-[#121422] antialiased">
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#080c19]/82 backdrop-blur-xl">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8" aria-label="Main navigation">
+      <a href="#top" class="flex min-w-0 items-center gap-3" aria-label="Natasha Adefala home">
+        <img class="h-12 w-12 shrink-0 rounded-full border-2 border-[#d8a64a] object-cover object-top" src="https://segunfalade.github.io/assets/natasha/fala.png" alt="Portrait of Natasha Adefala">
+        <span class="truncate text-base font-semibold tracking-wide text-white sm:text-lg">Natasha Adefala</span>
+      </a>
+      <button id="menuButton" class="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white md:hidden" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
+      <div class="hidden items-center gap-8 text-sm font-medium text-white/78 md:flex">
+        <a class="transition hover:text-[#f0c46b]" href="#trust">Trust</a>
+        <a class="transition hover:text-[#f0c46b]" href="#products">Products</a>
+        <a class="transition hover:text-[#f0c46b]" href="#footer">Begin</a>
+      </div>
+    </nav>
+    <div id="mobileMenu" class="hidden border-t border-white/10 bg-[#080c19] px-4 pb-5 pt-2 md:hidden">
+      <div class="mx-auto flex max-w-7xl flex-col gap-3 text-sm font-semibold text-white/86">
+        <a class="py-2" href="#trust">Trust</a>
+        <a class="py-2" href="#products">Products</a>
+        <a class="py-2" href="#footer">Begin</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero-bg relative flex min-h-screen items-center pt-24 text-white">
+      <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#fffaf2] to-transparent"></div>
+      <div class="relative mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <div class="max-w-3xl reveal">
+          <h1 class="text-4xl font-black leading-[0.97] tracking-[-0.05em] sm:text-6xl lg:text-7xl">
+            Great Social Media Managers Aren't Born.<br><span class="text-[#f0c46b]">They're Built With Better Systems.</span>
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-8 text-white/84 sm:text-xl">
+            Getting clients isn't the hardest part of running a social media business. Keeping up with content, delivering consistently, managing multiple brands, and growing without burning out is.
+          </p>
+          <p class="mt-5 max-w-2xl text-lg leading-8 text-white/84 sm:text-xl">
+            I'm here to help you replace guesswork with systems, so you can serve clients confidently, work more efficiently, and build a social media business that actually scales.
+          </p>
+          <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+            <a href="#products" class="shine inline-flex items-center justify-center rounded-full bg-[#f0c46b] px-7 py-4 text-base font-extrabold text-[#11121e] shadow-2xl shadow-[#f0c46b]/20 transition hover:-translate-y-0.5 hover:bg-[#ffd982]">
+              Start Here
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="trust" class="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <div class="mx-auto max-w-5xl">
+        <div class="reveal border-y border-[#9a6a14]/30 py-9 sm:py-12">
+          <p class="max-w-4xl text-2xl font-black leading-tight tracking-[-0.025em] text-[#121422] sm:text-4xl">The sections below can't be responsibly written from the outside. They require customer insight, brand nuance, and strategic decisions that go beyond a homepage preview</p>
+        </div>
+
+        <div class="mt-12 space-y-6 sm:mt-16 sm:space-y-8">
+          <article class="reveal grid min-h-[320px] gap-8 rounded-[2rem] border border-[#121422]/12 bg-[#f4ead9] p-8 sm:p-14 md:grid-cols-[0.75fr_1.25fr] md:items-center">
+            <div>
+              <h3 class="text-3xl font-black tracking-[-0.035em] sm:text-4xl">🔒 Reality Mirror</h3>
+            </div>
+            <div class="text-xl leading-8 text-[#55515e] sm:text-2xl sm:leading-9">
+              <p>The moment your visitors feel:</p>
+              <p class="mt-5 font-semibold italic text-[#121422]">"Finally... someone understands exactly where I am."</p>
+            </div>
+          </article>
+
+          <article class="reveal grid min-h-[320px] gap-8 rounded-[2rem] border border-[#121422]/12 bg-[#e9f0ed] p-8 sm:p-14 md:grid-cols-[0.75fr_1.25fr] md:items-center">
+            <div>
+              <h3 class="text-3xl font-black tracking-[-0.035em] sm:text-4xl">🔒 Reason Why</h3>
+            </div>
+            <div class="text-xl leading-8 text-[#55515e] sm:text-2xl sm:leading-9">
+              <p>The moment your experience becomes the reason people trust your advice.</p>
+            </div>
+          </article>
+
+          <article class="reveal grid min-h-[320px] gap-8 rounded-[2rem] border border-[#121422]/12 bg-[#f0e5ef] p-8 sm:p-14 md:grid-cols-[0.75fr_1.25fr] md:items-center">
+            <div>
+              <h3 class="text-3xl font-black tracking-[-0.035em] sm:text-4xl">🔒 The Method</h3>
+            </div>
+            <div class="text-xl leading-8 text-[#55515e] sm:text-2xl sm:leading-9">
+              <p>The moment your products stop feeling like separate resources and become one complete system.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="products" class="bg-[#11121e] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-28">
+      <div class="mx-auto max-w-7xl">
+        <div class="reveal max-w-3xl">
+          <p class="text-sm font-bold uppercase tracking-[0.28em] text-[#f0c46b]">Shop My Products</p>
+          <h2 class="mt-4 text-3xl font-black tracking-[-0.04em] sm:text-5xl">Everything You Need To Build A Better Social Media Business.</h2>
+          <p class="mt-5 text-lg leading-8 text-white/70">Whether you're trying to land better clients, streamline your workflow, improve your strategy, or use AI to work faster, there's a clear place to begin.</p>
+        </div>
+
+        <div class="mt-14 grid gap-5 lg:grid-cols-3">
+          <article class="reveal group flex min-h-full flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.06] transition duration-300 hover:-translate-y-1 hover:bg-white/[0.09]">
+            <div class="relative min-h-64 overflow-hidden bg-[#f5d47f] text-[#11121e]">
+              <img class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" src="https://segunfalade.github.io/assets/natasha/smm.png" alt="Social Media Manager Operating System product preview">
+              <div class="absolute inset-0 bg-gradient-to-t from-[#11121e]/70 via-[#11121e]/10 to-transparent"></div>
+              <div class="relative flex min-h-64 items-end p-8">
+                <p class="text-4xl font-black leading-none tracking-[-0.05em] text-white sm:text-5xl">Build your system</p>
+              </div>
+            </div>
+            <div class="flex flex-1 flex-col p-7">
+              <h3 class="text-2xl font-black tracking-[-0.025em]">Social Media Manager Operating System</h3>
+              <p class="mt-4 leading-7 text-white/68">Your complete framework for building a more organised, efficient, and scalable social media management business.</p>
+              <a href="#" class="mt-auto inline-flex pt-7 text-base font-extrabold text-white transition group-hover:text-[#f0c46b]" aria-label="Build your Social Media Manager Operating System">Build Your System -></a>
+            </div>
+          </article>
+
+          <article class="reveal group flex min-h-full flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.06] transition duration-300 hover:-translate-y-1 hover:bg-white/[0.09]">
+            <div class="relative min-h-64 overflow-hidden bg-[#e7a8c4] text-[#11121e]">
+              <img class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" src="https://segunfalade.github.io/assets/natasha/prompt.png" alt="Prompt Engineering for Business Owners product preview">
+              <div class="absolute inset-0 bg-gradient-to-t from-[#11121e]/70 via-[#11121e]/10 to-transparent"></div>
+              <div class="relative flex min-h-64 items-end p-8">
+                <p class="text-4xl font-black leading-none tracking-[-0.05em] text-white sm:text-5xl">Work faster with AI</p>
+              </div>
+            </div>
+            <div class="flex flex-1 flex-col p-7">
+              <h3 class="text-2xl font-black tracking-[-0.025em]">Prompt Engineering for Business Owners</h3>
+              <p class="mt-4 leading-7 text-white/68">Learn how to use AI intentionally to create content, solve business problems, and save hours every week.</p>
+              <a href="#" class="mt-auto inline-flex pt-7 text-base font-extrabold text-white transition group-hover:text-[#f0c46b]" aria-label="Start learning AI with Prompt Engineering for Business Owners">Start Learning AI -></a>
+            </div>
+          </article>
+
+          <article class="reveal group flex min-h-full flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.06] transition duration-300 hover:-translate-y-1 hover:bg-white/[0.09]">
+            <div class="relative min-h-64 overflow-hidden bg-[#8fc9bd] text-[#11121e]">
+              <img class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" src="https://segunfalade.github.io/assets/natasha/audit.png" alt="The SMM Strategy and Systems Audit product preview">
+              <div class="absolute inset-0 bg-gradient-to-t from-[#11121e]/70 via-[#11121e]/10 to-transparent"></div>
+              <div class="relative flex min-h-64 items-end p-8">
+                <p class="text-4xl font-black leading-none tracking-[-0.05em] text-white sm:text-5xl">Audit your systems</p>
+              </div>
+            </div>
+            <div class="flex flex-1 flex-col p-7">
+              <h3 class="text-2xl font-black tracking-[-0.025em]">The SMM Strategy and Systems Audit</h3>
+              <p class="mt-4 leading-7 text-white/68">A 60-minute social media diagnostic with Natasha</p>
+              <a href="#" class="mt-auto inline-flex pt-7 text-base font-extrabold text-white transition group-hover:text-[#f0c46b]" aria-label="Book The SMM Strategy and Systems Audit">Book an Audit -></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="reveal mt-16 border-t border-white/12 pt-10">
+          <h3 class="text-2xl font-black tracking-[-0.025em]">Not Sure Where To Start?</h3>
+          <div class="mt-6 grid gap-5 text-base leading-7 text-white/72 md:grid-cols-3">
+            <p><strong class="text-white">New to social media management?</strong><br>Start with the <strong class="text-white">Social Media Manager Operating System</strong>.</p>
+            <p><strong class="text-white">Want to work faster with AI?</strong><br>Begin with <strong class="text-white">Prompt Engineering for Business Owners</strong>.</p>
+            <p><strong class="text-white">Want expert feedback on your business?</strong><br>Book the <strong class="text-white">SMM Strategy &amp; Systems Audit</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer" class="bg-[#080c19] px-4 py-16 text-white sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl">
+      <div class="reveal max-w-4xl">
+        <h2 class="mt-4 text-3xl font-black tracking-[-0.04em] sm:text-5xl">Building Better Social Media Businesses Starts With Better Systems.</h2>
+        <p class="mt-6 text-xl leading-9 text-white/76">The tools are available.</p>
+        <p class="mt-2 text-xl leading-9 text-white/76">The opportunities are growing.</p>
+        <p class="mt-5 max-w-3xl text-xl leading-9 text-white/76">The difference is having a clear system that helps you deliver better work, serve clients with confidence, and grow sustainably.</p>
+        <p class="mt-5 text-2xl font-black text-white">Your next step starts here.</p>
+        <a href="#" class="mt-9 inline-flex items-center justify-center rounded-full bg-[#f0c46b] px-7 py-4 text-base font-extrabold text-[#11121e] transition hover:-translate-y-0.5 hover:bg-[#ffd982]">Browse All Products</a>
+      </div>
+
+      <div class="mt-16 flex flex-col gap-8 border-t border-white/10 pt-8 md:flex-row md:items-center md:justify-between">
+        <p class="max-w-xl text-sm leading-6 text-white/55">© 2026 Natasha Adefala | Building better social media businesses with better systems</p>
+        <div class="flex items-center gap-3" aria-label="Social media links">
+          <a href="#" class="grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white/80 transition hover:border-[#f0c46b] hover:text-[#f0c46b]" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true"><path d="M14 8.5V6.9c0-.8.3-1.2 1.3-1.2H17V2.4c-.9-.1-1.8-.2-2.7-.2-2.7 0-4.6 1.7-4.6 4.7v1.6H6.7V12h3v9.8H14V12h2.9l.5-3.5H14Z"/></svg>
+          </a>
+          <a href="#" class="grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white/80 transition hover:border-[#f0c46b] hover:text-[#f0c46b]" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01" stroke-linecap="round"/></svg>
+          </a>
+          <a href="#" class="grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white/80 transition hover:border-[#f0c46b] hover:text-[#f0c46b]" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true"><path d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.6 4.6 12 4.6 12 4.6s-5.6 0-7.5.5a3 3 0 0 0-2.1 2.1C2 9.1 2 12 2 12s0 2.9.4 4.8a3 3 0 0 0 2.1 2.1c1.9.5 7.5.5 7.5.5s5.6 0 7.5-.5a3 3 0 0 0 2.1-2.1c.4-1.9.4-4.8.4-4.8s0-2.9-.4-4.8ZM10 15.4V8.6l5.8 3.4L10 15.4Z"/></svg>
+          </a>
+          <a href="#" class="grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white/80 transition hover:border-[#f0c46b] hover:text-[#f0c46b]" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true"><path d="M6.8 8.9H3.2v11.4h3.6V8.9ZM5 3.4a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2Zm15.8 10.6c0-3.5-1.9-5.4-4.5-5.4-2 0-2.9 1.1-3.4 1.9V8.9H9.5v11.4h3.6v-5.6c0-1.5.3-2.9 2.1-2.9 1.7 0 1.8 1.6 1.8 3v5.5h3.6V14Z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const menuButton = document.getElementById('menuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    menuButton.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      menuButton.setAttribute('aria-expanded', String(!isOpen));
+      menuButton.textContent = isOpen ? 'Menu' : 'Close';
+    });
+
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.textContent = 'Menu';
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('show');
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
+  </script>
+</body>
+</html>

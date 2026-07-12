@@ -38,6 +38,8 @@
     }
     @keyframes floatSlow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     @keyframes shine { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+    .flash-notice { animation: flashNotice 3s ease-in-out infinite; }
+    @keyframes flashNotice { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.99); } }
   </style>
 </head>
 <body class="bg-[#fffaf2] text-[#121422] antialiased">
@@ -88,8 +90,10 @@
 
     <section id="trust" class="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div class="mx-auto max-w-5xl">
-        <div class="reveal border-y border-[#9a6a14]/30 py-9 sm:py-12">
-          <p class="max-w-4xl text-2xl font-black leading-tight tracking-[-0.025em] text-[#121422] sm:text-4xl">The sections below can't be responsibly written from the outside. They require customer insight, brand nuance, and strategic decisions that go beyond a homepage preview</p>
+        <div class="reveal border-y-2 border-[#9a6a14] py-8 sm:py-10 bg-[#9a6a14]/5">
+          <p class="flash-notice mx-auto max-w-3xl text-center text-xl font-extrabold leading-tight tracking-tight text-[#9a6a14] sm:text-2xl">
+            The sections below can't be responsibly written from the outside. They require customer insight, brand nuance, and strategic decisions that go beyond a homepage preview.
+          </p>
         </div>
 
         <div class="mt-12 space-y-6 sm:mt-16 sm:space-y-8">
@@ -222,6 +226,19 @@
     </div>
   </footer>
 
+  <div id="overlay" class="fixed inset-0 z-[100] flex translate-y-full items-center justify-center bg-white/95 p-6 opacity-0 backdrop-blur-md transition-all duration-1000 ease-in-out">
+    <div class="max-w-3xl text-center">
+      <p class="text-xl font-medium text-[#55515e] sm:text-2xl">What you just experienced was created using only publicly available information.</p>
+      <p class="mt-8 text-2xl font-black leading-tight text-[#121422] sm:text-4xl">Imagine the possibilities when it gets built around your customers, your story, and your business success.</p>
+      <p class="mt-8 text-xl text-[#55515e] sm:text-2xl">If this preview already changed how you see your brand, I'd love to show you what the complete version looks like.</p>
+      <div class="mt-12">
+        <a href="https://calendly.com/segunfalade/messaging-audit" class="inline-flex items-center justify-center rounded-full bg-[#121422] px-8 py-4 text-lg font-bold text-white transition hover:bg-black">
+          Let's Complete Your Trust Journey
+        </a>
+      </div>
+    </div>
+  </div>
+
   <script>
     const menuButton = document.getElementById('menuButton');
     const mobileMenu = document.getElementById('mobileMenu');
@@ -248,6 +265,30 @@
     }, { threshold: 0.15 });
 
     document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
+
+    // Scroll-up trigger for whiteout overlay
+    let hasScrolledPastProducts = false;
+    let lastScrollTop = 0;
+    const productsSection = document.getElementById('products');
+    const overlay = document.getElementById('overlay');
+
+    window.addEventListener('scroll', () => {
+      let st = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // Check if user has reached/passed the products section
+      if (st > productsSection.offsetTop + (productsSection.offsetHeight / 2)) {
+        hasScrolledPastProducts = true;
+      }
+
+      // If user has been past products and starts scrolling UP
+      if (hasScrolledPastProducts && st < lastScrollTop && st > 100) {
+        overlay.classList.remove('translate-y-full', 'opacity-0');
+        overlay.classList.add('translate-y-0', 'opacity-100');
+        // Optional: Disable page scrolling after overlay appears
+        document.body.style.overflow = 'hidden';
+      }
+      lastScrollTop = st <= 0 ? 0 : st;
+    }, false);
   </script>
 </body>
 </html>

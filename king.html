@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Practice File</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --paper: #E7DFC6;
+  --paper-card: #DED3AF;
+  --paper-deep: #D3C79E;
+  --ink: #201C14;
+  --ink-soft: #55503F;
+  --rule: #B7A97E;
+  --stamp-red: #9C2B1B;
+  --stamp-red-soft: rgba(156,43,27,0.12);
+  --moat-blue: #22415A;
+  --moat-blue-soft: rgba(34,65,90,0.12);
+  --brass: #9C7A25;
+  --steel: #4F7288;
+  --paper-hi: #F3ECD3;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  background: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 3px);
+  color: var(--ink);
+  font-family: 'Source Serif 4', Georgia, serif;
+  padding: 28px 20px 60px;
+  min-height: 100vh;
+}
+
+.wrap{ max-width: 1180px; margin: 0 auto; }
+
+/* ---------- HEADER ---------- */
+.folder-tab{
+  display:inline-block;
+  background: var(--paper-deep);
+  border: 1px solid var(--ink);
+  border-bottom: none;
+  padding: 6px 22px 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-radius: 6px 6px 0 0;
+  transform: translateY(1px);
+}
+
+.header{
+  border: 1px solid var(--ink);
+  background: var(--paper-hi);
+  padding: 26px 30px 22px;
+  position: relative;
+  box-shadow: 5px 5px 0 rgba(32,28,20,0.08);
+}
+
+.header-top{
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+h1{
+  font-family: 'Special Elite', 'IBM Plex Mono', monospace;
+  font-size: clamp(26px, 4vw, 38px);
+  margin: 0 0 6px;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+}
+
+.subject-line{
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  border-top: 1px dashed var(--rule);
+  padding-top: 10px;
+  margin-top: 14px;
+  display:flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.subject-line b{ color: var(--ink); font-weight:600; }
+
+.stamp{
+  border: 3px solid var(--stamp-red);
+  color: var(--stamp-red);
+  font-family: 'Special Elite', monospace;
+  font-size: 15px;
+  padding: 8px 14px;
+  transform: rotate(-6deg);
+  border-radius: 4px;
+  opacity: 0.85;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.stat-row{
+  display:flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.stat-chip{
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+  display:flex;
+  align-items:baseline;
+  gap:7px;
+}
+.stat-chip .num{
+  font-size: 17px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---------- ENGINES GRID ---------- */
+.engines{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 24px;
+}
+@media (max-width: 860px){
+  .engines{ grid-template-columns: 1fr; }
+}
+
+.engine{
+  border: 1px solid var(--ink);
+  background: var(--paper-hi);
+  box-shadow: 5px 5px 0 rgba(32,28,20,0.08);
+}
+.engine.craft{ --accent: var(--brass); --accent-soft: rgba(156,122,37,0.14); }
+.engine.moat{ --accent: var(--moat-blue); --accent-soft: var(--moat-blue-soft); }
+
+.engine-head{
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--accent-soft);
+}
+.engine-eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.engine-title{
+  font-family: 'Special Elite', monospace;
+  font-size: 21px;
+  margin: 4px 0 10px;
+}
+.engine-sub{
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height:1.5;
+  margin-bottom: 8px;
+}
+
+/* rank ladder */
+.ladder{
+  display:flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 10px;
+}
+.rank{
+  display:grid;
+  grid-template-columns: 20px 1fr;
+  gap: 10px;
+  padding: 6px 0;
+  position: relative;
+}
+.rank .node{
+  width: 12px; height:12px; border-radius:50%;
+  border: 2px solid var(--ink-soft);
+  background: var(--paper-hi);
+  margin-top: 4px;
+  position: relative;
+  z-index:1;
+}
+.rank.reached .node{ background: var(--accent); border-color: var(--accent); }
+.rank:not(:last-child)::before{
+  content:"";
+  position:absolute;
+  left: 5px; top: 20px; bottom: -6px;
+  width: 2px;
+  background: var(--rule);
+}
+.rank.reached:not(:last-child)::before{ background: var(--accent); }
+.rank-name{
+  font-family:'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.rank.reached .rank-name{ color: var(--ink); }
+.rank.current .rank-name::after{
+  content:" \25C0 current file status";
+  font-weight: 400;
+  color: var(--accent);
+  font-size: 10.5px;
+}
+.rank-req{ font-size: 10.5px; color: var(--ink-soft); opacity:0.7; }
+
+.progress-track{
+  height: 6px;
+  background: var(--paper-deep);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow:hidden;
+  margin: 10px 0 4px;
+}
+.progress-fill{
+  height:100%;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+.progress-label{
+  font-family:'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  text-align:right;
+}
+
+/* task groups */
+.tasks{ padding: 4px 20px 20px; }
+.cadence-group{ margin-top: 16px; }
+.cadence-label{
+  font-family:'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom: 8px;
+}
+.cadence-label .rule{
+  flex:1;
+  height:1px;
+  background: var(--rule);
+}
+.streak-flame{
+  font-size: 11px;
+  color: var(--stamp-red);
+  font-family:'IBM Plex Mono', monospace;
+}
+
+.task{
+  display:flex;
+  align-items:flex-start;
+  gap: 12px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor:pointer;
+  position: relative;
+  transition: background 0.15s ease;
+}
+.task:hover{ background: var(--accent-soft); }
+.task.done{
+  background: var(--accent-soft);
+  border-color: var(--rule);
+}
+.checkbox{
+  width: 18px; height: 18px;
+  border: 2px solid var(--ink-soft);
+  border-radius: 3px;
+  margin-top: 2px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: var(--paper-hi);
+}
+.task.done .checkbox{
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.checkbox svg{ width:12px; height:12px; display:none; }
+.task.done .checkbox svg{ display:block; }
+.task-body{ flex:1; }
+.task-label{
+  font-size: 14px;
+  font-weight: 600;
+  line-height:1.3;
+}
+.task.done .task-label{ text-decoration: line-through; text-decoration-color: var(--ink-soft); opacity:0.75; }
+.task-desc{
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin-top: 2px;
+  line-height:1.4;
+}
+.task-xp{
+  font-family:'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  font-weight:600;
+  white-space: nowrap;
+  margin-top: 3px;
+}
+
+.stamp-pop{
+  position:absolute;
+  right: 8px; top: -6px;
+  font-family:'Special Elite', monospace;
+  font-size: 12px;
+  color: var(--stamp-red);
+  border: 2px solid var(--stamp-red);
+  border-radius: 3px;
+  padding: 2px 6px;
+  transform: rotate(-8deg) scale(1.3);
+  opacity: 0;
+  pointer-events:none;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.stamp-pop.show{
+  opacity: 0.9;
+  transform: rotate(-8deg) scale(1);
+}
+
+/* ---------- FIELD LOG ---------- */
+.fieldlog{
+  margin-top: 22px;
+  border: 1px solid var(--ink);
+  background: var(--paper-hi);
+  box-shadow: 5px 5px 0 rgba(32,28,20,0.08);
+  padding: 20px 24px 24px;
+}
+.fieldlog h2{
+  font-family:'Special Elite', monospace;
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+.fieldlog p.hint{
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+}
+textarea{
+  width:100%;
+  min-height: 70px;
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px;
+  color: var(--ink);
+  resize: vertical;
+}
+textarea:focus, .task:focus-visible, button:focus-visible{
+  outline: 2px solid var(--moat-blue);
+  outline-offset: 2px;
+}
+.log-actions{
+  display:flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+button.save-btn{
+  font-family:'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--paper-hi);
+  border: none;
+  padding: 9px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button.save-btn:hover{ background: var(--stamp-red); }
+button.save-btn:disabled{ opacity:0.4; cursor:default; }
+
+.log-entries{ margin-top: 16px; display:flex; flex-direction:column; gap:10px; }
+.log-entry{
+  border-left: 3px solid var(--rule);
+  padding: 4px 0 4px 12px;
+}
+.log-entry .log-date{
+  font-family:'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+}
+.log-entry .log-text{ font-size: 13.5px; margin-top: 2px; }
+.log-empty{ font-size: 12.5px; color: var(--ink-soft); font-style: italic; }
+
+.footer-note{
+  text-align:center;
+  font-family:'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  margin-top: 28px;
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="folder-tab">Trust Gap Protocol &mdash; Personal File</div>
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1>The Practice File</h1>
+        <div class="subject-line">
+          <span><b>Subject:</b> Copy Strategist, Trust-First Industries</span>
+          <span><b>Focus:</b> Coaches / Consultants / Course Creators</span>
+        </div>
+      </div>
+      <div class="stamp" id="statusStamp">ACTIVE&nbsp;FILE</div>
+    </div>
+    <div class="stat-row" id="statRow"></div>
+  </div>
+
+  <div class="engines">
+    <div class="engine craft" id="engine-craft">
+      <div class="engine-head">
+        <div class="engine-eyebrow">Engine 01</div>
+        <div class="engine-title">The Craft Ledger</div>
+        <div class="engine-sub">Getting sharper, on record, every day. This engine tracks how good you actually are &mdash; not how good you feel.</div>
+        <div class="ladder" id="ladder-craft"></div>
+        <div class="progress-track"><div class="progress-fill" id="progress-craft"></div></div>
+        <div class="progress-label" id="progress-craft-label"></div>
+      </div>
+      <div class="tasks" id="tasks-craft"></div>
+    </div>
+
+    <div class="engine moat" id="engine-moat">
+      <div class="engine-head">
+        <div class="engine-eyebrow">Engine 02</div>
+        <div class="engine-title">The Moat Ledger</div>
+        <div class="engine-sub">Making you hard to swap out &mdash; for a competitor or a prompt. This engine tracks what only you can produce.</div>
+        <div class="ladder" id="ladder-moat"></div>
+        <div class="progress-track"><div class="progress-fill" id="progress-moat"></div></div>
+        <div class="progress-label" id="progress-moat-label"></div>
+      </div>
+      <div class="tasks" id="tasks-moat"></div>
+    </div>
+  </div>
+
+  <div class="fieldlog">
+    <h2>Case Notes</h2>
+    <p class="hint">Anything worth remembering from today &mdash; a phrase that landed, a diagnosis you're proud of, a pattern you caught. Kept for you, not graded.</p>
+    <textarea id="logInput" placeholder="Today I noticed..."></textarea>
+    <div class="log-actions">
+      <button class="save-btn" id="saveLogBtn">File note</button>
+    </div>
+    <div class="log-entries" id="logEntries"></div>
+  </div>
+
+  <div class="footer-note">Progress is saved automatically to this file. Nothing here is scored by anyone but you.</div>
+</div>
+
+<script>
+(function(){
+  const XP = { daily: 5, weekly: 15, monthly: 40 };
+
+  const TASKS = {
+    craft: [
+      { id:'c-d1', cadence:'daily', label:'Live Diagnostic Rep', desc:"Diagnose one coach's funnel or page, cold." },
+      { id:'c-d2', cadence:'daily', label:'Rewrite Rep', desc:'Blind rewrite a piece of copy, then compare to the original.' },
+      { id:'c-d3', cadence:'daily', label:'Swipe Capture', desc:'Save one piece of copy that stopped your scroll. Note why it worked.' },
+      { id:'c-w1', cadence:'weekly', label:'Voice-of-Customer Mining', desc:'15\u201320 min pulling raw language from reviews, DMs, comments.' },
+      { id:'c-w2', cadence:'weekly', label:'Full Diagnostic Document', desc:'One complete diagnostic, client or spec.' },
+      { id:'c-w3', cadence:'weekly', label:'Feedback Exposure', desc:"Get one piece of work in front of someone who'll push back." },
+      { id:'c-m1', cadence:'monthly', label:'Framework Re-immersion', desc:'Reread Makepeace, Schwartz, or your six-layer architecture.' },
+      { id:'c-m2', cadence:'monthly', label:'Result-Tracking Review', desc:'Log and review any performance data you have access to.' }
+    ],
+    moat: [
+      { id:'m-d1', cadence:'daily', label:'Publish the Reasoning', desc:'Share a piece of thinking, not just an output.' },
+      { id:'m-d2', cadence:'daily', label:'Proprietary Input Capture', desc:'Add one entry to your swipe file or client pattern library.' },
+      { id:'m-w1', cadence:'weekly', label:'Category Ownership Content', desc:'Post using your proprietary system language.' },
+      { id:'m-w2', cadence:'weekly', label:'Judgment-Call Log', desc:"Document one ambiguous call a prompt couldn't have made alone." },
+      { id:'m-w3', cadence:'weekly', label:'Relationship Depth Move', desc:'One action that treats a client relationship as strategist, not vendor.' },
+      { id:'m-m1', cadence:'monthly', label:'Taste Audit', desc:"Run last month's copy against the banned-patterns list." },
+      { id:'m-m2', cadence:'monthly', label:'Accountability Asset', desc:'Build or update one piece of hard proof: result, case study, or guarantee.' }
+    ]
+  };
+
+  const TIERS = {
+    craft: [
+      { name:'Apprentice Diagnostician', min:0 },
+      { name:'Working Strategist', min:150 },
+      { name:'Senior Diagnostician', min:400 },
+      { name:'Master Strategist', min:800 }
+    ],
+    moat: [
+      { name:'Vendor', min:0 },
+      { name:'Specialist', min:150 },
+      { name:'Category Owner', min:400 },
+      { name:'Irreplaceable', min:800 }
+    ]
+  };
+
+  const STORAGE_KEY = 'practice-file-state';
+
+  function todayStr(d){
+    const dt = d || new Date();
+    return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0');
+  }
+  function yesterdayStr(){
+    const d = new Date();
+    d.setDate(d.getDate()-1);
+    return todayStr(d);
+  }
+  function weekKey(){
+    const d = new Date();
+    const onejan = new Date(d.getFullYear(),0,1);
+    const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay()+1)/7);
+    return d.getFullYear() + '-W' + week;
+  }
+  function monthKey(){
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+  }
+
+  function defaultState(){
+    return {
+      craftXP: 0,
+      moatXP: 0,
+      streak: 0,
+      lastCompletionDate: null,
+      daily: { date: todayStr(), done: [] },
+      weekly: { key: weekKey(), done: [] },
+      monthly: { key: monthKey(), done: [] },
+      fieldLog: []
+    };
+  }
+
+  let state = defaultState();
+
+  async function loadState(){
+    try{
+      const res = await window.storage.get(STORAGE_KEY, false);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        state = Object.assign(defaultState(), parsed);
+      }
+    }catch(e){
+      // no saved state yet
+      state = defaultState();
+    }
+    rolloverPeriods();
+    render();
+  }
+
+  async function persist(){
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+    }catch(e){
+      console.error('Save failed', e);
+    }
+  }
+
+  function rolloverPeriods(){
+    const t = todayStr();
+    if(state.daily.date !== t){
+      state.daily = { date: t, done: [] };
+    }
+    const wk = weekKey();
+    if(state.weekly.key !== wk){
+      state.weekly = { key: wk, done: [] };
+    }
+    const mk = monthKey();
+    if(state.monthly.key !== mk){
+      state.monthly = { key: mk, done: [] };
+    }
+    // streak decay: if last completion wasn't today or yesterday, reset to 0
+    if(state.lastCompletionDate && state.lastCompletionDate !== t && state.lastCompletionDate !== yesterdayStr()){
+      state.streak = 0;
+    }
+  }
+
+  function bucketFor(cadence){
+    return cadence === 'daily' ? state.daily : cadence === 'weekly' ? state.weekly : state.monthly;
+  }
+
+  function isDone(id, cadence){
+    return bucketFor(cadence).done.includes(id);
+  }
+
+  function toggleTask(engineKey, task, taskEl){
+    const bucket = bucketFor(task.cadence);
+    const idx = bucket.done.indexOf(task.id);
+    const engXPKey = engineKey === 'craft' ? 'craftXP' : 'moatXP';
+    if(idx === -1){
+      bucket.done.push(task.id);
+      state[engXPKey] += XP[task.cadence];
+      if(task.cadence === 'daily'){
+        const t = todayStr();
+        if(state.lastCompletionDate !== t){
+          if(state.lastCompletionDate === yesterdayStr()){
+            state.streak += 1;
+          } else {
+            state.streak = 1;
+          }
+          state.lastCompletionDate = t;
+        }
+      }
+      popStamp(taskEl);
+    } else {
+      bucket.done.splice(idx,1);
+      state[engXPKey] = Math.max(0, state[engXPKey] - XP[task.cadence]);
+    }
+    persist();
+    render();
+  }
+
+  function popStamp(taskEl){
+    const stamp = taskEl.querySelector('.stamp-pop');
+    if(!stamp) return;
+    stamp.classList.remove('show');
+    void stamp.offsetWidth;
+    stamp.classList.add('show');
+    setTimeout(()=> stamp.classList.remove('show'), 900);
+  }
+
+  function tierInfo(engineKey){
+    const xp = engineKey === 'craft' ? state.craftXP : state.moatXP;
+    const tiers = TIERS[engineKey];
+    let currentIdx = 0;
+    for(let i=0;i<tiers.length;i++){
+      if(xp >= tiers[i].min) currentIdx = i;
+    }
+    const current = tiers[currentIdx];
+    const next = tiers[currentIdx+1];
+    let pct = 100;
+    let label = 'Maximum file status reached';
+    if(next){
+      const span = next.min - current.min;
+      pct = Math.min(100, Math.round(((xp - current.min) / span) * 100));
+      label = xp + ' / ' + next.min + ' XP to ' + next.name;
+    } else {
+      label = xp + ' XP \u2014 top rank held';
+    }
+    return { currentIdx, pct, label, tiers };
+  }
+
+  function renderLadder(engineKey){
+    const { currentIdx, tiers } = tierInfo(engineKey);
+    const el = document.getElementById('ladder-' + engineKey);
+    el.innerHTML = tiers.map((t,i)=>{
+      const reached = i <= currentIdx ? 'reached' : '';
+      const current = i === currentIdx ? 'current' : '';
+      return '<div class="rank ' + reached + ' ' + current + '">' +
+        '<div class="node"></div>' +
+        '<div><div class="rank-name">' + t.name + '</div><div class="rank-req">' + (t.min===0? 'Starting rank' : t.min + ' XP') + '</div></div>' +
+      '</div>';
+    }).join('');
+    const info = tierInfo(engineKey);
+    document.getElementById('progress-' + engineKey).style.width = info.pct + '%';
+    document.getElementById('progress-' + engineKey + '-label').textContent = info.label;
+  }
+
+  function cadenceLabel(cadence){
+    if(cadence === 'daily') return 'Daily';
+    if(cadence === 'weekly') return 'This Week';
+    return 'This Month';
+  }
+
+  function renderTasks(engineKey){
+    const el = document.getElementById('tasks-' + engineKey);
+    const groups = ['daily','weekly','monthly'];
+    el.innerHTML = '';
+    groups.forEach(cadence=>{
+      const items = TASKS[engineKey].filter(t=>t.cadence===cadence);
+      if(!items.length) return;
+      const group = document.createElement('div');
+      group.className = 'cadence-group';
+      const label = document.createElement('div');
+      label.className = 'cadence-label';
+      label.innerHTML = '<span>' + cadenceLabel(cadence) + '</span><span class="rule"></span>' +
+        (cadence==='daily' ? '<span class="streak-flame">' + state.streak + ' day streak</span>' : '');
+      group.appendChild(label);
+
+      items.forEach(task=>{
+        const done = isDone(task.id, task.cadence);
+        const row = document.createElement('div');
+        row.className = 'task' + (done ? ' done' : '');
+        row.tabIndex = 0;
+        row.setAttribute('role','checkbox');
+        row.setAttribute('aria-checked', done ? 'true':'false');
+        row.innerHTML =
+          '<div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="var(--paper-hi)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
+          '<div class="task-body">' +
+            '<div class="task-label">' + task.label + '</div>' +
+            '<div class="task-desc">' + task.desc + '</div>' +
+            '<div class="task-xp">+' + XP[task.cadence] + ' XP</div>' +
+          '</div>' +
+          '<div class="stamp-pop">LOGGED</div>';
+        row.addEventListener('click', ()=> toggleTask(engineKey, task, row));
+        row.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleTask(engineKey, task, row); }});
+        group.appendChild(row);
+      });
+      el.appendChild(group);
+    });
+  }
+
+  function renderStats(){
+    const totalXP = state.craftXP + state.moatXP;
+    const el = document.getElementById('statRow');
+    el.innerHTML =
+      '<div class="stat-chip">Total XP <span class="num">' + totalXP + '</span></div>' +
+      '<div class="stat-chip">Streak <span class="num">' + state.streak + '</span> days</div>' +
+      '<div class="stat-chip">Craft Rank <span class="num">' + TIERS.craft[tierInfo('craft').currentIdx].name + '</span></div>' +
+      '<div class="stat-chip">Moat Rank <span class="num">' + TIERS.moat[tierInfo('moat').currentIdx].name + '</span></div>';
+  }
+
+  function renderLog(){
+    const wrap = document.getElementById('logEntries');
+    if(!state.fieldLog.length){
+      wrap.innerHTML = '<div class="log-empty">No case notes filed yet.</div>';
+      return;
+    }
+    wrap.innerHTML = state.fieldLog.slice(-6).reverse().map(entry=>
+      '<div class="log-entry"><div class="log-date">' + entry.date + '</div><div class="log-text">' + escapeHtml(entry.text) + '</div></div>'
+    ).join('');
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function render(){
+    renderStats();
+    renderLadder('craft');
+    renderLadder('moat');
+    renderTasks('craft');
+    renderTasks('moat');
+    renderLog();
+  }
+
+  document.getElementById('saveLogBtn').addEventListener('click', async ()=>{
+    const input = document.getElementById('logInput');
+    const text = input.value.trim();
+    if(!text) return;
+    state.fieldLog.push({ date: todayStr(), text: text });
+    if(state.fieldLog.length > 40) state.fieldLog = state.fieldLog.slice(-40);
+    input.value = '';
+    await persist();
+    renderLog();
+  });
+
+  loadState();
+})();
+</script>
+</body>
+</html>

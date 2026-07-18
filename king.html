@@ -403,12 +403,29 @@ button.save-btn:disabled{ opacity:0.4; cursor:default; }
 .log-entry .log-text{ font-size: 13.5px; margin-top: 2px; }
 .log-empty{ font-size: 12.5px; color: var(--ink-soft); font-style: italic; }
 
+/* ---------- FOOTER ACTIONS ---------- */
+.data-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+.data-actions button {
+  background: var(--paper-deep);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+}
+.data-actions button:hover {
+  background: var(--rule);
+  color: var(--ink);
+}
+
 .footer-note{
   text-align:center;
   font-family:'IBM Plex Mono', monospace;
   font-size: 10.5px;
   color: var(--ink-soft);
-  margin-top: 28px;
+  margin-top: 14px;
   opacity: 0.7;
 }
 
@@ -469,6 +486,12 @@ button.save-btn:disabled{ opacity:0.4; cursor:default; }
       <button class="save-btn" id="saveLogBtn">File note</button>
     </div>
     <div class="log-entries" id="logEntries"></div>
+  </div>
+
+  <div class="data-actions">
+    <button class="save-btn" id="exportBtn">Download Backup</button>
+    <button class="save-btn" id="importBtn">Upload Backup</button>
+    <input type="file" id="importFile" accept=".json" style="display:none;">
   </div>
 
   <div class="footer-note">Progress is saved automatically to this file. Nothing here is scored by anyone but you.</div>
@@ -552,24 +575,26 @@ button.save-btn:disabled{ opacity:0.4; cursor:default; }
 
   let state = defaultState();
 
-  async function loadState(){
+  // Changed from custom window.storage to standard localStorage
+  function loadState(){
     try{
-      const res = await window.storage.get(STORAGE_KEY, false);
-      if(res && res.value){
-        const parsed = JSON.parse(res.value);
+      const res = localStorage.getItem(STORAGE_KEY);
+      if(res){
+        const parsed = JSON.parse(res);
         state = Object.assign(defaultState(), parsed);
       }
     }catch(e){
-      // no saved state yet
+      // no saved state yet or parse error
       state = defaultState();
     }
     rolloverPeriods();
     render();
   }
 
-  async function persist(){
+  // Changed from custom window.storage to standard localStorage
+  function persist(){
     try{
-      await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }catch(e){
       console.error('Save failed', e);
     }
@@ -755,15 +780,56 @@ button.save-btn:disabled{ opacity:0.4; cursor:default; }
     renderLog();
   }
 
-  document.getElementById('saveLogBtn').addEventListener('click', async ()=>{
+  // Event Listeners for Saving Notes
+  document.getElementById('saveLogBtn').addEventListener('click', () => {
     const input = document.getElementById('logInput');
     const text = input.value.trim();
     if(!text) return;
     state.fieldLog.push({ date: todayStr(), text: text });
     if(state.fieldLog.length > 40) state.fieldLog = state.fieldLog.slice(-40);
     input.value = '';
-    await persist();
+    persist();
     renderLog();
+  });
+
+  // Export Data Functionality
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const dataStr = JSON.stringify(state, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `practice-file-backup-${todayStr()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  // Import Data Functionality
+  const importBtn = document.getElementById('importBtn');
+  const importFile = document.getElementById('importFile');
+  importBtn.addEventListener('click', () => importFile.click());
+  
+  importFile.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const parsed = JSON.parse(event.target.result);
+        // Merge uploaded data with default state to ensure structure is intact
+        state = Object.assign(defaultState(), parsed);
+        persist();
+        rolloverPeriods();
+        render();
+        alert("Backup loaded successfully!");
+      } catch (err) {
+        alert("Error reading backup file. Make sure it's a valid JSON backup.");
+      }
+      importFile.value = ''; // Reset file input
+    };
+    reader.readAsText(file);
   });
 
   loadState();

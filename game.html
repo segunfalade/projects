@@ -22,24 +22,23 @@
       radial-gradient(1000px 700px at 95% 5%, #06283d 0%, transparent 50%),
       radial-gradient(900px 900px at 50% 120%, #1a0b2e 0%, transparent 55%),
       #070710;
-    min-height:100vh;
-    background-attachment:fixed;
+    min-height:100vh; background-attachment:fixed;
   }
   h1,h2,h3,h4,.display{font-family:'Space Grotesk',sans-serif;}
   .glass{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(10px);border-radius:18px;}
   .glass-soft{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:14px;}
   .xp-fill{transition:width .9s cubic-bezier(.2,.8,.2,1);border-radius:99px;}
-.node{position:relative;cursor:pointer;transition:transform .15s, box-shadow .25s, border-color .25s, opacity .3s;}
-.node:hover{transform:translateY(-2px);}
-.node.done{opacity:.72;}
-.node.done .node-title{color:var(--gold);}
-.tree-body{position:relative;padding-left:26px;}
-.tree-body::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;
-  background:linear-gradient(180deg,var(--purple),var(--cyan),transparent);opacity:.5;border-radius:2px;}
-.node::before{content:'';position:absolute;left:-21px;top:20px;width:11px;height:11px;border-radius:50%;
-  background:#0b0b18;border:2px solid var(--purple);box-shadow:0 0 10px rgba(168,85,247,.6);}
-.node.done::before{background:var(--gold);border-color:var(--gold);box-shadow:0 0 14px rgba(245,197,66,.8);}
-.node.partial::before{background:#2a1548;border-color:var(--purple);box-shadow:0 0 10px rgba(168,85,247,.6),0 0 0 2px rgba(168,85,247,.3);}
+  .node{position:relative;cursor:pointer;transition:transform .15s, box-shadow .25s, border-color .25s, opacity .3s;}
+  .node:hover{transform:translateY(-2px);}
+  .node.done{opacity:.72;}
+  .node.done .node-title{color:var(--gold);}
+  .tree-body{position:relative;padding-left:26px;}
+  .tree-body::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;
+    background:linear-gradient(180deg,var(--purple),var(--cyan),transparent);opacity:.5;border-radius:2px;}
+  .node::before{content:'';position:absolute;left:-21px;top:20px;width:11px;height:11px;border-radius:50%;
+    background:#0b0b18;border:2px solid var(--purple);box-shadow:0 0 10px rgba(168,85,247,.6);}
+  .node.done::before{background:var(--gold);border-color:var(--gold);box-shadow:0 0 14px rgba(245,197,66,.8);}
+  .node.partial::before{background:#2a1548;border-color:var(--purple);box-shadow:0 0 10px rgba(168,85,247,.6),0 0 0 2px rgba(168,85,247,.3);}
   .glow-gold{box-shadow:0 0 0 1px rgba(245,197,66,.35),0 0 26px rgba(245,197,66,.12);}
   .tab.active{background:linear-gradient(135deg,rgba(168,85,247,.25),rgba(58,208,255,.18));border-color:rgba(168,85,247,.6);color:#fff;}
   .pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:99px;letter-spacing:.02em;}
@@ -57,6 +56,7 @@
   .chk.on{background:var(--green);border-color:var(--green);box-shadow:0 0 14px rgba(52,211,153,.6);}
   .nav-scroll{scrollbar-width:none}
   .nav-scroll::-webkit-scrollbar{display:none}
+  .stat-block{transition:background .3s, border-color .3s;}
 </style>
 </head>
 <body class="scrollbar-thin">
@@ -78,16 +78,11 @@
       </div>
     </div>
     <div class="flex items-center gap-2 mt-3 flex-wrap">
-      <button onclick="exportSave()" class="text-xs px-3 py-1.5 rounded-lg glass-soft text-white/70 hover:text-white hover:border-white/30 transition">
-        📥 Export Progress
-      </button>
-      <button onclick="document.getElementById('import-file').click()" class="text-xs px-3 py-1.5 rounded-lg glass-soft text-white/70 hover:text-white hover:border-white/30 transition">
-        📤 Import Progress
-      </button>
+      <button onclick="exportSave()" class="text-xs px-3 py-1.5 rounded-lg glass-soft text-white/70 hover:text-white hover:border-white/30 transition">📥 Export Progress</button>
+      <button onclick="document.getElementById('import-file').click()" class="text-xs px-3 py-1.5 rounded-lg glass-soft text-white/70 hover:text-white hover:border-white/30 transition">📤 Import Progress</button>
       <input type="file" id="import-file" accept=".json" class="hidden" onchange="importSave(event)" />
       <span class="text-[11px] text-white/35 ml-1">Progress saves locally — export to back up beyond this browser</span>
     </div>
-
     <!-- XP bar -->
     <div class="glass px-5 py-4 mt-4 flex items-center gap-4 flex-wrap">
       <div class="flex-1 min-w-[240px]">
@@ -100,18 +95,9 @@
         </div>
       </div>
       <div class="flex gap-5">
-        <div class="text-center">
-          <div id="hud-total" class="text-2xl font-bold">0</div>
-          <div class="text-[10px] uppercase tracking-wider text-white/50">Total XP</div>
-        </div>
-        <div class="text-center">
-          <div id="hud-streak" class="text-2xl font-bold" style="color:var(--cyan)">0</div>
-          <div class="text-[10px] uppercase tracking-wider text-white/50">Day Streak</div>
-        </div>
-        <div class="text-center">
-          <div id="hud-quests" class="text-2xl font-bold" style="color:var(--green)">0</div>
-          <div class="text-[10px] uppercase tracking-wider text-white/50">Quests Done</div>
-        </div>
+        <div class="text-center"><div id="hud-total" class="text-2xl font-bold">0</div><div class="text-[10px] uppercase tracking-wider text-white/50">Total XP</div></div>
+        <div class="text-center"><div id="hud-streak" class="text-2xl font-bold" style="color:var(--cyan)">0</div><div class="text-[10px] uppercase tracking-wider text-white/50">Day Streak</div></div>
+        <div class="text-center"><div id="hud-quests" class="text-2xl font-bold" style="color:var(--green)">0/145</div><div class="text-[10px] uppercase tracking-wider text-white/50">Mastery</div></div>
       </div>
     </div>
   </header>
@@ -125,7 +111,6 @@
     <button data-tab="ai" class="tab glass px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap">🤖 AI Reality</button>
   </nav>
 
-  <!-- SECTIONS -->
   <main>
     <section id="sec-dashboard"></section>
     <section id="sec-trees" class="hidden"></section>
@@ -138,722 +123,472 @@
 <script>
 /* ============================ DATA ============================ */
 const ATTRS = {
-  research:      {name:'Research',       icon:'🔬', color:'var(--cyan)'},
-  positioning:   {name:'Positioning',    icon:'🎯', color:'var(--purple)'},
-  psychology:    {name:'Psychology',     icon:'🧠', color:'var(--pink)'},
-  offerDesign:   {name:'Offer Design',   icon:'💡', color:'var(--gold)'},
-  trustBuilding: {name:'Trust Building', icon:'🤝', color:'var(--green)'},
-  judgment:      {name:'Judgment',       icon:'⚖️', color:'var(--blue)'},
+  research:{name:'Research',icon:'🔬',color:'var(--cyan)'},
+  positioning:{name:'Positioning',icon:'🎯',color:'var(--purple)'},
+  psychology:{name:'Psychology',icon:'🧠',color:'var(--pink)'},
+  offerDesign:{name:'Offer Design',icon:'💡',color:'var(--gold)'},
+  trustBuilding:{name:'Trust Building',icon:'🤝',color:'var(--green)'},
+  judgment:{name:'Judgment',icon:'⚖️',color:'var(--blue)'},
 };
-
 const QUESTS = {
-  demand: [
-    {id:'d1', title:'Find Bigger Markets', branch:'Demand', xp:40, attr:'positioning',
-      desc:'Identify an underserved coaching niche worth attacking before your competitors notice.'},
-    {id:'d2', title:'Solve Expensive Problems', branch:'Demand', xp:50, attr:'offerDesign',
-      desc:'Map a $10k+ problem a client is quietly bleeding money (or momentum) on.'},
-    {id:'d3', title:'Position Yourself', branch:'Demand', xp:60, attr:'positioning',
-      desc:'Write a one-line positioning statement that makes you the only logical choice.'},
+  demand:[
+    {id:'d1',title:'Find Bigger Markets',branch:'Demand',xp:40,attr:'positioning',desc:'Identify an underserved coaching niche worth attacking before your competitors notice.'},
+    {id:'d2',title:'Solve Expensive Problems',branch:'Demand',xp:50,attr:'offerDesign',desc:'Map a $10k+ problem a client is quietly bleeding money (or momentum) on.'},
+    {id:'d3',title:'Position Yourself',branch:'Demand',xp:60,attr:'positioning',desc:'Write a one-line positioning statement that makes you the only logical choice.'},
   ],
-  skill: [
-    // Research
-    {id:'s1', title:'Read Customer Conversations', branch:'Research Mastery', xp:20, attr:'research',
-      desc:'Mine Reddit, FB groups, Amazon reviews, YouTube comments for fears, desires, language, beliefs.'},
-    {id:'s2', title:'Reverse Engineer Launches', branch:'Research Mastery', xp:25, attr:'research',
-      desc:'Deconstruct a successful launch: headline, hook, positioning, proof, CTA. Don’t judge — deconstruct.'},
-    {id:'s3', title:'Objection Mining', branch:'Research Mastery', xp:30, attr:'research',
-      desc:'Collect objections daily. "I don’t have time." "My audience is different." Eventually you own thousands.'},
-    // Writing
-    {id:'s4', title:'Daily Rewriting', branch:'Writing Mastery', xp:25, attr:'offerDesign',
-      desc:'Rewrite a famous sales letter, landing page, or email from memory. Not writing — rewriting.'},
-    {id:'s5', title:'Headline Challenge', branch:'Writing Mastery', xp:40, attr:'offerDesign',
-      desc:'Write 20 headlines. First 5 warm-ups, next 10 get interesting, final 5 hold the surprises.'},
-    {id:'s6', title:'Offer Recreation', branch:'Writing Mastery', xp:35, attr:'offerDesign',
-      desc:'Read an offer, close the tab, rebuild it from memory. Notice sequence, tension, proof placement.'},
-    {id:'s7', title:'Constraint Writing', branch:'Writing Mastery', xp:30, attr:'offerDesign',
-      desc:'10-word email. 50-word landing page. 1-sentence offer. CTA with no verbs. Constraints sharpen instincts.'},
-    // Psychology
-    {id:'s8', title:'Study Biases', branch:'Psychology', xp:25, attr:'psychology',
-      desc:'Behavioral economics, cognitive biases, persuasion, neuroscience, habits. Ask: what changes in my copy?'},
-    {id:'s9', title:'Watch Interviews', branch:'Psychology', xp:15, attr:'psychology',
-      desc:'Don’t study the answers. Study the hesitation, the emotion, the exact wording.'},
-    {id:'s10', title:'Predict Objections', branch:'Psychology', xp:40, attr:'psychology',
-      desc:'Predict the objection before the customer voices it. That’s the edge.'},
-    // Strategy
-    {id:'s11', title:'Learn Business Fundamentals', branch:'Business Strategy', xp:40, attr:'positioning',
-      desc:'Master pricing, positioning, funnels, economics. Copy does not exist alone.'},
-    {id:'s12', title:'Study One Business', branch:'Business Strategy', xp:50, attr:'positioning',
-      desc:'Each day, find one business’s bottleneck, opportunity, missing trust, and offer weakness.'},
-    // Pattern Recognition
-    {id:'s13', title:'See Patterns', branch:'Pattern Recognition', xp:100, attr:'judgment',
-      desc:'Store every audit, landing page, funnel, launch mentally. You stop seeing pages — you see patterns.'},
-    {id:'s14', title:'Feedback Loop', branch:'Pattern Recognition', xp:70, attr:'judgment',
-      desc:'After writing, predict what converts and what won’t. Compare later. This trains judgment.'},
-    {id:'s15', title:'Build Mental Models', branch:'Pattern Recognition', xp:50, attr:'judgment',
-      desc:'Curiosity Gap, Loss Aversion, Trust Ladder, Belief Pyramid, Problem Agitation. Then combine them.'},
+  skill:[
+    {id:'s1',title:'Read Customer Conversations',branch:'Research Mastery',xp:20,attr:'research',desc:'Mine Reddit, FB groups, Amazon reviews, YouTube comments for fears, desires, language, beliefs.'},
+    {id:'s2',title:'Reverse Engineer Launches',branch:'Research Mastery',xp:25,attr:'research',desc:'Deconstruct a successful launch: headline, hook, positioning, proof, CTA. Don\'t judge — deconstruct.'},
+    {id:'s3',title:'Objection Mining',branch:'Research Mastery',xp:30,attr:'research',desc:'Collect objections daily. "I don\'t have time." "My audience is different." Eventually you own thousands.'},
+    {id:'s4',title:'Daily Rewriting',branch:'Writing Mastery',xp:25,attr:'offerDesign',desc:'Rewrite a famous sales letter, landing page, or email from memory. Not writing — rewriting.'},
+    {id:'s5',title:'Headline Challenge',branch:'Writing Mastery',xp:40,attr:'offerDesign',desc:'Write 20 headlines. First 5 warm-ups, next 10 get interesting, final 5 hold the surprises.'},
+    {id:'s6',title:'Offer Recreation',branch:'Writing Mastery',xp:35,attr:'offerDesign',desc:'Read an offer, close the tab, rebuild it from memory. Notice sequence, tension, proof placement.'},
+    {id:'s7',title:'Constraint Writing',branch:'Writing Mastery',xp:30,attr:'offerDesign',desc:'10-word email. 50-word landing page. 1-sentence offer. CTA with no verbs. Constraints sharpen instincts.'},
+    {id:'s8',title:'Study Biases',branch:'Psychology',xp:25,attr:'psychology',desc:'Behavioral economics, cognitive biases, persuasion, neuroscience, habits. Ask: what changes in my copy?'},
+    {id:'s9',title:'Watch Interviews',branch:'Psychology',xp:15,attr:'psychology',desc:'Don\'t study the answers. Study the hesitation, the emotion, the exact wording.'},
+    {id:'s10',title:'Predict Objections',branch:'Psychology',xp:40,attr:'psychology',desc:'Predict the objection before the customer voices it. That\'s the edge.'},
+    {id:'s11',title:'Learn Business Fundamentals',branch:'Business Strategy',xp:40,attr:'positioning',desc:'Master pricing, positioning, funnels, economics. Copy does not exist alone.'},
+    {id:'s12',title:'Study One Business',branch:'Business Strategy',xp:50,attr:'positioning',desc:'Each day, find one business\'s bottleneck, opportunity, missing trust, and offer weakness.'},
+    {id:'s13',title:'See Patterns',branch:'Pattern Recognition',xp:100,attr:'judgment',desc:'Store every audit, landing page, funnel, launch mentally. You stop seeing pages — you see patterns.'},
+    {id:'s14',title:'Feedback Loop',branch:'Pattern Recognition',xp:70,attr:'judgment',desc:'After writing, predict what converts and what won\'t. Compare later. This trains judgment.'},
+    {id:'s15',title:'Build Mental Models',branch:'Pattern Recognition',xp:50,attr:'judgment',desc:'Curiosity Gap, Loss Aversion, Trust Ladder, Belief Pyramid, Problem Agitation. Then combine them.'},
   ],
-  irreplaceable: [
-    {id:'i1', title:'Judgment', xp:60, attr:'judgment',
-      desc:'Take 5 AI outputs. Rank them. Explain why. AI produces possibilities — experts choose.'},
-    {id:'i2', title:'Taste', xp:40, attr:'judgment',
-      desc:'Collect great ads AND terrible ads. Explain WHY each works or fails.'},
-    {id:'i3', title:'Original Thinking', xp:100, attr:'judgment',
-      desc:'Invent one framework, analogy, model, diagram, or concept daily. Most will be terrible. The 100th is yours.'},
-    {id:'i4', title:'Proprietary Frameworks', xp:150, attr:'positioning',
-      desc:'Don’t say "I write copy." Say "I use the Trust Journey Method." Frameworks become intellectual property.'},
-    {id:'i5', title:'Teach', xp:80, attr:'positioning',
-      desc:'Teach one lesson daily — LinkedIn, X, Newsletter, Video. Teaching compresses knowledge.'},
-    {id:'i6', title:'Build Assets', xp:100, attr:'trustBuilding',
-      desc:'Checklists, templates, calculators, prompts, swipe files, research databases. Assets work while you sleep.'},
-    {id:'i7', title:'Research Database', xp:200, attr:'research',
-      desc:'10,000 objections. 5,000 headlines. 2,000 CTAs. Categorized. Searchable. No AI has your exact database.'},
-    {id:'i8', title:'Decision Journal', xp:100, attr:'judgment',
-      desc:'Record "I chose this headline because…" Compare months later. Judgment compounds.'},
-    {id:'i9', title:'Case Study Vault', xp:120, attr:'trustBuilding',
-      desc:'Document hypothesis, process, revisions, lessons. This creates unique, un-copyable experience.'},
-    {id:'i10', title:'Brand Building', xp:100, attr:'positioning',
-      desc:'Publish one insight, teardown, framework, experiment, observation. Brand is stored trust.'},
-    {id:'i11', title:'Relationship Network', xp:150, attr:'trustBuilding',
-      desc:'Befriend designers, CRO specialists, founders, media buyers, email marketers. Networks become unfair advantages.'},
+  irreplaceable:[
+    {id:'i1',title:'Judgment',xp:60,attr:'judgment',desc:'Take 5 AI outputs. Rank them. Explain why. AI produces possibilities — experts choose.'},
+    {id:'i2',title:'Taste',xp:40,attr:'judgment',desc:'Collect great ads AND terrible ads. Explain WHY each works or fails.'},
+    {id:'i3',title:'Original Thinking',xp:100,attr:'judgment',desc:'Invent one framework, analogy, model, diagram, or concept daily. Most will be terrible. The 100th is yours.'},
+    {id:'i4',title:'Proprietary Frameworks',xp:150,attr:'positioning',desc:'Don\'t say "I write copy." Say "I use the Trust Journey Method." Frameworks become intellectual property.'},
+    {id:'i5',title:'Teach',xp:80,attr:'positioning',desc:'Teach one lesson daily — LinkedIn, X, Newsletter, Video. Teaching compresses knowledge.'},
+    {id:'i6',title:'Build Assets',xp:100,attr:'trustBuilding',desc:'Checklists, templates, calculators, prompts, swipe files, research databases. Assets work while you sleep.'},
+    {id:'i7',title:'Research Database',xp:200,attr:'research',desc:'10,000 objections. 5,000 headlines. 2,000 CTAs. Categorized. Searchable. No AI has your exact database.'},
+    {id:'i8',title:'Decision Journal',xp:100,attr:'judgment',desc:'Record "I chose this headline because…" Compare months later. Judgment compounds.'},
+    {id:'i9',title:'Case Study Vault',xp:120,attr:'trustBuilding',desc:'Document hypothesis, process, revisions, lessons. This creates unique, un-copyable experience.'},
+    {id:'i10',title:'Brand Building',xp:100,attr:'positioning',desc:'Publish one insight, teardown, framework, experiment, observation. Brand is stored trust.'},
+    {id:'i11',title:'Relationship Network',xp:150,attr:'trustBuilding',desc:'Befriend designers, CRO specialists, founders, media buyers, email marketers. Networks become unfair advantages.'},
   ],
 };
-
 const DAILY = [
-  {id:'dl1', icon:'🧠', title:'Research Quest',   desc:'Extract 10 customer objections from real conversations.', xp:25,  attr:'research'},
-  {id:'dl2', icon:'✍️', title:'Writing Quest',    desc:'Write 20 headlines.', xp:40, attr:'offerDesign'},
-  {id:'dl3', icon:'🔍', title:'Strategy Quest',   desc:'Audit one coaching landing page.', xp:50, attr:'positioning'},
-  {id:'dl4', icon:'🧩', title:'Psychology Quest', desc:'Learn one cognitive bias and rewrite copy using it.', xp:25, attr:'psychology'},
-  {id:'dl5', icon:'⚖️', title:'Judgment Quest',   desc:'Compare three AI headlines and justify your ranking.', xp:60, attr:'judgment'},
-  {id:'dl6', icon:'🏗️', title:'Asset Quest',      desc:'Add five entries to your swipe file or objection database.', xp:30, attr:'trustBuilding'},
-  {id:'dl7', icon:'📢', title:'Brand Quest',      desc:'Publish one original insight or teardown.', xp:50, attr:'positioning'},
+  {id:'dl1',icon:'🧠',title:'Research Quest',desc:'Extract 10 customer objections from real conversations.',xp:25,attr:'research'},
+  {id:'dl2',icon:'✍️',title:'Writing Quest',desc:'Write 20 headlines.',xp:40,attr:'offerDesign'},
+  {id:'dl3',icon:'🔍',title:'Strategy Quest',desc:'Audit one coaching landing page.',xp:50,attr:'positioning'},
+  {id:'dl4',icon:'🧩',title:'Psychology Quest',desc:'Learn one cognitive bias and rewrite copy using it.',xp:25,attr:'psychology'},
+  {id:'dl5',icon:'⚖️',title:'Judgment Quest',desc:'Compare three AI headlines and justify your ranking.',xp:60,attr:'judgment'},
+  {id:'dl6',icon:'🏗️',title:'Asset Quest',desc:'Add five entries to your swipe file or objection database.',xp:30,attr:'trustBuilding'},
+  {id:'dl7',icon:'📢',title:'Brand Quest',desc:'Publish one original insight or teardown.',xp:50,attr:'positioning'},
 ];
-
 const LEVELS = [
-  {lv:1, name:'Wordsmith',  min:0,    desc:'You learn to write clear, persuasive copy.'},
-  {lv:2, name:'Researcher', min:300,  desc:'You uncover what customers truly think and feel.'},
-  {lv:3, name:'Strategist', min:900,  desc:'You identify why offers and funnels fail before rewriting anything.'},
-  {lv:4, name:'Architect',  min:1800, desc:'You design messaging systems, offers, and trust journeys.'},
-  {lv:5, name:'Authority',  min:3000, desc:'You create original frameworks, build IP, teach, and shape how the industry thinks.'},
+  {lv:1,name:'Wordsmith',min:0,desc:'You learn to write clear, persuasive copy.'},
+  {lv:2,name:'Researcher',min:300,desc:'You uncover what customers truly think and feel.'},
+  {lv:3,name:'Strategist',min:900,desc:'You identify why offers and funnels fail before rewriting anything.'},
+  {lv:4,name:'Architect',min:1800,desc:'You design messaging systems, offers, and trust journeys.'},
+  {lv:5,name:'Authority',min:3000,desc:'You create original frameworks, build IP, teach, and shape how the industry thinks.'},
 ];
-
 const ABILITIES = [
-  {id:'a1', name:'Objection Archaeologist', reqAttr:'research', reqLv:4, icon:'⛏️',
-    desc:'You can dig up the exact objection silently killing a sale inside any funnel.'},
-  {id:'a2', name:'Trust Leak Detector', reqAttr:'trustBuilding', reqLv:4, icon:'💧',
-    desc:'You spot the precise moment trust breaks in a customer journey — and how to patch it.'},
-  {id:'a3', name:'Offer Architect', reqAttr:'offerDesign', reqLv:5, icon:'🏛️',
-    desc:'You can redesign an offer from the ground up and multiply its conversion.'},
-  {id:'a4', name:'Pattern Cartographer', reqAttr:'judgment', reqLv:5, icon:'🗺️',
-    desc:'You map invisible patterns across years of real projects that no one else can see.'},
+  {id:'a1',name:'Objection Archaeologist',reqAttr:'research',reqLv:4,icon:'⛏️',desc:'You can dig up the exact objection silently killing a sale inside any funnel.'},
+  {id:'a2',name:'Trust Leak Detector',reqAttr:'trustBuilding',reqLv:4,icon:'💧',desc:'You spot the precise moment trust breaks in a customer journey — and how to patch it.'},
+  {id:'a3',name:'Offer Architect',reqAttr:'offerDesign',reqLv:5,icon:'🏛️',desc:'You can redesign an offer from the ground up and multiply its conversion.'},
+  {id:'a4',name:'Pattern Cartographer',reqAttr:'judgment',reqLv:5,icon:'🗺️',desc:'You map invisible patterns across years of real projects that no one else can see.'},
 ];
+const MASTERY = ['Novice','Apprentice','Practitioner','Adept','Master'];
+function rankName(r){return MASTERY[r-1]||'Master';}
 
 /* ============================ STATE ============================ */
 const SAVE_KEY = 'copyrpg_save_v2';
-const MASTERY = ['Novice','Apprentice','Practitioner','Adept','Master'];
-function rankName(r){ return MASTERY[r-1] || 'Master'; }
-
 let state = {
   totalXp:0,
   attrs:{research:0,positioning:0,psychology:0,offerDesign:0,trustBuilding:0,judgment:0},
-  completed:{}, // {questId: 1-5}
-  daily:{date:'', done:{}, claimed:false},
-  streak:0,
-  bestStreak:0,
+  completed:{},
+  daily:{date:'',done:{},claimed:false},
+  streak:0,bestStreak:0,
 };
 let activeTab = 'dashboard';
 
-function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
-function yesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
-
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function yesterdayStr(){const d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 function load(){
   try{
-    const raw = localStorage.getItem(SAVE_KEY);
-    if(raw){ const s=JSON.parse(raw); state = Object.assign(state, s); }
-    // Migrate old boolean completed → numeric rank
-    for(const k in state.completed){
-      if(typeof state.completed[k] === 'boolean') state.completed[k] = state.completed[k] ? 5 : 0;
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(raw){
+      const s=JSON.parse(raw);
+      state=Object.assign(state,s);
+      for(const k in state.completed){if(typeof state.completed[k]==='boolean')state.completed[k]=state.completed[k]?5:0;}
     }
   }catch(e){}
-  // daily rollover
-  const t = todayStr();
-  if(state.daily.date !== t){
-    if(state.daily.date && state.daily.date !== yesterdayStr() && !state.daily.claimed){
-      state.streak = 0; // missed a day
-    }
-    state.daily = {date:t, done:{}, claimed:false};
+  const t=todayStr();
+  if(state.daily.date!==t){
+    if(state.daily.date&&state.daily.date!==yesterdayStr()&&!state.daily.claimed)state.streak=0;
+    state.daily={date:t,done:{},claimed:false};
     save();
   }
 }
-function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }catch(e){} }
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));}catch(e){}}
 
 /* ============================ HELPERS ============================ */
-function attrLevel(xp){ return Math.floor(xp/100)+1; }
-function attrInto(xp){ return xp % 100; }
-function levelForXp(xp){
-  let cur = LEVELS[0];
-  for(const L of LEVELS){ if(xp >= L.min) cur = L; }
-  return cur;
-}
+function attrLevel(xp){return Math.floor(xp/100)+1;}
+function attrInto(xp){return xp%100;}
+function levelForXp(xp){let cur=LEVELS[0];for(const L of LEVELS){if(xp>=L.min)cur=L;}return cur;}
 function xpToNext(xp){
-  const cur = levelForXp(xp);
-  const idx = LEVELS.indexOf(cur);
-  if(idx === LEVELS.length-1) return null;
-  const next = LEVELS[idx+1];
-  return {next, need: next.min - xp, span: next.min - cur.min, pct: ((xp-cur.min)/(next.min-cur.min))*100};
+  const cur=levelForXp(xp),idx=LEVELS.indexOf(cur);
+  if(idx===LEVELS.length-1)return null;
+  const next=LEVELS[idx+1];
+  return{next,need:next.min-xp,span:next.min-cur.min,pct:((xp-cur.min)/(next.min-cur.min))*100};
 }
-function questById(id){
-  for(const k in QUESTS){ const f=QUESTS[k].find(q=>q.id===id); if(f) return f; }
-  return null;
-}
-const allQuests = [...QUESTS.demand, ...QUESTS.skill, ...QUESTS.irreplaceable];
-
+function questById(id){for(const k in QUESTS){const f=QUESTS[k].find(q=>q.id===id);if(f)return f;}return null;}
+const allQuests=[...QUESTS.demand,...QUESTS.skill,...QUESTS.irreplaceable];
 function masterySummary(){
-  const total = allQuests.reduce((s,q)=>s+(state.completed[q.id]||0),0);
-  const max = allQuests.length * 5;
-  const mastered = allQuests.filter(q=>(state.completed[q.id]||0)>=5).length;
-  return total+' / '+max+' ('+mastered+' mastered)';
+  const total=allQuests.reduce((s,q)=>s+(state.completed[q.id]||0),0);
+  return total+'/'+(allQuests.length*5);
 }
 
 /* ============================ ACTIONS ============================ */
 function completeQuest(id){
-  const q = questById(id);
-  if(!q) return;
-  const cur = state.completed[id] || 0;
-  if(cur >= 5) return; // already mastered
-
-  const prevLevel = levelForXp(state.totalXp).lv;
-  const prevAbilities = unlockedAbilities();
-
-  const nextRank = cur + 1;
-  state.completed[id] = nextRank;
-  const xpAward = Math.round(q.xp * (0.6 + (nextRank * 0.4))); // scales: 1.0x → 2.6x
-  state.totalXp += xpAward;
-  state.attrs[q.attr] += xpAward;
+  const q=questById(id);
+  if(!q)return;
+  const cur=state.completed[id]||0;
+  if(cur>=5)return;
+  const prevLevel=levelForXp(state.totalXp).lv;
+  const prevAbilities=unlockedAbilities();
+  const nextRank=cur+1;
+  state.completed[id]=nextRank;
+  const xpAward=Math.round(q.xp*(0.6+(nextRank*0.4)));
+  state.totalXp+=xpAward;
+  state.attrs[q.attr]+=xpAward;
   save();
-
-  toast('+'+xpAward+' XP · '+q.title+' — '+rankName(nextRank), 'xp');
-  if(nextRank === 5) toast('⭐ MASTERED — '+q.title, 'level');
-  checkUnlocks(prevLevel, prevAbilities);
+  toast('+'+xpAward+' XP · '+q.title+' — '+rankName(nextRank),'xp');
+  if(nextRank===5)toast('⭐ MASTERED — '+q.title,'level');
+  checkUnlocks(prevLevel,prevAbilities);
   render();
 }
-
 function toggleDaily(id){
-  const t = todayStr();
-  if(state.daily.date !== t){ state.daily = {date:t, done:{}, claimed:false}; }
-  state.daily.done[id] = !state.daily.done[id];
-
-  const q = DAILY.find(d=>d.id===id);
+  const t=todayStr();
+  if(state.daily.date!==t)state.daily={date:t,done:{},claimed:false};
+  state.daily.done[id]=!state.daily.done[id];
+  const q=DAILY.find(d=>d.id===id);
   if(state.daily.done[id]){
-    const prevLevel = levelForXp(state.totalXp).lv;
-    const prevAbilities = unlockedAbilities();
-    state.totalXp += q.xp;
-    state.attrs[q.attr] += q.xp;
-    toast('+'+q.xp+' XP · '+q.title, 'xp');
-    checkUnlocks(prevLevel, prevAbilities);
-  } else {
-    state.totalXp = Math.max(0, state.totalXp - q.xp);
-    state.attrs[q.attr] = Math.max(0, state.attrs[q.attr] - q.xp);
+    const prevLevel=levelForXp(state.totalXp).lv;
+    const prevAbilities=unlockedAbilities();
+    state.totalXp+=q.xp;state.attrs[q.attr]+=q.xp;
+    toast('+'+q.xp+' XP · '+q.title,'xp');
+    checkUnlocks(prevLevel,prevAbilities);
+  }else{
+    state.totalXp=Math.max(0,state.totalXp-q.xp);
+    state.attrs[q.attr]=Math.max(0,state.attrs[q.attr]-q.xp);
   }
-
-  // day complete?
-  const allDone = DAILY.every(d=>state.daily.done[d.id]);
-  if(allDone && !state.daily.claimed){
-    state.daily.claimed = true;
-    state.streak += 1;
-    state.bestStreak = Math.max(state.bestStreak, state.streak);
-    toast('🔥 Day Complete! Streak +1 ('+state.streak+')', 'streak');
+  const allDone=DAILY.every(d=>state.daily.done[d.id]);
+  if(allDone&&!state.daily.claimed){
+    state.daily.claimed=true;state.streak+=1;state.bestStreak=Math.max(state.bestStreak,state.streak);
+    toast('🔥 Day Complete! Streak +1 ('+state.streak+')','streak');
   }
-  if(!allDone && state.daily.claimed){
-    state.daily.claimed = false; // toggled one off
-  }
-  save();
-  render();
+  if(!allDone&&state.daily.claimed)state.daily.claimed=false;
+  save();render();
 }
-
-function unlockedAbilities(){
-  return ABILITIES.filter(a => attrLevel(state.attrs[a.reqAttr]) >= a.reqLv).map(a=>a.id);
-}
-
-function checkUnlocks(prevLevel, prevAbilities){
-  const newLevel = levelForXp(state.totalXp).lv;
-  if(newLevel > prevLevel){
+function unlockedAbilities(){return ABILITIES.filter(a=>attrLevel(state.attrs[a.reqAttr])>=a.reqLv).map(a=>a.id);}
+function checkUnlocks(prevLevel,prevAbilities){
+  const newLevel=levelForXp(state.totalXp).lv;
+  if(newLevel>prevLevel){
     levelUpFlash();
-    toast('⭐ LEVEL UP — '+levelForXp(state.totalXp).name+' (Lv '+newLevel+')', 'level');
+    toast('⭐ LEVEL UP — '+levelForXp(state.totalXp).name+' (Lv '+newLevel+')','level');
   }
-  const now = unlockedAbilities();
-  now.forEach(id=>{
-    if(!prevAbilities.includes(id)){
-      const a = ABILITIES.find(x=>x.id===id);
-      toast('🦾 ABILITY UNLOCKED — '+a.name, 'ability');
-    }
-  });
+  const now=unlockedAbilities();
+  now.forEach(id=>{if(!prevAbilities.includes(id)){const a=ABILITIES.find(x=>x.id===id);toast('🦾 ABILITY UNLOCKED — '+a.name,'ability');}});
 }
-
 function resetProgress(){
-  if(!confirm('Reset ALL progress? This cannot be undone.')) return;
-  state = { totalXp:0, attrs:{research:0,positioning:0,psychology:0,offerDesign:0,trustBuilding:0,judgment:0},
-    completed:{}, daily:{date:todayStr(), done:{}, claimed:false}, streak:0, bestStreak:0 };
-  save(); render();
-  toast('Progress reset.', 'xp');
-  levelUpFlash();
+  if(!confirm('Reset ALL progress? This cannot be undone.'))return;
+  state={totalXp:0,attrs:{research:0,positioning:0,psychology:0,offerDesign:0,trustBuilding:0,judgment:0},completed:{},daily:{date:todayStr(),done:{},claimed:false},streak:0,bestStreak:0};
+  save();render();toast('Progress reset.','xp');levelUpFlash();
 }
-
 function exportSave(){
-  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'copy-rpg-progress-' + todayStr() + '.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  toast('Progress exported — keep this file safe!', 'save');
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='copy-rpg-progress-'+todayStr()+'.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('Progress exported — keep this file safe!','save');
 }
-
 function importSave(event){
-  const file = event.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
     try{
-      const data = JSON.parse(e.target.result);
-      // basic validation
-      if(typeof data.totalXp !== 'number' || !data.attrs || !data.completed || !data.daily){
-        throw new Error('Invalid save file.');
-      }
-      if(!confirm('Import progress? This will overwrite your current save.\n\nImported: '+data.totalXp+' XP, '+Object.keys(data.completed).length+' quests, streak '+data.streak+'.')){
-        return;
-      }
-      state = data;
-      state.daily = data.daily || {date:todayStr(), done:{}, claimed:false};
-      state.bestStreak = data.bestStreak || state.bestStreak || state.streak;
-      save();
-      render();
-      toast('✅ Progress imported successfully!', 'save');
-    }catch(err){
-      toast('❌ Invalid save file.', 'xp');
-    }
+      const data=JSON.parse(e.target.result);
+      if(typeof data.totalXp!=='number'||!data.attrs||!data.completed||!data.daily)throw new Error('Invalid save file.');
+      if(!confirm('Import progress? This will overwrite your current save.\n\nImported: '+data.totalXp+' XP, '+Object.keys(data.completed).length+' quests, streak '+data.streak+'.'))return;
+      state=data;
+      state.daily=data.daily||{date:todayStr(),done:{},claimed:false};
+      state.bestStreak=data.bestStreak||state.bestStreak||state.streak;
+      save();render();
+      toast('✅ Progress imported successfully!','save');
+    }catch(err){toast('❌ Invalid save file.','xp');}
   };
-  reader.readAsText(file);
-  event.target.value = '';
+  reader.readAsText(file);event.target.value='';
 }
 
 /* ============================ TOASTS ============================ */
-function toast(msg, type){
-  const el = document.createElement('div');
-  el.className = 'float-up glass px-4 py-2.5 text-sm font-semibold shadow-lg';
-  let c = '#fff';
-  if(type==='xp') c='var(--gold)';
-  if(type==='streak') c='var(--cyan)';
-  if(type==='level') c='var(--pink)';
-  if(type==='ability') c='var(--green)';
-  if(type==='save') c='var(--blue)';
-  el.style.color = c;
-  el.style.borderColor = c;
-  el.textContent = msg;
+function toast(msg,type){
+  const el=document.createElement('div');
+  el.className='float-up glass px-4 py-2.5 text-sm font-semibold shadow-lg';
+  let c='#fff';
+  if(type==='xp')c='var(--gold)';
+  if(type==='streak')c='var(--cyan)';
+  if(type==='level')c='var(--pink)';
+  if(type==='ability')c='var(--green)';
+  if(type==='save')c='var(--blue)';
+  el.style.color=c;el.style.borderColor=c;el.textContent=msg;
   document.getElementById('toasts').appendChild(el);
-  setTimeout(()=>el.remove(), 2000);
+  setTimeout(()=>el.remove(),2000);
 }
 function levelUpFlash(){
-  const f = document.getElementById('flash');
-  f.classList.add('on');
-  setTimeout(()=>f.classList.remove('on'), 450);
+  const f=document.getElementById('flash');
+  f.classList.add('on');setTimeout(()=>f.classList.remove('on'),450);
 }
 
 /* ============================ RENDER: HUD ============================ */
 function renderHUD(){
-  const L = levelForXp(state.totalXp);
-  document.getElementById('hud-class').textContent = L.name + ' · Lv ' + L.lv;
-  document.getElementById('hud-lvl').textContent = 'Level ' + L.lv + ' — ' + L.name;
-  document.getElementById('hud-total').textContent = state.totalXp;
-  document.getElementById('hud-streak').textContent = state.streak;
-  const masTotal = allQuests.reduce((s,q)=>s+(state.completed[q.id]||0),0);
-  const masMax = allQuests.length * 5;
-  document.getElementById('hud-quests').textContent = masTotal + '/' + masMax;
-
-  const nx = xpToNext(state.totalXp);
+  const L=levelForXp(state.totalXp);
+  document.getElementById('hud-class').textContent=L.name+' · Lv '+L.lv;
+  document.getElementById('hud-lvl').textContent='Level '+L.lv+' — '+L.name;
+  document.getElementById('hud-total').textContent=state.totalXp;
+  document.getElementById('hud-streak').textContent=state.streak;
+  const masTotal=allQuests.reduce((s,q)=>s+(state.completed[q.id]||0),0);
+  document.getElementById('hud-quests').textContent=masTotal+'/'+(allQuests.length*5);
+  const nx=xpToNext(state.totalXp);
   if(nx){
-    document.getElementById('hud-xp').textContent = state.totalXp + ' / ' + nx.next.min + ' XP';
-    document.getElementById('hud-xpfill').style.width = Math.min(100, nx.pct) + '%';
-  } else {
-    document.getElementById('hud-xp').textContent = state.totalXp + ' XP · MAX';
-    document.getElementById('hud-xpfill').style.width = '100%';
+    document.getElementById('hud-xp').textContent=state.totalXp+' / '+nx.next.min+' XP';
+    document.getElementById('hud-xpfill').style.width=Math.min(100,nx.pct)+'%';
+  }else{
+    document.getElementById('hud-xp').textContent=state.totalXp+' XP · MAX';
+    document.getElementById('hud-xpfill').style.width='100%';
   }
 }
 
 /* ============================ RENDER: DASHBOARD ============================ */
 function renderDashboard(){
-  const demand = state.attrs.positioning;
-  const skill  = state.attrs.research + state.attrs.psychology + state.attrs.offerDesign;
-  const irrep  = state.attrs.judgment + state.attrs.trustBuilding;
-  const maxv = Math.max(demand, skill, irrep, 1);
-  const index = Math.round((demand/100) * (skill/100) * (irrep/100) * 1000);
+  const demand=state.attrs.positioning;
+  const skill=state.attrs.research+state.attrs.psychology+state.attrs.offerDesign;
+  const irrep=state.attrs.judgment+state.attrs.trustBuilding;
+  const maxv=Math.max(demand,skill,irrep,1);
+  const index=Math.round((Math.max(demand,1)/100)*(Math.max(skill,1)/100)*(Math.max(irrep,1)/100)*1000);
+  const L=levelForXp(state.totalXp);
+  const nx=xpToNext(state.totalXp);
+  const classIdx=LEVELS.indexOf(L);
+  const masTotal=allQuests.reduce((s,q)=>s+(state.completed[q.id]||0),0);
+  const masMax=allQuests.length*5;
+  const doneDaily=DAILY.filter(d=>state.daily.done[d.id]).length;
+  const dailyPct=(doneDaily/DAILY.length)*100;
 
-  const bar = (label, val, color) => `
-    <div class="glass-soft p-4">
-      <div class="flex justify-between items-baseline mb-2">
-        <span class="font-semibold">${label}</span>
-        <span class="text-sm font-bold" style="color:${color}">${val} XP</span>
-      </div>
-      <div class="h-2.5 bg-white/10 rounded-full overflow-hidden">
-        <div class="xp-fill h-full" style="width:${Math.max(6,(val/maxv)*100)}%;background:${color}"></div>
-      </div>
-    </div>`;
+  const pillar=(label,icon,val,color)=>{
+    const pct=Math.max(6,(val/maxv)*100);
+    const level=Math.floor(val/100)+1;
+    return '<div class="glass-soft p-4 flex flex-col items-center text-center gap-1"><div class="text-2xl">'+icon+'</div><div class="text-[11px] uppercase tracking-widest font-semibold" style="color:'+color+'">'+label+'</div><div class="text-2xl font-bold" style="color:'+color+'">'+val+'</div><div class="text-[10px] text-white/45">XP · Lv '+level+'</div><div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mt-1"><div class="xp-fill h-full" style="width:'+pct+'%;background:'+color+'"></div></div></div>';
+  };
 
-  const L = levelForXp(state.totalXp);
-  const nx = xpToNext(state.totalXp);
-
-  const sec = document.getElementById('sec-dashboard');
-  sec.innerHTML = `
-  <!-- Manifesto -->
-  <div class="glass p-6 sm:p-8 glow-gold relative overflow-hidden">
-    <div class="absolute -top-10 -right-10 text-[140px] opacity-5">⚔️</div>
-    <h2 class="text-2xl sm:text-3xl font-bold mb-3">They don’t pay to preserve your job title.</h2>
-    <p class="text-lg text-white/80 max-w-2xl leading-relaxed">
-      They pay because <span class="grad-text font-semibold">removing you would remove an outcome.</span>
-      Your goal isn’t to be "a copywriter." It’s to become the person who uncovers hidden objections,
-      spots revenue leaks, and reliably increases sales — part strategist, psychologist, researcher, analyst, and advisor.
-    </p>
-    <div class="mt-5 inline-block glass-soft px-5 py-3 text-lg font-semibold">
-      Financial Success = <span style="color:var(--purple)">Demand</span> × <span style="color:var(--cyan)">Skill</span> × <span style="color:var(--green)">Irreplaceability</span>
-    </div>
-  </div>
-
-  <!-- Equation -->
-  <div class="grid md:grid-cols-3 gap-4 mt-4">
-    ${bar('Demand', demand, 'var(--purple)')}
-    ${bar('Skill', skill, 'var(--cyan)')}
-    ${bar('Irreplaceability', irrep, 'var(--green)')}
-  </div>
-  <div class="glass p-5 mt-4 flex items-center justify-between flex-wrap gap-3">
-    <div>
-      <div class="text-xs uppercase tracking-widest text-white/50">Irreplaceability Index</div>
-      <div class="text-3xl font-bold grad-text">${index.toLocaleString()}</div>
-    </div>
-    <div class="text-sm text-white/60 max-w-sm">
-      The last two factors — <b>Skill</b> and <b>Irreplaceability</b> — can be deliberately trained.
-      That’s what this game is for.
-    </div>
-  </div>
-
-  <!-- Today snapshot -->
-  <div class="grid md:grid-cols-2 gap-4 mt-4">
-    <div class="glass p-5">
-      <h3 class="font-bold text-lg mb-3 flex items-center gap-2">🔥 Today’s Loop</h3>
-      ${dailyMini()}
-      <button onclick="switchTab('daily')" class="mt-3 text-sm font-semibold" style="color:var(--cyan)">Open Daily Loop →</button>
-    </div>
-    <div class="glass p-5">
-      <h3 class="font-bold text-lg mb-3 flex items-center gap-2">📈 Progression</h3>
-      <div class="space-y-2 text-sm">
-        <div class="flex justify-between"><span class="text-white/70">Current Class</span><b style="color:var(--gold)">${L.name} (Lv ${L.lv})</b></div>
-        <div class="flex justify-between"><span class="text-white/70">${nx?('Next: '+nx.next.name):'Pinnacle reached'}</span><b>${nx?(nx.need+' XP to go'):'MAX'}</b></div>
-        <div class="flex justify-between"><span class="text-white/70">Skill-tree mastery</span><b>${masterySummary()}</b></div>
-        <div class="flex justify-between"><span class="text-white/70">Best day streak</span><b style="color:var(--cyan)">${state.bestStreak}</b></div>
-      </div>
-      <button onclick="switchTab('trees')" class="mt-3 text-sm font-semibold" style="color:var(--purple)">Train your skill trees →</button>
-    </div>
-  </div>
-
-  <div class="glass p-5 mt-4 text-sm text-white/70 leading-relaxed">
-    <b class="text-white">How this works:</b> Every <b style="color:var(--purple)">Skill Tree</b> quest has 5 mastery ranks (Novice → Master).
-    Tap to advance one rank — XP scales up each tier. Run the <b style="color:var(--cyan)">Daily Loop</b> every day to grind XP,
-    build streaks, and feed the equation. Climb from <b>Wordsmith → Authority</b>. Your save is stored locally in this browser.
-  </div>
-  `;
-}
-
-function dailyMini(){
-  const done = DAILY.filter(d=>state.daily.done[d.id]).length;
-  const pct = (done/DAILY.length)*100;
-  let rows = DAILY.map(d=>{
-    const on = state.daily.done[d.id];
-    return `<div class="flex items-center gap-2 py-1">
-      <span class="chk ${on?'on':''}">${on?'✓':''}</span>
-      <span class="${on?'line-through text-white/40':'text-white/85'} text-sm">${d.icon} ${d.title}</span>
-    </div>`;
+  const ladders=LEVELS.map((lvl,i)=>{
+    const reached=state.totalXp>=lvl.min;
+    const active=i===classIdx;
+    const nextMin=i<LEVELS.length-1?LEVELS[i+1].min:99999;
+    const fill=reached?Math.min(100,((state.totalXp-lvl.min)/(nextMin-lvl.min))*100):0;
+    return '<div class="flex items-center gap-2 '+(reached?'':'opacity-35')+'"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 '+(active?'bggrad-gold text-gray-900':'bg-white/8 text-white/60')+' '+(reached&&!active?'bg-white/15 text-white/50':'')+'">'+(i+1)+'</div><div class="flex-1 min-w-0"><div class="text-[11px] font-semibold '+(active?'':'text-white/65')+'"'+(active?' style="color:var(--gold)"':'')+'>'+lvl.name+'</div><div class="h-1 bg-white/10 rounded-full overflow-hidden mt-0.5"><div class="xp-fill h-full '+(active?'bggrad-gold':'bg-white/20')+'" style="width:'+fill+'%"></div></div></div><span class="text-[10px] text-white/35 shrink-0">'+lvl.min+' XP</span></div>';
   }).join('');
-  return `<div class="h-2 bg-white/10 rounded-full overflow-hidden mb-3"><div class="xp-fill h-full bggrad-cyan" style="width:${pct}%"></div></div>
-    <div class="grid grid-cols-2 gap-x-4">${rows}</div>
-    <div class="text-xs text-white/50 mt-2">${done}/${DAILY.length} complete today</div>`;
+
+  const attrPips=Object.keys(ATTRS).map(k=>{
+    const a=ATTRS[k],xp=state.attrs[k],lv=Math.floor(xp/100)+1,into=xp%100;
+    return '<div class="glass-soft p-3 flex items-center gap-3"><span class="text-lg">'+a.icon+'</span><div class="flex-1 min-w-0"><div class="flex justify-between items-baseline mb-0.5"><span class="text-[11px] font-semibold text-white/80">'+a.name+'</span><span class="text-[10px] font-bold" style="color:'+a.color+'">Lv '+lv+'</span></div><div class="h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full" style="width:'+into+'%;background:'+a.color+'"></div></div></div></div>';
+  }).join('');
+
+  const dailyRows=DAILY.map(d=>{
+    const on=state.daily.done[d.id];
+    return '<div class="flex items-center gap-2 text-[11px] '+(on?'text-white/35 line-through':'text-white/75')+'"><span class="chk '+(on?'on':'')+'" style="width:16px;height:16px;border-radius:5px;font-size:10px">'+(on?'✓':'')+'</span>'+d.icon+' '+d.title+'</div>';
+  }).join('');
+
+  const emblem=["✍️","🔬","🧠","🏗️","⭐"][classIdx]||"⭐";
+
+  const sec=document.getElementById('sec-dashboard');
+  sec.innerHTML=
+
+  '<!-- TOP ROW: Class Card + Equation --><div class="grid lg:grid-cols-2 gap-4">'+
+
+    '<div class="glass p-5 glow-gold relative overflow-hidden">'+
+      '<div class="absolute -bottom-6 -right-6 text-[100px] opacity-[0.04]">'+emblem+'</div>'+
+      '<div class="text-[10px] uppercase tracking-[0.25em] text-white/40 mb-1">Current Class</div>'+
+      '<div class="text-3xl font-bold" style="color:var(--gold)">'+L.name+'</div>'+
+      '<div class="text-sm text-white/55 mt-0.5">Level '+L.lv+' · '+L.desc+'</div>'+
+      '<div class="mt-4 space-y-2">'+ladders+'</div>'+
+    '</div>'+
+
+    '<div class="glass p-5 flex flex-col justify-between">'+
+      '<div>'+
+        '<div class="text-[10px] uppercase tracking-[0.25em] text-white/40 mb-3">The Irreplaceability Equation</div>'+
+        '<div class="flex items-center gap-2 text-xl font-bold flex-wrap">'+
+          '<span style="color:var(--purple)">Demand</span><span class="text-white/40">×</span>'+
+          '<span style="color:var(--cyan)">Skill</span><span class="text-white/40">×</span>'+
+          '<span style="color:var(--green)">Irreplaceability</span></div></div>'+
+      '<div class="mt-3 grid grid-cols-3 gap-3">'+
+        pillar('Demand','🎯',demand,'var(--purple)')+
+        pillar('Skill','🔬',skill,'var(--cyan)')+
+        pillar('Irrep.','🛡️',irrep,'var(--green)')+
+      '</div>'+
+      '<div class="mt-4 flex items-center justify-between glass-soft px-4 py-3 rounded-xl">'+
+        '<div><div class="text-[10px] uppercase tracking-widest text-white/40">Irreplaceability Index</div>'+
+          '<div class="text-2xl font-bold grad-text">'+index.toLocaleString()+'</div></div>'+
+        '<div class="text-[10px] text-white/35 text-right max-w-[180px]">The last two factors can be <b style="color:var(--cyan)">deliberately trained</b></div>'+
+      '</div>'+
+    '</div>'+
+  '</div>'+
+
+  '<!-- MIDDLE ROW: Attributes + Daily --><div class="grid lg:grid-cols-2 gap-4 mt-4">'+
+    '<div class="glass p-5">'+
+      '<div class="flex items-center justify-between mb-3"><h3 class="font-bold text-sm uppercase tracking-wider text-white/70">⚔️ Attributes</h3>'+
+        '<button onclick="switchTab(\'endgame\')" class="text-[10px] font-semibold" style="color:var(--purple)">Details →</button></div>'+
+      '<div class="grid grid-cols-2 gap-2">'+attrPips+'</div>'+
+    '</div>'+
+    '<div class="glass p-5">'+
+      '<div class="flex items-center justify-between mb-3"><h3 class="font-bold text-sm uppercase tracking-wider text-white/70">🔥 Today\'s Loop</h3>'+
+        '<button onclick="switchTab(\'daily\')" class="text-[10px] font-semibold" style="color:var(--cyan)">Open →</button></div>'+
+      '<div class="flex items-center gap-3 mb-3">'+
+        '<div class="text-3xl font-bold" style="color:var(--cyan)">'+doneDaily+'<span class="text-lg text-white/25">/'+DAILY.length+'</span></div>'+
+        '<div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full bggrad-cyan" style="width:'+dailyPct+'%"></div></div>'+
+        '<div class="text-[10px] text-white/40">🔥 '+state.streak+'d</div></div>'+
+      '<div class="space-y-1.5">'+dailyRows+'</div>'+
+    '</div>'+
+  '</div>'+
+
+  '<!-- BOTTOM ROW: Stats --><div class="grid grid-cols-4 gap-3 mt-4">'+
+    '<div class="stat-block glass-soft p-3 text-center"><div class="text-xl font-bold" style="color:var(--gold)">'+state.totalXp+'</div><div class="text-[10px] uppercase tracking-wider text-white/40">Total XP</div></div>'+
+    '<div class="stat-block glass-soft p-3 text-center"><div class="text-xl font-bold" style="color:var(--cyan)">'+state.streak+'</div><div class="text-[10px] uppercase tracking-wider text-white/40">Day Streak</div></div>'+
+    '<div class="stat-block glass-soft p-3 text-center"><div class="text-xl font-bold" style="color:var(--green)">'+masTotal+'<span class="text-sm text-white/25">/'+masMax+'</span></div><div class="text-[10px] uppercase tracking-wider text-white/40">Mastery</div></div>'+
+    '<div class="stat-block glass-soft p-3 text-center"><div class="text-xl font-bold" style="color:var(--purple)">'+(nx?nx.need:'∞')+'</div><div class="text-[10px] uppercase tracking-wider text-white/40">XP to '+(nx?nx.next.name:'Pinnacle')+'</div></div>'+
+  '</div>';
 }
 
 /* ============================ RENDER: TREES ============================ */
 function questCard(q){
-  const rank = state.completed[q.id] || 0;
-  const mastered = rank >= 5;
-  const a = ATTRS[q.attr];
-  const nxt = rank + 1;
-  const nxtXp = Math.round(q.xp * (0.6 + (nxt * 0.4)));
-
-  // 5-segment bar
-  let segs = '';
-  for(let i=1; i<=5; i++){
-    const fill = i <= rank;
-    let cl = 'flex-1 h-1.5 rounded-full mx-[1px] first:ml-0 last:mr-0 ' + (fill ? '' : 'bg-white/10');
-    if(fill) cl += ' ' + (i===5 ? 'bggrad-gold' : (i>=4 ? 'bggrad-cyan' : 'bggrad-purple'));
-    segs += `<div class="${cl}" style="${fill?'':'border:1px solid rgba(255,255,255,.1)'}"></div>`;
+  const rank=state.completed[q.id]||0;
+  const mastered=rank>=5;
+  const a=ATTRS[q.attr];
+  const nxt=rank+1;
+  const nxtXp=Math.round(q.xp*(0.6+(nxt*0.4)));
+  let segs='';
+  for(let i=1;i<=5;i++){
+    const fill=i<=rank;
+    let cl='flex-1 h-1.5 rounded-full mx-[1px] first:ml-0 last:mr-0 '+(fill?'':'bg-white/10');
+    if(fill)cl+=' '+(i===5?'bggrad-gold':(i>=4?'bggrad-cyan':'bggrad-purple'));
+    segs+='<div class="'+cl+'" style="'+(fill?'':'border:1px solid rgba(255,255,255,.1)')+'"></div>';
   }
-
-  return `
-  <div class="node glass-soft p-4 mb-3 ${mastered?'done':(rank>0?'partial':'')}" onclick="completeQuest('${q.id}')">
-    <div class="flex items-start justify-between gap-3">
-      <div>
-        <div class="node-title font-semibold">${q.title}</div>
-        <div class="text-xs text-white/60 mt-1 leading-snug">${q.desc}</div>
-      </div>
-      <div class="text-right shrink-0">
-        <div class="pill" style="background:${a.color}22;color:${a.color}">+${nxtXp} XP</div>
-        <div class="text-[10px] text-white/45 mt-1">${a.icon} ${a.name}</div>
-      </div>
-    </div>
-    <div class="mt-2 flex items-center gap-2">
-      <div class="flex flex-1">${segs}</div>
-      <span class="text-[11px] font-semibold shrink-0 ${mastered?'text-yellow-400':'text-white/45'}">
-        ${mastered?'★ Master':rankName(rank)+' '+(rank)+'/5'}
-      </span>
-    </div>
-  </div>`;
+  return '<div class="node glass-soft p-4 mb-3 '+(mastered?'done':(rank>0?'partial':''))+'" onclick="completeQuest(\''+q.id+'\')">'+
+    '<div class="flex items-start justify-between gap-3"><div><div class="node-title font-semibold">'+q.title+'</div>'+
+    '<div class="text-xs text-white/60 mt-1 leading-snug">'+q.desc+'</div></div>'+
+    '<div class="text-right shrink-0"><div class="pill" style="background:'+a.color+'22;color:'+a.color+'">+'+nxtXp+' XP</div>'+
+    '<div class="text-[10px] text-white/45 mt-1">'+a.icon+' '+a.name+'</div></div></div>'+
+    '<div class="mt-2 flex items-center gap-2"><div class="flex flex-1">'+segs+'</div>'+
+    '<span class="text-[11px] font-semibold shrink-0 '+(mastered?'text-yellow-400':'text-white/45')+'">'+(mastered?'★ Master':rankName(rank)+' '+rank+'/5')+'</span></div></div>';
 }
-
-function treeColumn(title, subtitle, color, quests){
-  // sum all earned XP across all ranks
-  let total = 0, max = 0;
+function treeColumn(title,subtitle,color,quests){
+  let total=0,max=0;
   quests.forEach(q=>{
-    const rank = state.completed[q.id] || 0;
-    for(let r=1; r<=5; r++) max += Math.round(q.xp * (0.6 + (r*0.4)));
-    for(let r=1; r<=rank; r++) total += Math.round(q.xp * (0.6 + (r*0.4)));
+    const rank=state.completed[q.id]||0;
+    for(let r=1;r<=5;r++)max+=Math.round(q.xp*(0.6+(r*0.4)));
+    for(let r=1;r<=rank;r++)total+=Math.round(q.xp*(0.6+(r*0.4)));
   });
-  const pct = max? (total/max)*100 : 0;
-  // group by branch for skill tree
+  const pct=max?(total/max)*100:0;
   let body;
-  if(quests[0] && quests[0].branch){
-    const branches = [...new Set(quests.map(q=>q.branch))];
-    body = branches.map(br=>{
-      const items = quests.filter(q=>q.branch===br);
-      return `<div class="mb-3"><div class="text-[11px] uppercase tracking-widest mb-1.5" style="color:${color}">${br}</div>
-        <div class="tree-body">${items.map(questCard).join('')}</div></div>`;
+  if(quests[0]&&quests[0].branch){
+    const branches=[...new Set(quests.map(q=>q.branch))];
+    body=branches.map(br=>{
+      const items=quests.filter(q=>q.branch===br);
+      return '<div class="mb-3"><div class="text-[11px] uppercase tracking-widest mb-1.5" style="color:'+color+'">'+br+'</div><div class="tree-body">'+items.map(questCard).join('')+'</div></div>';
     }).join('');
-  } else {
-    body = `<div class="tree-body">${quests.map(questCard).join('')}</div>`;
-  }
-  return `
-  <div class="glass p-5">
-    <div class="flex items-center justify-between mb-1">
-      <h3 class="text-xl font-bold" style="color:${color}">${title}</h3>
-      <span class="text-sm font-bold">${total}<span class="text-white/40">/${max}</span></span>
-    </div>
-    <div class="text-xs text-white/55 mb-3">${subtitle}</div>
-    <div class="h-1.5 bg-white/10 rounded-full overflow-hidden mb-4"><div class="xp-fill h-full" style="width:${pct}%;background:${color}"></div></div>
-    ${body}
-  </div>`;
+  }else{body='<div class="tree-body">'+quests.map(questCard).join('')+'</div>';}
+  return '<div class="glass p-5"><div class="flex items-center justify-between mb-1"><h3 class="text-xl font-bold" style="color:'+color+'">'+title+'</h3><span class="text-sm font-bold">'+total+'<span class="text-white/40">/'+max+'</span></span></div><div class="text-xs text-white/55 mb-3">'+subtitle+'</div><div class="h-1.5 bg-white/10 rounded-full overflow-hidden mb-4"><div class="xp-fill h-full" style="width:'+pct+'%;background:'+color+'"></div></div>'+body+'</div>';
 }
-
 function renderTrees(){
-  const sec = document.getElementById('sec-trees');
-  sec.innerHTML = `
-  <div class="grid lg:grid-cols-3 gap-4">
-    ${treeColumn('SKILL', 'Research · Writing · Psychology · Strategy · Pattern Recognition', 'var(--cyan)', QUESTS.skill)}
-    ${treeColumn('IRREPLACEABILITY', 'Judgment · Taste · Frameworks · Assets · Brand · Network', 'var(--green)', QUESTS.irreplaceable)}
-    ${treeColumn('DEMAND', 'Find bigger markets · Solve expensive problems · Position yourself', 'var(--purple)', QUESTS.demand)}
-  </div>
-  <div class="glass p-5 mt-4 text-sm text-white/70 leading-relaxed">
-    Most copywriters spend 95% of their time inside one branch — <b style="color:var(--cyan)">Writing</b>.
-    Ironically, writing is only ~20% of great copywriting. Spread your XP across every tree to become
-    <span class="grad-text font-semibold">almost impossible to copy.</span>
-  </div>`;
+  document.getElementById('sec-trees').innerHTML=
+  '<div class="grid lg:grid-cols-3 gap-4">'+
+    treeColumn('SKILL','Research · Writing · Psychology · Strategy · Pattern Recognition','var(--cyan)',QUESTS.skill)+
+    treeColumn('IRREPLACEABILITY','Judgment · Taste · Frameworks · Assets · Brand · Network','var(--green)',QUESTS.irreplaceable)+
+    treeColumn('DEMAND','Find bigger markets · Solve expensive problems · Position yourself','var(--purple)',QUESTS.demand)+
+  '</div>'+
+  '<div class="glass p-5 mt-4 text-sm text-white/70 leading-relaxed">Most copywriters spend 95% of their time inside one branch — <b style="color:var(--cyan)">Writing</b>. Ironically, writing is only ~20% of great copywriting. Spread your XP across every tree to become <span class="grad-text font-semibold">almost impossible to copy.</span></div>';
 }
 
 /* ============================ RENDER: DAILY ============================ */
 function renderDaily(){
-  const done = DAILY.filter(d=>state.daily.done[d.id]).length;
-  const pct = (done/DAILY.length)*100;
-  const allDone = done === DAILY.length;
-
-  const cards = DAILY.map(d=>{
-    const on = state.daily.done[d.id];
-    const a = ATTRS[d.attr];
-    return `
-    <div class="node glass-soft p-4 flex items-center gap-4 ${on?'done':''}" onclick="toggleDaily('${d.id}')">
-      <span class="text-3xl">${d.icon}</span>
-      <div class="flex-1">
-        <div class="node-title font-semibold">${d.title}</div>
-        <div class="text-xs text-white/60">${d.desc}</div>
-      </div>
-      <div class="text-right shrink-0 flex flex-col items-end gap-1">
-        <span class="pill" style="background:${a.color}22;color:${a.color}">+${d.xp} XP</span>
-        <span class="chk ${on?'on':''}">${on?'✓':''}</span>
-      </div>
-    </div>`;
+  const done=DAILY.filter(d=>state.daily.done[d.id]).length;
+  const pct=(done/DAILY.length)*100;
+  const allDone=done===DAILY.length;
+  const cards=DAILY.map(d=>{
+    const on=state.daily.done[d.id],a=ATTRS[d.attr];
+    return '<div class="node glass-soft p-4 flex items-center gap-4 '+(on?'done':'')+'" onclick="toggleDaily(\''+d.id+'\')"><span class="text-3xl">'+d.icon+'</span><div class="flex-1"><div class="node-title font-semibold">'+d.title+'</div><div class="text-xs text-white/60">'+d.desc+'</div></div><div class="text-right shrink-0 flex flex-col items-end gap-1"><span class="pill" style="background:'+a.color+'22;color:'+a.color+'">+'+d.xp+' XP</span><span class="chk '+(on?'on':'')+'">'+(on?'✓':'')+'</span></div></div>';
   }).join('');
-
-  const sec = document.getElementById('sec-daily');
-  sec.innerHTML = `
-  <div class="glass p-6 glow-gold">
-    <div class="flex items-center justify-between flex-wrap gap-3">
-      <div>
-        <h2 class="text-2xl font-bold">🔥 The Daily Loop</h2>
-        <p class="text-sm text-white/65 mt-1">Complete all ${DAILY.length} quests to grow your streak. This is the addictive core mechanic.</p>
-      </div>
-      <div class="text-center glass-soft px-5 py-3">
-        <div class="text-3xl font-bold" style="color:var(--cyan)">${state.streak}</div>
-        <div class="text-[10px] uppercase tracking-wider text-white/50">Day Streak${state.bestStreak?(' · best '+state.bestStreak):''}</div>
-      </div>
-    </div>
-    <div class="mt-4 h-3 bg-white/10 rounded-full overflow-hidden">
-      <div class="xp-fill h-full bggrad-cyan" style="width:${pct}%"></div>
-    </div>
-    <div class="flex justify-between text-xs text-white/55 mt-1.5">
-      <span>${done} / ${DAILY.length} quests complete</span>
-      <span>${allDone?'✅ Day complete — streak secured!':'Finish the loop to lock in your streak'}</span>
-    </div>
-  </div>
-
-  <div class="grid md:grid-cols-2 gap-3 mt-4">${cards}</div>
-
-  <div class="glass p-5 mt-4 text-sm text-white/70 leading-relaxed">
-    <b class="text-white">The loop compounds.</b> Every day you receive quests across different domains instead of only writing copy.
-    Each completion levels up specialized attributes — Research, Positioning, Psychology, Offer Design, Trust Building, Judgment.
-    Milestones unlock <b style="color:var(--green)">abilities</b> like Trust Leak Detector and Pattern Cartographer. See the <b>Endgame</b> tab.
-  </div>`;
+  document.getElementById('sec-daily').innerHTML=
+  '<div class="glass p-6 glow-gold"><div class="flex items-center justify-between flex-wrap gap-3"><div><h2 class="text-2xl font-bold">🔥 The Daily Loop</h2><p class="text-sm text-white/65 mt-1">Complete all '+DAILY.length+' quests to grow your streak. This is the addictive core mechanic.</p></div><div class="text-center glass-soft px-5 py-3"><div class="text-3xl font-bold" style="color:var(--cyan)">'+state.streak+'</div><div class="text-[10px] uppercase tracking-wider text-white/50">Day Streak'+(state.bestStreak?(' · best '+state.bestStreak):'')+'</div></div></div><div class="mt-4 h-3 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full bggrad-cyan" style="width:'+pct+'%"></div></div><div class="flex justify-between text-xs text-white/55 mt-1.5"><span>'+done+' / '+DAILY.length+' quests complete</span><span>'+(allDone?'✅ Day complete — streak secured!':'Finish the loop to lock in your streak')+'</span></div></div>'+
+  '<div class="grid md:grid-cols-2 gap-3 mt-4">'+cards+'</div>'+
+  '<div class="glass p-5 mt-4 text-sm text-white/70 leading-relaxed"><b class="text-white">The loop compounds.</b> Every day you receive quests across different domains instead of only writing copy. Each completion levels up specialized attributes — Research, Positioning, Psychology, Offer Design, Trust Building, Judgment. Milestones unlock <b style="color:var(--green)">abilities</b> like Trust Leak Detector and Pattern Cartographer. See the <b>Endgame</b> tab.</div>';
 }
 
 /* ============================ RENDER: ENDGAME ============================ */
 function renderEndgame(){
-  // Attributes
-  const attrRows = Object.keys(ATTRS).map(k=>{
-    const a = ATTRS[k]; const xp = state.attrs[k]; const lv = attrLevel(xp); const into = attrInto(xp);
-    return `
-    <div class="glass-soft p-4">
-      <div class="flex justify-between items-center mb-2">
-        <span class="font-semibold">${a.icon} ${a.name}</span>
-        <span class="pill" style="background:${a.color}22;color:${a.color}">Lv ${lv}</span>
-      </div>
-      <div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full" style="width:${into}%;background:${a.color}"></div></div>
-      <div class="text-[11px] text-white/45 mt-1">${xp} XP · ${100-into} to next level</div>
-    </div>`;
+  const attrRows=Object.keys(ATTRS).map(k=>{
+    const a=ATTRS[k],xp=state.attrs[k],lv=attrLevel(xp),into=attrInto(xp);
+    return '<div class="glass-soft p-4"><div class="flex justify-between items-center mb-2"><span class="font-semibold">'+a.icon+' '+a.name+'</span><span class="pill" style="background:'+a.color+'22;color:'+a.color+'">Lv '+lv+'</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full" style="width:'+into+'%;background:'+a.color+'"></div></div><div class="text-[11px] text-white/45 mt-1">'+xp+' XP · '+(100-into)+' to next level</div></div>';
   }).join('');
-
-  // Abilities
-  const abCards = ABILITIES.map(a=>{
-    const un = attrLevel(state.attrs[a.reqAttr]) >= a.reqLv;
-    const reqA = ATTRS[a.reqAttr];
-    return `
-    <div class="glass-soft p-4 border ${un?'glow-gold':''}" style="${un?'':''}">
-      <div class="flex items-center gap-2 mb-1">
-        <span class="text-2xl">${a.icon}</span>
-        <span class="font-bold ${un?'':'text-white/45'}">${a.name}</span>
-      </div>
-      <p class="text-xs text-white/65 leading-snug">${a.desc}</p>
-      <div class="mt-2 text-[11px] font-semibold ${un?'text-green-400':'text-white/40'}">
-        ${un?'🦾 UNLOCKED':('🔒 Requires '+reqA.name+' Lv '+a.reqLv+' (you: Lv '+attrLevel(state.attrs[a.reqAttr])+')')}
-      </div>
-    </div>`;
+  const abCards=ABILITIES.map(a=>{
+    const un=attrLevel(state.attrs[a.reqAttr])>=a.reqLv,reqA=ATTRS[a.reqAttr];
+    return '<div class="glass-soft p-4 border'+(un?' glow-gold':'')+'"><div class="flex items-center gap-2 mb-1"><span class="text-2xl">'+a.icon+'</span><span class="font-bold '+(un?'':'text-white/45')+'">'+a.name+'</span></div><p class="text-xs text-white/65 leading-snug">'+a.desc+'</p><div class="mt-2 text-[11px] font-semibold '+(un?'text-green-400':'text-white/40')+'">'+(un?'🦾 UNLOCKED':('🔒 Requires '+reqA.name+' Lv '+a.reqLv+' (you: Lv '+attrLevel(state.attrs[a.reqAttr])+')'))+'</div></div>';
   }).join('');
-
-  // Levels
-  const cur = levelForXp(state.totalXp);
-  const levelCards = LEVELS.map(L=>{
-    const isCur = L.lv === cur.lv;
-    const isPast = state.totalXp >= L.min;
-    const nx = (LEVELS.indexOf(L) < LEVELS.length-1) ? LEVELS[LEVELS.indexOf(L)+1] : null;
-    const pct = nx ? Math.min(100, ((state.totalXp - L.min)/(nx.min - L.min))*100) : (isPast?100:0);
-    return `
-    <div class="glass-soft p-4 ${isCur?'glow-gold':''} ${isPast?'':'opacity-55'}">
-      <div class="flex items-center justify-between mb-1">
-        <span class="font-bold">Lv ${L.lv} · ${L.name}</span>
-        <span class="text-[11px] ${isCur?'text-gold-300':(isPast?'text-green-400':'text-white/40')}" style="${isCur?'color:var(--gold)':''}">
-          ${isPast?(isCur?'▶ CURRENT':'✓ UNLOCKED'):('🔒 '+L.min+' XP')}
-        </span>
-      </div>
-      <p class="text-xs text-white/65 leading-snug mb-2">${L.desc}</p>
-      ${nx?`<div class="h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full" style="width:${pct}%;background:var(--gold)"></div></div>
-        <div class="text-[10px] text-white/40 mt-1">${Math.max(0,nx.min-state.totalXp)} XP to next</div>`
-        :`<div class="text-[11px] text-gold-300" style="color:var(--gold)">★ Pinnacle — your way of thinking is the rarest resource in the market.</div>`}
-    </div>`;
+  const cur=levelForXp(state.totalXp);
+  const levelCards=LEVELS.map(L=>{
+    const isCur=L.lv===cur.lv,isPast=state.totalXp>=L.min;
+    const nxL=L.lv<LEVELS.length?LEVELS.indexOf(L)<LEVELS.length-1?LEVELS[LEVELS.indexOf(L)+1]:null:null;
+    const pct=nxL?Math.min(100,((state.totalXp-L.min)/(nxL.min-L.min))*100):(isPast?100:0);
+    let bar='';
+    if(nxL)bar='<div class="h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full" style="width:'+pct+'%;background:var(--gold)"></div></div><div class="text-[10px] text-white/40 mt-1">'+Math.max(0,nxL.min-state.totalXp)+' XP to next</div>';
+    else if(isPast)bar='<div class="text-[11px] text-gold-300" style="color:var(--gold)">★ Pinnacle — your way of thinking is the rarest resource in the market.</div>';
+    return '<div class="glass-soft p-4'+(isCur?' glow-gold':'')+' '+(isPast?'':'opacity-55')+'"><div class="flex items-center justify-between mb-1"><span class="font-bold">Lv '+L.lv+' · '+L.name+'</span><span class="text-[11px] '+(isCur?'text-gold-300':(isPast?'text-green-400':'text-white/40'))+'"'+(isCur?' style="color:var(--gold)"':'')+'>'+(isPast?(isCur?'▶ CURRENT':'✓ UNLOCKED'):('🔒 '+L.min+' XP'))+'</span></div><p class="text-xs text-white/65 leading-snug mb-2">'+L.desc+'</p>'+bar+'</div>';
   }).join('');
-
-  const sec = document.getElementById('sec-endgame');
-  sec.innerHTML = `
-  <h2 class="text-2xl font-bold mb-1">🚀 Endgame & Attributes</h2>
-  <p class="text-sm text-white/65 mb-4">The real objective isn’t "becoming a better copywriter." It’s becoming a business problem-solver who happens to use copy as one tool.</p>
-
-  <h3 class="font-semibold text-lg mt-5 mb-2">⚔️ Attributes</h3>
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">${attrRows}</div>
-
-  <h3 class="font-semibold text-lg mt-6 mb-2">🦾 Abilities (Milestone Unlocks)</h3>
-  <div class="grid sm:grid-cols-2 gap-3">${abCards}</div>
-
-  <h3 class="font-semibold text-lg mt-6 mb-2">🏆 The Progression</h3>
-  <div class="grid md:grid-cols-5 gap-3">${levelCards}</div>
-
-  <div class="glass p-5 mt-6 flex items-center justify-between flex-wrap gap-3">
-    <div class="text-sm text-white/70">At Level 5, clients aren’t hiring "another copywriter." They’re hiring <span class="grad-text font-semibold">your way of thinking.</span></div>
-    <button onclick="resetProgress()" class="text-xs px-3 py-2 rounded-lg glass-soft text-red-300 hover:bg-red-500/10">Reset Progress</button>
-  </div>`;
+  document.getElementById('sec-endgame').innerHTML=
+  '<h2 class="text-2xl font-bold mb-1">🚀 Endgame & Attributes</h2><p class="text-sm text-white/65 mb-4">The real objective isn\'t "becoming a better copywriter." It\'s becoming a business problem-solver who happens to use copy as one tool.</p>'+
+  '<h3 class="font-semibold text-lg mt-5 mb-2">⚔️ Attributes</h3><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">'+attrRows+'</div>'+
+  '<h3 class="font-semibold text-lg mt-6 mb-2">🦾 Abilities (Milestone Unlocks)</h3><div class="grid sm:grid-cols-2 gap-3">'+abCards+'</div>'+
+  '<h3 class="font-semibold text-lg mt-6 mb-2">🏆 The Progression</h3><div class="grid md:grid-cols-5 gap-3">'+levelCards+'</div>'+
+  '<div class="glass p-5 mt-6 flex items-center justify-between flex-wrap gap-3"><div class="text-sm text-white/70">At Level 5, clients aren\'t hiring "another copywriter." They\'re hiring <span class="grad-text font-semibold">your way of thinking.</span></div><button onclick="resetProgress()" class="text-xs px-3 py-2 rounded-lg glass-soft text-red-300 hover:bg-red-500/10">Reset Progress</button></div>';
 }
 
 /* ============================ RENDER: AI ============================ */
 function renderAI(){
-  const rows = [
-    ['Drafting','Diagnosing business problems'],
-    ['Grammar','Building trust with founders'],
-    ['Summarizing','Reading emotional nuance from conversations'],
-    ['Rewriting','Making strategic tradeoffs'],
-    ['Formatting','Creating original frameworks'],
-    ['Brainstorming','Exercising judgment under uncertainty'],
-    ['Speed','Pattern matching'],
-    ['—','Seeing patterns across years of real projects'],
+  const rows=[
+    ['Drafting','Diagnosing business problems'],['Grammar','Building trust with founders'],
+    ['Summarizing','Reading emotional nuance from conversations'],['Rewriting','Making strategic tradeoffs'],
+    ['Formatting','Creating original frameworks'],['Brainstorming','Exercising judgment under uncertainty'],
+    ['Speed','Pattern matching'],['—','Seeing patterns across years of real projects'],
     ['—','Earning reputation and trust'],
   ];
-  const list = rows.map(([ai,hu])=>`
-    <div class="grid grid-cols-2 gap-3 items-stretch">
-      <div class="glass-soft p-3 text-sm text-white/70 flex items-center">${ai==='—'?'<span class="text-white/25">—</span>':('🤖 '+ai)}</div>
-      <div class="glass-soft p-3 text-sm font-medium flex items-center" style="border-color:rgba(52,211,153,.25)">${hu}</div>
-    </div>`).join('');
-
-  const sec = document.getElementById('sec-ai');
-  sec.innerHTML = `
-  <h2 class="text-2xl font-bold mb-1">🤖 Skills AI Cannot Easily Replace</h2>
-  <p class="text-sm text-white/65 mb-4 max-w-3xl">Notice something interesting: the more you move <i>upward</i>, the less you’re "writing." AI improves — but these higher-level capabilities become even more valuable because they <b>guide</b> the AI rather than compete with it.</p>
-  <div class="grid md:grid-cols-2 gap-3 mb-4">
-    <div class="glass p-4 text-center font-semibold" style="color:var(--cyan)">AI does well</div>
-    <div class="glass p-4 text-center font-semibold" style="color:var(--green)">Humans still create outsized value</div>
-  </div>
-  <div class="space-y-2">${list}</div>
-  <div class="glass p-5 mt-5 text-sm text-white/75 leading-relaxed glow-gold">
-    <b class="text-white">The takeaway:</b> Let AI handle drafting, grammar, and formatting. Pour your deliberate practice into
-    <span style="color:var(--purple)">diagnosing</span>, <span style="color:var(--pink)">judgment</span>, and
-    <span style="color:var(--green)">original frameworks</span> — the exact paths this RPG trains.
-  </div>`;
+  const list=rows.map(([ai,hu])=>'<div class="grid grid-cols-2 gap-3 items-stretch"><div class="glass-soft p-3 text-sm text-white/70 flex items-center">'+(ai==='—'?'<span class="text-white/25">—</span>':('🤖 '+ai))+'</div><div class="glass-soft p-3 text-sm font-medium flex items-center" style="border-color:rgba(52,211,153,.25)">'+hu+'</div></div>').join('');
+  document.getElementById('sec-ai').innerHTML=
+  '<h2 class="text-2xl font-bold mb-1">🤖 Skills AI Cannot Easily Replace</h2><p class="text-sm text-white/65 mb-4 max-w-3xl">Notice something interesting: the more you move <i>upward</i>, the less you\'re "writing." AI improves — but these higher-level capabilities become even more valuable because they <b>guide</b> the AI rather than compete with it.</p>'+
+  '<div class="grid md:grid-cols-2 gap-3 mb-4"><div class="glass p-4 text-center font-semibold" style="color:var(--cyan)">AI does well</div><div class="glass p-4 text-center font-semibold" style="color:var(--green)">Humans still create outsized value</div></div>'+
+  '<div class="space-y-2">'+list+'</div>'+
+  '<div class="glass p-5 mt-5 text-sm text-white/75 leading-relaxed glow-gold"><b class="text-white">The takeaway:</b> Let AI handle drafting, grammar, and formatting. Pour your deliberate practice into <span style="color:var(--purple)">diagnosing</span>, <span style="color:var(--pink)">judgment</span>, and <span style="color:var(--green)">original frameworks</span> — the exact paths this RPG trains.</div>';
 }
 
 /* ============================ NAV ============================ */
 function switchTab(tab){
-  activeTab = tab;
-  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
-  ['dashboard','trees','daily','endgame','ai'].forEach(t=>{
-    document.getElementById('sec-'+t).classList.toggle('hidden', t!==tab);
-  });
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  ['dashboard','trees','daily','endgame','ai'].forEach(t=>document.getElementById('sec-'+t).classList.toggle('hidden',t!==tab));
   render();
-  window.scrollTo({top:0, behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-
-/* ============================ RENDER ALL ============================ */
 function render(){
   renderHUD();
-  if(activeTab==='dashboard') renderDashboard();
-  if(activeTab==='trees') renderTrees();
-  if(activeTab==='daily') renderDaily();
-  if(activeTab==='endgame') renderEndgame();
-  if(activeTab==='ai') renderAI();
+  if(activeTab==='dashboard')renderDashboard();
+  if(activeTab==='trees')renderTrees();
+  if(activeTab==='daily')renderDaily();
+  if(activeTab==='endgame')renderEndgame();
+  if(activeTab==='ai')renderAI();
 }
 
 /* ============================ INIT ============================ */
-document.querySelectorAll('.tab').forEach(b=> b.addEventListener('click', ()=>switchTab(b.dataset.tab)));
-load();
-render();
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+load();render();
 </script>
 </body>
 </html>

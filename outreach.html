@@ -28,11 +28,7 @@
       --streak-orange: #f59e0b;
     }
     
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
       font-family: 'Inter', sans-serif;
@@ -497,7 +493,7 @@ const TYPE_ICONS = { 'email': '📧', 'call': '📞', 'linkedin': '💼', 'meeti
 function defaultState() {
   return {
     prospects: [],
-    notebook: [], // The new global contradictions notebook
+    notebook: [], // Global contradictions notebook
     stats: {
       totalXP: 0, level: 1, xpForNextLevel: 100, currentStreak: 0, longestStreak: 0, 
       lastActivityDate: '', totalOutreaches: 0, totalResponses: 0, totalMeetings: 0, 
@@ -516,9 +512,11 @@ let confirmCallback = null;
 
 function loadState() {
   try {
-    const r = localStorage.getItem('outreach_quest_data');
+    // Attempting to load from old format and new format smoothly
+    const r = localStorage.getItem('outreach_quest_data') || localStorage.getItem('outreach_quest_data_v2');
     if (r) {
       const p = JSON.parse(r);
+      
       // Migrate old achievements smoothly
       if (!p.achievements || p.achievements.length < ACH_DEFS.length) {
         p.achievements = ACH_DEFS.map(a => {
@@ -528,7 +526,7 @@ function loadState() {
       }
       if (!p.stats) p.stats = defaultState().stats;
       
-      // Upgrade logic for V2 features
+      // Upgrade logic for V2 features (Scores, Intel, Notebook)
       if (!p.notebook) p.notebook = [];
       p.prospects.forEach(pros => {
         if (!pros.score) pros.score = { strongContent: false, premiumOffer: false, activeAudience: false, weakWebsite: false, multiStepFunnel: false, recentActivity: false };
@@ -541,7 +539,7 @@ function loadState() {
 }
 
 function saveState() {
-  try { localStorage.setItem('outreach_quest_data', JSON.stringify(state)); } 
+  try { localStorage.setItem('outreach_quest_data_v2', JSON.stringify(state)); } 
   catch(e) { console.error("Error saving state:", e); }
 }
 
@@ -550,7 +548,7 @@ function exportState() {
   const b = new Blob([j], {type: 'application/json'});
   const u = URL.createObjectURL(b);
   const a = document.createElement('a');
-  a.href = u; a.download = 'outreach-quest-' + new Date().toISOString().split('T')[0] + '.json';
+  a.href = u; a.download = 'outreach-quest-v2-' + new Date().toISOString().split('T')[0] + '.json';
   a.click(); URL.revokeObjectURL(u);
   showToast('Backup downloaded!', 'success');
 }
@@ -1237,7 +1235,7 @@ function renderDetail() {
       <!-- Left/Right Split for Intel vs History -->
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
         
-        <!-- INTEL TRACKING (New Features) -->
+        <!-- INTEL TRACKING -->
         <div class="glass" style="padding:20px; align-self:start">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
             <h3 class="font-display font-bold text-lg text-gradient-gold">🧠 Prospect Intel</h3>

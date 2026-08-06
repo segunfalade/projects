@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JAY INVESTIGATION BUREAU • Case Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600;800&family=Instrument+Serif:ital@0;1&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--black:#0F0E0C;--paper:#FFFCF5;--kraft:#F5E6C8;--yellow:#FFD600;--red:#DC2626;--zinc-800:#27272a}
+  body{font-family:'Geist Mono',monospace;background:var(--black);color:var(--black);min-height:100vh}
+  .tape{height:8px;background:repeating-linear-gradient(90deg,var(--yellow) 0 24px,black 24px 48px)}
+  .tape-bottom{position:fixed;bottom:0;left:0;right:0;height:8px;background:repeating-linear-gradient(90deg,var(--yellow) 0 24px,black 24px 48px);z-index:60;pointer-events:none}
+  header{position:sticky;top:0;z-index:30;background:var(--black);border-bottom:2px solid #27272a}
+  .header-inner{max-width:1700px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .j-logo{width:40px;height:40px;background:var(--yellow);color:black;display:grid;place-items:center;font-weight:800;font-size:18px;border:2px solid black;box-shadow:2px 2px 0 white}
+  .brand-text .title{color:white;font-weight:800;letter-spacing:0.14em;font-size:14px}
+  .brand-text .sub{color:#71717a;font-size:10px;letter-spacing:0.18em;margin-top:2px;display:flex;gap:8px;align-items:center}
+  .brand-text .sub b{color:var(--yellow)}
+  nav{display:flex;gap:6px}
+  .nav-btn{font-family:inherit;font-size:10px;letter-spacing:0.14em;padding:8px 14px;border:1px solid #3f3f46;background:transparent;color:#a1a1aa;cursor:pointer;transition:.15s}
+  .nav-btn.active{background:white;color:black;border-color:white;font-weight:800}
+  .nav-btn:hover{color:white;border-color:#52525b}
+  .stats-bar{background:var(--kraft);border-bottom:2px solid black;padding:8px 24px;font-size:10px;display:flex;flex-wrap:wrap;gap:18px;letter-spacing:0.06em}
+  .stats-bar b{font-weight:800}
+  .wrap{max-width:1700px;margin:0 auto;padding:20px 24px 80px}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-bottom:18px}
+  .search-box{position:relative;flex:1;max-width:520px;display:flex}
+  .search-box span{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:10px;color:#71717a}
+  .search-box input{width:100%;padding:12px 12px 12px 68px;border:2px solid black;background:var(--paper);font-family:inherit;font-size:12px;outline:none;box-shadow:3px 3px 0 black}
+  .toolbar-right{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{font-family:inherit;border:2px solid black;padding:10px 14px;font-size:10px;letter-spacing:0.14em;font-weight:800;cursor:pointer;transition:.12s;display:inline-flex;align-items:center;gap:6px}
+  .btn-yellow{background:var(--yellow);color:black;box-shadow:3px 3px 0 white}
+  .btn-black{background:black;color:white}
+  .btn-white{background:white;color:black}
+  .btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 black}
+  .btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 black}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(360px,1fr))}
+  .case-file{background:var(--paper);border:2px solid black;padding:1px;box-shadow:4px 4px 0 black;cursor:pointer;position:relative;transition:.12s}
+  .case-file:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 black}
+  .case-tab{position:absolute;top:-12px;left:16px;background:var(--yellow);border:2px solid black;padding:2px 8px;font-size:9px;font-weight:800;letter-spacing:0.12em;box-shadow:2px 2px 0 black}
+  .case-inner{background:white;border:1px solid rgba(0,0,0,0.08);padding:18px;padding-top:22px}
+  .case-head{display:flex;gap:10px;justify-content:space-between}
+  .case-avatar{width:38px;height:38px;background:black;color:var(--yellow);display:grid;place-items:center;font-weight:800;font-size:14px;border:2px solid black;flex-shrink:0}
+  .case-meta{flex:1;min-width:0}
+  .case-brand{font-family:'Instrument Serif',serif;font-weight:400;font-size:18px;line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .case-founder{font-size:10px;color:#71717a;margin-top:2px}
+  .stamp{border:1px solid currentColor;padding:2px 6px;font-size:8px;font-weight:800;letter-spacing:0.14em;display:inline-block;margin-top:4px}
+  .stamp.under{background:#fef3c7;border-color:#f59e0b;color:#78350f}
+  .stamp.worth{background:#dcfce7;border-color:#22c55e;color:#14532d}
+  .stamp.cold{background:#f4f4f5;border-color:#a1a1aa;color:#52525b}
+  .stamp.closed{background:black;color:white}
+  .score-box{border:2px solid black;padding:4px 8px;text-align:center;min-width:62px}
+  .score-num{font-weight:800;font-size:18px;line-height:1}
+  .score-num small{font-size:10px}
+  .score-label{font-size:8px;letter-spacing:0.12em;color:#71717a}
+  .conf-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;height:22px;margin-top:12px}
+  .conf-col{background:#f4f4f5;border:1px solid #e4e4e7;position:relative;overflow:hidden}
+  .conf-fill{position:absolute;bottom:0;left:0;right:0;background:black}
+  .conf-labels{display:flex;justify-content:space-between;font-size:7px;letter-spacing:0.08em;color:#a1a1aa;margin-top:2px}
+  .one-finding{margin-top:12px;background:var(--kraft);border:1px solid black;padding:10px;position:relative}
+  .one-finding::before{content:'ONE FINDING';position:absolute;top:-7px;left:8px;background:black;color:white;font-size:7px;letter-spacing:0.14em;padding:2px 6px}
+  .one-finding p{font-family:'Instrument Serif',serif;font-style:italic;font-size:13px;line-height:1.35}
+  .tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px}
+  .tag{font-size:8px;letter-spacing:0.06em;padding:2px 6px;border:1px solid black;background:black;color:white}
+  .tag.yellow{background:var(--yellow);color:black;font-weight:800}
+  .tag.white{background:white;color:black}
+  .foot{margin-top:10px;border-top:1px dashed #d4d4d8;padding-top:8px;display:flex;justify-content:space-between;font-size:8px;color:#a1a1aa;letter-spacing:0.06em}
+  .empty{border:2px dashed #3f3f46;background:var(--paper);padding:48px;text-align:center;margin-top:20px}
+  .empty .mono{font-size:10px;letter-spacing:0.2em;color:#71717a}
+  .empty .serif{font-family:'Instrument Serif',serif;font-size:24px;margin-top:8px}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:50;display:none;place-items:center;padding:16px;overflow:auto}
+  .modal-backdrop.open{display:grid}
+  .dossier{width:100%;max-width:860px;background:var(--paper);border:4px solid black;box-shadow:12px 12px 0 white;max-height:95vh;overflow:auto}
+  .dossier-head{position:sticky;top:0;background:var(--paper);border-bottom:4px solid black;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;z-index:2}
+  .dossier-tabs{display:flex;gap:4px;background:black;padding:8px 12px}
+  .dossier-tab{font-family:inherit;font-size:10px;letter-spacing:0.12em;padding:8px 12px;border:2px solid #27272a;background:transparent;color:#a1a1aa;cursor:pointer}
+  .dossier-tab.active{background:var(--yellow);color:black;border-color:var(--yellow);font-weight:800}
+  .dossier-body{padding:18px}
+  section{border:2px solid black;background:white;padding:16px;margin-bottom:16px;box-shadow:3px 3px 0 black}
+  section.kraft{background:var(--kraft)}
+  section.yellow{background:var(--yellow)}
+  section.black{background:black;color:white;border-color:black}
+  section.red{background:#fef2f2;border-color:var(--red)}
+  .sec-head{font-size:11px;font-weight:800;letter-spacing:0.18em;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .sec-head .num{width:20px;height:20px;background:black;color:white;display:grid;place-items:center;font-size:10px}
+  .black .sec-head .num{background:white;color:black}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .form-grid.full{grid-template-columns:1fr}
+  label.mono{font-size:10px;letter-spacing:0.12em;color:#52525b;display:block;margin-bottom:4px}
+  .black label.mono{color:#a1a1aa}
+  input, textarea, select{width:100%;border:1px solid black;padding:10px;font-family:inherit;font-size:12px;background:white;outline:none}
+  input:focus, textarea:focus{border-width:2px}
+  textarea{min-height:60px;resize:vertical}
+  .black input,.black textarea,.black select{background:#18181b;color:white;border-color:#3f3f46}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .chip{border:2px solid black;padding:5px 10px;font-size:10px;letter-spacing:0.06em;background:white;cursor:pointer;user-select:none;transition:.1s}
+  .chip.on{background:black;color:white}
+  .chip.on.red{background:var(--red);border-color:var(--red)}
+  .chip.yellow.on{background:var(--yellow);color:black}
+  .stars{display:flex;gap:4px;margin-top:4px}
+  .star{width:28px;height:28px;border-radius:50%;border:1px solid black;display:grid;place-items:center;font-size:12px;cursor:pointer;background:#f4f4f5}
+  .star.on{background:black;color:white;border-color:black}
+  .range-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #e4e4e7}
+  .range-row span:first-child{width:150px;font-size:11px}
+  .range-row input[type=range]{flex:1;accent-color:black}
+  .range-val{width:30px;text-align:center;font-weight:800;font-size:13px}
+  .score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .score-box-edit{border:2px solid black;padding:10px;background:var(--paper)}
+  .score-box-edit .s-label{font-size:9px;letter-spacing:0.12em;margin-bottom:6px}
+  .score-btns{display:flex;gap:4px;flex-wrap:wrap}
+  .score-btn{width:26px;height:26px;border:2px solid black;background:white;font-size:11px;font-weight:800;cursor:pointer}
+  .score-btn.on{background:black;color:white}
+  .actions{display:flex;gap:10px;margin-top:12px}
+  .comms-item{border:1px solid black;padding:10px;background:white;margin-bottom:8px}
+  .comms-item .meta{font-size:8px;color:#71717a;display:flex;justify-content:space-between}
+  @media(max-width:700px){
+    .grid{grid-template-columns:1fr}
+    .form-grid{grid-template-columns:1fr}
+    .score-grid{grid-template-columns:1fr 1fr}
+    .header-inner{padding:10px 14px}
+    .wrap{padding:14px 14px 80px}
+  }
+</style>
+</head>
+<body>
+<div class="tape"></div>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="j-logo">J</div>
+      <div class="brand-text">
+        <div class="title">JAY INVESTIGATION BUREAU</div>
+        <div class="sub"><span>CASE BOARD • EST. 2024</span><span style="width:4px;height:4px;background:var(--yellow);border-radius:50%;display:inline-block"></span><span>DETECTIVE: <b>SEGUN FALADE</b></span></div>
+      </div>
+    </div>
+    <nav>
+      <button class="nav-btn active" data-view="board" onclick="setView('board')">CASE BOARD • <span id="count-board">0</span></button>
+      <button class="nav-btn" data-view="evidence" onclick="setView('evidence')">EVIDENCE • <span id="count-ev">0</span></button>
+      <button class="nav-btn" data-view="guide" onclick="setView('guide')">DOSSIER GUIDE</button>
+    </nav>
+  </div>
+</header>
+<div class="stats-bar">
+  <span>TOTAL: <b id="stat-total">0</b></span>
+  <span>WORTH PURSUING: <b id="stat-worth">0</b> • IGNORE <15/25</span>
+  <span>AVG: <b id="stat-avg">0</b>/25</span>
+  <span style="margin-left:auto" class="hide-mobile">TIP: One hour of investigation should produce multiple assets, not just one email • SAVES TO BROWSER AUTOMATICALLY</span>
+</div>
+
+<div class="wrap">
+  <!-- TOOLBAR -->
+  <div class="toolbar" id="toolbar-board">
+    <div class="search-box">
+      <span>SEARCH&gt;</span>
+      <input id="search" placeholder="brand, founder, one finding, discovery story..." oninput="renderBoard()">
+      <select id="filter-status" onchange="renderBoard()" style="margin-left:8px;border:2px solid black;padding:0 8px;font-family:inherit;font-size:10px;min-width:140px">
+        <option value="all">ALL CASES</option>
+        <option value="under_investigation">UNDER INVESTIGATION</option>
+        <option value="worth_pursuing">WORTH PURSUING</option>
+        <option value="cold_trail">COLD TRAIL</option>
+        <option value="closed">CLOSED</option>
+      </select>
+    </div>
+    <div class="toolbar-right">
+      <label class="btn btn-white" style="font-size:9px"><input type="checkbox" id="filter-score" onchange="renderBoard()" style="margin-right:6px;width:auto"> ONLY ≥15/25</label>
+      <button class="btn btn-white" onclick="downloadData()">⬇ DOWNLOAD BACKUP</button>
+      <label class="btn btn-white" style="cursor:pointer">⬆ UPLOAD <input type="file" id="upload-input" accept=".json" style="display:none" onchange="uploadData(event)"></label>
+      <button class="btn btn-yellow" onclick="openNewCase()">+ NEW CASE</button>
+    </div>
+  </div>
+
+  <div id="view-board"></div>
+  <div id="view-evidence" style="display:none"></div>
+  <div id="view-guide" style="display:none">
+    <div style="max-width:900px;background:var(--paper);border:4px solid black;padding:28px;box-shadow:8px 8px 0 white">
+      <div style="font-size:10px;letter-spacing:0.2em;color:#71717a">JAY INVESTIGATION PROTOCOL • CLASSIFIED</div>
+      <h1 style="font-family:'Instrument Serif',serif;font-size:42px;line-height:0.9;margin-top:10px">From Checklist to Detective Dossier</h1>
+      <p style="font-size:12px;margin-top:12px;line-height:1.5;color:#3f3f46">Every prospect becomes a case. Every answer is a clue. Instead of prospects, you have Cases. Instead of CRM, Case Board. Instead of qualified leads, Cases Worth Pursuing. That detective language makes the whole experience feel like you're building evidence, not grinding through admin.</p>
+      <div style="margin-top:20px;background:black;color:white;padding:16px;border:2px solid black">
+        <div style="font-size:10px;letter-spacing:0.12em;color:#a1a1aa">SCORING • TOTAL 25 • IGNORE <15</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px;font-size:10px">
+          <div style="border:1px solid #3f3f46;padding:10px">VISIBILITY /5</div>
+          <div style="border:1px solid #3f3f46;padding:10px">COMMERCIAL /5</div>
+          <div style="border:1px solid #3f3f46;padding:10px">TRUST GAP /5</div>
+          <div style="border:1px solid #3f3f46;padding:10px">GROWTH /5</div>
+          <div style="border:1px solid #3f3f46;padding:10px">OUTREACH /5</div>
+        </div>
+        <div style="margin-top:10px;font-size:10px;color:#a1a1aa">If they replied "Interesting. Show me what you found," would you have something genuinely useful? If no, don't send. If yes, you've crossed threshold.</div>
+      </div>
+      <div style="margin-top:20px;display:grid;gap:10px;font-size:11px;line-height:1.5">
+        <div style="border-left:4px solid black;padding-left:12px"><b>📍 FIRST IMPRESSION:</b> How discovered? What made you stop scrolling?</div>
+        <div style="border-left:4px solid var(--yellow);padding-left:12px"><b>🌟 VISIBILITY:</b> Content quality, engagement, consistency 1-5 stars. Evidence tags.</div>
+        <div style="border-left:4px solid #22c55e;padding-left:12px"><b>💰 COMMERCIAL:</b> Offer, price, one client valuable? $49 vs $5k matters more than followers.</div>
+        <div style="border-left:4px solid #71717a;padding-left:12px"><b>🏗 GROWTH SIGNALS:</b> Branding, lead magnet, email, webinar, podcast, application funnel.</div>
+        <div style="border-left:4px solid black;padding-left:12px"><b>🧭 BUYER JOURNEY:</b> Instagram → Website → Sales → Booking → Checkout → Email. More than 4 = leak zone where JAY valuable.</div>
+        <div style="border-left:4px solid #dc2626;padding-left:12px"><b>⚖️ CONFIDENCE METER:</b> Heart. Track 0-10 before, after content, homepage, offer, checkout, end. Where did it first decline?</div>
+        <div style="border-left:4px solid var(--yellow);padding-left:12px"><b>🚨 CONTRADICTIONS:</b> "They say... But website..." Gold for outreach.</div>
+        <div style="border-left:4px solid black;padding-left:12px"><b>🔎 TRUST LEAKS:</b> Generic messaging, weak CTA, missing proof, jargon, etc.</div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:8px">
+        <button class="btn btn-yellow" onclick="setView('board')">OPEN CASE BOARD →</button>
+        <button class="btn btn-white" onclick="downloadData()">DOWNLOAD BACKUP JSON</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOSSIER MODAL -->
+<div class="modal-backdrop" id="dossier-modal">
+  <div class="dossier">
+    <div class="dossier-head">
+      <div style="display:flex;gap:10px;align-items:center">
+        <div id="dossier-avatar" style="width:36px;height:36px;background:black;color:var(--yellow);display:grid;place-items:center;font-weight:800;border:2px solid black">J</div>
+        <div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <span id="dossier-case-number" style="background:var(--yellow);border:1px solid black;padding:2px 6px;font-size:9px;font-weight:800;letter-spacing:0.12em">CASE-0000</span>
+            <span id="dossier-brand" style="font-family:'Instrument Serif',serif;font-weight:800;font-size:18px"></span>
+            <span id="dossier-score" style="border:2px solid black;padding:2px 8px;font-size:12px;font-weight:800">0/25</span>
+          </div>
+          <div style="font-size:9px;color:#71717a">DETECTIVE: <span id="dossier-investigator">Segun Falade</span> • OPENED <span id="dossier-date"></span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-white" style="padding:6px 10px;font-size:9px" onclick="deleteCurrentCase()">DELETE</button>
+        <button class="btn btn-black" style="padding:6px 10px" onclick="closeDossier()">✕</button>
+      </div>
+    </div>
+    <div class="dossier-tabs">
+      <button class="dossier-tab active" data-tab="dossier" onclick="setDossierTab('dossier')">🕵️ FULL DOSSIER</button>
+      <button class="dossier-tab" data-tab="evidence" onclick="setDossierTab('evidence')">🚨 EVIDENCE</button>
+      <button class="dossier-tab" data-tab="comms" onclick="setDossierTab('comms')">✉️ COMMS LOG</button>
+    </div>
+    <div class="dossier-body" id="dossier-body"></div>
+  </div>
+</div>
+
+<!-- NEW CASE MODAL -->
+<div class="modal-backdrop" id="newcase-modal">
+  <div style="width:100%;max-width:560px;background:var(--paper);border:4px solid black;padding:20px;box-shadow:8px 8px 0 white">
+    <div style="display:flex;justify-content:space-between">
+      <div>
+        <div style="background:black;color:white;padding:2px 8px;font-size:9px;letter-spacing:0.14em;display:inline-block">NEW INVESTIGATION</div>
+        <h2 style="font-family:'Instrument Serif',serif;font-size:26px;margin-top:8px">Open a Case</h2>
+        <p style="font-size:11px;color:#52525b;margin-top:4px">Every prospect becomes a case. Every answer is a clue.</p>
+      </div>
+      <div id="newcase-count" style="width:36px;height:36px;border:2px solid black;background:var(--yellow);display:grid;place-items:center;font-weight:800">1</div>
+    </div>
+    <div class="form-grid" style="margin-top:16px">
+      <div style="grid-column:span 2"><label class="mono">BRAND / BUSINESS *</label><input id="new-brand" placeholder="Klarity Coaching"></div>
+      <div><label class="mono">FOUNDER</label><input id="new-founder" placeholder="Sarah Chen"></div>
+      <div><label class="mono">NICHE</label><input id="new-niche" placeholder="Coaching, Investing..."></div>
+      <div style="grid-column:span 2"><label class="mono">WEBSITE</label><input id="new-website" placeholder="https://..."></div>
+      <div style="grid-column:span 2"><label class="mono">WHAT MADE YOU STOP SCROLLING?</label><textarea id="new-discovery" placeholder="Only ex-JP Morgan advisor who explains without jargon on LinkedIn, but site is corporate..."></textarea></div>
+    </div>
+    <div class="actions" style="margin-top:16px">
+      <button class="btn btn-white" style="flex:1" onclick="document.getElementById('newcase-modal').classList.remove('open')">CANCEL</button>
+      <button class="btn btn-black" style="flex:2" onclick="createCase()">OPEN CASE FILE →</button>
+    </div>
+  </div>
+</div>
+
+<div class="tape-bottom"></div>
+
+<script>
+const STORAGE_KEYS = { cases: 'jay_cases_v3', evidence: 'jay_evidence_v3', outreaches: 'jay_outreaches_v3' };
+const DISCOVERY = ["LinkedIn","Instagram","YouTube","Podcast","Referral","Other"];
+const EVIDENCE_TAGS = ["Comments","Shares","Testimonials","Podcast interviews","Newsletter","Speaking","Community","Case studies"];
+const GROWTH_TAGS = ["Professional branding","Website","Lead magnet","Email list","Webinar","Podcast","Application funnel","Discovery calls","Paid community","Video content"];
+const TRUST_LEAKS = ["Generic messaging","Weak CTA","Missing proof","Confusing offer","Too much jargon","Poor hierarchy","Weak headline","Unclear next step","Inconsistent tone","Pricing anxiety","Weak positioning","Other"];
+const JOURNEY_OPTS = ["Instagram","Website","Sales Page","Booking","Checkout","Email","Lead Magnet","Linktree","YouTube","LinkedIn","Application","Other"];
+const VERDICTS = ["Investigate further","Send outreach","Create case study","Follow on LinkedIn","Revisit later","Not worth pursuing"];
+
+let cases = [], evidences = [], outreaches = [], currentCaseId=null, currentTab='dossier', currentView='board';
+
+function load(){
+  try{
+    cases = JSON.parse(localStorage.getItem(STORAGE_KEYS.cases)||'[]');
+    evidences = JSON.parse(localStorage.getItem(STORAGE_KEYS.evidence)||'[]');
+    outreaches = JSON.parse(localStorage.getItem(STORAGE_KEYS.outreaches)||'[]');
+  }catch(e){ cases=[]; evidences=[]; outreaches=[]; }
+}
+function save(){
+  localStorage.setItem(STORAGE_KEYS.cases, JSON.stringify(cases));
+  localStorage.setItem(STORAGE_KEYS.evidence, JSON.stringify(evidences));
+  localStorage.setItem(STORAGE_KEYS.outreaches, JSON.stringify(outreaches));
+  updateStats();
+}
+
+function genId(){ return Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
+function genCaseNumber(){ return 'CASE-'+Math.floor(1000+Math.random()*9000); }
+
+function updateStats(){
+  document.getElementById('count-board').textContent=cases.length;
+  document.getElementById('count-ev').textContent=evidences.length;
+  document.getElementById('stat-total').textContent=cases.length;
+  document.getElementById('stat-worth').textContent=cases.filter(c=>c.status==='worth_pursuing').length;
+  const avg = cases.length? (cases.reduce((a,b)=>a+(b.totalScore25||0),0)/cases.length).toFixed(1):'0';
+  document.getElementById('stat-avg').textContent=avg;
+}
+
+function setView(v){
+  currentView=v;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  document.getElementById('view-board').style.display=v==='board'?'block':'none';
+  document.getElementById('view-evidence').style.display=v==='evidence'?'block':'none';
+  document.getElementById('view-guide').style.display=v==='guide'?'block':'none';
+  document.getElementById('toolbar-board').style.display=v==='board'?'flex':'none';
+  if(v==='board') renderBoard();
+  if(v==='evidence') renderEvidence();
+}
+
+function setDossierTab(t){
+  currentTab=t;
+  document.querySelectorAll('.dossier-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===t));
+  renderDossierBody();
+}
+
+function renderBoard(){
+  const search = document.getElementById('search').value.toLowerCase();
+  const statusF = document.getElementById('filter-status').value;
+  const minScore = document.getElementById('filter-score').checked;
+  let filtered = cases.filter(c=>{
+    if(statusF!=='all' && c.status!==statusF) return false;
+    if(minScore && (c.totalScore25||0)<15) return false;
+    if(search){
+      const hay = (c.brandName+' '+(c.founderName||'')+' '+(c.oneFinding||'')+' '+(c.discoveryStory||'')+' '+(c.commercialOffer||'')).toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+  const container = document.getElementById('view-board');
+  // keep toolbar already
+  if(filtered.length===0){
+    container.innerHTML = document.getElementById('toolbar-board').outerHTML + `<div class="empty"><div class="mono">NO OPEN CASES MATCH FILTER</div><div class="serif">Find people who create genuinely good content.</div><p style="margin-top:8px;font-size:11px;color:#52525b;max-width:420px;margin-inline:auto">Then ask: Does the website deliver on the expectation the content created? If not — that's your prime candidate.</p><button class="btn btn-black" style="margin-top:16px" onclick="openNewCase()">+ OPEN FIRST CASE</button></div>`;
+    // rebind toolbar events (since outerHTML lost listeners, re-attach via inline already has onchange)
+    document.getElementById('search').value = search; // preserve? search lost - minimal
+    return;
+  }
+  let html = `<div class="grid">`;
+  filtered.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
+  filtered.forEach(c=>{
+    const conf=[c.confidenceBefore||0,c.confidenceAfterContent||0,c.confidenceHomepage||0,c.confidenceOfferPage||0,c.confidenceCheckout||0,c.confidenceEnd||0];
+    const drop = (c.confidenceAfterContent||0)-(c.confidenceHomepage||0);
+    const stampClass = c.status==='worth_pursuing'?'worth':c.status==='cold_trail'?'cold':c.status==='closed'?'closed':'under';
+    const tags = (c.trustLeaksTags||[]).slice(0,3).map(t=>`<span class="tag">${t.toUpperCase()}</span>`).join('');
+    html+=`
+      <div class="case-file" onclick="openDossier('${c.id}')">
+        <div class="case-tab">${c.caseNumber||'CASE-####'}</div>
+        <div class="case-inner">
+          <div class="case-head">
+            <div style="display:flex;gap:10px;flex:1;min-width:0">
+              <div class="case-avatar">${(c.brandName||'?')[0].toUpperCase()}</div>
+              <div class="case-meta">
+                <div class="case-brand">${esc(c.brandName)}</div>
+                <div class="case-founder">${esc(c.founderName||'Founder-led?')} • ${esc(c.niche||'Niche')}</div>
+                <span class="stamp ${stampClass}">${(c.status||'under_investigation').replace(/_/g,' ').toUpperCase()}</span>
+                ${c.discoveredVia?`<span style="font-size:8px;color:#a1a1aa;margin-left:6px">VIA ${esc(c.discoveredVia).toUpperCase()}</span>`:''}
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div class="score-box" style="background:${scoreBg(c.totalScore25||0)}"><div class="score-num">${c.totalScore25||0}<small>/25</small></div><div class="score-label">${(c.totalScore25||0)>=20?'HIGH VALUE':(c.totalScore25||0)>=15?'WORTH IT':'INVESTIGATE'}</div></div>
+            </div>
+          </div>
+          <div class="conf-grid">${conf.map(v=>`<div class="conf-col"><div class="conf-fill" style="height:${v*10}%"></div></div>`).join('')}</div>
+          <div class="conf-labels"><span>BEFORE</span><span>CONTENT</span><span>HOME</span><span>OFFER</span><span>CHECKOUT</span><span>END</span></div>
+          ${drop>2?`<div style="margin-top:8px;font-size:9px;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:4px 8px">⚠ CONFIDENCE DROP: -${drop} AT HOMEPAGE</div>`:''}
+          ${c.oneFinding?`<div class="one-finding"><p>"${esc(c.oneFinding)}"</p></div>`:''}
+          <div class="tags">${tags}${c.commercialOneClientValuable?`<span class="tag yellow">$ VALUABLE</span>`:''}${(c.buyerJourneyStepsCount||0)>4?`<span class="tag white">${c.buyerJourneyStepsCount} STEPS • LEAKY</span>`:''}</div>
+          <div class="foot"><span>OPENED ${new Date(c.createdAt).toLocaleDateString()} • ${c.outreachCount||0} COMMS</span><span style="text-decoration:underline">OPEN DOSSIER →</span></div>
+        </div>
+      </div>`;
+  });
+  html+=`</div>`;
+  // preserve toolbar
+  const toolbar = document.getElementById('toolbar-board');
+  container.innerHTML = toolbar.outerHTML + html;
+  // restore search value and listeners are inline so ok, but need to reset values
+  document.getElementById('search').value = document.getElementById('search')?.value || search;
+  // re-attach search input handler is via inline oninput same id conflict, need to rebind manually
+  document.getElementById('search').addEventListener('input', renderBoard);
+  document.getElementById('filter-status').value = statusF;
+  document.getElementById('filter-status').addEventListener('change', renderBoard);
+  document.getElementById('filter-score').checked = minScore;
+  document.getElementById('filter-score').addEventListener('change', renderBoard);
+}
+
+function scoreBg(s){ if(s>=20) return 'black'; if(s>=15) return 'var(--yellow)'; if(s>=10) return '#fef3c7'; return '#f4f4f5'; }
+
+function renderEvidence(){
+  const container = document.getElementById('view-evidence');
+  if(evidences.length===0){
+    container.innerHTML = `<div class="empty"><div class="mono">NO EVIDENCE LOGGED</div><div class="serif">Brilliant storyteller. Weak About page.</div><p style="margin-top:8px;font-size:11px">Log contradictions: "We simplify investing" → Website full of jargon</p><button class="btn btn-yellow" style="margin-top:12px" onclick="openEvidenceModal()">+ LOG EVIDENCE</button></div>`;
+    return;
+  }
+  let html=`<div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:16px;flex-wrap:wrap;gap:10px"><div><h2 style="font-size:20px;color:white;letter-spacing:-0.02em">EVIDENCE LOCKER • INTERESTING CONTRADICTIONS</h2><p style="font-size:10px;color:#a1a1aa;margin-top:6px;max-width:600px">NOT PROSPECTS. CONTRADICTIONS. One hour of investigation should produce multiple assets, not just one email.</p></div><button class="btn btn-yellow" onclick="openEvidenceModal()">+ LOG EVIDENCE</button></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px">`;
+  evidences.slice().sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).forEach(ev=>{
+    const linked = cases.find(c=>c.id===ev.prospectId);
+    html+=`
+      <div style="border:2px solid black;padding:2px;background:${ev.isHighValue?'var(--yellow)':'#27272a'};box-shadow:4px 4px 0 white">
+        <div style="background:var(--paper);padding:12px">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+            ${ev.isHighValue?`<span style="background:black;color:var(--yellow);font-size:8px;padding:2px 6px;letter-spacing:0.12em;font-weight:800">GOLD • HIGH VALUE</span>`:''}
+            <span style="font-size:8px;color:#71717a">${linked?esc(linked.caseNumber)+' • '+esc(linked.brandName):'GENERAL'} • ${new Date(ev.createdAt).toLocaleDateString()}</span>
+            <button onclick="deleteEvidence('${ev.id}')" style="margin-left:auto;font-size:8px;border:1px solid black;background:white;padding:2px 6px;cursor:pointer">DELETE</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center">
+            <div style="border:2px solid black;background:white;padding:8px"><div style="font-size:7px;letter-spacing:0.14em;color:#15803d;font-weight:800">BRILLIANT</div><div style="margin-top:4px;font-family:'Instrument Serif',serif;font-size:13px">${esc(ev.brilliantPart)}</div></div>
+            <div style="font-size:12px;color:#a1a1aa">→</div>
+            <div style="border:2px solid black;background:black;color:white;padding:8px"><div style="font-size:7px;letter-spacing:0.14em;color:#a1a1aa">WEAK / GENERIC</div><div style="margin-top:4px;font-family:'Instrument Serif',serif;font-size:13px">${esc(ev.weakPart)}</div></div>
+          </div>
+          ${ev.outreachAngle?`<div style="margin-top:10px;border:1px dashed #a1a1aa;background:white;padding:8px"><div style="font-size:7px;letter-spacing:0.12em;color:#71717a">OUTREACH ANGLE</div><div style="margin-top:4px;font-size:11px;font-style:italic">"${esc(ev.outreachAngle)}"</div></div>`:''}
+        </div>
+      </div>`;
+  });
+  html+=`</div>`;
+  container.innerHTML=html;
+}
+
+function esc(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+function openNewCase(){
+  document.getElementById('newcase-count').textContent = cases.length+1;
+  document.getElementById('new-brand').value='';
+  document.getElementById('new-founder').value='';
+  document.getElementById('new-niche').value='';
+  document.getElementById('new-website').value='';
+  document.getElementById('new-discovery').value='';
+  document.getElementById('newcase-modal').classList.add('open');
+}
+function createCase(){
+  const brand = document.getElementById('new-brand').value.trim();
+  if(!brand) return alert('Brand required');
+  const c = {
+    id: genId(),
+    caseNumber: genCaseNumber(),
+    brandName: brand,
+    founderName: document.getElementById('new-founder').value.trim(),
+    niche: document.getElementById('new-niche').value.trim(),
+    website: document.getElementById('new-website').value.trim(),
+    discoveryStory: document.getElementById('new-discovery').value.trim(),
+    investigator: 'Segun Falade',
+    status: 'under_investigation',
+    visibilityContentQuality:3, visibilityEngagement:3, visibilityConsistency:3,
+    confidenceBefore:5, confidenceAfterContent:5, confidenceHomepage:5, confidenceOfferPage:5, confidenceCheckout:5, confidenceEnd:5,
+    scoreVisibility:0, scoreCommercial:0, scoreTrustGap:0, scoreGrowth:0, scoreOutreach:0, totalScore25:0,
+    growthSignalsTags:[], visibilityEvidenceTags:[], trustLeaksTags:[], buyerJourneySteps:[], buyerJourneyStepsCount:0,
+    outreachCount:0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+  };
+  cases.unshift(c);
+  save();
+  document.getElementById('newcase-modal').classList.remove('open');
+  renderBoard();
+  openDossier(c.id);
+}
+
+function openDossier(id){
+  currentCaseId=id;
+  const c = cases.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('dossier-avatar').textContent=(c.brandName[0]||'J').toUpperCase();
+  document.getElementById('dossier-case-number').textContent=c.caseNumber||'CASE-####';
+  document.getElementById('dossier-brand').textContent=c.brandName;
+  document.getElementById('dossier-score').textContent=(c.totalScore25||0)+'/25';
+  document.getElementById('dossier-score').style.background=scoreBg(c.totalScore25||0);
+  document.getElementById('dossier-investigator').textContent=c.investigator||'Segun Falade';
+  document.getElementById('dossier-date').textContent=new Date(c.createdAt).toLocaleDateString();
+  document.getElementById('dossier-modal').classList.add('open');
+  setDossierTab('dossier');
+}
+
+function closeDossier(){ document.getElementById('dossier-modal').classList.remove('open'); currentCaseId=null; save(); renderBoard(); }
+
+function renderDossierBody(){
+  const c = cases.find(x=>x.id===currentCaseId);
+  if(!c) return;
+  const body = document.getElementById('dossier-body');
+  if(currentTab==='dossier'){
+    body.innerHTML = `
+      ${renderCaseDetails(c)}
+      ${renderFirstImpression(c)}
+      ${renderVisibility(c)}
+      ${renderCommercial(c)}
+      ${renderGrowth(c)}
+      ${renderJourney(c)}
+      ${renderConfidence(c)}
+      ${renderContradictionsForm(c)}
+      ${renderTrustLeaks(c)}
+      ${renderOneFinding(c)}
+      ${renderOutreachAngle(c)}
+      ${renderCaseScore(c)}
+      ${renderVerdict(c)}
+      <button class="btn btn-black" style="width:100%;padding:14px;font-size:11px;letter-spacing:0.18em;margin-top:8px" onclick="saveCurrentDossier()">SAVE DOSSIER • ${esc(c.caseNumber||'')}</button>
+    `;
+  } else if(currentTab==='evidence'){
+    const evs = evidences.filter(e=>e.prospectId===c.id);
+    body.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="font-size:11px;letter-spacing:0.14em;font-weight:800">EVIDENCE FOR ${esc(c.caseNumber)}</h3><button class="btn btn-yellow" style="padding:6px 10px;font-size:9px" onclick="openEvidenceModal('${c.id}')">+ LOG</button></div>
+      ${evs.length? evs.map(ev=>`
+        <div style="border:2px solid black;background:white;padding:10px;margin-bottom:8px">
+          <div style="font-size:11px"><b>BRILLIANT:</b> ${esc(ev.brilliantPart)} → <b>WEAK:</b> ${esc(ev.weakPart)}</div>
+          ${ev.outreachAngle?`<div style="margin-top:6px;font-size:11px;font-style:italic;border:1px dashed #a1a1aa;padding:6px">"${esc(ev.outreachAngle)}"</div>`:''}
+          ${ev.isHighValue?`<span style="background:black;color:var(--yellow);font-size:8px;padding:2px 6px;margin-top:6px;display:inline-block">GOLD</span>`:''}
+        </div>`).join('') : `<div style="border:2px dashed #a1a1aa;padding:24px;text-align:center;font-size:11px;color:#71717a">No evidence yet. Log: "We simplify investing" → Website full of jargon</div>`}
+    `;
+  } else if(currentTab==='comms'){
+    const comms = outreaches.filter(o=>o.prospectId===c.id).sort((a,b)=> new Date(b.sentAt)-new Date(a.sentAt));
+    body.innerHTML = `
+      <section>
+        <div class="sec-head"><span class="num">✉️</span> LOG NEW COMMUNICATION</div>
+        <div class="form-grid">
+          <div><label class="mono">CHANNEL</label><select id="comms-channel"><option value="email">EMAIL</option><option value="linkedin">LINKEDIN DM</option><option value="instagram">INSTAGRAM DM</option><option value="call">CALL</option></select></div>
+          <div><label class="mono">STATUS</label><select id="comms-status"><option value="sent">SENT</option><option value="opened">OPENED</option><option value="replied">REPLIED</option><option value="call_booked">CALL BOOKED</option></select></div>
+          <div style="grid-column:span 2"><label class="mono">SUBJECT / HOOK (use contradiction)</label><input id="comms-subject" placeholder="Brilliant podcast, confusing homepage"></div>
+          <div style="grid-column:span 2"><label class="mono">MESSAGE (use ONE FINDING + Contradiction)</label><textarea id="comms-message" placeholder="Your LinkedIn made me trust you instantly, but your About page doesn't deliver..."></textarea></div>
+        </div>
+        <button class="btn btn-black" style="width:100%;margin-top:10px" onclick="addComms()">LOG COMMS • KEEP ORIGINAL TRACKING</button>
+      </section>
+      <div>${comms.map(o=>`
+        <div class="comms-item"><div class="meta"><span>${esc(o.channel).toUpperCase()} • ${esc(o.status).toUpperCase()}</span><span>${new Date(o.sentAt).toLocaleString()}</span></div>
+        ${o.subject?`<div style="margin-top:6px;font-weight:800;font-size:12px">${esc(o.subject)}</div>`:''}
+        <div style="margin-top:4px;font-size:11px;white-space:pre-wrap">${esc(o.message)}</div></div>`).join('') || '<div style="text-align:center;padding:20px;font-size:11px;color:#71717a">No comms yet</div>'}
+      </div>
+    `;
+  }
+}
+
+function renderCaseDetails(c){
+  return `<section><div class="sec-head"><span class="num">01</span> CASE DETAILS</div>
+    <div class="form-grid">
+      <div><label class="mono">CASE #</label><input id="f-caseNumber" value="${esc(c.caseNumber||'')}" oninput="updateField('caseNumber', this.value)"></div>
+      <div><label class="mono">BRAND *</label><input id="f-brandName" value="${esc(c.brandName||'')}" oninput="updateField('brandName', this.value)"></div>
+      <div><label class="mono">FOUNDER</label><input value="${esc(c.founderName||'')}" oninput="updateField('founderName', this.value)"></div>
+      <div><label class="mono">WEBSITE</label><input value="${esc(c.website||'')}" oninput="updateField('website', this.value)"></div>
+      <div><label class="mono">INVESTIGATOR</label><input value="${esc(c.investigator||'Segun Falade')}" oninput="updateField('investigator', this.value)"></div>
+      <div><label class="mono">STATUS</label><select onchange="updateField('status', this.value)"><option value="under_investigation" ${c.status==='under_investigation'?'selected':''}>UNDER INVESTIGATION</option><option value="worth_pursuing" ${c.status==='worth_pursuing'?'selected':''}>WORTH PURSUING</option><option value="cold_trail" ${c.status==='cold_trail'?'selected':''}>COLD TRAIL</option><option value="closed" ${c.status==='closed'?'selected':''}>CLOSED</option></select></div>
+      <div><label class="mono">NICHE</label><input value="${esc(c.niche||'')}" oninput="updateField('niche', this.value)"></div>
+      <div><label class="mono">LINKS (linkedin, instagram)</label><input value="${esc((c.links&&c.links.linkedin)||'')}" placeholder="LinkedIn URL" oninput="updateNested('links','linkedin', this.value)"></div>
+    </div></section>`;
+}
+function renderFirstImpression(c){
+  return `<section><div class="sec-head"><span class="num">02</span> 📍 THE FIRST IMPRESSION</div>
+    <label class="mono">HOW DID I DISCOVER THEM?</label>
+    <div class="chips">${DISCOVERY.map(ch=>`<div class="chip ${c.discoveredVia===ch?'on':''}" onclick="updateField('discoveredVia','${ch}'); renderDossierBody()">☐ ${ch.toUpperCase()}</div>`).join('')}</div>
+    <div style="margin-top:12px"><label class="mono">WHAT MADE ME STOP SCROLLING?</label><textarea oninput="updateField('discoveryStory', this.value)">${esc(c.discoveryStory||'')}</textarea></div>
+  </section>`;
+}
+function renderVisibility(c){
+  return `<section class="kraft"><div class="sec-head"><span class="num">03</span> 🌟 VISIBILITY CHECK • Are people paying attention?</div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr">
+      <div><label class="mono">CONTENT QUALITY</label><div class="stars">${[1,2,3,4,5].map(n=>`<div class="star ${(c.visibilityContentQuality||0)>=n?'on':''}" onclick="updateField('visibilityContentQuality',${n}); renderDossierBody()">★</div>`).join('')}</div></div>
+      <div><label class="mono">AUDIENCE ENGAGEMENT</label><div class="stars">${[1,2,3,4,5].map(n=>`<div class="star ${(c.visibilityEngagement||0)>=n?'on':''}" onclick="updateField('visibilityEngagement',${n}); renderDossierBody()">★</div>`).join('')}</div></div>
+      <div><label class="mono">POSTING CONSISTENCY</label><div class="stars">${[1,2,3,4,5].map(n=>`<div class="star ${(c.visibilityConsistency||0)>=n?'on':''}" onclick="updateField('visibilityConsistency',${n}); renderDossierBody()">★</div>`).join('')}</div></div>
+    </div>
+    <div style="margin-top:12px"><label class="mono">RECENT ACTIVITY</label><div class="chips">${["This week","This month","Dormant"].map(o=>`<div class="chip ${c.visibilityRecentActivity===o?'on':''}" onclick="updateField('visibilityRecentActivity','${o}'); renderDossierBody()">${o.toUpperCase()}</div>`).join('')}</div></div>
+    <div style="margin-top:12px"><label class="mono">EVIDENCE PEOPLE ACTUALLY CARE</label><div class="chips">${EVIDENCE_TAGS.map(t=>`<div class="chip ${(c.visibilityEvidenceTags||[]).includes(t)?'on':''}" onclick="toggleArray('visibilityEvidenceTags','${t}')">${t.toUpperCase()}</div>`).join('')}</div></div>
+  </section>`;
+}
+function renderCommercial(c){
+  return `<section><div class="sec-head"><span class="num">04</span> 💰 COMMERCIAL STRENGTH</div>
+    <div class="form-grid">
+      <div><label class="mono">WHAT ARE THEY SELLING? (Offer)</label><textarea oninput="updateField('commercialOffer', this.value)">${esc(c.commercialOffer||'')}</textarea></div>
+      <div><label class="mono">PRICE</label><input value="${esc(c.commercialPrice||'')}" placeholder="$5,000 program" oninput="updateField('commercialPrice', this.value)">
+        <label style="margin-top:12px;display:flex;gap:8px;font-size:11px"><input type="checkbox" ${c.commercialOneClientValuable?'checked':''} onchange="updateField('commercialOneClientValuable', this.checked)"> ONE CLIENT = VALUABLE?</label>
+      </div>
+    </div>
+  </section>`;
+}
+function renderGrowth(c){
+  return `<section><div class="sec-head"><span class="num">05</span> 🏗 GROWTH SIGNALS • Check every investment</div>
+    <div class="chips">${GROWTH_TAGS.map(t=>`<div class="chip ${(c.growthSignalsTags||[]).includes(t)?'on':''}" onclick="toggleArray('growthSignalsTags','${t}')">${t.toUpperCase()}</div>`).join('')}</div>
+  </section>`;
+}
+function renderJourney(c){
+  return `<section><div class="sec-head"><span class="num">06</span> 🧭 BUYER JOURNEY MAP • Trace the route</div>
+    <div class="chips">${JOURNEY_OPTS.map(o=>`<div class="chip yellow ${(c.buyerJourneySteps||[]).includes(o)?'on':''}" onclick="toggleJourney('${o}')">${o.toUpperCase()} ↓</div>`).join('')}</div>
+    <div style="margin-top:10px;font-size:11px;display:flex;gap:10px;flex-wrap:wrap"><span>ROUTE: <b>${esc((c.buyerJourneySteps||[]).join(' → ')||'—')}</b></span><span>STEPS: <b>${c.buyerJourneyStepsCount||0}</b> ${(c.buyerJourneyStepsCount||0)>4?'⚠ MORE THAN 4 = LEAKY':''}</span></div>
+  </section>`;
+}
+function renderConfidence(c){
+  return `<section class="black"><div class="sec-head"><span class="num">07</span> ⚖️ THE CONFIDENCE METER • Heart of investigation</div>
+    <div style="background:var(--paper);color:black;padding:12px;border:2px solid white">
+      ${[
+        ['Before discovering','confidenceBefore'],
+        ['After consuming content','confidenceAfterContent'],
+        ['Homepage','confidenceHomepage'],
+        ['Offer page','confidenceOfferPage'],
+        ['Checkout','confidenceCheckout'],
+        ['End of journey','confidenceEnd'],
+      ].map(([label,key])=>`
+        <div class="range-row"><span>${label}</span><input type="range" min="0" max="10" value="${c[key]||0}" oninput="updateField('${key}', parseInt(this.value)); this.nextElementSibling.textContent=this.value"><span class="range-val">${c[key]||0}</span><span style="font-size:10px;color:#71717a">/10</span></div>
+      `).join('')}
+    </div>
+    <div class="form-grid" style="margin-top:12px">
+      <div><label class="mono">WHERE DID CONFIDENCE FIRST DECLINE?</label><textarea oninput="updateField('confidenceWhereDeclined', this.value)">${esc(c.confidenceWhereDeclined||'')}</textarea></div>
+      <div><label class="mono">WHAT TRIGGERED IT?</label><textarea oninput="updateField('confidenceWhatTriggered', this.value)">${esc(c.confidenceWhatTriggered||'')}</textarea></div>
+    </div>
+  </section>`;
+}
+function renderContradictionsForm(c){
+  return `<section class="red"><div class="sec-head"><span class="num">08</span> 🚨 CONTRADICTIONS • This might become your outreach</div>
+    <div class="form-grid">
+      <div><label class="mono">THEY SAY...</label><input value="${esc(c.contradictionTheySay||'')}" placeholder="We simplify investing..." oninput="updateField('contradictionTheySay', this.value)"></div>
+      <div><label class="mono">BUT THE WEBSITE...</label><input value="${esc(c.contradictionButWebsite||'')}" placeholder="Website full of jargon" oninput="updateField('contradictionButWebsite', this.value)"></div>
+      <div><label class="mono">CONTENT MAKES ME FEEL...</label><input value="${esc(c.contradictionContentFeel||'')}" placeholder="Trusted, understood" oninput="updateField('contradictionContentFeel', this.value)"></div>
+      <div><label class="mono">BUT FUNNEL MAKES ME FEEL...</label><input value="${esc(c.contradictionFunnelFeel||'')}" placeholder="Cold, transactional" oninput="updateField('contradictionFunnelFeel', this.value)"></div>
+    </div>
+  </section>`;
+}
+function renderTrustLeaks(c){
+  return `<section><div class="sec-head"><span class="num">09</span> 🔎 TRUST LEAKS • Tick every one you notice</div>
+    <div class="chips">${TRUST_LEAKS.map(t=>`<div class="chip red ${(c.trustLeaksTags||[]).includes(t)?'on':''}" onclick="toggleArray('trustLeaksTags','${t}')">☐ ${t.toUpperCase()}</div>`).join('')}</div>
+  </section>`;
+}
+function renderOneFinding(c){
+  return `<section class="yellow"><div class="sec-head"><span class="num">10</span> 💡 THE ONE FINDING • If I could only tell them ONE thing...</div>
+    <textarea style="min-height:80px" oninput="updateField('oneFinding', this.value)">${esc(c.oneFinding||'')}</textarea>
+  </section>`;
+}
+function renderOutreachAngle(c){
+  return `<section><div class="sec-head"><span class="num">11</span> ✉️ OUTREACH ANGLE</div>
+    <div class="form-grid">
+      <div style="grid-column:span 2"><label class="mono">SUBJECT IDEA</label><input value="${esc(c.outreachSubject||'')}" oninput="updateField('outreachSubject', this.value)"></div>
+      <div style="grid-column:span 2"><label class="mono">OPENING SENTENCE</label><textarea oninput="updateField('outreachOpening', this.value)">${esc(c.outreachOpening||'')}</textarea></div>
+      <div><label class="mono">CURIOSITY GAP</label><textarea oninput="updateField('outreachCuriosity', this.value)">${esc(c.outreachCuriosity||'')}</textarea></div>
+      <div><label class="mono">QUESTION I'LL ASK</label><textarea oninput="updateField('outreachQuestion', this.value)">${esc(c.outreachQuestion||'')}</textarea></div>
+    </div>
+  </section>`;
+}
+function renderCaseScore(c){
+  const total = (c.scoreVisibility||0)+(c.scoreCommercial||0)+(c.scoreTrustGap||0)+(c.scoreGrowth||0)+(c.scoreOutreach||0);
+  return `<section style="border-width:4px"><div class="sec-head"><span class="num">12</span> 🎯 CASE SCORE</div>
+    <div class="score-grid">
+      ${[
+        ['VISIBILITY','scoreVisibility'],
+        ['COMMERCIAL','scoreCommercial'],
+        ['TRUST GAP','scoreTrustGap'],
+        ['GROWTH','scoreGrowth'],
+        ['OUTREACH','scoreOutreach'],
+      ].map(([label,key])=>`
+        <div class="score-box-edit"><div class="s-label">${label}</div>
+          <div class="score-btns">${[0,1,2,3,4,5].map(n=>`<button class="score-btn ${(c[key]||0)===n?'on':''}" onclick="updateField('${key}',${n}); renderDossierBody()">${n}</button>`).join('')}</div>
+        </div>`).join('')}
+    </div>
+    <div style="margin-top:12px;display:flex;justify-content:space-between;border-top:4px solid black;padding-top:10px"><span style="font-weight:800;letter-spacing:0.14em">TOTAL</span><span style="font-weight:800;font-size:22px">${total}/25</span></div>
+    <div style="font-size:10px;color:#71717a;margin-top:4px">Ignore anyone below 15/25. Your time is expensive.</div>
+  </section>`;
+}
+function renderVerdict(c){
+  return `<section><div class="sec-head"><span class="num">13</span> 🧾 FINAL VERDICT</div>
+    <div class="chips">${VERDICTS.map(v=>`<div class="chip ${c.finalVerdict===v?'on':''}" onclick="updateField('finalVerdict','${v}'); renderDossierBody()">☐ ${v.toUpperCase()}</div>`).join('')}</div>
+    <div style="margin-top:16px;border:2px dashed black;background:var(--kraft);padding:12px">
+      <div style="font-size:11px;font-weight:800">FINAL CHECK:</div>
+      <div style="margin-top:4px;font-family:'Instrument Serif',serif;font-style:italic;font-size:13px">"If they replied with 'Interesting. Show me what you found,' would I actually have something genuinely useful to send?"</div>
+      <label style="margin-top:10px;display:flex;gap:8px;font-size:11px;font-weight:800"><input type="checkbox" ${c.hasUsefulInsight?'checked':''} onchange="updateField('hasUsefulInsight', this.checked)"> ${c.hasUsefulInsight?'YES • READY TO SEND':'NO • KEEP INVESTIGATING'}</label>
+    </div>
+  </section>`;
+}
+
+function updateField(key, val){
+  const idx = cases.findIndex(x=>x.id===currentCaseId);
+  if(idx===-1) return;
+  cases[idx][key]=val;
+  cases[idx].updatedAt=new Date().toISOString();
+  if(key.startsWith('score')){
+    const c=cases[idx];
+    c.totalScore25=(c.scoreVisibility||0)+(c.scoreCommercial||0)+(c.scoreTrustGap||0)+(c.scoreGrowth||0)+(c.scoreOutreach||0);
+    document.getElementById('dossier-score').textContent=c.totalScore25+'/25';
+    document.getElementById('dossier-score').style.background=scoreBg(c.totalScore25);
+  }
+  // debounce save
+  clearTimeout(window._saveT);
+  window._saveT=setTimeout(save, 300);
+}
+function updateNested(parent, child, val){
+  const idx = cases.findIndex(x=>x.id===currentCaseId);
+  if(idx===-1) return;
+  if(!cases[idx][parent]) cases[idx][parent]={};
+  cases[idx][parent][child]=val;
+  save();
+}
+function toggleArray(key, val){
+  const idx = cases.findIndex(x=>x.id===currentCaseId);
+  if(idx===-1) return;
+  const arr = cases[idx][key]||[];
+  const pos = arr.indexOf(val);
+  if(pos>-1) arr.splice(pos,1); else arr.push(val);
+  cases[idx][key]=arr;
+  save(); renderDossierBody();
+}
+function toggleJourney(val){
+  const idx = cases.findIndex(x=>x.id===currentCaseId);
+  if(idx===-1) return;
+  const arr = cases[idx].buyerJourneySteps||[];
+  const pos = arr.indexOf(val);
+  if(pos>-1) arr.splice(pos,1); else arr.push(val);
+  cases[idx].buyerJourneySteps=arr;
+  cases[idx].buyerJourneyStepsCount=arr.length;
+  cases[idx].buyerJourneyMoreThanFour=arr.length>4;
+  save(); renderDossierBody();
+}
+
+function saveCurrentDossier(){ save(); alert('Dossier saved to browser!'); renderBoard(); }
+
+function deleteCurrentCase(){
+  if(!confirm('Delete this case? This cannot be undone.')) return;
+  cases = cases.filter(c=>c.id!==currentCaseId);
+  evidences = evidences.filter(e=>e.prospectId!==currentCaseId);
+  outreaches = outreaches.filter(o=>o.prospectId!==currentCaseId);
+  save();
+  closeDossier();
+  renderBoard();
+  renderEvidence();
+}
+
+function addComms(){
+  const c = cases.find(x=>x.id===currentCaseId);
+  if(!c) return;
+  const channel=document.getElementById('comms-channel').value;
+  const status=document.getElementById('comms-status').value;
+  const subject=document.getElementById('comms-subject').value.trim();
+  const message=document.getElementById('comms-message').value.trim();
+  if(!message) return alert('Message required');
+  const entry={id:genId(), prospectId:c.id, channel, status, subject, message, sentAt:new Date().toISOString(), createdAt:new Date().toISOString()};
+  outreaches.unshift(entry);
+  c.outreachCount=(c.outreachCount||0)+1;
+  c.lastOutreachAt=new Date().toISOString();
+  save();
+  renderDossierBody();
+}
+
+function openEvidenceModal(fixedId){
+  const modal=document.createElement('div');
+  modal.className='modal-backdrop open';
+  modal.id='evidence-modal';
+  modal.innerHTML=`
+    <div style="width:100%;max-width:520px;background:var(--paper);border:4px solid black;padding:20px;box-shadow:8px 8px 0 white">
+      <h3 style="font-size:12px;letter-spacing:0.14em;font-weight:800">LOG EVIDENCE • CONTRADICTION</h3>
+      <div style="margin-top:12px;display:grid;gap:10px;font-size:11px">
+        <select id="ev-case" style="border:2px solid black;padding:8px;font-family:inherit"><option value="">SELECT CASE (or general)</option>${cases.map(c=>`<option value="${c.id}" ${fixedId===c.id||currentCaseId===c.id?'selected':''}>${esc(c.caseNumber)} • ${esc(c.brandName)}</option>`).join('')}</select>
+        <div><label class="mono">BRILLIANT PART</label><input id="ev-brilliant" placeholder="Brilliant storyteller on LinkedIn"></div>
+        <div><label class="mono">WEAK PART</label><input id="ev-weak" placeholder="Weak About page"></div>
+        <div><label class="mono">OUTREACH ANGLE</label><textarea id="ev-angle" placeholder="Your LinkedIn made me trust you instantly..."></textarea></div>
+        <label style="display:flex;gap:8px;font-weight:800;font-size:11px"><input type="checkbox" id="ev-gold"> GOLD • HIGH VALUE</label>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-white" style="flex:1" onclick="document.getElementById('evidence-modal').remove()">CANCEL</button>
+        <button class="btn btn-black" style="flex:1" onclick="saveEvidence()">SAVE EVIDENCE</button>
+      </div>
+    </div>`;
+  modal.addEventListener('click', e=>{ if(e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+function saveEvidence(){
+  const prospectId=document.getElementById('ev-case').value||null;
+  const brilliant=document.getElementById('ev-brilliant').value.trim();
+  const weak=document.getElementById('ev-weak').value.trim();
+  if(!brilliant||!weak) return alert('Both parts required');
+  const angle=document.getElementById('ev-angle').value.trim();
+  const gold=document.getElementById('ev-gold').checked;
+  evidences.unshift({id:genId(), prospectId, brilliantPart:brilliant, weakPart:weak, outreachAngle:angle, isHighValue:gold, createdAt:new Date().toISOString()});
+  save();
+  document.getElementById('evidence-modal').remove();
+  if(currentView==='evidence') renderEvidence();
+  if(currentCaseId) renderDossierBody();
+}
+function deleteEvidence(id){ if(!confirm('Delete evidence?')) return; evidences=evidences.filter(e=>e.id!==id); save(); renderEvidence(); if(currentCaseId) renderDossierBody(); }
+
+function downloadData(){
+  const data={cases, evidences, outreaches, exportedAt:new Date().toISOString(), version:'jay-dossier-v3-pure-html'};
+  const blob=new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`jay-cases-backup-${new Date().toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(url);
+}
+function uploadData(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      if(!confirm(`Upload backup from ${data.exportedAt||'unknown'}?\n${(data.cases||[]).length} cases, ${(data.evidences||[]).length} evidence. This will MERGE with current (duplicates possible). Continue?`)) return;
+      // merge: replace if id exists else add
+      const existingIds=new Set(cases.map(c=>c.id));
+      (data.cases||[]).forEach(c=>{ if(!existingIds.has(c.id)) cases.push(c); });
+      evidences = [...(data.evidences||[]), ...evidences];
+      outreaches = [...(data.outreaches||[]), ...outreaches];
+      // deduplicate by id
+      cases = [...new Map(cases.map(c=>[c.id,c])).values()];
+      evidences = [...new Map(evidences.map(c=>[c.id,c])).values()];
+      outreaches = [...new Map(outreaches.map(c=>[c.id,c])).values()];
+      save(); renderBoard(); renderEvidence();
+      alert('Backup restored! Saved to browser.');
+    }catch(err){ alert('Invalid JSON: '+err.message); }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// init
+load();
+updateStats();
+renderBoard();
+renderEvidence();
+setView('board');
+
+// close modals on esc
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));
+    const evModal=document.getElementById('evidence-modal'); if(evModal) evModal.remove();
+  }
+});
+document.getElementById('dossier-modal').addEventListener('click', e=>{ if(e.target.id==='dossier-modal') closeDossier(); });
+document.getElementById('newcase-modal').addEventListener('click', e=>{ if(e.target.id==='newcase-modal') e.currentTarget.classList.remove('open'); });
+
+// Seed demo if empty
+if(cases.length===0){
+  cases=[
+    {
+      id: genId(), caseNumber:'CASE-2847', brandName:'Klarity Coaching', founderName:'Sarah Chen', niche:'Investing for Creatives', website:'https://klarity.example',
+      discoveredVia:'LinkedIn', discoveryStory:'Only ex-JP Morgan advisor who explains investing without jargon. LinkedIn posts get 80+ thoughtful comments, but website feels like generic corporate template.',
+      visibilityContentQuality:5, visibilityEngagement:4, visibilityConsistency:5, visibilityRecentActivity:'This week', visibilityEvidenceTags:['Comments','Testimonials','Newsletter'],
+      commercialOffer:'$5,000 12-week investing program for creative entrepreneurs', commercialPrice:'$5,000', commercialOneClientValuable:true,
+      growthSignalsTags:['Professional branding','Website','Lead magnet','Email list','Podcast'],
+      buyerJourneySteps:['LinkedIn','Website','Lead Magnet','Email','Sales Page','Application','Checkout'], buyerJourneyStepsCount:7, buyerJourneyMoreThanFour:true,
+      confidenceBefore:3, confidenceAfterContent:9, confidenceHomepage:5, confidenceOfferPage:4, confidenceCheckout:3, confidenceEnd:3,
+      confidenceWhereDeclined:'Homepage', confidenceWhatTriggered:'Corporate speak, generic stock photos - completely opposite of warm LinkedIn voice',
+      contradictionTheySay:'We simplify investing for creatives', contradictionButWebsite:'Website full of Wall Street jargon and compliance disclaimers',
+      contradictionContentFeel:'Like a smart friend explaining money over coffee', contradictionFunnelFeel:'Like being handed a 40-page prospectus by a bank',
+      trustLeaksTags:['Generic messaging','Weak headline','Inconsistent tone','Too much jargon'],
+      oneFinding:'Audience trusts you because you demystify money, but your sales page rebuilds the wall with jargon. Align funnel voice to LinkedIn voice and conversion doubles.',
+      outreachSubject:'Sarah — your LinkedIn vs your homepage', outreachOpening:'Your post yesterday about "investing is just delayed spending" made me stop scrolling. 83 comments, but your homepage says "holistic wealth optimization framework"...', outreachCuriosity:'What if your funnel felt as trusted as your content?', outreachQuestion:'Where did you feel confidence drop when you last walked your own funnel?',
+      scoreVisibility:5, scoreCommercial:5, scoreTrustGap:5, scoreGrowth:4, scoreOutreach:5, totalScore25:24,
+      status:'worth_pursuing', finalVerdict:'Send outreach', hasUsefulInsight:true, outreachCount:0, createdAt:new Date(Date.now()-86400000*2).toISOString(), investigator:'Segun Falade'
+    },
+    {
+      id: genId(), caseNumber:'CASE-3921', brandName:'FounderFlow', founderName:'Marcus Lee', niche:'B2B SaaS Positioning', website:'https://founderflow.example',
+      discoveredVia:'Podcast', discoveryStory:'Heard on Lenny podcast — brilliant takedown of "AI-powered" generic positioning. But his own site says "AI-powered GTM platform". Contradiction gold.',
+      visibilityContentQuality:4, visibilityEngagement:3, visibilityConsistency:4, visibilityRecentActivity:'This month', visibilityEvidenceTags:['Podcast interviews','Speaking','Comments'],
+      commercialOffer:'$12k positioning sprint', commercialPrice:'$12,000', commercialOneClientValuable:true,
+      growthSignalsTags:['Professional branding','Website','Application funnel','Video content'],
+      buyerJourneySteps:['Podcast','Website','Sales Page','Booking'], buyerJourneyStepsCount:4, buyerJourneyMoreThanFour:false,
+      confidenceBefore:6, confidenceAfterContent:9, confidenceHomepage:4, confidenceOfferPage:6, confidenceCheckout:6, confidenceEnd:6,
+      confidenceWhereDeclined:'Homepage hero', confidenceWhatTriggered:'"AI-powered" buzzword contradicts his anti-buzzword content',
+      contradictionTheySay:'We hate buzzwords, clarity wins', contradictionButWebsite:'Hero says "AI-powered GTM platform"',
+      contradictionContentFeel:'Sharp, opinionated, trustworthy', contradictionFunnelFeel:'Generic SaaS template',
+      trustLeaksTags:['Weak positioning','Inconsistent tone'],
+      oneFinding:'You teach founders to kill buzzwords, but your homepage leads with one. Fix that one line and your content-to-website consistency becomes perfect case study.',
+      outreachSubject:'Marcus — loved Lenny ep, but...', outreachOpening:'Your line "If you need AI-powered in your headline, you have no positioning" was brilliant. Then I hit your homepage...', outreachCuriosity:'Curious if you noticed?', outreachQuestion:'What would you write if you followed your own rule?',
+      scoreVisibility:4, scoreCommercial:5, scoreTrustGap:5, scoreGrowth:3, scoreOutreach:5, totalScore25:22,
+      status:'under_investigation', finalVerdict:'Investigate further', hasUsefulInsight:true, outreachCount:1, createdAt:new Date().toISOString(), investigator:'Segun Falade'
+    }
+  ];
+  evidences=[
+    {id:genId(), prospectId:cases[0].id, brilliantPart:'Brilliant LinkedIn storyteller, explains investing like a friend', weakPart:'Weak About page, corporate stock photos', outreachAngle:'Your LinkedIn made me trust you instantly, but your About page feels like a different person wrote it — what changed?', isHighValue:true, createdAt:new Date().toISOString()},
+    {id:genId(), prospectId:null, brilliantPart:'We simplify investing', weakPart:'Website full of jargon', outreachAngle:'We simplify vs jargon-filled site = perfect opener', isHighValue:true, createdAt:new Date().toISOString()}
+  ];
+  outreaches=[
+    {id:genId(), prospectId:cases[1].id, channel:'email', status:'sent', subject:'Marcus — loved Lenny ep, but...', message:'Your line about AI-powered buzzwords was gold. Then your homepage... curious if intentional?', sentAt:new Date().toISOString(), createdAt:new Date().toISOString()}
+  ];
+  save();
+  renderBoard();
+  renderEvidence();
+}
+</script>
+</body>
+</html>

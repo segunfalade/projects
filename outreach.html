@@ -28,7 +28,11 @@
       --streak-orange: #f59e0b;
     }
     
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     
     body {
       font-family: 'Inter', sans-serif;
@@ -89,6 +93,11 @@
       border: 1px solid rgba(255,255,255,.1);
       border-radius: 12px;
     }
+    .glass-strong {
+      background: rgba(26,26,46,.9);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.15);
+    }
     
     .text-gradient-gold { background: linear-gradient(135deg,#ffd700,#ffaa00,#ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .text-gradient-blue { background: linear-gradient(135deg,#4facfe,#00f2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -100,14 +109,12 @@
     ::-webkit-scrollbar-track { background: var(--dark-800); }
     ::-webkit-scrollbar-thumb { background: var(--dark-500); border-radius: 4px; }
     
-    /* Heatmap Colors */
     .heat-0 { background: #1a1a2e; }
     .heat-1 { background: #163020; }
     .heat-2 { background: #1a4a2a; }
     .heat-3 { background: #2d6b3f; }
     .heat-4 { background: #43e97b; }
     
-    /* Status Colors */
     .status-new { background: rgba(107,114,128,.3); color: #9ca3af; }
     .status-contacted { background: rgba(59,130,246,.2); color: #60a5fa; }
     .status-fu1 { background: rgba(6,182,212,.2); color: #22d3ee; }
@@ -121,13 +128,10 @@
     .status-lost { background: rgba(239,68,68,.2); color: #f87171; }
     .status-ghosted { background: rgba(75,85,99,.3); color: #6b7280; }
     
-    /* Value Colors */
     .value-low { color: #9ca3af; }
     .value-medium { color: #60a5fa; }
     .value-high { color: #fb923c; }
     .value-boss { color: #c084fc; }
-    
-    /* Result Colors */
     .result-sent { color: #60a5fa; }
     .result-opened { color: #22d3ee; }
     .result-replied { color: #4ade80; }
@@ -136,45 +140,29 @@
     .result-meeting-booked { color: #ffd700; }
     .result-no-response { color: #6b7280; }
 
-    /* Score Badges for Qualification */
-    .score-badge { padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
+    /* New Qualification Score Badges */
+    .score-badge { padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
     .score-high { background: rgba(255,215,0,.15); color: var(--gold); border: 1px solid rgba(255,215,0,.3); }
     .score-med { background: rgba(6,214,160,.15); color: var(--quest-cyan); border: 1px solid rgba(6,214,160,.3); }
     .score-low { background: rgba(255,71,87,.15); color: var(--health-red); border: 1px solid rgba(255,71,87,.3); }
     
     input, select, textarea {
-      background: var(--dark-700);
-      border: 1px solid var(--dark-600);
-      border-radius: 8px;
-      padding: 8px 12px;
-      color: white;
-      font-size: 14px;
-      font-family: 'Inter', sans-serif;
-      width: 100%;
-      outline: none;
-      transition: border-color .2s;
+      background: var(--dark-700); border: 1px solid var(--dark-600); border-radius: 8px;
+      padding: 8px 12px; color: white; font-size: 14px; font-family: 'Inter', sans-serif;
+      width: 100%; outline: none; transition: border-color .2s;
     }
     input:focus, select:focus, textarea:focus {
-      border-color: var(--xp-blue);
-      box-shadow: 0 0 0 1px rgba(79,172,254,.3);
+      border-color: var(--xp-blue); box-shadow: 0 0 0 1px rgba(79,172,254,.3);
     }
     input::placeholder, textarea::placeholder { color: var(--dark-400); }
     select {
-      cursor: pointer;
-      appearance: none;
+      cursor: pointer; appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238888aa' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
+      background-repeat: no-repeat; background-position: right 12px center;
     }
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--dark-300);
-      margin-bottom: 4px;
-    }
-
-    /* Toggle Switch Component for Qualification */
+    label { display: block; font-size: 12px; font-weight: 500; color: var(--dark-300); margin-bottom: 4px; }
+    
+    /* Toggle Switch */
     .toggle-switch { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
     .toggle-switch input { opacity: 0; width: 0; height: 0; }
     .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--dark-600); transition: .3s; border-radius: 20px; }
@@ -184,16 +172,10 @@
     
     .checkbox-row { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(26,26,46,.4); border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--dark-600); }
     .checkbox-row:hover { border-color: var(--dark-500); background: rgba(26,26,46,.8); }
-    
+
     .btn {
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      border: none;
-      transition: all .2s;
-      font-family: 'Inter', sans-serif;
+      padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px;
+      cursor: pointer; border: none; transition: all .2s; font-family: 'Inter', sans-serif;
     }
     .btn:hover { transform: scale(1.05); }
     .btn:active { transform: scale(.95); }
@@ -204,70 +186,40 @@
     .btn-quest { background: linear-gradient(135deg,var(--quest-cyan),var(--xp-green)); color: var(--dark-900); }
     
     .nav-item {
-      padding: 10px 16px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all .2s;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      padding: 10px 16px; border-radius: 12px; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 10px;
     }
     .nav-item:hover { background: var(--dark-700); color: white; }
-    .nav-item.active {
-      background: rgba(255,215,0,.1);
-      color: var(--gold);
-      border: 1px solid rgba(255,215,0,.2);
-    }
+    .nav-item.active { background: rgba(255,215,0,.1); color: var(--gold); border: 1px solid rgba(255,215,0,.2); }
     .xp-bar-fill { transition: width .8s cubic-bezier(.4,0,.2,1); }
-    
     .tab-btn {
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all .2s;
-      border: 1px solid var(--dark-600);
-      background: var(--dark-700);
-      color: var(--dark-300);
+      padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all .2s; border: 1px solid var(--dark-600);
+      background: var(--dark-700); color: var(--dark-300);
     }
     .tab-btn:hover { border-color: var(--dark-500); color: white; }
-    .tab-btn.active {
-      background: rgba(255,215,0,.1);
-      color: var(--gold);
-      border-color: rgba(255,215,0,.3);
-    }
+    .tab-btn.active { background: rgba(255,215,0,.1); color: var(--gold); border-color: rgba(255,215,0,.3); }
     
     .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
-    .toast {
-      padding: 12px 20px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 500;
-      animation: slideInRight .3s ease-out;
-      box-shadow: 0 4px 20px rgba(0,0,0,.4);
-    }
+    .toast { padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; animation: slideInRight .3s ease-out; box-shadow: 0 4px 20px rgba(0,0,0,.4); }
     .toast-success { background: rgba(67,233,123,.2); border: 1px solid rgba(67,233,123,.3); color: var(--xp-green); }
     .toast-xp { background: rgba(79,172,254,.2); border: 1px solid rgba(79,172,254,.3); color: var(--xp-blue); }
+    .toast-achievement { background: rgba(255,215,0,.2); border: 1px solid rgba(255,215,0,.3); color: var(--gold); }
+    .toast-level { background: rgba(168,85,247,.2); border: 1px solid rgba(168,85,247,.3); color: var(--boss-purple); }
     .toast-warning { background: rgba(255,71,87,.2); border: 1px solid rgba(255,71,87,.3); color: var(--health-red); }
     
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(5px);
-      z-index: 100; display: flex; align-items: center; justify-content: center;
-    }
-    .modal-content {
-      background: var(--dark-800); border: 1px solid rgba(255,255,255,.1);
-      border-radius: 16px; padding: 32px; max-width: 500px; width: 90%;
-      text-align: center; max-height: 90vh; overflow-y: auto;
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(5px); z-index: 100; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px;}
+    .modal-content { background: var(--dark-800); border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 32px; max-width: 500px; width: 100%; text-align: center; position: relative; margin: auto;}
+    .modal-content.wide-modal { max-width: 850px; text-align: left; }
     
     .card-hover { transition: all .2s; }
     .card-hover:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,.3); }
     
     .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
     .grid-8 { display: grid; grid-template-columns: repeat(8,1fr); gap: 8px; }
+    
+    .notebook-masonry { columns: 3 250px; gap: 16px; }
+    .notebook-item { break-inside: avoid; margin-bottom: 16px; display: inline-block; width: 100%; position: relative; }
 
     @media(max-width:768px) {
       .sidebar { display: none !important; }
@@ -275,7 +227,7 @@
       .main-content { padding-bottom: 80px !important; }
       .grid-4 { grid-template-columns: repeat(2,1fr) !important; }
       .grid-8 { grid-template-columns: repeat(4,1fr) !important; }
-      .modal-content.wide-modal { grid-template-columns: 1fr !important; }
+      .add-prospect-grid { grid-template-columns: 1fr !important; }
     }
     @media(min-width:769px) { .bottom-nav { display: none !important; } }
   </style>
@@ -289,6 +241,7 @@
       <div style="font-size:64px; margin-bottom:16px" class="animate-float">⭐</div>
       <h2 class="font-display text-3xl font-bold text-gradient-gold" style="margin-bottom:8px">LEVEL UP!</h2>
       <p style="font-size:18px; margin-bottom:4px">You've reached <span class="font-display font-bold" style="color:var(--gold); font-size:1.25rem" id="levelUpLevel">Level 1</span></p>
+      <p style="font-size:14px; margin-bottom:24px; color:var(--dark-300)">Your outreach game keeps getting stronger!</p>
       <button class="btn btn-gold" onclick="closeLevelUp()">Let's Go! 🚀</button>
     </div>
   </div>
@@ -316,7 +269,7 @@
   </div>
   
   <div class="modal-overlay" id="addProspectModal" style="display:none">
-    <div class="modal-content wide-modal" style="max-width:850px; text-align:left; display:grid; grid-template-columns:1fr 1fr; gap:32px">
+    <div class="modal-content wide-modal add-prospect-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:32px">
       
       <!-- Left Side: Basic Info -->
       <div>
@@ -324,9 +277,10 @@
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
           <div style="grid-column:span 2"><label>Company / Brand</label><input id="newCompany" placeholder="Company name"></div>
           <div><label>Contact Name</label><input id="newContact" placeholder="Person's name"></div>
-          <div><label>Email / Handle</label><input id="newEmail" type="text" placeholder="email or social handle"></div>
+          <div><label>Email</label><input id="newEmail" type="email" placeholder="email@example.com"></div>
+          <div><label>Industry</label><input id="newIndustry" placeholder="e.g. SaaS, Coaching"></div>
           <div>
-            <label>Value Tier</label>
+            <label>Prospect Value</label>
             <select id="newValue">
               <option value="low">🔹 Low Value</option>
               <option value="medium" selected>🔸 Medium Value</option>
@@ -334,7 +288,16 @@
               <option value="boss">👑 Boss Battle</option>
             </select>
           </div>
-          <div><label>Next Action Date</label><input id="newDate" type="date"></div>
+          <div><label>First Action Date</label><input id="newDate" type="date"></div>
+          <div>
+            <label>Action Type</label>
+            <select id="newActionType">
+              <option value="email">📧 Email</option>
+              <option value="call">📞 Phone Call</option>
+              <option value="linkedin">💼 LinkedIn</option>
+              <option value="other">📋 Other</option>
+            </select>
+          </div>
         </div>
       </div>
       
@@ -371,7 +334,7 @@
         </div>
         
         <div id="newScoreWarning" style="font-size:12px; color:var(--health-red); text-align:center; margin-top:8px; display:block">
-          Score is below 8. Might not be worth your expensive time!
+          ⚠️ Score is below 8. Might not be worth your expensive time!
         </div>
       </div>
       
@@ -383,8 +346,9 @@
   </div>
   
   <div class="modal-overlay" id="importModal" style="display:none">
-    <div class="modal-content" style="text-align:left">
+    <div class="modal-content" style="text-align:left; max-width:500px">
       <h3 class="font-display font-bold text-lg text-gradient-boss" style="margin-bottom:12px">📥 Import Data</h3>
+      <p style="font-size:14px; margin-bottom:12px; color:var(--dark-300)">Paste your JSON backup or upload a file.</p>
       <textarea id="importText" rows="6" placeholder="Paste JSON here..." style="font-family:monospace; font-size:12px"></textarea>
       <div style="display:flex; gap:10px; margin-top:12px; justify-content:space-between; align-items:center">
         <div>
@@ -411,7 +375,7 @@
       
       <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><span>🏠</span> Dashboard</div>
       <div class="nav-item" data-tab="prospects" onclick="switchTab('prospects')"><span>👥</span> Prospects</div>
-      <!-- NEW TAB: Note book for Contradictions -->
+      <!-- NEW: Notebook Tab -->
       <div class="nav-item" data-tab="notebook" onclick="switchTab('notebook')"><span>📒</span> Contradictions</div>
       <div class="nav-item" data-tab="achievements" onclick="switchTab('achievements')"><span>🏆</span> Achievements</div>
       <div class="nav-item" data-tab="settings" onclick="switchTab('settings')"><span>⚙️</span> Settings</div>
@@ -431,6 +395,10 @@
             <span style="color:var(--dark-300)">Streak</span>
             <span class="font-bold" style="color:var(--fire); margin-left:auto" id="sideStreak">0🔥</span>
           </div>
+          <div style="display:flex; justify-content:space-between">
+            <span style="color:var(--dark-300)">Prospects</span>
+            <span class="font-bold" style="margin-left:auto" id="sideProspects">0</span>
+          </div>
         </div>
       </div>
     </nav>
@@ -442,10 +410,18 @@
   
   <nav class="bottom-nav" style="position:fixed; bottom:0; left:0; right:0; background:rgba(18,18,26,.95); backdrop-filter:blur(20px); border-top:1px solid var(--dark-600); display:none; z-index:50">
     <div style="display:flex; justify-content:space-around; padding:8px 0">
-      <div class="nav-item" style="flex:1; justify-content:center" data-tab="dashboard" onclick="switchTab('dashboard')"><span>🏠</span></div>
-      <div class="nav-item" style="flex:1; justify-content:center" data-tab="prospects" onclick="switchTab('prospects')"><span>👥</span></div>
-      <div class="nav-item" style="flex:1; justify-content:center" data-tab="notebook" onclick="switchTab('notebook')"><span>📒</span></div>
-      <div class="nav-item" style="flex:1; justify-content:center" data-tab="achievements" onclick="switchTab('achievements')"><span>🏆</span></div>
+      <div class="nav-item" style="flex:1; justify-content:center; flex-direction:column; gap:2px; padding:6px 0" data-tab="dashboard" onclick="switchTab('dashboard')">
+        <span>🏠</span><span style="font-size:10px">Home</span>
+      </div>
+      <div class="nav-item" style="flex:1; justify-content:center; flex-direction:column; gap:2px; padding:6px 0" data-tab="prospects" onclick="switchTab('prospects')">
+        <span>👥</span><span style="font-size:10px">Quests</span>
+      </div>
+      <div class="nav-item" style="flex:1; justify-content:center; flex-direction:column; gap:2px; padding:6px 0" data-tab="notebook" onclick="switchTab('notebook')">
+        <span>📒</span><span style="font-size:10px">Notes</span>
+      </div>
+      <div class="nav-item" style="flex:1; justify-content:center; flex-direction:column; gap:2px; padding:6px 0" data-tab="achievements" onclick="switchTab('achievements')">
+        <span>🏆</span><span style="font-size:10px">Awards</span>
+      </div>
     </div>
   </nav>
 
@@ -458,16 +434,41 @@ const QUEST_NAMES = [
   'Shadow Strike', 'The Last Resort'
 ];
 
+const QUEST_DESCS = [
+  'Send your first outreach message to the prospect.',
+  'Send your second follow-up. Keep the momentum going!',
+  'Third touchpoint. Most people quit here — not you!',
+  'Fourth follow-up. You\'re a warrior of persistence!',
+  'Fifth touchpoint. Legend status unlocked!',
+  'Sixth touchpoint. This is where champions are made.',
+  'Seventh! You\'ve gone beyond what 95% of people do.',
+  'Ghost hunter mode. They can\'t hide forever.',
+  'Shadow strike — coming from an unexpected angle.',
+  'The nuclear option. Last chance to make contact.'
+];
+
+const QUEST_ICONS = ['🏹', '✉️', '🌬️', '🎲', '💥', '🤝', '⚔️', '👻', '🗡️', '💣'];
+
 const ACH_DEFS = [
   {id:'first_outreach', name:'First Blood', desc:'Send your first outreach', icon:'🩸', category:'outreach', req:1, xp:25},
   {id:'10_outreaches', name:'Skirmisher', desc:'Send 10 outreaches', icon:'🗡️', category:'outreach', req:10, xp:50},
   {id:'50_outreaches', name:'Outreach Warrior', desc:'Send 50 outreaches', icon:'⚔️', category:'outreach', req:50, xp:150},
+  {id:'100_outreaches', name:'Outreach Master', desc:'Send 100 outreaches', icon:'🎯', category:'outreach', req:100, xp:300},
   {id:'5_streak', name:'On Fire!', desc:'Maintain a 5-day streak', icon:'🔥', category:'streak', req:5, xp:50},
+  {id:'14_streak', name:'Streak Lord', desc:'Maintain a 14-day streak', icon:'🔥', category:'streak', req:14, xp:150},
+  {id:'30_streak', name:'Streak Legend', desc:'Maintain a 30-day streak', icon:'🔥', category:'streak', req:30, xp:500},
+  {id:'50_streak', name:'Immortal Flame', desc:'Maintain a 50-day streak', icon:'🔥', category:'streak', req:50, xp:1000},
   {id:'10_level', name:'Rising Star', desc:'Reach Level 10', icon:'⭐', category:'xp', req:10, xp:100},
-  {id:'first_boss', name:'Boss Slayer', desc:'Defeat a Boss Battle', icon:'💀', category:'boss', req:1, xp:200},
+  {id:'25_level', name:'Elite', desc:'Reach Level 25', icon:'💎', category:'xp', req:25, xp:250},
+  {id:'50_level', name:'Grandmaster', desc:'Reach Level 50', icon:'👑', category:'xp', req:50, xp:500},
+  {id:'first_boss', name:'Boss Slayer', desc:'Defeat your first Boss Battle', icon:'💀', category:'boss', req:1, xp:200},
+  {id:'5_bosses', name:'Boss Hunter', desc:'Defeat 5 Boss Battles', icon:'🐉', category:'boss', req:5, xp:500},
   {id:'10_responses', name:'Charmer', desc:'Get 10 responses', icon:'💌', category:'outreach', req:10, xp:100},
-  {id:'first_meeting', name:'Door Opener', desc:'Book a meeting', icon:'🚪', category:'outreach', req:1, xp:150},
-  {id:'first_win', name:'Closer', desc:'Close your first deal', icon:'🤝', category:'special', req:1, xp:300}
+  {id:'25_responses', name:'Silver Tongue', desc:'Get 25 responses', icon:'🎭', category:'outreach', req:25, xp:250},
+  {id:'first_meeting', name:'Door Opener', desc:'Book your first meeting', icon:'🚪', category:'outreach', req:1, xp:150},
+  {id:'10_meetings', name:'Rainmaker', desc:'Book 10 meetings', icon:'☔', category:'outreach', req:10, xp:400},
+  {id:'first_win', name:'Closer', desc:'Close your first deal', icon:'🤝', category:'special', req:1, xp:300},
+  {id:'all_quests', name:'Completionist', desc:'Complete all 10 quest stages for a prospect', icon:'📜', category:'special', req:1, xp:200}
 ];
 
 const STATUS_MAP = {
@@ -496,7 +497,7 @@ const TYPE_ICONS = { 'email': '📧', 'call': '📞', 'linkedin': '💼', 'meeti
 function defaultState() {
   return {
     prospects: [],
-    notebook: [], // New Feature: Global notebook for contradictions
+    notebook: [], // The new global contradictions notebook
     stats: {
       totalXP: 0, level: 1, xpForNextLevel: 100, currentStreak: 0, longestStreak: 0, 
       lastActivityDate: '', totalOutreaches: 0, totalResponses: 0, totalMeetings: 0, 
@@ -515,44 +516,32 @@ let confirmCallback = null;
 
 function loadState() {
   try {
-    // Attempt to load new v2 schema first
-    let r = localStorage.getItem('outreach_quest_data_v2');
+    const r = localStorage.getItem('outreach_quest_data');
     if (r) {
       const p = JSON.parse(r);
-      return upgradeState(p);
-    }
-    
-    // Attempt to migrate from older version
-    r = localStorage.getItem('outreach_quest_data');
-    if (r) {
-      const p = JSON.parse(r);
-      return upgradeState(p);
+      // Migrate old achievements smoothly
+      if (!p.achievements || p.achievements.length < ACH_DEFS.length) {
+        p.achievements = ACH_DEFS.map(a => {
+          const ext = (p.achievements || []).find(ea => ea.id === a.id);
+          return ext ? {...a, unlocked: ext.unlocked, unlockedDate: ext.unlockedDate} : {...a, unlocked: false, unlockedDate: null};
+        });
+      }
+      if (!p.stats) p.stats = defaultState().stats;
+      
+      // Upgrade logic for V2 features
+      if (!p.notebook) p.notebook = [];
+      p.prospects.forEach(pros => {
+        if (!pros.score) pros.score = { strongContent: false, premiumOffer: false, activeAudience: false, weakWebsite: false, multiStepFunnel: false, recentActivity: false };
+        if (!pros.intel) pros.intel = { confidenceGap: '', contradictions: '', offerDetails: '', demandSignals: '', founderLed: false };
+      });
+      return p;
     }
   } catch(e) { console.error("Error loading state:", e); }
   return defaultState();
 }
 
-function upgradeState(p) {
-  // Ensure all v2 arrays/objects exist
-  if (!p.notebook) p.notebook = [];
-  if (!p.achievements || !p.achievements.length) p.achievements = ACH_DEFS.map(a => ({...a, unlocked: false, unlockedDate: null}));
-  if (!p.stats) p.stats = defaultState().stats;
-  
-  // Ensure all prospects have scoring/intel structure
-  p.prospects.forEach(pros => {
-    if (!pros.score) {
-      pros.score = { strongContent: false, premiumOffer: false, activeAudience: false, weakWebsite: false, multiStepFunnel: false, recentActivity: false };
-    }
-    if (!pros.intel) {
-      pros.intel = { contradictions: '', confidenceGap: '', offerDetails: '', demandSignals: '', founderLed: false };
-    }
-    if (!pros.touchpoints) pros.touchpoints = [];
-  });
-  return p;
-}
-
 function saveState() {
-  try { localStorage.setItem('outreach_quest_data_v2', JSON.stringify(state)); } 
+  try { localStorage.setItem('outreach_quest_data', JSON.stringify(state)); } 
   catch(e) { console.error("Error saving state:", e); }
 }
 
@@ -561,7 +550,7 @@ function exportState() {
   const b = new Blob([j], {type: 'application/json'});
   const u = URL.createObjectURL(b);
   const a = document.createElement('a');
-  a.href = u; a.download = 'outreach-quest-backup.json';
+  a.href = u; a.download = 'outreach-quest-' + new Date().toISOString().split('T')[0] + '.json';
   a.click(); URL.revokeObjectURL(u);
   showToast('Backup downloaded!', 'success');
 }
@@ -570,10 +559,22 @@ function importStateJSON(json) {
   try {
     const p = JSON.parse(json);
     if (!p.prospects || !p.stats) throw new Error("Invalid structure");
-    state = upgradeState(p);
-    saveState(); render();
+    // Ensure structure is upgraded after import
+    if (!p.notebook) p.notebook = [];
+    p.prospects.forEach(pros => {
+      if (!pros.score) pros.score = { strongContent: false, premiumOffer: false, activeAudience: false, weakWebsite: false, multiStepFunnel: false, recentActivity: false };
+      if (!pros.intel) pros.intel = { confidenceGap: '', contradictions: '', offerDetails: '', demandSignals: '', founderLed: false };
+    });
+    
+    state = p; saveState(); render();
     showToast('Data imported successfully!', 'success');
   } catch(e) { showToast('Invalid data format!', 'warning'); }
+}
+
+function resetAll() {
+  state = defaultState();
+  saveState(); render();
+  showToast('All data reset!', 'warning');
 }
 
 function calcProspectScore(sc) {
@@ -601,7 +602,6 @@ function calculateNewScore() {
   const b = document.getElementById('newScoreBadge');
   const w = document.getElementById('newScoreWarning');
   b.textContent = score + '/12';
-  
   b.className = 'score-badge ' + (score >= 10 ? 'score-high' : score >= 8 ? 'score-med' : 'score-low');
   w.style.display = score < 8 ? 'block' : 'none';
 }
@@ -610,17 +610,18 @@ function updateExistingScore(pId, field, val) {
   const p = state.prospects.find(x => x.id === pId);
   if(p) {
     p.score[field] = val;
-    saveState();
-    render(); // re-render detail view
+    saveState(); render(); 
   }
 }
 
 function updateIntel(pId, field, val) {
   const p = state.prospects.find(x => x.id === pId);
-  if(p) {
-    p.intel[field] = val;
-    saveState();
-  }
+  if(p) { p.intel[field] = val; saveState(); }
+}
+
+function toggleFounderLed(pId) {
+  const p = state.prospects.find(x => x.id === pId);
+  if(p) { p.intel.founderLed = !p.intel.founderLed; saveState(); render(); }
 }
 
 function xpForLevel(l) { return Math.floor(100 * Math.pow(1.3, l - 1)); }
@@ -639,8 +640,8 @@ function updateStreak(date) {
   const today = date || new Date().toISOString().split('T')[0];
   const last = state.stats.lastActivityDate;
   if (last === today) return;
-  
   const yest = new Date(new Date(today).getTime() - 864e5).toISOString().split('T')[0];
+  
   if (last === yest || last === '') state.stats.currentStreak++;
   else if (last !== today) state.stats.currentStreak = 1;
   
@@ -663,12 +664,23 @@ function checkAchievements() {
   const checks = [
     ['first_outreach', s.totalOutreaches >= 1],
     ['10_outreaches', s.totalOutreaches >= 10],
+    ['50_outreaches', s.totalOutreaches >= 50],
+    ['100_outreaches', s.totalOutreaches >= 100],
     ['10_responses', s.totalResponses >= 10],
+    ['25_responses', s.totalResponses >= 25],
     ['first_meeting', s.totalMeetings >= 1],
+    ['10_meetings', s.totalMeetings >= 10],
     ['5_streak', s.currentStreak >= 5],
+    ['14_streak', s.currentStreak >= 14],
+    ['30_streak', s.currentStreak >= 30],
+    ['50_streak', s.currentStreak >= 50],
     ['10_level', s.level >= 10],
+    ['25_level', s.level >= 25],
+    ['50_level', s.level >= 50],
     ['first_boss', s.bossDefeated >= 1],
-    ['first_win', s.totalWins >= 1]
+    ['5_bosses', s.bossDefeated >= 5],
+    ['first_win', s.totalWins >= 1],
+    ['all_quests', state.prospects.some(p => p.questLevel >= 10)]
   ];
   checks.forEach(([id, c]) => { if (c && !s.achievements.includes(id)) { s.achievements.push(id); unlockAchievement(id); } });
 }
@@ -677,20 +689,23 @@ function addTouchpoint(pId, type, result, notes) {
   const p = state.prospects.find(x => x.id === pId);
   if (!p) return;
   
-  const xp = p.value === 'boss' ? (type === 'meeting' ? 100 : 20) : (type === 'meeting' ? 50 : 10);
-  const tp = {
-    id: Date.now().toString(36), type, result, date: new Date().toISOString().split('T')[0],
-    notes: notes || '', xpEarned: xp
-  };
+  const xm = { email: p.value === 'boss' ? 20 : 10, call: p.value === 'boss' ? 20 : 15, linkedin: p.value === 'boss' ? 20 : 8, meeting: p.value === 'boss' ? 100 : 50, other: 10 };
+  const tp = { id: generateId(), type, result, date: new Date().toISOString().split('T')[0], notes: notes || '', xpEarned: xm[type] || 10, questCompleted: true };
   
   let ns = p.status;
   if (result === 'replied') ns = 'response_received';
   else if (result === 'meeting_booked') ns = 'meeting_booked';
   else if (p.status === 'new' && result === 'sent') ns = 'contacted';
+  else if (result === 'sent') {
+    const ec = p.touchpoints.filter(t => t.type === 'email').length + 1;
+    if (ec <= 5) ns = 'followed_up_' + ec;
+  }
   
+  let bd = false;
   if (p.value === 'boss' && result !== 'no_response') {
-    p.bossHp = Math.max(0, (p.bossHp || 100) - (Math.floor(Math.random() * 15) + 5));
-    if (p.bossHp <= 0) state.stats.bossDefeated++;
+    const dmg = Math.floor(Math.random() * 15) + 5;
+    p.bossHp = Math.max(0, (p.bossHp || 100) - dmg);
+    if (p.bossHp <= 0 && (p.bossHp || 100) > 0) bd = true;
   }
   
   p.touchpoints.push(tp);
@@ -703,31 +718,36 @@ function addTouchpoint(pId, type, result, notes) {
   
   if (result === 'replied') state.stats.totalResponses++;
   if (result === 'meeting_booked') state.stats.totalMeetings++;
+  if (bd) state.stats.bossDefeated++;
+  if (ns === 'closed_won') state.stats.totalWins++;
+  if (ns === 'closed_lost') state.stats.totalLosses++;
   
   checkAchievements(); saveState();
-  showToast(`+${tp.xpEarned} XP!`, 'xp');
+  showToast(`+${tp.xpEarned} XP for ${TYPE_ICONS[type]} ${result}`, 'xp');
   
   if (state._leveledUp) { showLevelUp(); state._leveledUp = false; }
   if (state._newAchievement) { showAchievement(state._newAchievement); state._newAchievement = null; }
-  
   render();
 }
+
+function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
 
 function addProspect() {
   const co = document.getElementById('newCompany').value.trim() || 'Unknown Company';
   const cn = document.getElementById('newContact').value.trim() || 'Unknown Contact';
   
   state.prospects.push({
-    id: Date.now().toString(36),
-    company: co, contact: cn,
+    id: generateId(), company: co, contact: cn,
     email: document.getElementById('newEmail').value.trim(),
+    industry: document.getElementById('newIndustry').value.trim(),
     value: document.getElementById('newValue').value,
     status: 'new', touchpoints: [],
     nextActionDate: document.getElementById('newDate').value || new Date().toISOString().split('T')[0],
+    nextActionType: document.getElementById('newActionType').value,
     notes: '', addedDate: new Date().toISOString().split('T')[0],
     bossHp: document.getElementById('newValue').value === 'boss' ? 100 : 0,
     bossMaxHp: document.getElementById('newValue').value === 'boss' ? 100 : 0,
-    questLevel: 0,
+    questLevel: 0, tags: [],
     score: {
       strongContent: document.getElementById('sc_strongContent').checked,
       premiumOffer: document.getElementById('sc_premiumOffer').checked,
@@ -736,24 +756,29 @@ function addProspect() {
       multiStepFunnel: document.getElementById('sc_multiStepFunnel').checked,
       recentActivity: document.getElementById('sc_recentActivity').checked
     },
-    intel: { contradictions: '', confidenceGap: '', offerDetails: '', demandSignals: '', founderLed: false }
+    intel: { confidenceGap: '', contradictions: '', offerDetails: '', demandSignals: '', founderLed: false }
   });
   
   saveState(); closeAddProspect();
-  showToast('Quest added!', 'success'); render();
+  showToast('New quest added!', 'success'); render();
 }
 
 function deleteProspect(id) {
-  showConfirm('Delete Prospect', 'Permanently remove this prospect?', () => {
+  showConfirm('Delete Prospect', 'This will permanently remove this prospect and all their data.', () => {
     state.prospects = state.prospects.filter(p => p.id !== id);
     saveState(); render(); showToast('Prospect removed', 'warning');
   });
 }
 
+function updateProspectField(id, field, value) {
+  const p = state.prospects.find(x => x.id === id);
+  if (p) { p[field] = value; saveState(); }
+}
+
 function addNotebookEntry() {
   const text = document.getElementById('notebookInput').value.trim();
   if(!text) return;
-  state.notebook.unshift({ id: Date.now().toString(36), text, date: new Date().toISOString().split('T')[0] });
+  state.notebook.unshift({ id: generateId(), text, date: new Date().toISOString().split('T')[0] });
   document.getElementById('notebookInput').value = '';
   saveState(); render();
   showToast('Contradiction saved!', 'success');
@@ -769,21 +794,24 @@ function showToast(msg, type = 'success') {
   const t = document.createElement('div');
   t.className = `toast toast-${type}`; t.textContent = msg;
   c.appendChild(t);
-  setTimeout(() => t.style.opacity = '0', 2500);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; }, 2500);
   setTimeout(() => t.remove(), 3000);
 }
 
 function showLevelUp() {
   document.getElementById('levelUpLevel').textContent = 'Level ' + state.stats.level;
   document.getElementById('levelUpModal').style.display = 'flex';
+  confettiBurst('level');
 }
 function closeLevelUp() { document.getElementById('levelUpModal').style.display = 'none'; }
 
 function showAchievement(a) {
   document.getElementById('achieveIcon').textContent = a.icon || '🏆';
   document.getElementById('achieveName').textContent = a.name;
+  document.getElementById('achieveDesc').textContent = a.desc;
   document.getElementById('achieveXP').textContent = '+' + a.xp + ' XP';
   document.getElementById('achievementModal').style.display = 'flex';
+  confettiBurst('achievement');
 }
 function closeAchievement() { document.getElementById('achievementModal').style.display = 'none'; }
 
@@ -793,21 +821,22 @@ function showConfirm(title, msg, cb) {
   confirmCallback = cb;
   document.getElementById('confirmModal').style.display = 'flex';
 }
-function closeConfirm() { document.getElementById('confirmModal').style.display = 'none'; }
+function closeConfirm() { document.getElementById('confirmModal').style.display = 'none'; confirmCallback = null; }
 function confirmAction() { if (confirmCallback) confirmCallback(); closeConfirm(); }
 
+function closeAddProspect() {
+  document.getElementById('addProspectModal').style.display = 'none';
+  ['newCompany', 'newContact', 'newEmail', 'newIndustry'].forEach(id => document.getElementById(id).value = '');
+}
 function openAddProspect() {
   document.getElementById('newDate').value = new Date().toISOString().split('T')[0];
-  document.getElementById('sc_strongContent').checked = false;
-  document.getElementById('sc_premiumOffer').checked = false;
-  document.getElementById('sc_activeAudience').checked = false;
-  document.getElementById('sc_weakWebsite').checked = false;
-  document.getElementById('sc_multiStepFunnel').checked = false;
-  document.getElementById('sc_recentActivity').checked = false;
+  // Reset scoring toggles
+  ['sc_strongContent','sc_premiumOffer','sc_activeAudience','sc_weakWebsite','sc_multiStepFunnel','sc_recentActivity'].forEach(id => {
+    document.getElementById(id).checked = false;
+  });
   calculateNewScore();
   document.getElementById('addProspectModal').style.display = 'flex';
 }
-function closeAddProspect() { document.getElementById('addProspectModal').style.display = 'none'; }
 
 function closeImport() { document.getElementById('importModal').style.display = 'none'; }
 function openImport() { document.getElementById('importModal').style.display = 'flex'; }
@@ -821,14 +850,25 @@ function handleFileImport(ev) {
   const f = ev.target.files[0];
   if (!f) return;
   const r = new FileReader();
-  r.onload = e => {
-    importStateJSON(e.target.result);
-    closeImport();
-  };
+  r.onload = e => { importStateJSON(e.target.result); closeImport(); };
   r.readAsText(f);
 }
 
+function confettiBurst(type) {
+  const colors = type === 'boss' ? ['#a855f7', '#6366f1', '#8b5cf6', '#c084fc'] : type === 'level' ? ['#4facfe', '#00f2fe', '#43e97b', '#38f9d7'] : ['#ffd700', '#ffaa00', '#ff6b35', '#43e97b', '#4facfe'];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    el.style.cssText = `position:fixed; width:${Math.random() * 8 + 4}px; height:${Math.random() * 8 + 4}px; background:${colors[Math.floor(Math.random() * colors.length)]}; left:${Math.random() * 100}vw; top:-10px; border-radius:${Math.random() > 0.5 ? '50%' : '2px'}; z-index:9999; pointer-events:none;`;
+    document.body.appendChild(el);
+    const dur = Math.random() * 2000 + 1500;
+    const xD = (Math.random() - 0.5) * 200;
+    el.animate([{ transform: 'translateY(0) translateX(0) rotate(0deg)', opacity: 1 }, { transform: `translateY(${window.innerHeight + 50}px) translateX(${xD}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }], { duration: dur, easing: 'cubic-bezier(.25,.46,.45,.94)' });
+    setTimeout(() => el.remove(), dur);
+  }
+}
+
 function escHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
 function switchTab(tab) {
   currentTab = tab; selectedProspectId = null;
   document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
@@ -836,10 +876,7 @@ function switchTab(tab) {
 }
 
 function render() {
-  document.getElementById('sideXP').textContent = state.stats.totalXP.toLocaleString();
-  document.getElementById('sideLevel').textContent = state.stats.level;
-  document.getElementById('sideStreak').textContent = state.stats.currentStreak + '🔥';
-  
+  updateSideStats();
   const c = document.getElementById('pageContent');
   switch (currentTab) {
     case 'dashboard': c.innerHTML = renderDashboard(); break;
@@ -850,20 +887,42 @@ function render() {
   }
 }
 
+function updateSideStats() {
+  document.getElementById('sideXP').textContent = state.stats.totalXP.toLocaleString();
+  document.getElementById('sideLevel').textContent = state.stats.level;
+  document.getElementById('sideStreak').textContent = state.stats.currentStreak + '🔥';
+  document.getElementById('sideProspects').textContent = state.prospects.length;
+}
+
 function renderDashboard() {
   const s = state.stats;
   const ap = state.prospects.filter(p => !['closed_won', 'closed_lost', 'ghosted'].includes(p.status)).length;
-  const xpPct = s.xpForNextLevel > 0 ? Math.round(s.totalXP / s.xpForNextLevel * 100) : 0;
+  const rr = s.totalOutreaches > 0 ? Math.round(s.totalResponses / s.totalOutreaches * 100) : 0;
+  const cr = s.totalOutreaches > 0 ? Math.round(s.totalWins / s.totalOutreaches * 100) : 0;
   const today = new Date().toISOString().split('T')[0];
   const op = state.prospects.filter(p => p.nextActionDate && p.nextActionDate < today && !['closed_won', 'closed_lost', 'ghosted'].includes(p.status));
-  
+  const bp = state.prospects.filter(p => p.value === 'boss' && !['closed_won', 'closed_lost', 'ghosted'].includes(p.status));
+  const ua = state.achievements.filter(a => a.unlocked);
+  const tAxp = ua.reduce((x, a) => x + a.xp, 0);
+  const xpPct = s.xpForNextLevel > 0 ? Math.round(s.totalXP / s.xpForNextLevel * 100) : 0;
+
   let html = `
     <div class="animate-fade-in-up" style="max-width:900px">
-      <div style="display:flex; justify-content:space-between; margin-bottom:24px">
-        <div><h1 class="font-display text-3xl font-bold text-gradient-gold">Dashboard</h1><p style="color:var(--dark-300)">Gamified Outreach Tracker</p></div>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; margin-bottom:24px">
+        <div>
+          <h1 class="font-display text-3xl font-bold text-gradient-gold">Outreach Quest</h1>
+          <p style="color:var(--dark-300); font-size:14px">Gamified Outreach Tracker</p>
+        </div>
         <div style="width:200px">
-          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px"><span style="color:var(--xp-blue)">LVL ${s.level}</span><span>${s.totalXP} / ${s.xpForNextLevel} XP</span></div>
-          <div style="width:100%; height:10px; background:var(--dark-700); border-radius:99px; overflow:hidden;"><div style="width:${xpPct}%; height:100%; background:linear-gradient(90deg,#4facfe,#43e97b);"></div></div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px">
+            <span class="font-display text-xs" style="color:var(--xp-blue)">LVL ${s.level}</span>
+            <span style="font-size:12px; color:var(--dark-300)">${s.totalXP} / ${s.xpForNextLevel} XP</span>
+          </div>
+          <div style="width:100%; height:10px; background:var(--dark-700); border-radius:99px; overflow:hidden; border:1px solid var(--dark-600)">
+            <div class="xp-bar-fill" style="width:${xpPct}%; height:100%; background:linear-gradient(90deg,#4facfe,#00f2fe,#43e97b); border-radius:99px; position:relative">
+              <div style="position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent); background-size:200% 100%; animation:shimmer 2s infinite"></div>
+            </div>
+          </div>
         </div>
       </div>
   `;
@@ -871,38 +930,163 @@ function renderDashboard() {
   if (op.length > 0) {
     html += `
       <div class="glass" style="padding:16px; border-left:4px solid var(--health-red); margin-bottom:16px">
-        <div style="font-weight:bold; color:var(--health-red); margin-bottom:8px">⚠️ ${op.length} prospect(s) need follow-up</div>
-        <div style="display:flex; gap:6px; flex-wrap:wrap">
-          ${op.slice(0,5).map(p => `<span style="padding:4px 10px; background:rgba(255,71,87,.1); color:var(--health-red); border-radius:4px; font-size:12px">${escHtml(p.contact)}</span>`).join('')}
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
+          <span style="font-size:20px">⚠️</span>
+          <span style="font-weight:bold; color:var(--health-red)">Action Required!</span>
+          <span style="font-size:13px; color:var(--dark-300)">${op.length} prospect${op.length > 1 ? 's' : ''} need follow-up</span>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px">
+          ${op.slice(0, 5).map(p => `<span style="padding:4px 10px; background:rgba(255,71,87,.1); color:var(--health-red); border-radius:4px; font-size:12px; font-weight:500">${escHtml(p.contact)} (${escHtml(p.company)})</span>`).join('')}
+          ${op.length > 5 ? `<span style="font-size:12px; color:var(--dark-300)">+${op.length - 5} more</span>` : ''}
         </div>
       </div>
     `;
   }
 
+  const cards = [
+    { l: 'Total XP', v: s.totalXP.toLocaleString(), i: '✨', c: 'var(--xp-blue)' },
+    { l: 'Level', v: s.level, i: '🏆', c: 'var(--gold)' },
+    { l: 'Streak', v: s.currentStreak + '🔥', i: '', c: 'var(--fire)' },
+    { l: 'Outreaches', v: s.totalOutreaches, i: '', c: '#22d3ee' },
+    { l: 'Responses', v: s.totalResponses, i: '💬', c: '#4ade80' },
+    { l: 'Meetings', v: s.totalMeetings, i: '🤝', c: '#c084fc' },
+    { l: 'Wins', v: s.totalWins, i: '', c: 'var(--gold)' },
+    { l: 'Active', v: ap, i: '👥', c: '#60a5fa' }
+  ];
+
+  html += `<div class="grid-4" style="margin-bottom:20px">${cards.map(c => `<div class="glass card-hover" style="padding:16px"><div style="font-size:24px; margin-bottom:4px">${c.i}</div><div class="font-display font-bold text-lg" style="color:${c.c}">${c.v}</div><div style="font-size:12px; color:var(--dark-300)">${c.l}</div></div>`).join('')}</div>`;
+  
   html += `
-      <div class="grid-4" style="margin-bottom:20px">
-        <div class="glass" style="padding:16px"><div style="font-size:24px">✨</div><div class="font-display font-bold text-lg" style="color:var(--xp-blue)">${s.totalXP}</div><div style="font-size:12px; color:var(--dark-300)">Total XP</div></div>
-        <div class="glass" style="padding:16px"><div style="font-size:24px">🔥</div><div class="font-display font-bold text-lg" style="color:var(--fire)">${s.currentStreak}</div><div style="font-size:12px; color:var(--dark-300)">Day Streak</div></div>
-        <div class="glass" style="padding:16px"><div style="font-size:24px">💬</div><div class="font-display font-bold text-lg" style="color:#4ade80">${s.totalResponses}</div><div style="font-size:12px; color:var(--dark-300)">Responses</div></div>
-        <div class="glass" style="padding:16px"><div style="font-size:24px">🤝</div><div class="font-display font-bold text-lg" style="color:#c084fc">${s.totalMeetings}</div><div style="font-size:12px; color:var(--dark-300)">Meetings</div></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px">
+      <div class="glass" style="padding:20px">
+        <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">🔥 Your Streak</h3>
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px">
+          ${s.currentStreak > 0 ? '<span class="animate-fire-glow" style="font-size:28px">🔥</span>' : ''}
+          <span class="font-display font-bold text-xl" style="color:${s.currentStreak > 0 ? 'var(--streak-orange)' : 'var(--dark-300)'}">${s.currentStreak} day streak</span>
+          <span style="font-size:13px; color:var(--dark-300)">Longest: <span style="color:var(--fire); font-weight:bold">${s.longestStreak}</span></span>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px">
+          ${[5, 14, 30, 50].map(m => `<div style="text-align:center; padding:8px; border-radius:8px; font-size:12px; font-weight:bold; ${s.currentStreak >= m ? 'background:rgba(255,107,53,.2); color:var(--fire); border:1px solid rgba(255,107,53,.3)' : 'background:var(--dark-700); color:var(--dark-400); border:1px solid var(--dark-600)'}">${m}d</div>`).join('')}
+        </div>
+      </div>
+      
+      <div class="glass" style="padding:20px">
+        <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">👑 Boss Battles</h3>
+        ${bp.length > 0 ? bp.slice(0, 3).map(p => {
+              const hp = Math.round(p.bossHp / p.bossMaxHp * 100);
+              return `<div style="display:flex; align-items:center; justify-content:space-between; background:var(--dark-700); border-radius:8px; padding:10px; margin-bottom:8px"><div><div style="font-size:13px; font-weight:500">${escHtml(p.contact)}</div><div style="font-size:11px; color:var(--dark-300)">${escHtml(p.company)}</div></div><div style="display:flex; align-items:center; gap:8px"><span style="font-size:11px; color:var(--boss-purple)">HP</span><div style="width:80px; height:8px; background:var(--dark-600); border-radius:99px; overflow:hidden"><div style="width:${hp}%; height:100%; background:${hp > 60 ? 'var(--health-red)' : hp > 30 ? 'var(--streak-orange)' : 'var(--gold)'}; border-radius:99px; transition:width .5s"></div></div><span style="font-size:11px; color:var(--dark-300)">${p.bossHp}/${p.bossMaxHp}</span></div></div>`;
+            }).join('') : '<p style="font-size:13px; color:var(--dark-300)">No active boss battles. Mark prospects as "Boss" to start!</p>'
+        }
+      </div>
+    </div>
+    
+    <div class="glass" style="padding:20px; margin-bottom:20px">
+      <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">📊 Performance</h3>
+      <div class="grid-4">
+        <div style="text-align:center"><div class="font-display font-bold text-2xl text-gradient-blue">${rr}%</div><div style="font-size:12px; color:var(--dark-300); margin-top:4px">Response Rate</div></div>
+        <div style="text-align:center"><div class="font-display font-bold text-2xl text-gradient-quest">${cr}%</div><div style="font-size:12px; color:var(--dark-300); margin-top:4px">Conversion Rate</div></div>
+        <div style="text-align:center"><div class="font-display font-bold text-2xl text-gradient-boss">${s.bossDefeated}</div><div style="font-size:12px; color:var(--dark-300); margin-top:4px">Bosses Defeated</div></div>
+        <div style="text-align:center"><div class="font-display font-bold text-2xl text-gradient-gold">${tAxp}</div><div style="font-size:12px; color:var(--dark-300); margin-top:4px">Achievement XP</div></div>
       </div>
     </div>
   `;
+
+  html += renderHeatMap();
+
+  html += `
+    <div class="glass" style="padding:20px; margin-top:20px">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px">
+        <h3 class="font-display font-bold text-lg">🏅 Achievements</h3>
+        <span style="font-size:13px; color:var(--dark-300)">${ua.length}/${state.achievements.length} unlocked</span>
+      </div>
+      <div class="grid-8">
+        ${state.achievements.slice(0, 16).map(a => `<div style="display:flex; flex-direction:column; align-items:center; gap:4px; ${a.unlocked ? '' : 'opacity:.35'}"><div style="width:48px; height:48px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px; ${a.unlocked ? 'background:rgba(255,215,0,.15); border:1px solid rgba(255,215,0,.3)' : 'background:var(--dark-700); border:1px solid var(--dark-600)'}">${a.unlocked ? a.icon : '🔒'}</div><span style="font-size:10px; text-align:center; max-width:64px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap" title="${a.name}">${escHtml(a.name)}</span></div>`).join('')}
+      </div>
+    </div>
+  `;
+
+  const atp = state.prospects.flatMap(p => p.touchpoints.map(t => ({...t, contact: p.contact, company: p.company, status: p.status})))
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 8);
+
+  html += `
+    <div class="glass" style="padding:20px; margin-top:20px">
+      <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">📋 Recent Activity</h3>
+      ${!atp.length 
+        ? '<p style="text-align:center; color:var(--dark-300); padding:32px">No activity yet. Add your first prospect!</p>'
+        : atp.map(t => {
+            const sm = STATUS_MAP[t.status] || STATUS_MAP.new;
+            return `<div style="display:flex; align-items:center; gap:12px; background:rgba(26,26,46,.3); border-radius:8px; padding:10px; margin-bottom:6px"><span style="font-size:18px">${TYPE_ICONS[t.type] || '📋'}</span><div style="flex:1; min-width:0"><div style="font-size:13px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${escHtml(t.contact)} <span style="color:var(--dark-400)">(${escHtml(t.company)})</span></div><div style="font-size:11px; color:var(--dark-400)">${t.date} • ${RESULT_ICONS[t.result] || t.result}</div></div><span class="${sm.cls}" style="padding:3px 8px; border-radius:99px; font-size:11px; font-weight:500">${sm.label}</span></div>`;
+          }).join('')
+      }
+    </div>
+  </div>`;
   return html;
+}
+
+function renderHeatMap() {
+  const counts = {};
+  state.stats.consecutiveDays.forEach(d => { counts[d] = (counts[d] || 0) + 1; });
+  const today = new Date();
+  const sd = new Date(today.getTime() - 83 * 864e5);
+  const sd2 = sd.getDay();
+  let weeks = [], cw = [];
+  
+  for (let i = 0; i < sd2; i++) cw.push('');
+  for (let i = 0; i < 84; i++) {
+    const d = new Date(sd.getTime() + i * 864e5);
+    const k = d.toISOString().split('T')[0];
+    cw.push(k);
+    if (d.getDay() === 6 || i === 83) { weeks.push(cw); cw = []; }
+  }
+
+  return `
+    <div class="glass" style="padding:20px; margin-bottom:20px">
+      <h3 class="font-display font-bold text-lg" style="margin-bottom:12px">🟢 Activity Heat Map</h3>
+      <div style="display:flex; gap:16px; align-items:flex-start">
+        <div style="display:flex; flex-direction:column; justify-content:space-between; height:112px">
+          ${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => `<span style="font-size:10px; color:var(--dark-400); height:14px; display:flex; align-items:center">${d}</span>`).join('')}
+        </div>
+        <div style="display:flex; gap:3px; overflow-x:auto; flex:1">
+          ${weeks.map(w => `<div style="display:flex; flex-direction:column; gap:3px">${w.map(day => {
+                const c = day ? (counts[day] || 0) : 0;
+                const hc = c === 0 ? 'heat-0' : c === 1 ? 'heat-1' : c === 2 ? 'heat-2' : c === 3 ? 'heat-3' : 'heat-4';
+                return `<div class="${hc}" style="width:14px; height:14px; border-radius:3px; ${day && counts[day] ? 'cursor:pointer' : ''}" title="${day ? day + ': ' + (counts[day] || 0) + ' action(s)' : ''}"></div>`;
+              }).join('')}</div>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; margin-top:12px; justify-content:flex-end">
+        <span style="font-size:11px; color:var(--dark-400)">Less</span>
+        ${['heat-0', 'heat-1', 'heat-2', 'heat-3', 'heat-4'].map(c => `<div class="${c}" style="width:12px; height:12px; border-radius:2px"></div>`).join('')}
+        <span style="font-size:11px; color:var(--dark-400)">More</span>
+      </div>
+    </div>
+  `;
 }
 
 function renderProspects() {
   setTimeout(filterProspects, 0); 
   return `
     <div class="animate-fade-in-up" style="max-width:900px">
-      <div style="display:flex; justify-content:space-between; margin-bottom:20px">
-        <h1 class="font-display text-2xl font-bold text-gradient-quest">Active Quests</h1>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px">
+        <div>
+          <h1 class="font-display text-2xl font-bold text-gradient-quest">Prospects</h1>
+          <p style="color:var(--dark-300); font-size:14px">${state.prospects.length} prospects</p>
+        </div>
         <button class="btn btn-quest" onclick="openAddProspect()">+ Add Prospect</button>
       </div>
-      <div style="display:flex; gap:8px; margin-bottom:16px">
-        <input id="searchInput" placeholder="🔍 Search..." style="flex:1" oninput="filterProspects()">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px">
+        <input id="searchInput" placeholder="🔍 Search prospects..." style="flex:1; min-width:180px" oninput="filterProspects()">
         <select id="filterSelect" onchange="filterProspects()" style="width:auto">
-          <option value="all">All</option><option value="active">Active</option><option value="boss">Boss</option>
+          <option value="all">📋 All Prospects</option>
+          <option value="active">✅ Active</option>
+          <option value="boss">👑 Boss Battles</option>
+          <option value="overdue">⚠️ Overdue</option>
+        </select>
+        <select id="sortSelect" onchange="filterProspects()" style="width:auto">
+          <option value="date">Sort: Date</option>
+          <option value="name">Sort: Name</option>
+          <option value="value">Sort: Value</option>
         </select>
       </div>
       <div id="prospectList"></div>
@@ -911,41 +1095,78 @@ function renderProspects() {
 }
 
 function filterProspects() {
-  const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
-  const filter = document.getElementById('filterSelect')?.value || 'all';
+  const searchInput = document.getElementById('searchInput');
+  const search = (searchInput ? searchInput.value : '').toLowerCase();
+  const filter = document.getElementById('filterSelect') ? document.getElementById('filterSelect').value : 'all';
+  const sort = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'date';
+  const today = new Date().toISOString().split('T')[0];
   
   let f = state.prospects.filter(p => {
+    if (filter === 'all') return true;
     if (filter === 'active') return !['closed_won', 'closed_lost', 'ghosted'].includes(p.status);
     if (filter === 'boss') return p.value === 'boss';
+    if (filter === 'overdue') return p.nextActionDate && p.nextActionDate < today && !['closed_won', 'closed_lost', 'ghosted'].includes(p.status);
     return true;
   });
   
   if (search) f = f.filter(p => p.company.toLowerCase().includes(search) || p.contact.toLowerCase().includes(search));
-  f.sort((a,b) => new Date(b.addedDate) - new Date(a.addedDate));
+  
+  const vo = { boss: 0, high: 1, medium: 2, low: 3 };
+  f.sort((a, b) => {
+    if (sort === 'name') return a.contact.localeCompare(b.contact);
+    if (sort === 'value') return vo[a.value] - vo[b.value];
+    return new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime();
+  });
   
   const c = document.getElementById('prospectList');
   if (!c) return;
   
-  if(!f.length) { c.innerHTML = '<div class="glass" style="padding:32px; text-align:center">No prospects found.</div>'; return; }
+  if (!f.length) {
+    c.innerHTML = `<div class="glass" style="padding:48px; text-align:center"><div style="font-size:40px; margin-bottom:12px">📭</div><p style="color:var(--dark-300)">No prospects found.</p></div>`;
+    return;
+  }
   
   c.innerHTML = f.map(p => {
     const sm = STATUS_MAP[p.status] || STATUS_MAP.new;
-    const sVal = calcProspectScore(p.score || {});
-    const badgeClass = sVal >= 10 ? 'score-high' : sVal >= 8 ? 'score-med' : 'score-low';
+    const vn = { low: '🔹 Low', medium: '🔸 Medium', high: '🔶 High', boss: '👑 BOSS' }[p.value];
+    const vc = { low: 'value-low', medium: 'value-medium', high: 'value-high', boss: 'value-boss' }[p.value];
+    const qi = QUEST_ICONS[Math.min(p.questLevel - 1, 9)] || '🏹';
+    const qn = QUEST_NAMES[Math.min(p.questLevel - 1, 9)] || 'The Final Gambit';
+    const io = p.nextActionDate && p.nextActionDate < today && !['closed_won', 'closed_lost', 'ghosted'].includes(p.status);
+    
+    // Fallbacks for new score data format if old prospect
+    if(!p.score) p.score = {};
+    const scVal = calcProspectScore(p.score);
+    const badgeClass = scVal >= 10 ? 'score-high' : scVal >= 8 ? 'score-med' : 'score-low';
     
     return `
-      <div class="glass card-hover" style="padding:14px; margin-bottom:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center" onclick="viewProspect('${p.id}')">
-        <div>
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px">
-            ${p.value === 'boss' ? '👑' : ''} <span style="font-weight:600">${escHtml(p.contact)}</span>
-            <span style="color:var(--dark-400); font-size:13px">${escHtml(p.company)}</span>
+      <div class="glass card-hover" style="padding:14px; margin-bottom:8px; cursor:pointer; ${io ? 'border-left:3px solid var(--health-red)' : ''}" onclick="viewProspect('${p.id}')">
+        <div style="display:flex; align-items:start; justify-content:space-between; gap:12px">
+          <div style="flex:1; min-width:0">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px">
+              ${p.value === 'boss' ? '<span style="font-size:16px" class="animate-float">👑</span>' : ''}
+              <span style="font-weight:600; font-size:14px">${escHtml(p.contact)}</span>
+              <span style="color:var(--dark-400); font-size:13px"> • ${escHtml(p.company)}</span>
+              ${io ? '<span style="font-size:11px; color:var(--health-red); background:rgba(255,71,87,.15); padding:2px 6px; border-radius:4px">⚠️ Overdue</span>' : ''}
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px">
+              <span class="score-badge ${badgeClass}" title="Qualification Score">⭐ ${scVal}/12</span>
+              <span style="font-size:12px; color:var(--dark-300)">${escHtml(p.email || 'No email')}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px">
+              <span style="font-size:11px; color:var(--quest-cyan)">${qi} ${qn}</span>
+              <div style="flex:1; height:4px; background:var(--dark-600); border-radius:99px; overflow:hidden; max-width:100px">
+                <div style="width:${(p.questLevel / 10 * 100)}%; height:100%; background:linear-gradient(90deg,var(--quest-cyan),var(--xp-green)); border-radius:99px"></div>
+              </div>
+              <span style="font-size:10px; color:var(--dark-400)">${p.questLevel}/10</span>
+            </div>
           </div>
-          <div style="font-size:12px; color:var(--dark-300)">Quest Lvl: ${p.questLevel}/10 • Touches: ${p.touchpoints.length}</div>
-        </div>
-        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px">
-          <div style="display:flex; gap:8px; align-items:center">
-            <span class="score-badge ${badgeClass}" title="Qualification Score">⭐ ${sVal}/12</span>
-            <span class="${sm.cls}" style="padding:3px 8px; border-radius:99px; font-size:11px">${sm.label}</span>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0">
+            <div style="display:flex; gap:6px; align-items:center">
+              <span class="${vc}" style="font-size:11px; font-weight:bold">${vn}</span>
+              <span class="${sm.cls}" style="padding:3px 8px; border-radius:99px; font-size:11px; font-weight:500">${sm.label}</span>
+            </div>
+            <span style="font-size:11px; color:var(--dark-400)">${p.touchpoints.length} touchpoints</span>
           </div>
         </div>
       </div>
@@ -953,54 +1174,78 @@ function filterProspects() {
   }).join('');
 }
 
-function viewProspect(id) { selectedProspectId = id; render(); }
+function viewProspect(id) { selectedProspectId = id; currentTab = 'prospects'; render(); }
 
 function renderDetail() {
   const p = state.prospects.find(x => x.id === selectedProspectId);
   if (!p) { selectedProspectId = null; return renderProspects(); }
-  if (!p.score) p.score = { strongContent:false, premiumOffer:false, activeAudience:false, weakWebsite:false, multiStepFunnel:false, recentActivity:false };
-  if (!p.intel) p.intel = { contradictions:'', confidenceGap:'', offerDetails:'', demandSignals:'', founderLed:false };
   
+  if(!p.score) p.score = { strongContent:false, premiumOffer:false, activeAudience:false, weakWebsite:false, multiStepFunnel:false, recentActivity:false };
+  if(!p.intel) p.intel = { confidenceGap:'', contradictions:'', offerDetails:'', demandSignals:'', founderLed:false };
   const scVal = calcProspectScore(p.score);
   const badgeClass = scVal >= 10 ? 'score-high' : scVal >= 8 ? 'score-med' : 'score-low';
   
+  const qi = QUEST_ICONS[Math.min(p.questLevel - 1, 9)] || '🏹';
+  const qn = QUEST_NAMES[Math.min(p.questLevel - 1, 9)] || 'The Final Gambit';
+  const qd = QUEST_DESCS[Math.min(p.questLevel - 1, 9)] || '';
+  const xm = { email: p.value === 'boss' ? 20 : 10, call: p.value === 'boss' ? 20 : 15, linkedin: p.value === 'boss' ? 20 : 8, meeting: p.value === 'boss' ? 100 : 50, other: 10 };
+
   let html = `
-    <div class="animate-slide-in-right" style="max-width:800px; margin: 0 auto;">
+    <div class="animate-slide-in-right" style="max-width:900px; margin:0 auto">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px">
         <div style="display:flex; align-items:center; gap:12px">
-          <button class="btn btn-ghost" onclick="selectedProspectId=null; render()">← Back</button>
+          <button class="btn btn-ghost" onclick="selectedProspectId=null; render()" style="padding:8px 12px">← Back</button>
           <div>
-            <h1 class="font-display text-xl font-bold">${p.value === 'boss'?'👑 ':''}${escHtml(p.contact)}</h1>
-            <p style="color:var(--dark-300); font-size:13px">${escHtml(p.company)}</p>
+            <h1 class="font-display text-xl font-bold">${p.value === 'boss' ? '👑 ' : ''}${escHtml(p.contact)}</h1>
+            <p style="color:var(--dark-300); font-size:13px">${escHtml(p.company)} • ${escHtml(p.email)}</p>
           </div>
         </div>
-        <button class="btn btn-ghost" onclick="deleteProspect('${p.id}')">🗑️</button>
+        <div style="display:flex; gap:12px">
+          <button class="btn btn-ghost" onclick="deleteProspect('${p.id}')">🗑️ Delete</button>
+        </div>
       </div>
 
-      <!-- Action Area -->
-      <div class="glass" style="padding:20px; margin-bottom:16px; display:flex; gap:16px; align-items:end">
-        <div style="flex:1">
-          <label>Log Touchpoint Type</label>
-          <select id="tpType"><option value="email">📧 Email</option><option value="linkedin">💼 LinkedIn</option><option value="call">📞 Call</option></select>
+      <!-- Action Log and Progress Row -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px">
+        <div class="glass" style="padding:20px">
+          <h3 class="font-display font-bold text-lg text-gradient-quest" style="margin-bottom:12px">⚡ Log Touchpoint</h3>
+          <div style="display:flex; gap:12px; margin-bottom:12px">
+            <select id="tpType" style="flex:1"><option value="email">📧 Email</option><option value="call">📞 Call</option><option value="linkedin">💼 LinkedIn</option><option value="meeting">🤝 Meeting</option></select>
+            <select id="tpResult" style="flex:1"><option value="sent">📤 Sent</option><option value="replied">💬 Replied</option><option value="no_response">😶 No Response</option><option value="meeting_booked">📅 Meeting Booked</option></select>
+          </div>
+          <input id="tpNotes" placeholder="Action notes..." style="margin-bottom:12px">
+          <button class="btn btn-quest" style="width:100%" onclick="handleLogTouchpoint('${p.id}')">+${xm.email || 10} XP • Log It! ⚔️</button>
         </div>
-        <div style="flex:1">
-          <label>Result</label>
-          <select id="tpResult"><option value="sent">📤 Sent</option><option value="replied">💬 Replied</option><option value="no_response">😶 No Resp</option></select>
+
+        <div class="glass" style="padding:20px">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+            <div><div style="font-size:20px; float:left; margin-right:8px">${qi}</div><h3 class="font-display font-bold text-lg text-gradient-quest">${qn}</h3></div>
+            <div class="font-display font-bold text-xl" style="color:var(--quest-cyan)">${p.questLevel}/10</div>
+          </div>
+          <p style="color:var(--dark-300); font-size:13px; margin-bottom:12px">${qd}</p>
+          <div style="width:100%; height:8px; background:var(--dark-600); border-radius:99px; overflow:hidden">
+            <div style="width:${(p.questLevel / 10 * 100)}%; height:100%; background:linear-gradient(90deg,var(--quest-cyan),var(--xp-green)); border-radius:99px; transition:width .5s"></div>
+          </div>
+          <div style="margin-top:16px; display:flex; gap:12px">
+            <select onchange="updateProspectField('${p.id}', 'status', this.value); render()" style="flex:1">
+              ${Object.entries(STATUS_MAP).map(([k, v]) => `<option value="${k}"${p.status === k ? ' selected' : ''}>${v.label}</option>`).join('')}
+            </select>
+          </div>
         </div>
-        <button class="btn btn-quest" onclick="addTouchpoint('${p.id}', document.getElementById('tpType').value, document.getElementById('tpResult').value, '')">Log Action ⚔️</button>
       </div>
 
-      <!-- Two Column Layout for Intel and History -->
+      <!-- Left/Right Split for Intel vs History -->
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
         
-        <!-- Prospect Intel & Score -->
+        <!-- INTEL TRACKING (New Features) -->
         <div class="glass" style="padding:20px; align-self:start">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
             <h3 class="font-display font-bold text-lg text-gradient-gold">🧠 Prospect Intel</h3>
             <span class="score-badge ${badgeClass}" style="font-size:14px">Score: ${scVal}/12</span>
           </div>
           
-          <div style="margin-bottom:16px">
+          <div style="margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid var(--dark-600)">
+            <h4 style="font-size:13px; color:var(--dark-300); margin-bottom:12px; font-weight:bold">Qualification Check</h4>
             ${[
               {id:'sc_strongContent', label:'Strong Content', pts:2},
               {id:'sc_premiumOffer', label:'Premium Offer', pts:2},
@@ -1009,9 +1254,9 @@ function renderDetail() {
               {id:'sc_multiStepFunnel', label:'Multi-step Funnel', pts:2},
               {id:'sc_recentActivity', label:'Recent Activity', pts:1}
             ].map(c => `
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.05)">
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:4px 0">
                 <span style="font-size:13px; ${c.highlight?'color:var(--gold); font-weight:bold':''}">${c.label} (+${c.pts})</span>
-                <label class="toggle-switch" style="transform:scale(0.8)">
+                <label class="toggle-switch" style="transform:scale(0.75)">
                   <input type="checkbox" ${p.score[c.id.split('_')[1]] ? 'checked' : ''} onchange="updateExistingScore('${p.id}', '${c.id.split('_')[1]}', this.checked)">
                   <span class="slider"></span>
                 </label>
@@ -1020,7 +1265,10 @@ function renderDetail() {
           </div>
 
           <div style="margin-bottom:12px">
-            <label style="color:var(--gold)">The "Confidence Gap" (Content vs Website)</label>
+            <label style="color:var(--gold); display:flex; justify-content:space-between">
+              <span>The "Confidence Gap"</span>
+              <span style="color:var(--dark-400); font-weight:normal">(Content vs Website)</span>
+            </label>
             <textarea placeholder="e.g. Brilliant IG reels, but website looks like 2012..." rows="2" onblur="updateIntel('${p.id}', 'confidenceGap', this.value)">${escHtml(p.intel.confidenceGap)}</textarea>
           </div>
           <div style="margin-bottom:12px">
@@ -1031,26 +1279,49 @@ function renderDetail() {
             <label>Offer Details (Price, Type)</label>
             <input placeholder="e.g. $5k Mastermind" value="${escHtml(p.intel.offerDetails)}" onblur="updateIntel('${p.id}', 'offerDetails', this.value)">
           </div>
-          <div>
+          <div style="margin-bottom:16px">
             <label>Demand / Investment Signals</label>
             <textarea placeholder="e.g. Tons of comments on LinkedIn, paid community..." rows="2" onblur="updateIntel('${p.id}', 'demandSignals', this.value)">${escHtml(p.intel.demandSignals)}</textarea>
           </div>
+          
+          <div class="checkbox-row" style="background:var(--dark-800); border:1px solid var(--dark-500); cursor:pointer" onclick="toggleFounderLed('${p.id}')">
+            <div><div style="font-size:14px; font-weight:600">Founder Led Brand?</div></div>
+            <label class="toggle-switch" style="pointer-events:none">
+              <input type="checkbox" ${p.intel.founderLed ? 'checked' : ''}>
+              <span class="slider"></span>
+            </label>
+          </div>
         </div>
 
-        <!-- History -->
-        <div class="glass" style="padding:20px; align-self:start">
-          <h3 class="font-display font-bold text-lg" style="margin-bottom:16px">📜 Quest Log</h3>
-          ${!p.touchpoints.length ? '<p style="color:var(--dark-400); font-size:13px">No history yet.</p>' : ''}
-          <div style="display:flex; flex-direction:column; gap:10px">
-            ${[...p.touchpoints].reverse().map(t => `
-              <div style="background:var(--dark-700); padding:10px; border-radius:8px; border-left:3px solid var(--xp-blue)">
-                <div style="display:flex; justify-content:space-between; margin-bottom:4px">
-                  <span style="font-size:13px; font-weight:600">${TYPE_ICONS[t.type] || '📋'} ${t.type.toUpperCase()}</span>
-                  <span style="font-size:12px; color:var(--dark-400)">${t.date}</span>
-                </div>
-                <div style="font-size:12px; font-weight:500; color:${t.result==='replied'?'var(--xp-green)':'var(--dark-200)'}">${RESULT_ICONS[t.result] || t.result}</div>
+        <!-- HISTORY & BOSS -->
+        <div style="display:flex; flex-direction:column; gap:16px">
+          ${p.value === 'boss' ? `
+            <div class="glass" style="padding:16px; border:1px solid var(--boss-purple)">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px">
+                <div style="display:flex; align-items:center; gap:8px"><span style="font-size:24px" class="animate-boss-attack">👹</span><span style="font-weight:bold; color:var(--boss-purple)">BOSS BATTLE</span></div>
+                ${p.bossHp <= 0 ? '<span style="color:var(--gold); font-weight:bold; font-size:12px">DEFEATED!</span>' : ''}
               </div>
-            `).join('')}
+              <div style="width:100%; height:12px; background:var(--dark-600); border-radius:99px; overflow:hidden">
+                <div style="width:${Math.round(p.bossHp / p.bossMaxHp * 100)}%; height:100%; background:var(--health-red); border-radius:99px; transition:width .5s"></div>
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="glass" style="padding:20px; flex:1">
+            <h3 class="font-display font-bold text-lg" style="margin-bottom:16px">📜 Quest Log</h3>
+            ${!p.touchpoints.length ? '<p style="color:var(--dark-400); font-size:13px; text-align:center; padding:20px">No history yet.</p>' : ''}
+            <div style="display:flex; flex-direction:column; gap:10px">
+              ${[...p.touchpoints].reverse().map(t => `
+                <div style="background:var(--dark-700); padding:10px; border-radius:8px; border-left:3px solid ${t.result === 'replied' ? 'var(--xp-green)' : 'var(--xp-blue)'}">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px">
+                    <span style="font-size:13px; font-weight:600">${TYPE_ICONS[t.type] || '📋'} ${t.type.toUpperCase()}</span>
+                    <span style="font-size:11px; color:var(--dark-400)">${t.date}</span>
+                  </div>
+                  <div style="font-size:12px; font-weight:500; color:${t.result==='replied'?'var(--xp-green)':'var(--dark-200)'}">${RESULT_ICONS[t.result] || t.result}</div>
+                  ${t.notes ? `<div style="font-size:12px; color:var(--dark-300); margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,.05)">${escHtml(t.notes)}</div>` : ''}
+                </div>
+              `).join('')}
+            </div>
           </div>
         </div>
       </div>
@@ -1059,28 +1330,33 @@ function renderDetail() {
   return html;
 }
 
+function handleLogTouchpoint(pId) {
+  addTouchpoint(pId, document.getElementById('tpType').value, document.getElementById('tpResult').value, document.getElementById('tpNotes').value);
+}
+
 function renderNotebook() {
   return `
     <div class="animate-fade-in-up" style="max-width:900px">
       <div style="margin-bottom:24px">
         <h1 class="font-display text-2xl font-bold text-gradient-boss">📒 Interesting Contradictions</h1>
-        <p style="color:var(--dark-300); font-size:14px">Global notebook for prospects or random brands. Spot the gap.</p>
+        <p style="color:var(--dark-300); font-size:14px">Your global notebook to log brand contradictions. One hour of investigation here can produce multiple assets.</p>
       </div>
 
       <div class="glass" style="padding:20px; margin-bottom:24px">
-        <label>Log a new contradiction</label>
-        <div style="display:flex; gap:10px; margin-top:4px">
-          <input id="notebookInput" placeholder="e.g. Brilliant storyteller on Twitter. Confusing corporate homepage." style="flex:1" onkeypress="if(event.key==='Enter') addNotebookEntry()">
+        <label>Spot a gap? Log a new contradiction:</label>
+        <div style="display:flex; gap:10px; margin-top:8px">
+          <input id="notebookInput" placeholder="e.g. Brilliant storyteller on Twitter. Weak About page." style="flex:1" onkeypress="if(event.key==='Enter') addNotebookEntry()">
           <button class="btn btn-primary" onclick="addNotebookEntry()">Save Note</button>
         </div>
       </div>
 
-      <div style="columns: 3 250px; gap: 16px;">
+      <div class="notebook-masonry">
         ${state.notebook.map(n => `
-          <div class="glass card-hover" style="padding:16px; margin-bottom:16px; display:inline-block; width:100%; break-inside:avoid; position:relative">
-            <button onclick="deleteNotebookEntry('${n.id}')" style="position:absolute; top:10px; right:10px; background:none; border:none; color:var(--dark-400); cursor:pointer">×</button>
-            <p style="font-size:14px; line-height:1.5; padding-right:16px">${escHtml(n.text)}</p>
-            <div style="font-size:10px; color:var(--dark-400); margin-top:12px; text-align:right">${n.date}</div>
+          <div class="glass card-hover notebook-item" style="padding:16px;">
+            <button onclick="deleteNotebookEntry('${n.id}')" style="position:absolute; top:10px; right:10px; background:none; border:none; color:var(--dark-400); cursor:pointer; font-size:16px">×</button>
+            <div style="font-size:20px; margin-bottom:8px">💡</div>
+            <p style="font-size:14px; line-height:1.5; padding-right:16px; margin-bottom:12px">${escHtml(n.text)}</p>
+            <div style="font-size:10px; color:var(--dark-400); text-align:right">${n.date}</div>
           </div>
         `).join('')}
         ${!state.notebook.length ? '<p style="color:var(--dark-400); font-size:14px">Notebook is empty. Start spotting contradictions!</p>' : ''}
@@ -1090,43 +1366,124 @@ function renderNotebook() {
 }
 
 function renderAchievements() {
+  const s = state.stats;
   const ua = state.achievements.filter(a => a.unlocked);
+  const tAxp = ua.reduce((x, a) => x + a.xp, 0);
   const pct = Math.round(ua.length / state.achievements.length * 100);
-  return `
+
+  let html = `
     <div class="animate-fade-in-up" style="max-width:900px">
-      <h1 class="font-display text-2xl font-bold text-gradient-gold" style="margin-bottom:20px">🏆 Achievements (${pct}%)</h1>
-      <div class="grid-4">
-        ${state.achievements.map(a => `
-          <div class="glass" style="padding:16px; text-align:center; ${a.unlocked ? 'border-color:rgba(255,215,0,.3)' : 'opacity:0.5'}">
-            <div style="font-size:32px; margin-bottom:8px">${a.unlocked ? a.icon : '🔒'}</div>
-            <h3 style="font-size:13px; font-weight:bold; color:${a.unlocked ? 'var(--gold)' : 'var(--dark-300)'}">${escHtml(a.name)}</h3>
-            <p style="font-size:11px; color:var(--dark-400); margin-top:4px">${escHtml(a.desc)}</p>
-          </div>
-        `).join('')}
+      <div style="margin-bottom:20px">
+        <h1 class="font-display text-2xl font-bold text-gradient-gold">🏆 Achievement Hall</h1>
+        <p style="color:var(--dark-300); font-size:14px">${ua.length}/${state.achievements.length} unlocked • ${pct}% complete</p>
+      </div>
+
+      <div class="glass" style="padding:16px; margin-bottom:16px">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px">
+          <span style="font-size:14px; font-weight:500">Completion Progress</span>
+          <span style="font-size:14px; font-weight:bold; color:var(--gold)">${pct}%</span>
+        </div>
+        <div style="width:100%; height:10px; background:var(--dark-700); border-radius:99px; overflow:hidden">
+          <div style="width:${pct}%; height:100%; background:linear-gradient(90deg,var(--gold),var(--streak-orange),var(--gold)); border-radius:99px; transition:width .5s"></div>
+        </div>
+        <div style="display:flex; gap:16px; margin-top:10px; font-size:13px; color:var(--dark-300)">
+          <span>Unlocked: <span style="color:var(--gold); font-weight:bold">${ua.length}</span></span>
+          <span>Locked: <span style="color:var(--dark-400); font-weight:bold">${state.achievements.length - ua.length}</span></span>
+          <span>XP Earned: <span style="color:var(--xp-blue); font-weight:bold">${tAxp}</span></span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap" id="achieveFilters">
+        ${[{id:'all', l:'📋 All'}, {id:'outreach', l:'⚔️ Outreach'}, {id:'streak', l:'🔥 Streak'}, {id:'xp', l:'⭐ XP'}, {id:'boss', l:'💀 Boss'}, {id:'special', l:'✨ Special'}]
+          .map(c => `<button class="tab-btn ${c.id === 'all' ? 'active' : ''}" onclick="filterAchievements('${c.id}', this)">${c.l}</button>`).join('')}
+      </div>
+      
+      <div class="grid-8" id="achieveGrid">
+        ${state.achievements.map(a => {
+          const gp = () => {
+            switch(a.category) {
+              case 'streak': return Math.min(100, s.currentStreak / a.req * 100);
+              case 'xp': return Math.min(100, s.level / a.req * 100);
+              case 'boss': return Math.min(100, s.bossDefeated / a.req * 100);
+              case 'outreach': 
+                if(a.req <= 10 && a.id !== '10_responses' && a.id !== '10_meetings') return Math.min(100, s.totalOutreaches / a.req * 100);
+                if(a.req <= 25 && a.id.includes('responses')) return Math.min(100, s.totalResponses / a.req * 100);
+                if(a.id.includes('meetings')) return Math.min(100, s.totalMeetings / a.req * 100);
+                return Math.min(100, s.totalOutreaches / a.req * 100);
+              case 'special': 
+                return a.id === 'first_win' ? Math.min(100, s.totalWins / a.req * 100) : (state.prospects.some(x => x.questLevel >= 10) ? 100 : 0);
+              default: return 0;
+            }
+          };
+          const prog = gp();
+          return `
+            <div class="glass card-hover" style="padding:16px; text-align:center; ${a.unlocked ? 'border-color:rgba(255,215,0,.2)' : 'opacity:.5'}">
+              <div style="font-size:36px; margin-bottom:8px; ${a.unlocked ? '' : 'filter:grayscale(1)'}">${a.unlocked ? a.icon : '🔒'}</div>
+              <h3 style="font-weight:bold; font-size:13px; margin-bottom:4px; ${a.unlocked ? 'color:var(--gold)' : 'color:var(--dark-400)'}">${escHtml(a.name)}</h3>
+              <p style="font-size:11px; color:var(--dark-300); margin-bottom:8px; min-height:28px">${escHtml(a.desc)}</p>
+              <div style="display:flex; align-items:center; justify-content:space-between">
+                <span style="font-size:11px; color:var(--xp-blue); font-weight:500">+${a.xp} XP</span>
+                ${a.unlockedDate ? `<span style="font-size:10px; color:var(--dark-400)">${a.unlockedDate}</span>` : ''}
+              </div>
+              ${a.unlocked ? '<div style="margin-top:8px; width:100%; height:3px; background:rgba(255,215,0,.2); border-radius:99px"><div style="width:100%; height:100%; background:var(--gold); border-radius:99px"></div></div>' : `<div style="margin-top:8px"><div style="font-size:10px; color:var(--dark-400); margin-bottom:3px">${Math.round(prog)}%</div><div style="width:100%; height:3px; background:var(--dark-600); border-radius:99px; overflow:hidden"><div style="width:${prog}%; height:100%; background:var(--dark-400); border-radius:99px; transition:width .3s"></div></div></div>`}
+            </div>
+          `;
+        }).join('')}
       </div>
     </div>
   `;
+  return html;
+}
+
+function filterAchievements(cat, btn) {
+  document.querySelectorAll('#achieveFilters .tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const cards = document.querySelectorAll('#achieveGrid > div');
+  state.achievements.forEach((a, i) => { if (cards[i]) cards[i].style.display = (cat === 'all' || a.category === cat) ? '' : 'none'; });
 }
 
 function renderSettings() {
+  const ttp = state.prospects.reduce((s, p) => s + p.touchpoints.length, 0);
+  const ua = state.achievements.filter(a => a.unlocked).length;
+
   return `
     <div class="animate-fade-in-up" style="max-width:700px">
-      <h1 class="font-display text-2xl font-bold text-gradient-boss" style="margin-bottom:20px">⚙️ Settings & Data</h1>
-      <div class="glass" style="padding:20px; margin-bottom:16px">
-        <h3 class="font-display font-bold">Data Management</h3>
-        <p style="font-size:13px; color:var(--dark-300); margin-bottom:12px">Download a backup to save your progress.</p>
-        <button class="btn btn-primary" onclick="exportState()">📥 Backup Data</button>
-      </div>
-      
-      <div class="glass" style="padding:20px; margin-bottom:16px">
-        <h3 class="font-display font-bold">Import Data</h3>
-        <p style="font-size:13px; color:var(--dark-300); margin-bottom:12px">Restore from a previous JSON backup.</p>
-        <button class="btn btn-ghost" onclick="openImport()">📝 Import Data</button>
+      <div style="margin-bottom:20px">
+        <h1 class="font-display text-2xl font-bold text-gradient-boss">⚙️ Settings & Data</h1>
+        <p style="color:var(--dark-300); font-size:14px">Manage your quest data</p>
       </div>
 
-      <div class="glass" style="padding:20px; border:1px solid rgba(255,71,87,.3)">
-        <h3 class="font-display font-bold" style="color:var(--health-red)">Danger Zone</h3>
-        <button class="btn btn-danger" style="margin-top:12px" onclick="if(confirm('Wipe ALL data?')) { state = defaultState(); saveState(); render(); }">⚠️ Reset Everything</button>
+      <div class="glass" style="padding:20px; margin-bottom:16px">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px">
+          <span style="font-size:18px">💾</span>
+          <h3 class="font-display font-bold text-lg">Data Overview</h3>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:8px">
+          ${[{l: 'Prospects', v: state.prospects.length}, {l: 'Touchpoints', v: ttp}, {l: 'Total XP', v: state.stats.totalXP.toLocaleString()}, {l: 'Level', v: state.stats.level}, {l: 'Achievements', v: ua + '/' + state.achievements.length}]
+            .map(s => `<div style="text-align:center; padding:10px; background:var(--dark-700); border-radius:8px"><div style="font-size:18px; font-weight:bold">${s.v}</div><div style="font-size:11px; color:var(--dark-400); margin-top:4px">${s.l}</div></div>`).join('')}
+        </div>
+      </div>
+
+      <div class="glass" style="padding:20px; margin-bottom:16px">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px"><span style="font-size:18px">📤</span><h3 class="font-display font-bold text-lg">Export Progress</h3></div>
+        <p style="font-size:13px; color:var(--dark-300); margin-bottom:12px">Download a backup of all your data. Save this file somewhere safe — you can import it later to restore your progress.</p>
+        <button class="btn btn-primary" onclick="exportState()">📥 Download Backup JSON</button>
+      </div>
+
+      <div class="glass" style="padding:20px; margin-bottom:16px">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px"><span style="font-size:18px">📥</span><h3 class="font-display font-bold text-lg">Import Progress</h3></div>
+        <p style="font-size:13px; color:var(--dark-300); margin-bottom:12px">Restore from a previous backup or import data from another device.</p>
+        <div style="display:flex; gap:10px">
+          <button class="btn btn-ghost" onclick="openImport()">📝 Paste JSON</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('importFile2').click()">📁 Upload File</button>
+          <input type="file" id="importFile2" accept=".json" style="display:none" onchange="handleFileImport(event)">
+        </div>
+      </div>
+
+      <div class="glass" style="padding:20px; margin-bottom:16px; border:1px solid rgba(255,71,87,.2)">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px"><span style="font-size:18px">🗑️</span><h3 class="font-display font-bold text-lg" style="color:var(--health-red)">Reset All Data</h3></div>
+        <p style="font-size:13px; color:var(--dark-300); margin-bottom:12px">This will permanently delete ALL your progress, prospects, and achievements. This cannot be undone.</p>
+        <button class="btn btn-danger" onclick="showConfirm('Reset All Data', 'This will permanently delete ALL your progress. Are you sure?', resetAll)">⚠️ Reset Everything</button>
       </div>
     </div>
   `;
@@ -1135,6 +1492,10 @@ function renderSettings() {
 function init() {
   state = loadState();
   render();
+  
+  const today = new Date().toISOString().split('T')[0];
+  const od = state.prospects.some(p => p.nextActionDate && p.nextActionDate < today && !['closed_won', 'closed_lost', 'ghosted'].includes(p.status));
+  if (od) setTimeout(() => showToast('⚠️ You have overdue follow-ups!', 'warning'), 1000);
 }
 
 init();

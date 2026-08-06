@@ -136,7 +136,7 @@
     .result-meeting-booked { color: #ffd700; }
     .result-no-response { color: #6b7280; }
 
-    /* Score Badges */
+    /* Score Badges for Qualification */
     .score-badge { padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
     .score-high { background: rgba(255,215,0,.15); color: var(--gold); border: 1px solid rgba(255,215,0,.3); }
     .score-med { background: rgba(6,214,160,.15); color: var(--quest-cyan); border: 1px solid rgba(6,214,160,.3); }
@@ -174,7 +174,7 @@
       margin-bottom: 4px;
     }
 
-    /* Toggle Switch Component */
+    /* Toggle Switch Component for Qualification */
     .toggle-switch { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
     .toggle-switch input { opacity: 0; width: 0; height: 0; }
     .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--dark-600); transition: .3s; border-radius: 20px; }
@@ -269,7 +269,6 @@
     .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
     .grid-8 { display: grid; grid-template-columns: repeat(8,1fr); gap: 8px; }
 
-    /* Responsive */
     @media(max-width:768px) {
       .sidebar { display: none !important; }
       .bottom-nav { display: flex !important; }
@@ -318,14 +317,16 @@
   
   <div class="modal-overlay" id="addProspectModal" style="display:none">
     <div class="modal-content wide-modal" style="max-width:850px; text-align:left; display:grid; grid-template-columns:1fr 1fr; gap:32px">
+      
+      <!-- Left Side: Basic Info -->
       <div>
         <h3 class="font-display font-bold text-lg text-gradient-quest" style="margin-bottom:16px">⚔️ New Quest Entry</h3>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
-          <div style="grid-column:span 2"><label>Company</label><input id="newCompany" placeholder="Company name"></div>
+          <div style="grid-column:span 2"><label>Company / Brand</label><input id="newCompany" placeholder="Company name"></div>
           <div><label>Contact Name</label><input id="newContact" placeholder="Person's name"></div>
-          <div><label>Email</label><input id="newEmail" type="email" placeholder="email@example.com"></div>
+          <div><label>Email / Handle</label><input id="newEmail" type="text" placeholder="email or social handle"></div>
           <div>
-            <label>Prospect Value</label>
+            <label>Value Tier</label>
             <select id="newValue">
               <option value="low">🔹 Low Value</option>
               <option value="medium" selected>🔸 Medium Value</option>
@@ -333,10 +334,11 @@
               <option value="boss">👑 Boss Battle</option>
             </select>
           </div>
-          <div><label>First Action Date</label><input id="newDate" type="date"></div>
+          <div><label>Next Action Date</label><input id="newDate" type="date"></div>
         </div>
       </div>
       
+      <!-- Right Side: Qualification Scoring -->
       <div style="background:var(--dark-700); border-radius:12px; padding:20px; border:1px solid var(--dark-600)">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px">
           <h3 class="font-display font-bold text-lg">🎯 Qualification Score</h3>
@@ -409,6 +411,7 @@
       
       <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><span>🏠</span> Dashboard</div>
       <div class="nav-item" data-tab="prospects" onclick="switchTab('prospects')"><span>👥</span> Prospects</div>
+      <!-- NEW TAB: Note book for Contradictions -->
       <div class="nav-item" data-tab="notebook" onclick="switchTab('notebook')"><span>📒</span> Contradictions</div>
       <div class="nav-item" data-tab="achievements" onclick="switchTab('achievements')"><span>🏆</span> Achievements</div>
       <div class="nav-item" data-tab="settings" onclick="switchTab('settings')"><span>⚙️</span> Settings</div>
@@ -455,13 +458,6 @@ const QUEST_NAMES = [
   'Shadow Strike', 'The Last Resort'
 ];
 
-const QUEST_DESCS = [
-  'Send your first outreach message.', 'Keep the momentum going!', 'Most quit here — not you.', 'You\'re a warrior of persistence.',
-  'Legend status unlocked.', 'Where champions are made.', 'Beyond what 95% do.', 'Ghost hunter mode.', 'Coming from an unexpected angle.', 'The nuclear option.'
-];
-
-const QUEST_ICONS = ['🏹', '✉️', '🌬️', '🎲', '💥', '🤝', '⚔️', '👻', '🗡️', '💣'];
-
 const ACH_DEFS = [
   {id:'first_outreach', name:'First Blood', desc:'Send your first outreach', icon:'🩸', category:'outreach', req:1, xp:25},
   {id:'10_outreaches', name:'Skirmisher', desc:'Send 10 outreaches', icon:'🗡️', category:'outreach', req:10, xp:50},
@@ -479,6 +475,9 @@ const STATUS_MAP = {
   'contacted': {label:'📧 Contacted', cls:'status-contacted'},
   'followed_up_1': {label:'↩️ F/U 1', cls:'status-fu1'},
   'followed_up_2': {label:'↩️ F/U 2', cls:'status-fu2'},
+  'followed_up_3': {label:'↩️ F/U 3', cls:'status-fu3'},
+  'followed_up_4': {label:'↩️ F/U 4', cls:'status-fu4'},
+  'followed_up_5': {label:'↩️ F/U 5', cls:'status-fu5'},
   'response_received': {label:'💬 Response', cls:'status-response'},
   'meeting_booked': {label:'📅 Meeting', cls:'status-meeting'},
   'closed_won': {label:'🏆 Won!', cls:'status-won'},
@@ -497,7 +496,7 @@ const TYPE_ICONS = { 'email': '📧', 'call': '📞', 'linkedin': '💼', 'meeti
 function defaultState() {
   return {
     prospects: [],
-    notebook: [], // For "Interesting Contradictions"
+    notebook: [], // New Feature: Global notebook for contradictions
     stats: {
       totalXP: 0, level: 1, xpForNextLevel: 100, currentStreak: 0, longestStreak: 0, 
       lastActivityDate: '', totalOutreaches: 0, totalResponses: 0, totalMeetings: 0, 
@@ -516,26 +515,40 @@ let confirmCallback = null;
 
 function loadState() {
   try {
-    const r = localStorage.getItem('outreach_quest_data_v2');
+    // Attempt to load new v2 schema first
+    let r = localStorage.getItem('outreach_quest_data_v2');
     if (r) {
       const p = JSON.parse(r);
-      // Migrate old data if necessary
-      if (!p.notebook) p.notebook = [];
-      if (!p.achievements || !p.achievements.length) p.achievements = ACH_DEFS.map(a => ({...a, unlocked: false, unlockedDate: null}));
-      
-      // Ensure all prospects have scoring structure
-      p.prospects.forEach(pros => {
-        if (!pros.score) {
-          pros.score = { strongContent: false, premiumOffer: false, activeAudience: false, weakWebsite: false, multiStepFunnel: false, recentActivity: false };
-        }
-        if (!pros.intel) {
-          pros.intel = { contradictions: '', confidenceGap: '', offerDetails: '', demandSignals: '', founderLed: false };
-        }
-      });
-      return p;
+      return upgradeState(p);
+    }
+    
+    // Attempt to migrate from older version
+    r = localStorage.getItem('outreach_quest_data');
+    if (r) {
+      const p = JSON.parse(r);
+      return upgradeState(p);
     }
   } catch(e) { console.error("Error loading state:", e); }
   return defaultState();
+}
+
+function upgradeState(p) {
+  // Ensure all v2 arrays/objects exist
+  if (!p.notebook) p.notebook = [];
+  if (!p.achievements || !p.achievements.length) p.achievements = ACH_DEFS.map(a => ({...a, unlocked: false, unlockedDate: null}));
+  if (!p.stats) p.stats = defaultState().stats;
+  
+  // Ensure all prospects have scoring/intel structure
+  p.prospects.forEach(pros => {
+    if (!pros.score) {
+      pros.score = { strongContent: false, premiumOffer: false, activeAudience: false, weakWebsite: false, multiStepFunnel: false, recentActivity: false };
+    }
+    if (!pros.intel) {
+      pros.intel = { contradictions: '', confidenceGap: '', offerDetails: '', demandSignals: '', founderLed: false };
+    }
+    if (!pros.touchpoints) pros.touchpoints = [];
+  });
+  return p;
 }
 
 function saveState() {
@@ -557,7 +570,7 @@ function importStateJSON(json) {
   try {
     const p = JSON.parse(json);
     if (!p.prospects || !p.stats) throw new Error("Invalid structure");
-    state = p;
+    state = upgradeState(p);
     saveState(); render();
     showToast('Data imported successfully!', 'success');
   } catch(e) { showToast('Invalid data format!', 'warning'); }
@@ -737,11 +750,6 @@ function deleteProspect(id) {
   });
 }
 
-function updateProspectField(id, field, value) {
-  const p = state.prospects.find(x => x.id === id);
-  if (p) { p[field] = value; saveState(); }
-}
-
 function addNotebookEntry() {
   const text = document.getElementById('notebookInput').value.trim();
   if(!text) return;
@@ -800,6 +808,25 @@ function openAddProspect() {
   document.getElementById('addProspectModal').style.display = 'flex';
 }
 function closeAddProspect() { document.getElementById('addProspectModal').style.display = 'none'; }
+
+function closeImport() { document.getElementById('importModal').style.display = 'none'; }
+function openImport() { document.getElementById('importModal').style.display = 'flex'; }
+function doImport() {
+  const t = document.getElementById('importText').value.trim();
+  if (t) importStateJSON(t);
+  closeImport();
+}
+
+function handleFileImport(ev) {
+  const f = ev.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    importStateJSON(e.target.result);
+    closeImport();
+  };
+  r.readAsText(f);
+}
 
 function escHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
 function switchTab(tab) {
@@ -1090,6 +1117,13 @@ function renderSettings() {
         <p style="font-size:13px; color:var(--dark-300); margin-bottom:12px">Download a backup to save your progress.</p>
         <button class="btn btn-primary" onclick="exportState()">📥 Backup Data</button>
       </div>
+      
+      <div class="glass" style="padding:20px; margin-bottom:16px">
+        <h3 class="font-display font-bold">Import Data</h3>
+        <p style="font-size:13px; color:var(--dark-300); margin-bottom:12px">Restore from a previous JSON backup.</p>
+        <button class="btn btn-ghost" onclick="openImport()">📝 Import Data</button>
+      </div>
+
       <div class="glass" style="padding:20px; border:1px solid rgba(255,71,87,.3)">
         <h3 class="font-display font-bold" style="color:var(--health-red)">Danger Zone</h3>
         <button class="btn btn-danger" style="margin-top:12px" onclick="if(confirm('Wipe ALL data?')) { state = defaultState(); saveState(); render(); }">⚠️ Reset Everything</button>

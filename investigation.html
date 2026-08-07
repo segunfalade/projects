@@ -332,11 +332,9 @@ function renderBoard(){
     return true;
   });
   const container = document.getElementById('view-board');
-  // keep toolbar already
+
   if(filtered.length===0){
-    container.innerHTML = document.getElementById('toolbar-board').outerHTML + `<div class="empty"><div class="mono">NO OPEN CASES MATCH FILTER</div><div class="serif">Find people who create genuinely good content.</div><p style="margin-top:8px;font-size:11px;color:#52525b;max-width:420px;margin-inline:auto">Then ask: Does the website deliver on the expectation the content created? If not — that's your prime candidate.</p><button class="btn btn-black" style="margin-top:16px" onclick="openNewCase()">+ OPEN FIRST CASE</button></div>`;
-    // rebind toolbar events (since outerHTML lost listeners, re-attach via inline already has onchange)
-    document.getElementById('search').value = search; // preserve? search lost - minimal
+    container.innerHTML = `<div class="empty"><div class="mono">NO OPEN CASES MATCH FILTER</div><div class="serif">Find people who create genuinely good content.</div><p style="margin-top:8px;font-size:11px;color:#52525b;max-width:420px;margin-inline:auto">Then ask: Does the website deliver on the expectation the content created? If not — that's your prime candidate.</p><button class="btn btn-black" style="margin-top:16px" onclick="openNewCase()">+ OPEN FIRST CASE</button></div>`;
     return;
   }
   let html = `<div class="grid">`;
@@ -374,17 +372,8 @@ function renderBoard(){
       </div>`;
   });
   html+=`</div>`;
-  // preserve toolbar
-  const toolbar = document.getElementById('toolbar-board');
-  container.innerHTML = toolbar.outerHTML + html;
-  // restore search value and listeners are inline so ok, but need to reset values
-  document.getElementById('search').value = document.getElementById('search')?.value || search;
-  // re-attach search input handler is via inline oninput same id conflict, need to rebind manually
-  document.getElementById('search').addEventListener('input', renderBoard);
-  document.getElementById('filter-status').value = statusF;
-  document.getElementById('filter-status').addEventListener('change', renderBoard);
-  document.getElementById('filter-score').checked = minScore;
-  document.getElementById('filter-score').addEventListener('change', renderBoard);
+
+  container.innerHTML = html;
 }
 
 function scoreBg(s){ if(s>=20) return 'black'; if(s>=15) return 'var(--yellow)'; if(s>=10) return '#fef3c7'; return '#f4f4f5'; }

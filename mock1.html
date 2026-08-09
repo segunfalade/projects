@@ -1,512 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JSS 3 Mathematics Examination</title>
-    <style>
-        /* PREMIUM MOBILE-OPTIMIZED OFFLINE STYLES */
-        :root {
-            --primary: #4f46e5;
-            --primary-dark: #3730a3;
-            --success: #10b981;
-            --danger: #ef4444;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --indigo-light: #f5f7ff;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            line-height: 1.5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* MATH RENDERING - ROCK SOLID VERTICAL STACKING */
-        .math-container { display: inline-flex; align-items: center; vertical-align: middle; }
-        .math-frac { 
-            display: inline-flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            line-height: 1; 
-            margin: 0 0.25em; 
-            font-family: "Times New Roman", serif;
-            font-style: italic;
-        }
-        .math-num { 
-            display: block;
-            border-bottom: 1.5px solid var(--text-main); 
-            padding: 0 4px; 
-            font-size: 0.9em; 
-            font-weight: 700; 
-        }
-        .math-den { 
-            display: block;
-            padding: 0 4px; 
-            font-size: 0.9em; 
-            font-weight: 700; 
-        }
-        .math-whole { 
-            font-size: 1.4em; 
-            margin-right: 1px; 
-            font-weight: 800; 
-            font-style: normal;
-            vertical-align: middle;
-        }
-        .math-pow { vertical-align: super; font-size: 0.7em; font-weight: 800; color: var(--primary-dark); }
-        .math-root { font-size: 1.1em; border-top: 1.5px solid var(--text-main); padding-top: 1px; }
-
-        /* UI ELEMENTS */
-        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 15px; flex-grow: 1; }
-        .card { background: var(--card-bg); border-radius: 1.5rem; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); width: 100%; }
-        
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            padding: 16px 24px; border-radius: 1rem; font-weight: 800; font-size: 1rem;
-            cursor: pointer; transition: all 0.2s; border: none;
-            color: white; background: var(--primary); width: 100%;
-            touch-action: manipulation;
-        }
-        .btn:active { transform: scale(0.96); opacity: 0.9; }
-
-        input { 
-            width: 100%; padding: 16px; border-radius: 1rem; border: 2px solid var(--border);
-            background: #f8fafc; font-size: 1rem; outline: none; font-weight: 600;
-        }
-        input:focus { border-color: var(--primary); background: white; }
-
-        .screen { display: none; width: 100%; }
-        .screen.active { display: block; }
-        .flex-center { display: flex; align-items: center; justify-content: center; min-height: 85vh; }
-
-        /* LOGO */
-        .logo-img { height: 80px; width: auto; margin-bottom: 20px; border-radius: 10px; }
-
-        /* TEST UI - RESPONSIVE GRID */
-        .test-wrapper { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 900px) { .test-wrapper { grid-template-columns: 1fr 300px; } }
-
-        .main-test-pane { background: white; border-radius: 1.5rem; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border); }
-        .test-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        
-        .q-badge { background: var(--primary); color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem; }
-        .timer-container { background: var(--indigo-light); color: var(--primary); padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 1rem; border: 1.5px solid #c7d2fe; }
-        .timer-warning { background: var(--danger) !important; color: white !important; border-color: var(--danger) !important; }
-
-        .progress-bar { height: 6px; background: var(--primary); width: 0%; transition: width 0.3s; }
-
-        .question-content { padding: 25px; flex-grow: 1; }
-        .question-text { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 30px; line-height: 1.4; }
-        
-        .option-card {
-            border: 2px solid #f1f5f9; padding: 18px 20px; border-radius: 1rem; margin-bottom: 12px;
-            display: flex; align-items: center; gap: 15px; cursor: pointer; background: white;
-            transition: border-color 0.2s;
-        }
-        .option-card.selected { border-color: var(--primary); background: #f5f3ff; }
-        .opt-letter { width: 38px; height: 38px; border-radius: 8px; background: #f1f5f9; color: var(--text-muted); font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .selected .opt-letter { background: var(--primary); color: white; }
-        .opt-text { font-size: 1.2rem; font-weight: 700; color: #334155; }
-
-        .test-footer { padding: 20px; background: #f8fafc; border-top: 1px solid var(--border); display: flex; justify-content: space-between; gap: 10px; }
-        .nav-btn { width: auto; flex: 1; padding: 14px; }
-
-        /* NAVIGATOR */
-        .sidebar-card { background: white; border-radius: 1.5rem; padding: 20px; border: 1px solid var(--border); align-self: start; }
-        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-        .nav-item { 
-            aspect-ratio: 1; border-radius: 8px; border: 1.5px solid var(--border); 
-            display: flex; align-items: center; justify-content: center; font-weight: 800; 
-            font-size: 0.85rem; cursor: pointer; background: white; color: var(--text-muted);
-            width: 100%; min-height: 40px;
-        }
-        .nav-item.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.05); }
-        .nav-item.answered { background: var(--indigo-light); color: var(--primary); border-color: var(--primary); }
-
-        /* RESULT */
-        .result-container { background: var(--primary); border-radius: 2rem; padding: 40px 20px; color: white; margin: 20px 0; text-align: center; }
-        .score-circle { font-size: 4.5rem; font-weight: 950; line-height: 1; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JAY INVESTIGATION BUREAU • Case Board + Relationship OS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600;800&family=Instrument+Serif:ital@0;1&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--black:#0F0E0C;--paper:#FFFCF5;--kraft:#F5E6C8;--yellow:#FFD600;--red:#DC2626;--green:#16a34a;--blue:#2563eb}
+  body{font-family:'Geist Mono',monospace;background:var(--black);color:var(--black);min-height:100vh}
+  .tape{height:8px;background:repeating-linear-gradient(90deg,var(--yellow) 0 24px,black 24px 48px)}
+  .tape-bottom{position:fixed;bottom:0;left:0;right:0;height:8px;background:repeating-linear-gradient(90deg,var(--yellow) 0 24px,black 24px 48px);z-index:60;pointer-events:none}
+  header{position:sticky;top:0;z-index:30;background:var(--black);border-bottom:2px solid #27272a}
+  .header-inner{max-width:1780px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .j-logo{width:40px;height:40px;background:var(--yellow);color:black;display:grid;place-items:center;font-weight:800;font-size:18px;border:2px solid black;box-shadow:2px 2px 0 white}
+  .brand-text .title{color:white;font-weight:800;letter-spacing:0.14em;font-size:14px}
+  .brand-text .sub{color:#71717a;font-size:10px;letter-spacing:0.18em;margin-top:2px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .brand-text .sub b{color:var(--yellow)}
+  nav{display:flex;gap:6px;flex-wrap:wrap}
+  .nav-btn{font-family:inherit;font-size:10px;letter-spacing:0.14em;padding:8px 12px;border:1px solid #3f3f46;background:transparent;color:#a1a1aa;cursor:pointer;transition:.15s}
+  .nav-btn.active{background:white;color:black;border-color:white;font-weight:800}
+  .nav-btn:hover{color:white;border-color:#52525b}
+  .stats-bar{background:var(--kraft);border-bottom:2px solid black;padding:8px 24px;font-size:10px;display:flex;flex-wrap:wrap;gap:16px;letter-spacing:0.06em;align-items:center}
+  .stats-bar b{font-weight:800}
+  .wrap{max-width:1780px;margin:0 auto;padding:18px 24px 90px}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-bottom:16px;align-items:center}
+  .search-box{position:relative;flex:1;max-width:560px;display:flex;gap:8px}
+  .search-box .input-wrap{position:relative;flex:1}
+  .search-box .input-wrap span{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:10px;color:#71717a}
+  .search-box input{width:100%;padding:11px 12px 11px 66px;border:2px solid black;background:var(--paper);font-family:inherit;font-size:12px;outline:none;box-shadow:3px 3px 0 black}
+  .toolbar-right{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{font-family:inherit;border:2px solid black;padding:9px 13px;font-size:10px;letter-spacing:0.14em;font-weight:800;cursor:pointer;transition:.12s;display:inline-flex;align-items:center;gap:6px;line-height:1}
+  .btn-yellow{background:var(--yellow);color:black;box-shadow:3px 3px 0 white}
+  .btn-black{background:black;color:white}
+  .btn-white{background:white;color:black}
+  .btn-green{background:#dcfce7;border-color:var(--green);color:#14532d}
+  .btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 black}
+  .btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 black}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(360px,1fr))}
+  .case-file{background:var(--paper);border:2px solid black;padding:1px;box-shadow:4px 4px 0 black;cursor:pointer;position:relative;transition:.12s}
+  .case-file:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 black}
+  .case-tab{position:absolute;top:-12px;left:16px;background:var(--yellow);border:2px solid black;padding:2px 8px;font-size:9px;font-weight:800;letter-spacing:0.12em;box-shadow:2px 2px 0 black}
+  .case-inner{background:white;border:1px solid rgba(0,0,0,0.08);padding:18px;padding-top:22px}
+  .case-head{display:flex;gap:10px;justify-content:space-between}
+  .case-avatar{width:38px;height:38px;background:black;color:var(--yellow);display:grid;place-items:center;font-weight:800;font-size:14px;border:2px solid black;flex-shrink:0}
+  .case-meta{flex:1;min-width:0}
+  .case-brand{font-family:'Instrument Serif',serif;font-weight:400;font-size:18px;line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .case-founder{font-size:10px;color:#71717a;margin-top:2px}
+  .stamp{border:1px solid currentColor;padding:2px 6px;font-size:8px;font-weight:800;letter-spacing:0.14em;display:inline-block;margin-top:4px}
+  .stamp.under{background:#fef3c7;border-color:#f59e0b;color:#78350f}
+  .stamp.worth{background:#dcfce7;border-color:#22c55e;color:#14532d}
+  .stamp.cold{background:#f4f4f5;border-color:#a1a1aa;color:#52525b}
+  .stamp.closed{background:black;color:white}
+  .score-box{border:2px solid black;padding:4px 8px;text-align:center;min-width:62px}
+  .score-num{font-weight:800;font-size:18px;line-height:1}
+  .score-num small{font-size:10px}
+  .score-label{font-size:8px;letter-spacing:0.12em;color:#71717a}
+  .conf-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;height:22px;margin-top:12px}
+  .conf-col{background:#f4f4f5;border:1px solid #e4e4e7;position:relative;overflow:hidden}
+  .conf-fill{position:absolute;bottom:0;left:0;right:0;background:black}
+  .conf-labels{display:flex;justify-content:space-between;font-size:7px;letter-spacing:0.08em;color:#a1a1aa;margin-top:2px}
+  .one-finding{margin-top:12px;background:var(--kraft);border:1px solid black;padding:10px;position:relative}
+  .one-finding::before{content:'ONE FINDING';position:absolute;top:-7px;left:8px;background:black;color:white;font-size:7px;letter-spacing:0.14em;padding:2px 6px}
+  .one-finding p{font-family:'Instrument Serif',serif;font-style:italic;font-size:13px;line-height:1.35}
+  .tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px}
+  .tag{font-size:8px;letter-spacing:0.06em;padding:2px 6px;border:1px solid black;background:black;color:white}
+  .tag.yellow{background:var(--yellow);color:black;font-weight:800}
+  .tag.white{background:white;color:black}
+  .foot{margin-top:10px;border-top:1px dashed #d4d4d8;padding-top:8px;display:flex;justify-content:space-between;font-size:8px;color:#a1a1aa;letter-spacing:0.06em}
+  .empty{border:2px dashed #3f3f46;background:var(--paper);padding:48px;text-align:center;margin-top:20px}
+  .empty .mono{font-size:10px;letter-spacing:0.2em;color:#71717a}
+  .empty .serif{font-family:'Instrument Serif',serif;font-size:24px;margin-top:8px}
+  /* Relationship cards */
+  .rel-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .rel-card{background:var(--paper);border:2px solid black;box-shadow:3px 3px 0 black;position:relative;padding:1px;cursor:pointer;transition:.12s}
+  .rel-card:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 black}
+  .rel-tier{position:absolute;top:0;left:0;bottom:0;width:6px}
+  .tier-1{background:var(--red)} .tier-2{background:var(--yellow)} .tier-3{background:#a1a1aa}
+  .rel-inner{background:white;margin-left:6px;padding:14px}
+  .rel-top{display:flex;gap:10px;justify-content:space-between}
+  .rel-avatar{width:36px;height:36px;border:2px solid black;display:grid;place-items:center;font-weight:800;background:black;color:white}
+  .rel-name{font-family:'Instrument Serif',serif;font-size:16px;font-weight:400;line-height:1}
+  .rel-role{font-size:10px;color:#71717a;margin-top:2px}
+  .bucket{font-size:8px;letter-spacing:0.12em;padding:2px 6px;border:1px solid black;display:inline-block;margin-top:6px;font-weight:800}
+  .bucket.customer{background:#dbeafe;border-color:#3b82f6;color:#1e40af}
+  .bucket.prospect{background:#fef3c7;border-color:#f59e0b;color:#92400e}
+  .bucket.business{background:#dcfce7;border-color:#22c55e;color:#14532d}
+  .bucket.aspirational{background:#fae8ff;border-color:#a855f7;color:#6b21a8}
+  .bucket.superconnector{background:var(--yellow);border-color:black;color:black}
+  .bucket.gatekeeper{background:black;color:white}
+  .ping-status{margin-top:8px;padding:6px 8px;border:1px solid black;font-size:9px;display:flex;justify-content:space-between;align-items:center}
+  .ping-status.overdue{background:#fee2e2;border-color:var(--red);color:#991b1b}
+  .ping-status.today{background:var(--yellow);border-color:black;color:black;font-weight:800}
+  .ping-status.week{background:#fef3c7;border-color:#f59e0b}
+  .ping-status.ok{background:#f4f4f5}
+  .modes{display:flex;gap:4px;margin-top:8px}
+  .mode-dot{width:18px;height:18px;border:1px solid black;border-radius:50%;display:grid;place-items:center;font-size:9px}
+  .mode-dot.done{background:black;color:white}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(4px);z-index:50;display:none;place-items:center;padding:16px;overflow:auto}
+  .modal-backdrop.open{display:grid}
+  .dossier{width:100%;max-width:900px;background:var(--paper);border:4px solid black;box-shadow:12px 12px 0 white;max-height:95vh;overflow:auto}
+  .dossier-head{position:sticky;top:0;background:var(--paper);border-bottom:4px solid black;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;z-index:2}
+  .dossier-tabs{display:flex;gap:4px;background:black;padding:8px 12px;flex-wrap:wrap}
+  .dossier-tab{font-family:inherit;font-size:10px;letter-spacing:0.12em;padding:8px 12px;border:2px solid #27272a;background:transparent;color:#a1a1aa;cursor:pointer}
+  .dossier-tab.active{background:var(--yellow);color:black;border-color:var(--yellow);font-weight:800}
+  .dossier-body{padding:18px}
+  section{border:2px solid black;background:white;padding:16px;margin-bottom:16px;box-shadow:3px 3px 0 black}
+  section.kraft{background:var(--kraft)}
+  section.yellow{background:var(--yellow)}
+  section.black{background:black;color:white;border-color:black}
+  section.red{background:#fef2f2;border-color:var(--red)}
+  section.blue{background:#eff6ff;border-color:var(--blue)}
+  .sec-head{font-size:11px;font-weight:800;letter-spacing:0.18em;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .sec-head .num{width:20px;height:20px;background:black;color:white;display:grid;place-items:center;font-size:10px}
+  .black .sec-head .num{background:white;color:black}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .form-grid.full{grid-template-columns:1fr}
+  label.mono{font-size:10px;letter-spacing:0.12em;color:#52525b;display:block;margin-bottom:4px}
+  .black label.mono{color:#a1a1aa}
+  input, textarea, select{width:100%;border:1px solid black;padding:10px;font-family:inherit;font-size:12px;background:white;outline:none}
+  input:focus, textarea:focus{border-width:2px}
+  textarea{min-height:60px;resize:vertical}
+  .black input,.black textarea,.black select{background:#18181b;color:white;border-color:#3f3f46}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .chip{border:2px solid black;padding:5px 10px;font-size:10px;letter-spacing:0.06em;background:white;cursor:pointer;user-select:none;transition:.1s}
+  .chip.on{background:black;color:white}
+  .chip.on.red{background:var(--red);border-color:var(--red)}
+  .chip.yellow.on{background:var(--yellow);color:black}
+  .stars{display:flex;gap:4px;margin-top:4px}
+  .star{width:28px;height:28px;border-radius:50%;border:1px solid black;display:grid;place-items:center;font-size:12px;cursor:pointer;background:#f4f4f5}
+  .star.on{background:black;color:white;border-color:black}
+  .range-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #e4e4e7}
+  .range-row span:first-child{width:150px;font-size:11px}
+  .range-row input[type=range]{flex:1;accent-color:black}
+  .range-val{width:30px;text-align:center;font-weight:800;font-size:13px}
+  .score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .score-box-edit{border:2px solid black;padding:10px;background:var(--paper)}
+  .score-box-edit .s-label{font-size:9px;letter-spacing:0.12em;margin-bottom:6px}
+  .score-btns{display:flex;gap:4px;flex-wrap:wrap}
+  .score-btn{width:26px;height:26px;border:2px solid black;background:white;font-size:11px;font-weight:800;cursor:pointer}
+  .score-btn.on{background:black;color:white}
+  .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .comms-item{border:1px solid black;padding:10px;background:white;margin-bottom:8px}
+  .comms-item .meta{font-size:8px;color:#71717a;display:flex;justify-content:space-between}
+  .tip-box{background:#FFFCF5;border:1px dashed #a1a1aa;padding:10px;font-size:10px;line-height:1.5;margin-top:8px}
+  .progress{height:6px;background:#e4e4e7;border:1px solid black;overflow:hidden;margin-top:6px}
+  .progress-fill{height:100%;background:black;transition:.3s}
+  @media(max-width:800px){
+    .grid,.rel-grid{grid-template-columns:1fr}
+    .form-grid{grid-template-columns:1fr}
+    .score-grid{grid-template-columns:1fr 1fr}
+    .header-inner{padding:10px 14px}
+    .wrap{padding:14px 14px 90px}
+  }
+</style>
 </head>
 <body>
-
-    <div class="container">
-        
-        <!-- LOGIN SCREEN -->
-        <div id="login-screen" class="screen active">
-            <div class="flex-center">
-                <div class="card" style="max-width: 450px; text-align: center;">
-                    <img src="logo.png" alt="School Logo" class="logo-img" id="school-logo">
-                    <h1 style="font-size: 1.5rem; font-weight: 900; margin-bottom: 5px;">STUDENT LOGIN</h1>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px;">Mathematics Final Assessment</p>
-                    
-                    <div style="text-align: left;">
-                        <div class="input-group" style="margin-bottom: 15px;">
-                            <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 5px; display: block;">EXAM NUMBER</label>
-                            <input type="text" id="login-id" placeholder="GHC/23/24/...">
-                        </div>
-                        <div class="input-group" style="margin-bottom: 25px;">
-                            <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 5px; display: block;">PASSWORD</label>
-                            <input type="password" id="login-pass" placeholder="••••••••">
-                        </div>
-                    </div>
-                    
-                    <button onclick="handleLogin()" class="btn">Login to System</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- WELCOME SCREEN -->
-        <div id="welcome-screen" class="screen">
-            <div class="flex-center">
-                <div class="card" style="max-width: 500px; text-align: center;">
-                    <h1 style="font-size: 2rem; font-weight: 900;">Welcome,</h1>
-                    <h2 id="welcome-name" style="color: var(--primary); margin-bottom: 35px; font-size: 1.8rem; font-weight: 950; text-transform: uppercase;"></h2>
-                    
-                    <div style="background: var(--indigo-light); padding: 25px; border-radius: 1.2rem; text-align: left; margin-bottom: 35px; border: 1.5px solid #c7d2fe; font-size: 0.95rem;">
-                        <p style="font-weight: 800; color: #3730a3; margin-bottom: 8px;">• 50 Mathematics Questions</p>
-                        <p style="font-weight: 800; color: #3730a3; margin-bottom: 8px;">• 60 Minutes Time Allowed</p>
-                        <p style="font-weight: 800; color: #3730a3; margin-bottom: 8px;">• Script will download automatically</p>
-                    </div>
-
-                    <button onclick="startExam()" class="btn">Begin Examination</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TEST INTERFACE -->
-        <div id="test-screen" class="screen">
-            <div class="test-wrapper">
-                <div class="main-test-pane">
-                    <header class="test-header">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div id="q-number-box" class="q-badge">1</div>
-                            <div>
-                                <p style="font-weight: 800; font-size: 1rem;" id="q-header">Question 1/50</p>
-                                <p style="font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;" id="display-id-header"></p>
-                                <!-- HIDDEN HELPER FOR ERROR FIX -->
-                                <span id="display-name" style="display:none"></span>
-                            </div>
-                        </div>
-                        <div class="timer-container" id="timer-box">
-                            <span id="timer-val">60:00</span>
-                        </div>
-                    </header>
-
-                    <div style="height: 6px; background: #eee;"><div id="progress-bar" class="progress-bar"></div></div>
-
-                    <main class="question-content">
-                        <div id="question-text" class="question-text"></div>
-                        <div id="options-container" class="options-list"></div>
-                    </main>
-
-                    <footer class="test-footer">
-                        <button id="prev-btn" onclick="prevQuestion()" class="btn nav-btn" style="background: #f1f5f9; color: #64748b;">Previous</button>
-                        <button id="next-btn" onclick="nextQuestion()" class="btn nav-btn">Next</button>
-                        <button id="submit-btn" onclick="confirmFinish()" class="btn nav-btn" style="display:none; background: var(--success);">Submit Exam</button>
-                    </footer>
-                </div>
-
-                <aside class="sidebar-card">
-                    <span style="font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; display: block; text-align: center;">Navigator</span>
-                    <div id="progress-grid" class="nav-grid"></div>
-                </aside>
-            </div>
-        </div>
-
-        <!-- RESULT SCREEN -->
-        <div id="result-screen" class="screen">
-            <div class="flex-center">
-                <div class="card" style="max-width: 450px; text-align: center;">
-                    <h1 style="font-size: 2rem; font-weight: 900;">Exam Finished</h1>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px;">Your script has been saved to the device.</p>
-                    <div class="result-container">
-                        <div id="final-score-display" class="score-circle">0/50</div>
-                        <div id="final-percent" style="font-weight: 900; font-size: 1.5rem; margin-top: 10px;">0%</div>
-                    </div>
-                    <button onclick="location.reload()" class="btn" style="background: #0f172a;">Logout Student</button>
-                </div>
-            </div>
-        </div>
-
+<div class="tape"></div>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="j-logo">J</div>
+      <div class="brand-text">
+        <div class="title">JAY INVESTIGATION BUREAU</div>
+        <div class="sub"><span>CASE BOARD + RELATIONSHIP OS</span><span style="width:4px;height:4px;background:var(--yellow);border-radius:50%;display:inline-block"></span><span>DETECTIVE: <b>SEGUN FALADE</b> • NEVER EAT ALONE EDITION</span></div>
+      </div>
     </div>
-
-    <script>
-        const AUTHORIZED_STUDENTS = [
-            { examNumber: "GHC/23/24/012", password: "oyerindef", name: "Oyerinde Folarin" },
-            { examNumber: "GHC/23/24/006", password: "oladipoo", name: "Oladipo Setemi" },
-            { examNumber: "GHC/23/24/003", password: "odemejakpord", name: "Odemejakpor Dunamis" },
-            { examNumber: "GHC/23/24/015", password: "allia", name: "Alli Aisha" },
-            { examNumber: "GHC/23/24/008", password: "aouizeratem", name: "Aouizerate Mirabel" },
-            { examNumber: "GHC/23/24/007", password: "ganiyub", name: "Ganiyu Blossom" },
-            { examNumber: "GHC/23/24/013", password: "akintolao", name: "Akintola Adeoluwa" },
-            { examNumber: "GHC/23/24/022", password: "abioyed", name: "Abioye David" },
-            { examNumber: "GHC/23/24/002", password: "olarinref", name: "Olarinre Fehintola" },
-        ];
-
-        // UPDATED POOL OF 50 QUESTIONS (Tricky ones replaced with simpler ones)
-        const MASTER_POOL = [
-            { q: "Evaluate [F:0/1/2] of ([F:0/3/4] - [F:0/1/3]) + [F:0/1/6].", options: ["[F:0/3/8]", "[F:0/5/8]", "[F:0/5/12]", "[F:0/1/4]"], correct: "[F:0/3/8]" },
-            { q: "Evaluate [F:0/0.042 x 0.05/0.007] and leave the answer in standard form.", options: ["3.0 x 10[P: /-1]", "3.0 x 10[P: /-2]", "3.0 x 10[P: /1]", "3.0 x 10[P: /2]"], correct: "3.0 x 10[P: /-1]" },
-            { q: "A man leaves [F:0/1/3] of his estate to his wife, [F:0/1/4] to his son, and the remainder to his daughter. What fraction did the daughter receive?", options: ["[F:0/5/12]", "[F:0/7/12]", "[F:0/1/2]", "[F:0/5/7]"], correct: "[F:0/5/12]" },
-            { q: "Approximate 0.04953 to 2 significant figures.", options: ["0.050", "0.049", "0.05", "0.0495"], correct: "0.050" },
-            { q: "Simplify: [F:2/1/2] x [F:1/1/5] divided by [F:1/3/4].", options: ["[F:1/5/7]", "[F:2/1/7]", "[F:1/2/7]", "[F:3/5/7]"], correct: "[F:1/5/7]" },
-            { q: "Evaluate 1011[P:2/ ] + 1101[P:2/ ], leaving your answer in base two.", options: ["11000[P:2/ ]", "10100[P:2/ ]", "11100[P:2/ ]", "10010[P:2/ ]"], correct: "11000[P:2/ ]" },
-            { q: "Convert 43[P:5/ ] to a number in base 3.", options: ["212[P:3/ ]", "122[P:3/ ]", "221[P:3/ ]", "202[P:3/ ]"], correct: "212[P:3/ ]" },
-            { q: "What is the place value of 5 in the number 2543?", options: ["Hundreds", "Tens", "Thousands", "Units"], correct: "Hundreds" },
-            { q: "Express 4500 in standard form.", options: ["4.5 x 10[P: /3]", "45 x 10[P: /2]", "4.5 x 10[P: /4]", "0.45 x 10[P: /3]"], correct: "4.5 x 10[P: /3]" },
-            { q: "If the speed of light is 3 x 10[P: /8] m/s, how far does it travel in 2 x 10[P: /3] seconds?", options: ["6.0 x 10[P: /11] m", "6.0 x 10[P: /5] m", "1.5 x 10[P: /5] m", "5.0 x 10[P: /11] m"], correct: "6.0 x 10[P: /11] m" },
-            { q: "A trader marks a television at N45,000. If she allows a discount of 12%, calculate the selling price.", options: ["N39,600", "N40,400", "N50,400", "N38,500"], correct: "N39,600" },
-            { q: "Find the principal that will yield a simple interest of N4,500 in 3 years at 5% per annum.", options: ["N30,000", "N25,000", "N45,000", "N60,000"], correct: "N30,000" },
-            { q: "By selling an article for N3,600, a merchant makes a loss of 10%. Find the cost price.", options: ["N4,000", "N3,240", "N3,960", "N4,200"], correct: "N4,000" },
-            { q: "Calculate the compound interest on N20,000 for 2 years at 10% per annum.", options: ["N4,200", "N4,000", "N24,200", "N2,000"], correct: "N4,200" },
-            { q: "Factorize completely: 4x[P: /2] - 25y[P: /2].", options: ["[2x - 5y][2x + 5y]", "[4x - 5y][x + 5y]", "[2x - 25y][2x + y]", "[2x - 5y][P: /2]"], correct: "[2x - 5y][2x + 5y]" },
-            { q: "Simplify: 5x + 3y - 2x + y.", options: ["3x + 4y", "7x + 4y", "3x + 2y", "7x + 2y"], correct: "3x + 4y" },
-            { q: "Expand: (2a - 3b)(a + 2b).", options: ["2a[P: /2] + ab - 6b[P: /2]", "2a[P: /2] - ab - 6b[P: /2]", "2a[P: /2] + 7ab - 6b[P: /2]", "2a[P: /2] - 6b[P: /2]"], correct: "2a[P: /2] + ab - 6b[P: /2]" },
-            { q: "Make x the subject of the formula: T = [R:x-y/z].", options: ["x = zT[P: /2] + y", "x = zT[P: /2] - y", "x = [F:0/T[P: /2] + y/z]", "x = z(T[P: /2] + y)"], correct: "x = zT[P: /2] + y" },
-            { q: "Subtract (2x - 3y) from the sum of (x + 2y) and (3x - y).", options: ["2x + 4y", "6x - 2y", "2x - 2y", "6x - 4y"], correct: "2x + 4y" },
-            { q: "Factorize: ax - ay + bx - by.", options: ["[a + b][x - y]", "[a - b][x + y]", "[a - b][x - y]", "[a + b][x + y]"], correct: "[a + b][x - y]" },
-            { q: "If x = 3 and y = 4, evaluate 2x + y.", options: ["10", "14", "11", "7"], correct: "10" },
-            { q: "Solve the equation: [F:0/2x-1/3] - [F:0/x+2/4] = 1.", options: ["[F:4/2/5]", "[F:3/1/5]", "4", "5"], correct: "[F:4/2/5]" },
-            { q: "Solve the inequality: 3(x - 2) < 5x + 4.", options: ["x > -5", "x < -5", "x > 5", "x < 5"], correct: "x > -5" },
-            { q: "Solve the simultaneous equations: 3x + 2y = 12 and 5x - 3y = 1.", options: ["x = 2, y = 3", "x = 3, y = 2", "x = 4, y = 0", "x = 1, y = 4.5"], correct: "x = 2, y = 3" },
-            { q: "If twice a number is added to 5, the result is equal to the number decreased by 2. Find the number.", options: ["-7", "7", "-3", "3"], correct: "-7" },
-            { q: "The sum of two numbers is 15. If one number is twice the other, find the larger number.", options: ["10", "5", "12", "8"], correct: "10" },
-            { q: "Divide N10,500 in the ratio 2:3:5. What is the difference between the largest and the smallest shares?", options: ["N3,150", "N5,250", "N2,100", "N4,200"], correct: "N3,150" },
-            { q: "If 8 workers can paint a house in 6 days, how many days will 12 workers take working at the same rate?", options: ["4 days", "9 days", "3 days", "5 days"], correct: "4 days" },
-            { q: "A car covers a distance of 150 km in 2 hours 30 minutes. Calculate its average speed in km/h.", options: ["60 km/h", "75 km/h", "50 km/h", "100 km/h"], correct: "60 km/h" },
-            { q: "The interior angle of a regular polygon is 144°. How many sides does the polygon have?", options: ["10 sides", "8 sides", "12 sides", "9 sides"], correct: "10 sides" },
-            { q: "The sum of the interior angles of an n-sided polygon is 1080°. Find n.", options: ["8", "6", "10", "12"], correct: "8" },
-            { q: "In a right-angled triangle, the hypotenuse is 13cm and one leg is 5cm. Find the length of the other leg.", options: ["12cm", "144cm", "8cm", "18cm"], correct: "12cm" },
-            { q: "Calculate the area of a trapezium with parallel sides 8cm and 12cm, and a perpendicular height of 6cm.", options: ["60cm[P: /2]", "120cm[P: /2]", "48cm[P: /2]", "30cm[P: /2]"], correct: "60cm[P: /2]" },
-            { q: "A ladder 10m long leans against a vertical wall. If the foot of the ladder is 6m from the base of the wall, how high up the wall does it reach?", options: ["8m", "4m", "16m", "11.7m"], correct: "8m" },
-            { q: "An isosceles triangle has a vertical angle of 40°. Find the size of each of the base angles.", options: ["70°", "140°", "40°", "50°"], correct: "70°" },
-            { q: "Calculate the circumference of a circle with radius 14cm. (Take π = [F:0/22/7]).", options: ["88cm", "44cm", "616cm", "176cm"], correct: "88cm" },
-            { q: "Find the volume of a cylinder of radius 7cm and height 10cm. (Take π = [F:0/22/7]).", options: ["1540cm[P: /3]", "154cm[P: /3]", "440cm[P: /3]", "3080cm[P: /3]"], correct: "1540cm[P: /3]" },
-            { q: "In a right-angled triangle ABC with hypotenuse AB, sin(A) = 0.6. Find cos(A).", options: ["0.8", "0.4", "0.75", "1.33"], correct: "0.8" },
-            { q: "A tree casts a shadow of 15m. If the angle of elevation of the sun is 45°, what is the height of the tree?", options: ["15m", "30m", "7.5m", "15[R:2]m"], correct: "15m" },
-            { q: "The mean of the numbers 2, 5, 2x, 7, and 9 is 5. Find the value of x.", options: ["1", "2", "3", "0.5"], correct: "1" },
-            { q: "Find the median of the data: 12, 15, 13, 11, 14, 17, 16.", options: ["14", "13", "15", "11"], correct: "14" },
-            { q: "A coin is tossed once. What is the probability of getting a Head?", options: ["[F:0/1/2]", "[F:0/1/4]", "1", "0"], correct: "[F:0/1/2]" },
-            { q: "A box contains 4 red, 5 green, and 6 blue identical balls. If a ball is picked at random, what is the probability that it is NOT green?", options: ["[F:0/2/3]", "[F:0/1/3]", "[F:0/2/5]", "[F:0/3/5]"], correct: "[F:0/2/3]" },
-            { q: "If the probability that a student passes an exam is 0.75, what is the probability that he fails?", options: ["0.25", "0.15", "0.50", "0.05"], correct: "0.25" },
-            { q: "In a class of 40 students, 24 study French and 16 study Arabic. If a student is chosen at random, find the probability that the student studies Arabic.", options: ["[F:0/2/5]", "[F:0/3/5]", "[F:0/1/2]", "[F:0/4/5]"], correct: "[F:0/2/5]" },
-            { q: "In a pie chart, if the total expenditure is N72,000 and the sector for food is 120°, how much is spent on food?", options: ["N24,000", "N36,000", "N18,000", "N12,000"], correct: "N24,000" },
-            { q: "Evaluate 5[P: /2] - 3[P: /2].", options: ["16", "4", "34", "8"], correct: "16" },
-            { q: "Simplify a[P: /4] x a[P: /3].", options: ["a[P: /7]", "a[P: /12]", "a", "a[P: /1]"], correct: "a[P: /7]" },
-            { q: "List the first four multiples of 3.", options: ["3, 6, 9, 12", "1, 2, 3, 4", "3, 5, 7, 9", "6, 9, 12, 15"], correct: "3, 6, 9, 12" },
-            { q: "Calculate the perimeter of a square with side 6cm.", options: ["24cm", "36cm", "12cm", "18cm"], correct: "24cm" }
-        ];
-
-        let questions = [];
-        let currentIdx = 0;
-        let studentData = null;
-        let answers = {};
-        let timeLeft = 3600; // Updated to 60 Minutes (3600s)
-        let timerInterval = null;
-
-        function renderMath(text) {
-            if (!text) return "";
-            // Fractions [F:whole/num/den]
-            text = text.replace(/\[F:(\d+)\/([^\/]+)\/([^\/]+)\]/g, (m, w, n, d) => {
-                const whole = w !== '0' ? `<span class="math-whole">${w}</span>` : '';
-                return `<span class="math-container">${whole}<span class="math-frac"><span class="math-num">${n}</span><span class="math-den">${d}</span></span></span>`;
-            });
-            // Powers [P:base/exp]
-            text = text.replace(/\[P:([^\/]*)\/([^\/]+)\]/g, '$1<span class="math-pow">$2</span>');
-            // Roots [R:val]
-            text = text.replace(/\[R:([^\]]+)\]/g, '&radic;<span class="math-root">$1</span>');
-            return text;
-        }
-
-        function shuffle(a) {
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
-            }
-            return a;
-        }
-
-        function handleLogin() {
-            const idInput = document.getElementById('login-id');
-            const passInput = document.getElementById('login-pass');
-            if (!idInput || !passInput) return;
-
-            const id = idInput.value.trim().toUpperCase();
-            const pass = passInput.value.trim();
-            const student = AUTHORIZED_STUDENTS.find(s => s.examNumber === id && s.password === pass);
-            
-            if (!student) { alert("Invalid Credentials."); return; }
-            studentData = student;
-
-            document.getElementById('login-screen').classList.remove('active');
-            document.getElementById('welcome-screen').classList.add('active');
-            document.getElementById('welcome-name').innerText = student.name;
-        }
-
-        function startExam() {
-            // Pick 50 questions
-            const pool = shuffle([...MASTER_POOL]);
-            questions = pool.slice(0, 50).map(q => {
-                // Ensure the correct answer is always present but shuffle option order
-                const options = shuffle([...q.options]);
-                return { ...q, options };
-            });
-
-            document.getElementById('welcome-screen').classList.remove('active');
-            document.getElementById('test-screen').classList.add('active');
-            
-            // Fixed the display errors here
-            const nameEl = document.getElementById('display-name');
-            const idEl = document.getElementById('display-id-header');
-            if (nameEl) nameEl.innerText = studentData.name;
-            if (idEl) idEl.innerText = studentData.examNumber;
-            
-            initNav();
-            render();
-            
-            // Timer logic
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                const mins = Math.floor(timeLeft / 60);
-                const secs = timeLeft % 60;
-                const timerValEl = document.getElementById('timer-val');
-                if (timerValEl) timerValEl.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-                
-                if (timeLeft <= 300) { // Warning at 5 minutes left
-                    const timerBox = document.getElementById('timer-box');
-                    if (timerBox) timerBox.classList.add('timer-warning');
-                }
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    finishExam();
-                }
-            }, 1000);
-        }
-
-        function initNav() {
-            const grid = document.getElementById('progress-grid');
-            if (!grid) return;
-            grid.innerHTML = "";
-            questions.forEach((_, i) => {
-                const btn = document.createElement('button');
-                btn.className = "nav-item";
-                btn.id = "nav-dot-" + i;
-                btn.innerText = i + 1;
-                btn.onclick = () => { currentIdx = i; render(); };
-                grid.appendChild(btn);
-            });
-        }
-
-        function render() {
-            const q = questions[currentIdx];
-            const qNumBox = document.getElementById('q-number-box');
-            const qHeader = document.getElementById('q-header');
-            const qText = document.getElementById('question-text');
-            const pBar = document.getElementById('progress-bar');
-            
-            if (qNumBox) qNumBox.innerText = currentIdx + 1;
-            if (qHeader) qHeader.innerText = `Question ${currentIdx + 1}/50`;
-            if (qText) qText.innerHTML = renderMath(q.q);
-            if (pBar) pBar.style.width = ((currentIdx + 1) / 50 * 100) + "%";
-            
-            const container = document.getElementById('options-container');
-            if (container) {
-                container.innerHTML = "";
-                q.options.forEach((opt, i) => {
-                    const sel = answers[currentIdx] === i;
-                    const card = document.createElement('div');
-                    card.className = "option-card" + (sel ? " selected" : "");
-                    card.onclick = () => { answers[currentIdx] = i; render(); };
-                    card.innerHTML = `<div class="opt-letter">${String.fromCharCode(65 + i)}</div><span class="opt-text">${renderMath(opt)}</span>`;
-                    container.appendChild(card);
-                });
-            }
-
-            const prevBtn = document.getElementById('prev-btn');
-            const submitBtn = document.getElementById('submit-btn');
-            const nextBtn = document.getElementById('next-btn');
-
-            if (prevBtn) prevBtn.style.visibility = currentIdx === 0 ? "hidden" : "visible";
-            if (submitBtn) submitBtn.style.display = currentIdx === 49 ? "flex" : "none";
-            if (nextBtn) nextBtn.style.display = currentIdx === 49 ? "none" : "flex";
-
-            // Update Tracker
-            questions.forEach((_, i) => {
-                const dot = document.getElementById("nav-dot-" + i);
-                if (dot) {
-                    dot.className = "nav-item";
-                    if (currentIdx === i) dot.classList.add('active');
-                    else if (answers[i] !== undefined) dot.classList.add('answered');
-                }
-            });
-        }
-
-        function nextQuestion() { if(currentIdx < 49) { currentIdx++; render(); } }
-        function prevQuestion() { if(currentIdx > 0) { currentIdx--; render(); } }
-        function confirmFinish() { if(confirm("Submit and download result?")) finishExam(); }
-
-        function finishExam() {
-            clearInterval(timerInterval);
-            let score = 0;
-            let report = `STUDENT: ${studentData.name.toUpperCase()}\nID: ${studentData.examNumber}\nDATE: ${new Date().toLocaleString()}\nSCORE: `;
-            
-            questions.forEach((q, i) => {
-                const choiceIdx = answers[i];
-                const choice = choiceIdx !== undefined ? q.options[choiceIdx] : "Unanswered";
-                if(choice === q.correct) score++;
-            });
-
-            const percent = Math.round(score/50*100);
-            report += `${score}/50 (${percent}%)\n\nDETAILED SCRIPT:\n`;
-
-            questions.forEach((q, i) => {
-                const choiceIdx = answers[i];
-                const choice = choiceIdx !== undefined ? q.options[choiceIdx] : "No Answer";
-                const mark = (choice === q.correct) ? "CORRECT" : `WRONG (Correct: ${q.correct})`;
-                
-                // Clean tags for report readability
-                const cleanQ = q.q.replace(/\[F:(\d+)\/([^\/]+)\/([^\/]+)\]/g, '$1 $2/$3').replace(/\[P:([^\/]*)\/([^\/]+)\]/g, '$1^$2').replace(/\[R:([^\]]+)\]/g, '√$1');
-                
-                report += `${i+1}. ${cleanQ}\n   Result: ${mark}\n\n`;
-            });
-
-            document.getElementById('test-screen').style.display = 'none';
-            document.getElementById('result-screen').classList.add('active');
-            
-            const scoreDisp = document.getElementById('final-score-display');
-            const percentDisp = document.getElementById('final-percent');
-            if (scoreDisp) scoreDisp.innerText = `${score}/50`;
-            if (percentDisp) percentDisp.innerText = `${percent}%`;
-
-            const blob = new Blob([report], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `RESULT_${studentData.name.replace(/\s+/g, '_')}.txt`;
-            link.click();
-        }
-
-        window.onload = () => {
-            const logo = document.getElementById('school-logo');
-            if (logo) {
-                logo.onerror = () => {
-                    if (logo.src.includes('logo.png')) logo.src = 'logo.jpg';
-                    else logo.src = 'https://placehold.co/100x100?text=LOGO';
-                };
-            }
-        };
-    </script>
+    <nav>
+      <button class="nav-btn active" data-view="board" onclick="setView('board')">CASE BOARD • <span id="count-board">0</span></button>
+      <button class="nav-btn" data-view="relationships" onclick="setView('relationships')">PING BOARD • <span id="count-rel">0</span></button>
+      <button class="nav-btn" data-view="evidence" onclick="setView('evidence')">EVIDENCE • <span id="count-ev">0</span></button>
+      <button class="nav-btn" data-view="guide" onclick="setView('guide')">PLAYBOOK</button>
+    </nav>
+  </div>
+</header>
+<div class="stats-bar">
+  <span>TOTAL CASES: <b id="stat-total">0</b></span>
+  <span>WORTH PURSUING: <b id="stat-worth">0</b> • IGNORE &lt;15/25</span>
+  <span>RELATIONSHIPS: <b id="stat-rel">0</b> • PING DUE: <b id="stat-pingdue">0</b></span>
+  <span>AVG SCORE: <b id="stat-avg">0</b>/25</span>
+  <span style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <button class="btn btn-white" style="padding:4px 8px;font-size:8px" onclick="downloadData()">⬇ BACKUP JSON</button>
+    <label class="btn btn-white" style="padding:4px 8px;font-size:8px;cursor:pointer">⬆ RESTORE <input type="file" accept=".json" style="display:none" onchange="uploadData(event)"></label>
+  </span>
+</div>
+<div class="wrap">
+  <!-- CASE BOARD TOOLBAR -->
+  <div class="toolbar" id="toolbar-board">
+    <div class="search-box">
+      <div class="input-wrap"><span>SEARCH&gt;</span><input id="search" placeholder="brand, founder, one finding..." oninput="renderBoard()"></div>
+      <select id="filter-status" onchange="renderBoard()" style="border:2px solid black;padding:0 10px;font-family:inherit;font-size:10px"><option value="all">ALL CASES</option><option value="under_investigation">UNDER INVESTIGATION</option><option value="worth_pursuing">WORTH PURSUING</option><option value="cold_trail">COLD TRAIL</option><option value="closed">CLOSED</option></select>
+    </div>
+    <div class="toolbar-right">
+      <label class="btn btn-white" style="font-size:9px"><input type="checkbox" id="filter-score" onchange="renderBoard()" style="width:auto;margin-right:6px"> ONLY ≥15/25</label>
+      <button class="btn btn-yellow" onclick="openNewCase()">+ NEW CASE</button>
+    </div>
+  </div>
+  <!-- RELATIONSHIPS TOOLBAR -->
+  <div class="toolbar" id="toolbar-rel" style="display:none">
+    <div class="search-box">
+      <div class="input-wrap"><span>SEARCH&gt;</span><input id="search-rel" placeholder="name, company, bucket, how to help..." oninput="renderRelationships()"></div>
+      <select id="filter-bucket" onchange="renderRelationships()" style="border:2px solid black;padding:0 8px;font-size:10px"><option value="all">ALL BUCKETS</option><option value="Customer">CUSTOMERS</option><option value="Prospect">PROSPECTS</option><option value="Business Associate">BUSINESS ASSOCIATES</option><option value="Aspirational">ASPIRATIONAL</option><option value="Superconnector">SUPERCONNECTORS</option><option value="Gatekeeper">GATEKEEPERS</option><option value="Mentor">MENTORS</option></select>
+      <select id="filter-tier" onchange="renderRelationships()" style="border:2px solid black;padding:0 8px;font-size:10px"><option value="all">ALL TIERS</option><option value="1">TIER 1 • MONTHLY</option><option value="2">TIER 2 • QUARTERLY</option><option value="3">TIER 3 • YEARLY</option></select>
+    </div>
+    <div class="toolbar-right">
+      <button class="btn btn-white" onclick="setRelView('queue')" id="btn-queue">PING QUEUE</button>
+      <button class="btn btn-white" onclick="setRelView('all')" id="btn-all">ALL CONTACTS</button>
+      <button class="btn btn-yellow" onclick="openContactModal()">+ NEW CONTACT</button>
+    </div>
+  </div>
+  <div id="view-board"></div>
+  <div id="view-relationships" style="display:none"></div>
+  <div id="view-evidence" style="display:none"></div>
+  <div id="view-guide" style="display:none"></div>
+</div>
+<!-- DOSSIER MODAL -->
+<div class="modal-backdrop" id="dossier-modal">
+  <div class="dossier">
+    <div class="dossier-head">
+      <div style="display:flex;gap:10px;align-items:center">
+        <div id="dossier-avatar" style="width:36px;height:36px;background:black;color:var(--yellow);display:grid;place-items:center;font-weight:800;border:2px solid black">J</div>
+        <div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <span id="dossier-case-number" style="background:var(--yellow);border:1px solid black;padding:2px 6px;font-size:9px;font-weight:800">CASE-0000</span>
+            <span id="dossier-brand" style="font-family:'Instrument Serif',serif;font-weight:800;font-size:18px"></span>
+            <span id="dossier-score" style="border:2px solid black;padding:2px 8px;font-size:12px;font-weight:800">0/25</span>
+          </div>
+          <div style="font-size:9px;color:#71717a">DETECTIVE: <span id="dossier-investigator">Segun Falade</span> • <span id="dossier-date"></span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-white" style="padding:6px 10px;font-size:9px" onclick="deleteCurrentCase()">DELETE</button>
+        <button class="btn btn-black" style="padding:6px 10px" onclick="closeDossier()">✕</button>
+      </div>
+    </div>
+    <div class="dossier-tabs">
+      <button class="dossier-tab active" data-tab="dossier" onclick="setDossierTab('dossier')">🕵️ FULL DOSSIER</button>
+      <button class="dossier-tab" data-tab="contacts" onclick="setDossierTab('contacts')">🤝 RELATED CONTACTS</button>
+      <button class="dossier-tab" data-tab="evidence" onclick="setDossierTab('evidence')">🚨 EVIDENCE</button>
+      <button class="dossier-tab" data-tab="comms" onclick="setDossierTab('comms')">✉️ COMMS LOG</button>
+    </div>
+    <div class="dossier-body" id="dossier-body"></div>
+  </div>
+</div>
+<!-- NEW CASE MODAL -->
+<div class="modal-backdrop" id="newcase-modal">
+  <div style="width:100%;max-width:560px;background:var(--paper);border:4px solid black;padding:20px;box-shadow:8px 8px 0 white">
+    <div style="display:flex;justify-content:space-between">
+      <div><div style="background:black;color:white;padding:2px 8px;font-size:9px;letter-spacing:0.14em;display:inline-block">NEW INVESTIGATION</div><h2 style="font-family:'Instrument Serif',serif;font-size:26px;margin-top:8px">Open a Case</h2></div>
+      <div id="newcase-count" style="width:36px;height:36px;border:2px solid black;background:var(--yellow);display:grid;place-items:center;font-weight:800">1</div>
+    </div>
+    <div class="form-grid" style="margin-top:16px">
+      <div style="grid-column:span 2"><label class="mono">BRAND / BUSINESS *</label><input id="new-brand" placeholder="Klarity Coaching"></div>
+      <div><label class="mono">FOUNDER</label><input id="new-founder" placeholder="Sarah Chen"></div>
+      <div><label class="mono">NICHE</label><input id="new-niche" placeholder="Coaching, Investing..."></div>
+      <div style="grid-column:span 2"><label class="mono">WEBSITE</label><input id="new-website" placeholder="https://..."></div>
+      <div style="grid-column:span 2"><label class="mono">WHAT MADE YOU STOP SCROLLING?</label><textarea id="new-discovery" placeholder="Only ex-JP Morgan advisor who explains without jargon..."></textarea></div>
+    </div>
+    <div class="actions" style="margin-top:16px"><button class="btn btn-white" style="flex:1" onclick="document.getElementById('newcase-modal').classList.remove('open')">CANCEL</button><button class="btn btn-black" style="flex:2" onclick="createCase()">OPEN CASE FILE →</button></div>
+  </div>
+</div>
+<!-- CONTACT MODAL -->
+<div class="modal-backdrop" id="contact-modal">
+  <div style="width:100%;max-width:640px;background:var(--paper);border:4px solid black;padding:20px;box-shadow:8px 8px 0 white;max-height:92vh;overflow:auto">
+    <div style="display:flex;justify-content:space-between;align-items:start">
+      <div><div style="background:black;color:white;padding:2px 8px;font-size:9px;letter-spacing:0.14em;display:inline-block">NEVER EAT ALONE • RELATIONSHIP OS</div><h2 style="font-family:'Instrument Serif',serif;font-size:24px;margin-top:6px">Add Contact</h2><p style="font-size:10px;color:#52525b;margin-top:4px">Bucket = who they are. Tier = how often you ping. Don't keep score — give first.</p></div>
+      <button class="btn btn-black" onclick="document.getElementById('contact-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="form-grid" style="margin-top:16px">
+      <div><label class="mono">FULL NAME *</label><input id="c-name" placeholder="Sarah Chen"></div>
+      <div><label class="mono">COMPANY / BRAND</label><input id="c-company" placeholder="Klarity Coaching"><div style="margin-top:4px"><select id="c-related-case" style="font-size:10px"><option value="">LINK TO CASE (optional)</option></select></div></div>
+      <div><label class="mono">ROLE</label><input id="c-role" placeholder="Founder, Gatekeeper, Superconnector..."></div>
+      <div><label class="mono">BUCKET (Never Eat Alone)</label><select id="c-bucket"><option value="Prospect">PROSPECT • Want to do business</option><option value="Customer">CUSTOMER • Active / past client</option><option value="Business Associate">BUSINESS ASSOCIATE • Actively involved / hoping to</option><option value="Aspirational">ASPIRATIONAL • You admire / door opener</option><option value="Superconnector">SUPERCONNECTOR • Knows everyone</option><option value="Gatekeeper">GATEKEEPER • Ally to decision maker</option><option value="Mentor">MENTOR / MENTEE</option></select></div>
+      <div style="grid-column:span 2"><label class="mono">TIER • Ping Frequency (Ferrazzi System)</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px">
+          <label style="border:2px solid black;padding:10px;background:white;cursor:pointer"><input type="radio" name="tier" value="1" checked> <b style="font-size:11px">TIER 1 • HIGH TOUCH</b><div style="font-size:9px;color:#52525b;margin-top:4px">Monthly ping. New relationships needing nurture OR mature active deals. Add to phone favorites.</div></label>
+          <label style="border:2px solid black;padding:10px;background:white;cursor:pointer"><input type="radio" name="tier" value="2"> <b style="font-size:11px">TIER 2 • MEDIUM TOUCH</b><div style="font-size:9px;color:#52525b;margin-top:4px">Quarterly ping. Casual acquaintances or people you know well. Monitor social weekly/monthly.</div></label>
+          <label style="border:2px solid black;padding:10px;background:white;cursor:pointer"><input type="radio" name="tier" value="3"> <b style="font-size:11px">TIER 3 • LOW TOUCH</b><div style="font-size:9px;color:#52525b;margin-top:4px">Yearly ping. Acquaintances. Quarterly social monitor. Reach directly once/year.</div></label>
+        </div>
+      </div>
+      <div><label class="mono">BIRTHDAY (best ping!)</label><input id="c-birthday" type="date"></div>
+      <div><label class="mono">HOW WE MET</label><input id="c-howmet" placeholder="Lenny podcast, intro via Alex..."></div>
+      <div style="grid-column:span 2"><label class="mono">VALUE PROP • What you can do for them (don't keep score)</label><input id="c-valueprop" placeholder="I can intro to 3 founders who need positioning..."></div>
+      <div style="grid-column:span 2"><label class="mono">HOW TO HELP • Health / Wealth / Children (Ferrazzi)</label><input id="c-help" placeholder="Wealth: needs better conversion. Health: training for marathon. Children: daughter at Stanford"></div>
+      <div style="grid-column:span 2"><label class="mono">COMMON INTERESTS / NOTES</label><textarea id="c-notes" placeholder="Loves == Naval, hates buzzwords, runs in Central Park... Research before meeting to find common interests"></textarea></div>
+    </div>
+    <div class="actions"><button class="btn btn-white" style="flex:1" onclick="document.getElementById('contact-modal').classList.remove('open')">CANCEL</button><button class="btn btn-black" style="flex:2" onclick="saveContact()">SAVE CONTACT → PING SYSTEM</button></div>
+    <div class="tip-box"><b>FERRAZZI RULE:</b> People need to see/hear your name in 3 modes (email, phone, face-to-face) before recognition. Then monthly nurture. 2 face-to-face outside office = contact → friend. Follow up within 12-24h: cite specific, ask to meet again, offer something.</div>
+  </div>
+</div>
+<div class="tape-bottom"></div>
+<script>
+const STORAGE_KEYS={cases:'jay_cases_v3',evidence:'jay_evidence_v3',outreaches:'jay_outreaches_v3',contacts:'jay_contacts_v4',pings:'jay_pings_v4',rap:'jay_rap_v4'};
+const DISCOVERY=["LinkedIn","Instagram","YouTube","Podcast","Referral","Other"];
+const EVIDENCE_TAGS=["Comments","Shares","Testimonials","Podcast interviews","Newsletter","Speaking","Community","Case studies"];
+const GROWTH_TAGS=["Professional branding","Website","Lead magnet","Email list","Webinar","Podcast","Application funnel","Discovery calls","Paid community","Video content"];
+const TRUST_LEAKS=["Generic messaging","Weak CTA","Missing proof","Confusing offer","Too much jargon","Poor hierarchy","Weak headline","Unclear next step","Inconsistent tone","Pricing anxiety","Weak positioning","Other"];
+const JOURNEY_OPTS=["Instagram","Website","Sales Page","Booking","Checkout","Email","Lead Magnet","Linktree","YouTube","LinkedIn","Application","Other"];
+const VERDICTS=["Investigate further","Send outreach","Create case study","Follow on LinkedIn","Revisit later","Not worth pursuing"];
+const BUCKETS=["Customer","Prospect","Business Associate","Aspirational","Superconnector","Gatekeeper","Mentor"];
+let cases=[],evidences=[],outreaches=[],contacts=[],pings=[],rap={},currentCaseId=null,currentContactId=null,currentTab='dossier',currentView='board',relView='queue';
+function load(){
+  try{
+    cases=JSON.parse(localStorage.getItem(STORAGE_KEYS.cases)||'[]');
+    evidences=JSON.parse(localStorage.getItem(STORAGE_KEYS.evidence)||'[]');
+    outreaches=JSON.parse(localStorage.getItem(STORAGE_KEYS.outreaches)||'[]');
+    contacts=JSON.parse(localStorage.getItem(STORAGE_KEYS.contacts)||'[]');
+    pings=JSON.parse(localStorage.getItem(STORAGE_KEYS.pings)||'[]');
+    rap=JSON.parse(localStorage.getItem(STORAGE_KEYS.rap)||'{}');
+  }catch(e){ cases=[]; evidences=[]; outreaches=[]; contacts=[]; pings=[]; rap={}; }
+}
+function save(){
+  localStorage.setItem(STORAGE_KEYS.cases,JSON.stringify(cases));
+  localStorage.setItem(STORAGE_KEYS.evidence,JSON.stringify(evidences));
+  localStorage.setItem(STORAGE_KEYS.outreaches,JSON.stringify(outreaches));
+  localStorage.setItem(STORAGE_KEYS.contacts,JSON.stringify(contacts));
+  localStorage.setItem(STORAGE_KEYS.pings,JSON.stringify(pings));
+  localStorage.setItem(STORAGE_KEYS.rap,JSON.stringify(rap));
+  updateStats();
+}
+function genId(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36);}
+function genCaseNumber(){return 'CASE-'+Math.floor(1000+Math.random()*9000);}
+function esc(s){if(!s) return ''; return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function scoreBg(s){if(s>=20) return 'black'; if(s>=15) return 'var(--yellow)'; if(s>=10) return '#fef3c7'; return '#f4f4f5';}
+function tierInterval(t){ if(t==1) return 30; if(t==2) return 90; return 365; }
+function calcNextPing(contact){
+  if(!contact.lastPing) return new Date();
+  const last=new Date(contact.lastPing);
+  const next=new Date(last); next.setDate(last.getDate()+tierInterval(contact.tier));
+  return next;
+}
+function daysUntil(date){ const today=new Date(); today.setHours(0,0,0,0); const d=new Date(date); d.setHours(0,0,0,0); return Math.ceil((d-today)/86400000); }
+function updateStats(){
+  document.getElementById('count-board').textContent=cases.length;
+  document.getElementById('count-ev').textContent=evidences.length;
+  document.getElementById('count-rel').textContent=contacts.length;
+  document.getElementById('stat-total').textContent=cases.length;
+  document.getElementById('stat-worth').textContent=cases.filter(c=>c.status==='worth_pursuing').length;
+  const avg=cases.length?(cases.reduce((a,b)=>a+(b.totalScore25||0),0)/cases.length).toFixed(1):'0';
+  document.getElementById('stat-avg').textContent=avg;
+  document.getElementById('stat-rel').textContent=contacts.length;
+  const due=contacts.filter(c=> daysUntil(calcNextPing(c))<=0 ).length;
+  document.getElementById('stat-pingdue').textContent=due;
+}
+function setView(v){
+  currentView=v;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
+  document.getElementById('view-board').style.display=v==='board'?'block':'none';
+  document.getElementById('view-evidence').style.display=v==='evidence'?'block':'none';
+  document.getElementById('view-relationships').style.display=v==='relationships'?'block':'none';
+  document.getElementById('view-guide').style.display=v==='guide'?'block':'none';
+  document.getElementById('toolbar-board').style.display=v==='board'?'flex':'none';
+  document.getElementById('toolbar-rel').style.display=v==='relationships'?'flex':'none';
+  if(v==='board') renderBoard();
+  if(v==='evidence') renderEvidence();
+  if(v==='relationships') renderRelationships();
+  if(v==='guide') renderGuide();
+}
+function setRelView(v){ relView=v; document.getElementById('btn-queue').classList.toggle('btn-black',v==='queue'); document.getElementById('btn-queue').classList.toggle('btn-white',v!=='queue'); document.getElementById('btn-all').classList.toggle('btn-black',v==='all'); document.getElementById('btn-all').classList.toggle('btn-white',v!=='all'); renderRelationships(); }
+function setDossierTab(t){ currentTab=t; document.querySelectorAll('.dossier-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t)); renderDossierBody(); }
+/* CASE BOARD */
+function renderBoard(){
+  const search=(document.getElementById('search')?.value||'').toLowerCase();
+  const statusF=document.getElementById('filter-status')?.value||'all';
+  const minScore=document.getElementById('filter-score')?.checked;
+  let filtered=cases.filter(c=>{
+    if(statusF!=='all'&&c.status!==statusF) return false;
+    if(minScore&&(c.totalScore25||0)<15) return false;
+    if(search){ const hay=(c.brandName+' '+(c.founderName||'')+' '+(c.oneFinding||'')+' '+(c.discoveryStory||'')).toLowerCase(); if(!hay.includes(search)) return false; }
+    return true;
+  });
+  const container=document.getElementById('view-board');
+  if(filtered.length===0){
+    container.innerHTML=`<div class="empty"><div class="mono">NO CASES MATCH</div><div class="serif">Find people who create genuinely good content.</div><button class="btn btn-black" style="margin-top:16px" onclick="openNewCase()">+ OPEN FIRST CASE</button></div>`;
+    return;
+  }
+  let html=`<div class="grid">`;
+  filtered.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).forEach(c=>{
+    const conf=[c.confidenceBefore||0,c.confidenceAfterContent||0,c.confidenceHomepage||0,c.confidenceOfferPage||0,c.confidenceCheckout||0,c.confidenceEnd||0];
+    const drop=(c.confidenceAfterContent||0)-(c.confidenceHomepage||0);
+    const stampClass=c.status==='worth_pursuing'?'worth':c.status==='cold_trail'?'cold':c.status==='closed'?'closed':'under';
+    const relCount=contacts.filter(co=>co.relatedCaseId===c.id).length;
+    html+=`<div class="case-file" onclick="openDossier('${c.id}')">
+      <div class="case-tab">${c.caseNumber||'CASE-####'}</div>
+      <div class="case-inner">
+        <div class="case-head"><div style="display:flex;gap:10px;flex:1;min-width:0"><div class="case-avatar">${(c.brandName||'?')[0].toUpperCase()}</div><div class="case-meta"><div class="case-brand">${esc(c.brandName)}</div><div class="case-founder">${esc(c.founderName||'Founder-led?')} • ${esc(c.niche||'Niche')}</div><span class="stamp ${stampClass}">${(c.status||'under_investigation').replace(/_/g,' ').toUpperCase()}</span>${relCount?`<span style="font-size:8px;margin-left:6px;background:var(--yellow);border:1px solid black;padding:1px 4px">${relCount} CONTACTS</span>`:''}</div></div><div><div class="score-box" style="background:${scoreBg(c.totalScore25||0)}"><div class="score-num">${c.totalScore25||0}<small>/25</small></div><div class="score-label">${(c.totalScore25||0)>=20?'HIGH VALUE':(c.totalScore25||0)>=15?'WORTH IT':'INVESTIGATE'}</div></div></div></div>
+        <div class="conf-grid">${conf.map(v=>`<div class="conf-col"><div class="conf-fill" style="height:${v*10}%"></div></div>`).join('')}</div><div class="conf-labels"><span>BEFORE</span><span>CONTENT</span><span>HOME</span><span>OFFER</span><span>CHECKOUT</span><span>END</span></div>
+        ${drop>2?`<div style="margin-top:8px;font-size:9px;background:#fee2e2;border:1px solid #fecaca;color:#991b1b;padding:4px 8px">⚠ CONFIDENCE DROP: -${drop} AT HOMEPAGE</div>`:''}
+        ${c.oneFinding?`<div class="one-finding"><p>"${esc(c.oneFinding)}"</p></div>`:''}
+        <div class="tags">${(c.trustLeaksTags||[]).slice(0,3).map(t=>`<span class="tag">${t.toUpperCase()}</span>`).join('')}${c.commercialOneClientValuable?`<span class="tag yellow">$ VALUABLE</span>`:''}</div>
+        <div class="foot"><span>OPENED ${new Date(c.createdAt).toLocaleDateString()} • ${c.outreachCount||0} COMMS • ${relCount} REL</span><span style="text-decoration:underline">OPEN DOSSIER →</span></div>
+      </div></div>`;
+  });
+  html+='</div>'; container.innerHTML=html;
+}
+/* RELATIONSHIPS */
+function renderRelationships(){
+  const search=(document.getElementById('search-rel')?.value||'').toLowerCase();
+  const bucketF=document.getElementById('filter-bucket')?.value||'all';
+  const tierF=document.getElementById('filter-tier')?.value||'all';
+  let filtered=contacts.filter(c=>{
+    if(bucketF!=='all'&&c.bucket!==bucketF) return false;
+    if(tierF!=='all'&&String(c.tier)!==tierF) return false;
+    if(search){ const hay=(c.name+' '+(c.company||'')+' '+(c.bucket||'')+' '+(c.role||'')+' '+(c.howCanHelp||'')+' '+(c.notes||'')).toLowerCase(); if(!hay.includes(search)) return false; }
+    return true;
+  });
+  // calculate next pings
+  filtered.forEach(c=>{ c._nextPing=calcNextPing(c); c._daysUntil=daysUntil(c._nextPing); });
+  if(relView==='queue'){ filtered=filtered.filter(c=>c._daysUntil<=7).sort((a,b)=>a._daysUntil-b._daysUntil); }
+  const container=document.getElementById('view-relationships');
+  // RAP + Ping Queue summary
+  const dueToday=contacts.filter(c=>{ const d=daysUntil(calcNextPing(c)); return d<=0; }).length;
+  const dueWeek=contacts.filter(c=>{ const d=daysUntil(calcNextPing(c)); return d>0&&d<=7; }).length;
+  const overdue=contacts.filter(c=>daysUntil(calcNextPing(c))<0).length;
+  let html=`
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:14px;margin-bottom:18px">
+      <div style="background:var(--paper);border:4px solid black;padding:16px;box-shadow:6px 6px 0 white">
+        <div style="font-size:10px;letter-spacing:0.18em;font-weight:800">RELATIONSHIP ACTION PLAN • NEVER EAT ALONE</div>
+        <div style="margin-top:12px;display:grid;gap:10px">
+          <div class="form-grid"><div><label class="mono">GOAL • 3 MONTHS</label><input id="rap-3m" value="${esc(rap.threeM||'')}" placeholder="e.g., 3 new founder clients, $15k MRR" oninput="rap.threeM=this.value; save()"></div><div><label class="mono">GOAL • 1 YEAR</label><input id="rap-1y" value="${esc(rap.oneY||'')}" placeholder="Become go-to for coach conversion" oninput="rap.oneY=this.value; save()"></div><div><label class="mono">GOAL • 3 YEARS</label><input id="rap-3y" value="${esc(rap.threeY||'')}" placeholder="Board of advisors includes 2 unicorn founders" oninput="rap.threeY=this.value; save()"></div><div><label class="mono">BOARD OF ADVISORS (cheerleaders + supervisors)</label><input id="rap-board" value="${esc(rap.board||'')}" placeholder="Alex (connector), Maya (mentor), David (superconnector)" oninput="rap.board=this.value; save()"></div></div>
+          <div style="background:black;color:white;padding:10px;border:2px solid black;display:flex;gap:12px;flex-wrap:wrap;font-size:10px">
+            <span>BUCKETS: Customers (past/active), Prospects (want to do biz), Business Associates (active/hoping), Aspirational (admire/door-opener)</span>
+            <span style="color:var(--yellow)">TIER 1 Monthly • TIER 2 Quarterly • TIER 3 Yearly</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:9px" class="tip-box">
+            <b>HOW TO PING (80% of relationship building):</b>
+            <span>• Never keep score — give first</span>
+            <span>• 3 modes before recognition: email, phone, face-to-face</span>
+            <span>• 2 face-to-face outside office = contact → friend</span>
+            <span>• Monthly nurture for new, Value-add ping > "just checking in"</span>
+            <span>• Best ping: Birthdays — people care</span>
+            <span>• Monitor social weekly (Tier1/2) or quarterly (Tier3)</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;gap:10px">
+        <div style="background:black;color:white;border:2px solid black;padding:12px"><div style="font-size:9px;letter-spacing:0.14em;color:#a1a1aa">PING QUEUE • TODAY</div><div style="margin-top:8px;display:flex;gap:8px"><div style="background:var(--red);color:white;padding:8px 12px;flex:1;text-align:center"><div style="font-size:20px;font-weight:800">${overdue}</div><div style="font-size:8px;letter-spacing:0.12em">OVERDUE</div></div><div style="background:var(--yellow);color:black;padding:8px 12px;flex:1;text-align:center;border:2px solid black"><div style="font-size:20px;font-weight:800">${dueToday}</div><div style="font-size:8px">DUE NOW</div></div><div style="background:#fef3c7;color:black;padding:8px 12px;flex:1;text-align:center"><div style="font-size:20px;font-weight:800">${dueWeek}</div><div style="font-size:8px">THIS WEEK</div></div></div><div style="margin-top:10px;font-size:9px;color:#a1a1aa">Ferrazzi: Add Tier 1 to phone favorites. Ping constantly, not just when you need something. Follow up within 12-24h: cite specific, ask to meet again, offer something.</div></div>
+        <div style="background:var(--paper);border:2px solid black;padding:12px"><div style="font-size:9px;letter-spacing:0.14em;font-weight:800">QUICK PING TEMPLATES</div><div style="margin-top:8px;display:grid;gap:6px"><button class="btn btn-white" style="font-size:9px" onclick="openPingTemplate('value')">VALUE-ADD • "Saw this and thought of you..."</button><button class="btn btn-white" style="font-size:9px" onclick="openPingTemplate('birthday')">BIRTHDAY • People really care</button><button class="btn btn-white" style="font-size:9px" onclick="openPingTemplate('care')">CARE • "Been too long, wanted you to know you matter"</button><button class="btn btn-white" style="font-size:9px" onclick="openPingTemplate('followup')">24H FOLLOW-UP • Specific + ask to meet + offer</button></div></div>
+      </div>
+    </div>
+  `;
+  if(filtered.length===0){
+    html+=`<div class="empty"><div class="mono">NO CONTACTS ${relView==='queue'?'(PING QUEUE EMPTY 🎉)':''}</div><div class="serif">Your network is your net worth.</div><p style="margin-top:8px;font-size:11px">Add contacts into buckets (Customer, Prospect, Business Associate, Aspirational, Superconnector, Gatekeeper) and tiers. Tier 1 monthly, Tier 2 quarterly, Tier 3 yearly.</p><button class="btn btn-yellow" style="margin-top:12px" onclick="openContactModal()">+ ADD FIRST CONTACT</button></div>`;
+    container.innerHTML=html; return;
+  }
+  html+=`<div class="rel-grid">`;
+  filtered.sort((a,b)=> (a._daysUntil||0)-(b._daysUntil||0)).forEach(c=>{
+    const next=c._nextPing; const du=c._daysUntil;
+    let statusClass='ok', statusText=`NEXT: ${next.toLocaleDateString()} • IN ${du} DAYS`;
+    if(du<0){ statusClass='overdue'; statusText=`OVERDUE BY ${Math.abs(du)} DAYS • PING NOW`; }
+    else if(du===0){ statusClass='today'; statusText=`DUE TODAY • PING!`; }
+    else if(du<=7){ statusClass='week'; statusText=`DUE IN ${du} DAYS • THIS WEEK`; }
+    const bucketClass=(c.bucket||'').toLowerCase().split(' ')[0];
+    html+=`<div class="rel-card" onclick="openContactEdit('${c.id}')">
+      <div class="rel-tier tier-${c.tier||2}"></div>
+      <div class="rel-inner">
+        <div class="rel-top"><div style="display:flex;gap:10px"><div class="rel-avatar">${(c.name||'?')[0].toUpperCase()}</div><div><div class="rel-name">${esc(c.name)}</div><div class="rel-role">${esc(c.role||'')} ${c.company?`• ${esc(c.company)}`:''}</div><span class="bucket ${bucketClass}">${esc((c.bucket||'PROSPECT').toUpperCase())}</span><span style="font-size:8px;margin-left:6px;background:black;color:white;padding:2px 4px">TIER ${c.tier||2}</span></div></div><div style="text-align:right"><div style="font-size:8px;color:#71717a">LAST PING</div><div style="font-size:10px;font-weight:800">${c.lastPing?new Date(c.lastPing).toLocaleDateString():'NEVER'}</div><div style="font-size:8px;color:#71717a;margin-top:4px">${c.pingCount||0} PINGS</div></div></div>
+        <div class="ping-status ${statusClass}"><span>${statusText}</span><button class="btn btn-black" style="padding:3px 8px;font-size:8px" onclick="event.stopPropagation(); quickPing('${c.id}')">PING NOW</button></div>
+        <div class="modes">
+          <div class="mode-dot ${c.modes?.email?'done':''}" title="Email">✉️</div>
+          <div class="mode-dot ${c.modes?.phone?'done':''}" title="Phone">📞</div>
+          <div class="mode-dot ${c.faceToFaceCount>=1?'done':''}" title="Face-to-face 1">${c.faceToFaceCount||0}☕</div>
+          <div style="font-size:8px;color:#71717a;margin-left:6px;align-self:center">${c.modes?.email&&c.modes?.phone&&(c.faceToFaceCount||0)>=1?'✓ RECOGNIZED (3 modes)':`${[c.modes?.email?'email':'',c.modes?.phone?'phone':'', (c.faceToFaceCount||0)>=1?'f2f':''].filter(Boolean).join(' + ')||'0/3 modes'} • Need 2 f2f to friend`}</div>
+        </div>
+        ${c.howCanHelp?`<div style="margin-top:8px;background:var(--kraft);border:1px solid black;padding:6px;font-size:9px"><b>HELP:</b> ${esc(c.howCanHelp)}</div>`:''}
+        ${c.relatedCaseId?`<div style="margin-top:6px;font-size:8px;color:#71717a">LINKED TO CASE: ${esc((cases.find(ca=>ca.id===c.relatedCaseId)?.caseNumber)||'')}</div>`:''}
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+  container.innerHTML=html;
+}
+/* EVIDENCE */
+function renderEvidence(){
+  const container=document.getElementById('view-evidence');
+  if(evidences.length===0){ container.innerHTML=`<div class="empty"><div class="mono">NO EVIDENCE LOGGED</div><div class="serif">Brilliant storyteller. Weak About page.</div><button class="btn btn-yellow" style="margin-top:12px" onclick="openEvidenceModal()">+ LOG EVIDENCE</button></div>`; return; }
+  let html=`<div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:16px;flex-wrap:wrap;gap:10px"><div><h2 style="font-size:20px;color:white">EVIDENCE LOCKER • INTERESTING CONTRADICTIONS</h2><p style="font-size:10px;color:#a1a1aa;margin-top:6px">One hour of investigation should produce multiple assets, not just one email.</p></div><button class="btn btn-yellow" onclick="openEvidenceModal()">+ LOG EVIDENCE</button></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px">`;
+  evidences.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).forEach(ev=>{
+    const linked=cases.find(c=>c.id===ev.prospectId);
+    html+=`<div style="border:2px solid black;padding:2px;background:${ev.isHighValue?'var(--yellow)':'#27272a'};box-shadow:4px 4px 0 white"><div style="background:var(--paper);padding:12px"><div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">${ev.isHighValue?`<span style="background:black;color:var(--yellow);font-size:8px;padding:2px 6px;font-weight:800">GOLD</span>`:''}<span style="font-size:8px;color:#71717a">${linked?esc(linked.caseNumber)+' • '+esc(linked.brandName):'GENERAL'} • ${new Date(ev.createdAt).toLocaleDateString()}</span><button onclick="deleteEvidence('${ev.id}')" style="margin-left:auto;font-size:8px;border:1px solid black;background:white;padding:2px 6px;cursor:pointer">DELETE</button></div><div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center"><div style="border:2px solid black;background:white;padding:8px"><div style="font-size:7px;color:#15803d;font-weight:800">BRILLIANT</div><div style="margin-top:4px;font-family:'Instrument Serif',serif;font-size:13px">${esc(ev.brilliantPart)}</div></div><div>→</div><div style="border:2px solid black;background:black;color:white;padding:8px"><div style="font-size:7px;color:#a1a1aa">WEAK</div><div style="margin-top:4px;font-family:'Instrument Serif',serif;font-size:13px">${esc(ev.weakPart)}</div></div></div>${ev.outreachAngle?`<div style="margin-top:10px;border:1px dashed #a1a1aa;background:white;padding:8px"><div style="font-size:7px;color:#71717a">OUTREACH ANGLE</div><div style="margin-top:4px;font-size:11px;font-style:italic">"${esc(ev.outreachAngle)}"</div></div>`:''}</div></div>`;
+  });
+  html+='</div>'; container.innerHTML=html;
+}
+function renderGuide(){
+  const container=document.getElementById('view-guide');
+  container.innerHTML=`<div style="max-width:1000px;background:var(--paper);border:4px solid black;padding:24px;box-shadow:8px 8px 0 white">
+    <div style="font-size:10px;letter-spacing:0.18em;color:#71717a">JAY PLAYBOOK • NEVER EAT ALONE + DETECTIVE DOSSIER</div>
+    <h1 style="font-family:'Instrument Serif',serif;font-size:38px;line-height:0.9;margin-top:8px">How Jay Investigates + Nurtures</h1>
+    <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:black;color:white;padding:16px;border:2px solid black"><div style="font-size:10px;letter-spacing:0.14em;color:#a1a1aa">PART 1 • DOSSIER SCORING • TOTAL 25 • IGNORE <15</div><div style="margin-top:10px;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;font-size:9px"><div style="border:1px solid #3f3f46;padding:8px">VISIBILITY /5</div><div style="border:1px solid #3f3f46;padding:8px">COMMERCIAL /5</div><div style="border:1px solid #3f3f46;padding:8px">TRUST GAP /5</div><div style="border:1px solid #3f3f46;padding:8px">GROWTH /5</div><div style="border:1px solid #3f3f46;padding:8px">OUTREACH /5</div></div><div style="margin-top:10px;font-size:10px;color:#a1a1aa">If they replied "Show me what you found," would you have something useful? If no, don't send.</div></div>
+      <div style="background:var(--yellow);border:2px solid black;padding:16px"><div style="font-size:10px;font-weight:800;letter-spacing:0.14em">PART 2 • NEVER EAT ALONE • RELATIONSHIP OS</div><div style="margin-top:8px;font-size:11px;line-height:1.5"><b>Buckets:</b> Customer (past/active), Prospect (want biz), Business Associate (active/hoping), Aspirational (admire/door-opener), Superconnector (knows everyone), Gatekeeper (ally), Mentor/Mentee.<br><br><b>Tiers:</b> Tier1 Monthly (new or active deals, phone favorites), Tier2 Quarterly (touch base, monitor social weekly/monthly), Tier3 Yearly (acquaintances, quarterly social, direct once/year).<br><br><b>Ping = 80% of relationship.</b> Value-add > check-in. Birthdays best. 3 modes before recognition, 2 f2f = friend.</div></div>
+    </div>
+    <div style="margin-top:18px;display:grid;gap:10px;font-size:11px;line-height:1.5">
+      <div style="border-left:4px solid black;padding-left:12px;background:white;border:2px solid black;border-left-width:6px;padding:10px"><b>YOUR PING ROUTINE:</b><br>• <b>Daily:</b> Check Ping Queue (overdue + today). Quick ping 3 people.<br>• <b>Weekly:</b> Monitor Tier1 social, find 2 opportunities to be useful (health/wealth/children). Schedule one meal — never eat alone.<br>• <b>Monthly:</b> Tier1 gets call/email. Review 3-mode progress. 2 face-to-face to convert contact → friend.<br>• <b>Quarterly:</b> Tier2 gets call/email. Include in occasional mass update about your life/business. Monitor Tier3 social.<br>• <b>Yearly:</b> Tier3 direct ping. Birthdays always.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="border:2px solid black;padding:10px;background:white"><b>ACTION STEPS • Never Eat Alone Gold:</b><br>• Don't keep score — How can I help you?<br>• Ping constantly, not when you need something<br>• Never eat alone — every meal with someone<br>• Become king of content — share meaningful<br>• Follow up in 12-24h: cite specific, ask to meet again, offer something<br>• Do homework before meeting — find common interests<br>• Make gatekeeper an ally<br>• Give before you receive, be generous to everyone</div>
+        <div style="border:2px solid black;padding:10px;background:var(--kraft)"><b>CATEGORIZATION SYSTEM • HOW TO BUCKET:</b><br>• <b>Customer:</b> Past/active clients — Tier1 if active, Tier2 if past<br>• <b>Prospect:</b> Cases Worth Pursuing — Tier1 until closed, then Tier2<br>• <b>Business Associate:</b> Actively involved / hoping — Tier1 or Tier2<br>• <b>Aspirational:</b> People you admire, door openers — Start Tier2, earn Tier1<br>• <b>Superconnector:</b> Knows everyone — Always Tier1 or Tier2, never Tier3<br>• <b>Gatekeeper:</b> Assistant to big shot — Treat nicely, Tier1<br>• <b>Mentor/Mentee:</b> Long-term — Tier2 with monthly value-add</div>
+      </div>
+    </div>
+  </div>`;
+}
+/* DOSSIER RENDER (kept concise) */
+function openNewCase(){ document.getElementById('newcase-count').textContent=cases.length+1; document.getElementById('new-brand').value=''; document.getElementById('new-founder').value=''; document.getElementById('new-niche').value=''; document.getElementById('new-website').value=''; document.getElementById('new-discovery').value=''; document.getElementById('newcase-modal').classList.add('open'); }
+function createCase(){ const brand=document.getElementById('new-brand').value.trim(); if(!brand) return alert('Brand required'); const c={id:genId(),caseNumber:genCaseNumber(),brandName:brand,founderName:document.getElementById('new-founder').value.trim(),niche:document.getElementById('new-niche').value.trim(),website:document.getElementById('new-website').value.trim(),discoveryStory:document.getElementById('new-discovery').value.trim(),investigator:'Segun Falade',status:'under_investigation',visibilityContentQuality:3,visibilityEngagement:3,visibilityConsistency:3,confidenceBefore:5,confidenceAfterContent:5,confidenceHomepage:5,confidenceOfferPage:5,confidenceCheckout:5,confidenceEnd:5,scoreVisibility:0,scoreCommercial:0,scoreTrustGap:0,scoreGrowth:0,scoreOutreach:0,totalScore25:0,growthSignalsTags:[],visibilityEvidenceTags:[],trustLeaksTags:[],buyerJourneySteps:[],buyerJourneyStepsCount:0,outreachCount:0,createdAt:new Date().toISOString()}; cases.unshift(c); save(); document.getElementById('newcase-modal').classList.remove('open'); renderBoard(); openDossier(c.id); }
+function openDossier(id){ currentCaseId=id; const c=cases.find(x=>x.id===id); if(!c) return; document.getElementById('dossier-avatar').textContent=(c.brandName[0]||'J').toUpperCase(); document.getElementById('dossier-case-number').textContent=c.caseNumber||'CASE-####'; document.getElementById('dossier-brand').textContent=c.brandName; document.getElementById('dossier-score').textContent=(c.totalScore25||0)+'/25'; document.getElementById('dossier-score').style.background=scoreBg(c.totalScore25||0); document.getElementById('dossier-investigator').textContent=c.investigator||'Segun Falade'; document.getElementById('dossier-date').textContent=new Date(c.createdAt).toLocaleDateString(); document.getElementById('dossier-modal').classList.add('open'); setDossierTab('dossier'); }
+function closeDossier(){ document.getElementById('dossier-modal').classList.remove('open'); currentCaseId=null; save(); renderBoard(); }
+function renderDossierBody(){
+  const c=cases.find(x=>x.id===currentCaseId); if(!c) return;
+  const body=document.getElementById('dossier-body');
+  if(currentTab==='dossier'){
+    body.innerHTML=`
+      <section><div class="sec-head"><span class="num">01</span> CASE DETAILS</div><div class="form-grid"><div><label class="mono">CASE #</label><input value="${esc(c.caseNumber||'')}" oninput="upd('caseNumber',this.value)"></div><div><label class="mono">BRAND *</label><input value="${esc(c.brandName||'')}" oninput="upd('brandName',this.value)"></div><div><label class="mono">FOUNDER</label><input value="${esc(c.founderName||'')}" oninput="upd('founderName',this.value)"></div><div><label class="mono">WEBSITE</label><input value="${esc(c.website||'')}" oninput="upd('website',this.value)"></div><div><label class="mono">STATUS</label><select onchange="upd('status',this.value)"><option value="under_investigation" ${c.status==='under_investigation'?'selected':''}>UNDER INVESTIGATION</option><option value="worth_pursuing" ${c.status==='worth_pursuing'?'selected':''}>WORTH PURSUING</option><option value="cold_trail" ${c.status==='cold_trail'?'selected':''}>COLD TRAIL</option><option value="closed" ${c.status==='closed'?'selected':''}>CLOSED</option></select></div><div><label class="mono">NICHE</label><input value="${esc(c.niche||'')}" oninput="upd('niche',this.value)"></div></div></section>
+      <section class="kraft"><div class="sec-head"><span class="num">02</span> 🌟 VISIBILITY CHECK</div><div class="form-grid" style="grid-template-columns:1fr 1fr 1fr"><div><label class="mono">CONTENT QUALITY</label><div class="stars">${[1,2,3,4,5].map(n=>`<div class="star ${(c.visibilityContentQuality||0)>=n?'on':''}" onclick="upd('visibilityContentQuality',${n}); renderDossierBody()">★</div>`).join('')}</div></div><div><label class="mono">ENGAGEMENT</label><div class="stars">${[1,2,3,4,5].map(n=>`<div class="star ${(c.visibilityEngagement||0)>=n?'on':''}" onclick="upd('visibilityEngagement',${n}); renderDossierBody()">★</div>`).join('')}</div></div><div><label class="mono">CONSISTENCY</label><div class="stars">${[1,2,3,4,5].map(n=>`<div class="star ${(c.visibilityConsistency||0)>=n?'on':''}" onclick="upd('visibilityConsistency',${n}); renderDossierBody()">★</div>`).join('')}</div></div></div></section>
+      <section><div class="sec-head"><span class="num">03</span> 🧭 BUYER JOURNEY • ${c.buyerJourneyStepsCount||0} STEPS ${ (c.buyerJourneyStepsCount||0)>4?'⚠ LEAKY':'' }</div><div class="chips">${JOURNEY_OPTS.map(o=>`<div class="chip yellow ${(c.buyerJourneySteps||[]).includes(o)?'on':''}" onclick="toggleJourney('${o}')">${o} ↓</div>`).join('')}</div><div style="margin-top:8px;font-size:11px">ROUTE: <b>${esc((c.buyerJourneySteps||[]).join(' → ')||'—')}</b></div></section>
+      <section class="black"><div class="sec-head"><span class="num">04</span> ⚖️ CONFIDENCE METER</div><div style="background:var(--paper);color:black;padding:10px;border:2px solid white">${[['Before','confidenceBefore'],['After Content','confidenceAfterContent'],['Homepage','confidenceHomepage'],['Offer','confidenceOfferPage'],['Checkout','confidenceCheckout'],['End','confidenceEnd']].map(([l,k])=>`<div class="range-row"><span>${l}</span><input type="range" min="0" max="10" value="${c[k]||0}" oninput="upd('${k}',parseInt(this.value)); this.nextElementSibling.textContent=this.value"><span class="range-val">${c[k]||0}</span></div>`).join('')}</div><div class="form-grid" style="margin-top:10px"><div><label class="mono">WHERE DECLINE?</label><textarea oninput="upd('confidenceWhereDeclined',this.value)">${esc(c.confidenceWhereDeclined||'')}</textarea></div><div><label class="mono">WHAT TRIGGERED?</label><textarea oninput="upd('confidenceWhatTriggered',this.value)">${esc(c.confidenceWhatTriggered||'')}</textarea></div></div></section>
+      <section class="red"><div class="sec-head"><span class="num">05</span> 🚨 CONTRADICTIONS</div><div class="form-grid"><div><label class="mono">THEY SAY...</label><input value="${esc(c.contradictionTheySay||'')}" oninput="upd('contradictionTheySay',this.value)"></div><div><label class="mono">BUT WEBSITE...</label><input value="${esc(c.contradictionButWebsite||'')}" oninput="upd('contradictionButWebsite',this.value)"></div></div></section>
+      <section class="yellow"><div class="sec-head"><span class="num">06</span> 💡 ONE FINDING</div><textarea oninput="upd('oneFinding',this.value)">${esc(c.oneFinding||'')}</textarea></section>
+      <section><div class="sec-head"><span class="num">07</span> 🎯 SCORE /25</div><div class="score-grid">${[['VIS','scoreVisibility'],['COMM','scoreCommercial'],['TRUST','scoreTrustGap'],['GROWTH','scoreGrowth'],['OUTREACH','scoreOutreach']].map(([l,k])=>`<div class="score-box-edit"><div class="s-label">${l}</div><div class="score-btns">${[0,1,2,3,4,5].map(n=>`<button class="score-btn ${(c[k]||0)===n?'on':''}" onclick="upd('${k}',${n}); renderDossierBody()">${n}</button>`).join('')}</div></div>`).join('')}</div><div style="margin-top:10px;display:flex;justify-content:space-between"><span style="font-weight:800">TOTAL</span><span style="font-size:20px;font-weight:800">${(c.scoreVisibility||0)+(c.scoreCommercial||0)+(c.scoreTrustGap||0)+(c.scoreGrowth||0)+(c.scoreOutreach||0)}/25</span></div></section>
+      <button class="btn btn-black" style="width:100%;padding:14px" onclick="save(); renderBoard(); alert('Saved to browser!')">SAVE DOSSIER</button>
+    `;
+  } else if(currentTab==='contacts'){
+    const rels=contacts.filter(co=>co.relatedCaseId===c.id);
+    body.innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:10px"><h3 style="font-size:11px;letter-spacing:0.12em;font-weight:800">RELATED CONTACTS • ${rels.length}</h3><button class="btn btn-yellow" style="padding:6px 10px;font-size:9px" onclick="openContactModal('${c.id}')">+ ADD CONTACT TO CASE</button></div>
+      ${rels.length? `<div class="rel-grid">${rels.map(co=>{const du=daysUntil(calcNextPing(co)); return `<div class="rel-card" onclick="openContactEdit('${co.id}')"><div class="rel-tier tier-${co.tier||2}"></div><div class="rel-inner"><div style="font-family:'Instrument Serif',serif">${esc(co.name)} • Tier ${co.tier}</div><div style="font-size:10px">${esc(co.bucket)} • Next: ${calcNextPing(co).toLocaleDateString()} (${du<=0?'OVERDUE':du+'d'})</div></div></div>`}).join('')}</div>`:`<div style="border:2px dashed #a1a1aa;padding:20px;text-align:center;font-size:11px">No contacts linked yet. Link founder, gatekeeper, superconnector to this case. Then use Ping Board to nurture.<br><button class="btn btn-yellow" style="margin-top:10px" onclick="openContactModal('${c.id}')">+ ADD FOUNDER / GATEKEEPER</button></div>`}
+      <div style="margin-top:12px" class="tip-box"><b>NEVER EAT ALONE TIP:</b> Every case should have at least 2 contacts: the founder + their gatekeeper (assistant). Make gatekeeper an ally. Add superconnector who can intro you.</div>
+    `;
+  } else if(currentTab==='evidence'){
+    const evs=evidences.filter(e=>e.prospectId===c.id);
+    body.innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:10px"><h3 style="font-size:11px;font-weight:800">EVIDENCE FOR ${esc(c.caseNumber)}</h3><button class="btn btn-yellow" style="padding:6px 10px;font-size:9px" onclick="openEvidenceModal('${c.id}')">+ LOG</button></div>${evs.map(ev=>`<div style="border:2px solid black;background:white;padding:10px;margin-bottom:8px"><div style="font-size:11px"><b>BRILLIANT:</b> ${esc(ev.brilliantPart)} → <b>WEAK:</b> ${esc(ev.weakPart)}</div></div>`).join('')||'<div style="border:2px dashed #a1a1aa;padding:20px;text-align:center;font-size:11px">No evidence yet</div>'}`;
+  } else if(currentTab==='comms'){
+    const comms=outreaches.filter(o=>o.prospectId===c.id);
+    body.innerHTML=`<section><div class="sec-head"><span class="num">✉️</span> LOG COMMS</div><div class="form-grid"><div><label class="mono">CHANNEL</label><select id="comms-channel"><option value="email">EMAIL</option><option value="linkedin">LINKEDIN</option></select></div><div><label class="mono">STATUS</label><select id="comms-status"><option value="sent">SENT</option><option value="replied">REPLIED</option></select></div><div style="grid-column:span 2"><label class="mono">MESSAGE</label><textarea id="comms-message" placeholder="Use ONE FINDING..."></textarea></div></div><button class="btn btn-black" style="width:100%;margin-top:10px" onclick="addComms()">LOG</button></section><div>${comms.map(o=>`<div class="comms-item"><div class="meta"><span>${esc(o.channel).toUpperCase()} • ${esc(o.status).toUpperCase()}</span><span>${new Date(o.sentAt).toLocaleString()}</span></div><div style="margin-top:6px;font-size:11px;white-space:pre-wrap">${esc(o.message)}</div></div>`).join('')||'<div style="text-align:center;padding:20px;font-size:11px;color:#71717a">No comms</div>'}</div>`;
+  }
+}
+function upd(k,v){ const idx=cases.findIndex(x=>x.id===currentCaseId); if(idx===-1) return; cases[idx][k]=v; if(k.startsWith('score')){ const c=cases[idx]; c.totalScore25=(c.scoreVisibility||0)+(c.scoreCommercial||0)+(c.scoreTrustGap||0)+(c.scoreGrowth||0)+(c.scoreOutreach||0); const el=document.getElementById('dossier-score'); if(el){ el.textContent=c.totalScore25+'/25'; el.style.background=scoreBg(c.totalScore25);} } clearTimeout(window._t); window._t=setTimeout(save,300); }
+function toggleJourney(val){ const idx=cases.findIndex(x=>x.id===currentCaseId); if(idx===-1) return; const arr=cases[idx].buyerJourneySteps||[]; const pos=arr.indexOf(val); if(pos>-1) arr.splice(pos,1); else arr.push(val); cases[idx].buyerJourneySteps=arr; cases[idx].buyerJourneyStepsCount=arr.length; save(); renderDossierBody(); }
+function deleteCurrentCase(){ if(!confirm('Delete case?')) return; cases=cases.filter(c=>c.id!==currentCaseId); evidences=evidences.filter(e=>e.prospectId!==currentCaseId); outreaches=outreaches.filter(o=>o.prospectId!==currentCaseId); contacts.forEach(co=>{ if(co.relatedCaseId===currentCaseId) co.relatedCaseId=null; }); save(); closeDossier(); renderBoard(); }
+/* CONTACTS */
+function openContactModal(relatedCaseId){
+  const sel=document.getElementById('c-related-case'); sel.innerHTML='<option value="">LINK TO CASE (optional)</option>'+cases.map(c=>`<option value="${c.id}" ${relatedCaseId===c.id?'selected':''}>${esc(c.caseNumber)} • ${esc(c.brandName)}</option>`).join('');
+  document.getElementById('c-name').value=''; document.getElementById('c-company').value=''; document.getElementById('c-role').value=''; document.getElementById('c-birthday').value=''; document.getElementById('c-howmet').value=''; document.getElementById('c-valueprop').value=''; document.getElementById('c-help').value=''; document.getElementById('c-notes').value=''; document.getElementById('c-bucket').value='Prospect'; document.querySelectorAll('input[name="tier"]').forEach(r=>r.checked=r.value==='1');
+  if(relatedCaseId){ sel.value=relatedCaseId; const ca=cases.find(c=>c.id===relatedCaseId); if(ca) document.getElementById('c-company').value=ca.brandName; }
+  document.getElementById('contact-modal').classList.add('open');
+  currentContactId=null;
+}
+function openContactEdit(id){
+  const co=contacts.find(c=>c.id===id); if(!co) return;
+  openContactModal(co.relatedCaseId);
+  document.getElementById('c-name').value=co.name||''; document.getElementById('c-company').value=co.company||''; document.getElementById('c-role').value=co.role||''; document.getElementById('c-bucket').value=co.bucket||'Prospect'; document.getElementById('c-birthday').value=co.birthday||''; document.getElementById('c-howmet').value=co.howWeMet||''; document.getElementById('c-valueprop').value=co.valueProp||''; document.getElementById('c-help').value=co.howCanHelp||''; document.getElementById('c-notes').value=co.notes||''; document.getElementById('c-related-case').value=co.relatedCaseId||''; document.querySelectorAll('input[name="tier"]').forEach(r=>r.checked=String(r.value)===String(co.tier));
+  currentContactId=id;
+}
+function saveContact(){
+  const name=document.getElementById('c-name').value.trim(); if(!name) return alert('Name required');
+  const tier=parseInt(document.querySelector('input[name="tier"]:checked').value);
+  const data={
+    id: currentContactId||genId(),
+    name,
+    company: document.getElementById('c-company').value.trim(),
+    role: document.getElementById('c-role').value.trim(),
+    bucket: document.getElementById('c-bucket').value,
+    tier,
+    birthday: document.getElementById('c-birthday').value,
+    howWeMet: document.getElementById('c-howmet').value.trim(),
+    valueProp: document.getElementById('c-valueprop').value.trim(),
+    howCanHelp: document.getElementById('c-help').value.trim(),
+    notes: document.getElementById('c-notes').value.trim(),
+    relatedCaseId: document.getElementById('c-related-case').value||null,
+    modes: contacts.find(c=>c.id===currentContactId)?.modes||{email:false,phone:false},
+    faceToFaceCount: contacts.find(c=>c.id===currentContactId)?.faceToFaceCount||0,
+    lastPing: contacts.find(c=>c.id===currentContactId)?.lastPing||null,
+    pingCount: contacts.find(c=>c.id===currentContactId)?.pingCount||0,
+    createdAt: contacts.find(c=>c.id===currentContactId)?.createdAt||new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  const idx=contacts.findIndex(c=>c.id===data.id);
+  if(idx>-1) contacts[idx]=data; else contacts.unshift(data);
+  save();
+  document.getElementById('contact-modal').classList.remove('open');
+  renderRelationships();
+  if(currentCaseId) renderDossierBody();
+}
+function quickPing(id){
+  const co=contacts.find(c=>c.id===id); if(!co) return;
+  const type=prompt('Ping type? email / phone / f2f / value / birthday / care / followup','value')||'value';
+  const note=prompt('Quick note for this ping? (what you said / value you added)','')||'';
+  logPing(co,type,note);
+}
+function logPing(contact,type,note){
+  const now=new Date().toISOString();
+  const ping={id:genId(),contactId:contact.id,date:now,type,note,createdAt:now};
+  pings.unshift(ping);
+  contact.lastPing=now;
+  contact.pingCount=(contact.pingCount||0)+1;
+  contact.updatedAt=now;
+  if(type==='email') contact.modes.email=true;
+  if(type==='phone') contact.modes.phone=true;
+  if(type==='f2f') contact.faceToFaceCount=(contact.faceToFaceCount||0)+1;
+  save(); renderRelationships(); if(currentCaseId) renderDossierBody();
+}
+function openPingTemplate(kind){
+  const ideas={
+    value:'VALUE-ADD PING: "Saw this article/podcast about [their interest] and thought of you — especially the part about [specific]. No need to reply, just wanted to share." + attach article',
+    birthday:'BIRTHDAY PING: "Happy birthday! Quick note to say you matter to me. Hope you get to celebrate with [personal detail]." — People really care about birthdays (Ferrazzi gold)',
+    care:'CARE PING: "Hey [Name], been too long since we spoke and I wanted you to know I miss our chats and you are important to me. No agenda, just wanted to say hi."',
+    followup:'24H FOLLOW-UP (after meeting someone): 1) Cite specific you talked about 2) Ask to meet again 3) Offer them something so they want to meet again. Send within 12-24h.'
+  };
+  alert(ideas[kind]||'Ping');
+}
+/* EVIDENCE + COMMS + BACKUP */
+function openEvidenceModal(fixedId){
+  const m=document.createElement('div'); m.className='modal-backdrop open'; m.id='evidence-modal';
+  m.innerHTML=`<div style="width:100%;max-width:520px;background:var(--paper);border:4px solid black;padding:20px;box-shadow:8px 8px 0 white"><h3 style="font-size:12px;font-weight:800;letter-spacing:0.14em">LOG EVIDENCE • CONTRADICTION</h3><div style="margin-top:12px;display:grid;gap:10px;font-size:11px"><select id="ev-case" style="border:2px solid black;padding:8px;font-family:inherit"><option value="">SELECT CASE (or general)</option>${cases.map(c=>`<option value="${c.id}" ${fixedId===c.id?'selected':''}>${esc(c.caseNumber)} • ${esc(c.brandName)}</option>`).join('')}</select><div><label class="mono">BRILLIANT PART</label><input id="ev-brilliant" placeholder="Brilliant storyteller on LinkedIn"></div><div><label class="mono">WEAK PART</label><input id="ev-weak" placeholder="Weak About page"></div><div><label class="mono">OUTREACH ANGLE</label><textarea id="ev-angle" placeholder="Your LinkedIn made me trust you instantly..."></textarea></div><label style="display:flex;gap:8px;font-weight:800;font-size:11px"><input type="checkbox" id="ev-gold"> GOLD • HIGH VALUE</label></div><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-white" style="flex:1" onclick="document.getElementById('evidence-modal').remove()">CANCEL</button><button class="btn btn-black" style="flex:1" onclick="saveEvidence()">SAVE</button></div></div>`;
+  m.addEventListener('click',e=>{ if(e.target===m) m.remove(); }); document.body.appendChild(m);
+}
+function saveEvidence(){ const prospectId=document.getElementById('ev-case').value||null; const brilliant=document.getElementById('ev-brilliant').value.trim(); const weak=document.getElementById('ev-weak').value.trim(); if(!brilliant||!weak) return alert('Both required'); const angle=document.getElementById('ev-angle').value.trim(); const gold=document.getElementById('ev-gold').checked; evidences.unshift({id:genId(),prospectId,brilliantPart:brilliant,weakPart:weak,outreachAngle:angle,isHighValue:gold,createdAt:new Date().toISOString()}); save(); document.getElementById('evidence-modal').remove(); if(currentView==='evidence') renderEvidence(); if(currentCaseId) renderDossierBody(); }
+function deleteEvidence(id){ if(!confirm('Delete?')) return; evidences=evidences.filter(e=>e.id!==id); save(); if(currentView==='evidence') renderEvidence(); if(currentCaseId) renderDossierBody(); }
+function addComms(){ const c=cases.find(x=>x.id===currentCaseId); if(!c) return; const channel=document.getElementById('comms-channel').value; const status=document.getElementById('comms-status').value; const message=document.getElementById('comms-message').value.trim(); if(!message) return alert('Message required'); outreaches.unshift({id:genId(),prospectId:c.id,channel,status,message,sentAt:new Date().toISOString(),createdAt:new Date().toISOString()}); c.outreachCount=(c.outreachCount||0)+1; save(); renderDossierBody(); }
+function downloadData(){ const data={cases,evidences,outreaches,contacts,pings,rap,exportedAt:new Date().toISOString(),version:'jay-dossier-v4-relationship-os'}; const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`jay-dossier-backup-${new Date().toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(url); }
+function uploadData(e){ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=()=>{ try{ const data=JSON.parse(reader.result); if(!confirm(`Restore backup from ${data.exportedAt||'unknown'}? Cases:${(data.cases||[]).length} Contacts:${(data.contacts||[]).length}. MERGE mode (duplicates avoided). Continue?`)) return; const merge=(existing,incoming)=>{ const map=new Map(existing.map(x=>[x.id,x])); incoming.forEach(x=>{ if(!map.has(x.id)) map.set(x.id,x); }); return [...map.values()]; }; cases=merge(cases,data.cases||[]); evidences=merge(evidences,data.evidences||[]); outreaches=merge(outreaches,data.outreaches||[]); contacts=merge(contacts,data.contacts||[]); pings=merge(pings,data.pings||[]); rap={...rap,...(data.rap||{})}; save(); renderBoard(); renderRelationships(); renderEvidence(); alert('Restored!'); }catch(err){ alert('Invalid JSON: '+err.message); } }; reader.readAsText(file); e.target.value=''; }
+// init + seed
+load();
+if(cases.length===0){
+  cases=[{id:genId(),caseNumber:'CASE-2847',brandName:'Klarity Coaching',founderName:'Sarah Chen',niche:'Investing for Creatives',website:'https://klarity.example',discoveredVia:'LinkedIn',discoveryStory:'Only ex-JP Morgan advisor who explains investing without jargon. 80+ comments but website generic.',visibilityContentQuality:5,visibilityEngagement:4,visibilityConsistency:5,confidenceBefore:3,confidenceAfterContent:9,confidenceHomepage:5,confidenceOfferPage:4,confidenceCheckout:3,confidenceEnd:3,confidenceWhereDeclined:'Homepage',confidenceWhatTriggered:'Corporate speak vs warm LinkedIn',contradictionTheySay:'We simplify investing',contradictionButWebsite:'Full of jargon',oneFinding:'Funnel rebuilds wall you tear down on LinkedIn — align voice',scoreVisibility:5,scoreCommercial:5,scoreTrustGap:5,scoreGrowth:4,scoreOutreach:5,totalScore25:24,status:'worth_pursuing',outreachCount:0,createdAt:new Date(Date.now()-86400000*2).toISOString(),buyerJourneySteps:['LinkedIn','Website','Lead Magnet','Email','Sales Page','Application','Checkout'],buyerJourneyStepsCount:7,trustLeaksTags:['Generic messaging','Inconsistent tone'],growthSignalsTags:['Website','Lead magnet']}];
+  contacts=[
+    {id:genId(),name:'Sarah Chen',company:'Klarity Coaching',role:'Founder',bucket:'Prospect',tier:1,birthday:'1990-04-12',howWeMet:'LinkedIn post about delayed spending',valueProp:'Can intro to 3 founders needing investing clarity + fix homepage voice',howCanHelp:'Wealth: $5k program conversion low. Children: daughter at Stanford',notes:'Loves Naval, hates buzzwords',relatedCaseId:cases[0].id,modes:{email:true,phone:false},faceToFaceCount:0,lastPing:new Date(Date.now()-86400000*20).toISOString(),pingCount:2,createdAt:new Date().toISOString()},
+    {id:genId(),name:'Alex Rivera',company:'Connector Co',role:'Superconnector',bucket:'Superconnector',tier:1,howWeMet:'Lenny podcast community',valueProp:'Can intro me to 5 coaches',howCanHelp:'Health: marathon training',notes:'Knows everyone in coaching space — king of content',modes:{email:true,phone:true},faceToFaceCount:2,lastPing:new Date(Date.now()-86400000*5).toISOString(),pingCount:8,createdAt:new Date().toISOString()},
+    {id:genId(),name:'Maya Patel',company:'',role:'Gatekeeper for Sarah',bucket:'Gatekeeper',tier:1,howWeMet:'Assistant',valueProp:'Make her job easy, compliment',notes:'Treat nicely — usually no compliments',modes:{email:false},faceToFaceCount:0,lastPing:null,pingCount:0,createdAt:new Date().toISOString()},
+    {id:genId(),name:'David Kim',company:'Flow',role:'Aspirational',bucket:'Aspirational',tier:2,notes:'Dream mentor, 2x founder',modes:{email:true},faceToFaceCount:0,lastPing:new Date(Date.now()-86400000*80).toISOString(),pingCount:1,createdAt:new Date().toISOString()},
+  ];
+  evidences=[{id:genId(),prospectId:cases[0].id,brilliantPart:'Brilliant LinkedIn storyteller',weakPart:'Weak About page corporate stock photos',outreachAngle:'Your LinkedIn made me trust you instantly, but About feels different person',isHighValue:true,createdAt:new Date().toISOString()}];
+  save();
+}
+updateStats(); renderBoard(); renderEvidence(); renderRelationships(); setView('board'); setRelView('queue');
+// close modals esc
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open')); const ev=document.getElementById('evidence-modal'); if(ev) ev.remove(); } });
+document.getElementById('dossier-modal').addEventListener('click',e=>{ if(e.target.id==='dossier-modal') closeDossier(); });
+document.getElementById('newcase-modal').addEventListener('click',e=>{ if(e.target.id==='newcase-modal') e.currentTarget.classList.remove('open'); });
+document.getElementById('contact-modal').addEventListener('click',e=>{ if(e.target.id==='contact-modal') e.currentTarget.classList.remove('open'); });
+</script>
 </body>
 </html>

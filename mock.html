@@ -1,772 +1,1325 @@
-To intuitively bake the "Never Eat Alone" system into your detective-themed Jay Dossier, we need to treat your network not as "leads," but as **The Rolodex**.
-
-In the detective world, these are your *Informants, Assets, and Allies*. They aren't cases to be cracked; they are relationships to be cultivated.
-
-Here is the strategy for the UI integration:
-
-1. **The Rolodex View:** A dedicated dashboard separate from active cases, focusing entirely on relationship maintenance.
-2. **The Ping Engine:** The system now automatically calculates a `NEXT PING DATE` based on the contact's Tier (Tier 1 = 30 days, Tier 2 = 60 days, Tier 3 = 90 days). Contacts overdue for a ping are flagged in **red** at the top of the dashboard.
-3. **The 3 C's & Deep Intel:** The Rolodex modal contains dedicated fields for Ferrazzi's Tier 1 questions and checkboxes for your specific currency offerings (Looms, Intros, Hooks).
-4. **Case-to-Rolodex Pipeline:** A new button inside the Case Dossier allows you to instantly convert a closed case (e.g., a won client or a great conversation) into a Rolodex asset.
-
-Here is the complete, upgraded HTML file. You can copy and replace your entire current code with this:
-
-```html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JAY INVESTIGATION BUREAU • Case Board & Rolodex</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600;800&family=Instrument+Serif:ital@0;1&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{--black:#0F0E0C;--paper:#FFFCF5;--kraft:#F5E6C8;--yellow:#FFD600;--red:#DC2626;--zinc-800:#27272a}
-  body{font-family:'Geist Mono',monospace;background:var(--black);color:var(--black);min-height:100vh}
-  .tape{height:8px;background:repeating-linear-gradient(90deg,var(--yellow) 0 24px,black 24px 48px)}
-  .tape-bottom{position:fixed;bottom:0;left:0;right:0;height:8px;background:repeating-linear-gradient(90deg,var(--yellow) 0 24px,black 24px 48px);z-index:60;pointer-events:none}
-  header{position:sticky;top:0;z-index:30;background:var(--black);border-bottom:2px solid #27272a}
-  .header-inner{max-width:1700px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .j-logo{width:40px;height:40px;background:var(--yellow);color:black;display:grid;place-items:center;font-weight:800;font-size:18px;border:2px solid black;box-shadow:2px 2px 0 white}
-  .brand-text .title{color:white;font-weight:800;letter-spacing:0.14em;font-size:14px}
-  .brand-text .sub{color:#71717a;font-size:10px;letter-spacing:0.18em;margin-top:2px;display:flex;gap:8px;align-items:center}
-  .brand-text .sub b{color:var(--yellow)}
-  nav{display:flex;gap:6px}
-  .nav-btn{font-family:inherit;font-size:10px;letter-spacing:0.14em;padding:8px 14px;border:1px solid #3f3f46;background:transparent;color:#a1a1aa;cursor:pointer;transition:.15s}
-  .nav-btn.active{background:white;color:black;border-color:white;font-weight:800}
-  .nav-btn:hover{color:white;border-color:#52525b}
-  .stats-bar{background:var(--kraft);border-bottom:2px solid black;padding:8px 24px;font-size:10px;display:flex;flex-wrap:wrap;gap:18px;letter-spacing:0.06em}
-  .stats-bar b{font-weight:800}
-  .wrap{max-width:1700px;margin:0 auto;padding:20px 24px 80px}
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-bottom:18px}
-  .search-box{position:relative;flex:1;max-width:520px;display:flex}
-  .search-box span{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:10px;color:#71717a}
-  .search-box input{width:100%;padding:12px 12px 12px 68px;border:2px solid black;background:var(--paper);font-family:inherit;font-size:12px;outline:none;box-shadow:3px 3px 0 black}
-  .toolbar-right{display:flex;gap:8px;flex-wrap:wrap}
-  .btn{font-family:inherit;border:2px solid black;padding:10px 14px;font-size:10px;letter-spacing:0.14em;font-weight:800;cursor:pointer;transition:.12s;display:inline-flex;align-items:center;gap:6px}
-  .btn-yellow{background:var(--yellow);color:black;box-shadow:3px 3px 0 white}
-  .btn-black{background:black;color:white}
-  .btn-white{background:white;color:black}
-  .btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 black}
-  .btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 black}
-  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(360px,1fr))}
-  .case-file{background:var(--paper);border:2px solid black;padding:1px;box-shadow:4px 4px 0 black;cursor:pointer;position:relative;transition:.12s}
-  .case-file:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 black}
-  .case-tab{position:absolute;top:-12px;left:16px;background:var(--yellow);border:2px solid black;padding:2px 8px;font-size:9px;font-weight:800;letter-spacing:0.12em;box-shadow:2px 2px 0 black}
-  .case-inner{background:white;border:1px solid rgba(0,0,0,0.08);padding:18px;padding-top:22px}
-  .case-head{display:flex;gap:10px;justify-content:space-between}
-  .case-avatar{width:38px;height:38px;background:black;color:var(--yellow);display:grid;place-items:center;font-weight:800;font-size:14px;border:2px solid black;flex-shrink:0}
-  .case-meta{flex:1;min-width:0}
-  .case-brand{font-family:'Instrument Serif',serif;font-weight:400;font-size:18px;line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .case-founder{font-size:10px;color:#71717a;margin-top:2px}
-  .stamp{border:1px solid currentColor;padding:2px 6px;font-size:8px;font-weight:800;letter-spacing:0.14em;display:inline-block;margin-top:4px}
-  .stamp.under{background:#fef3c7;border-color:#f59e0b;color:#78350f}
-  .stamp.worth{background:#dcfce7;border-color:#22c55e;color:#14532d}
-  .stamp.cold{background:#f4f4f5;border-color:#a1a1aa;color:#52525b}
-  .stamp.closed{background:black;color:white}
-  .score-box{border:2px solid black;padding:4px 8px;text-align:center;min-width:62px}
-  .score-num{font-weight:800;font-size:18px;line-height:1}
-  .score-num small{font-size:10px}
-  .score-label{font-size:8px;letter-spacing:0.12em;color:#71717a}
-  .conf-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;height:22px;margin-top:12px}
-  .conf-col{background:#f4f4f5;border:1px solid #e4e4e7;position:relative;overflow:hidden}
-  .conf-fill{position:absolute;bottom:0;left:0;right:0;background:black}
-  .conf-labels{display:flex;justify-content:space-between;font-size:7px;letter-spacing:0.08em;color:#a1a1aa;margin-top:2px}
-  .one-finding{margin-top:12px;background:var(--kraft);border:1px solid black;padding:10px;position:relative}
-  .one-finding::before{content:'ONE FINDING';position:absolute;top:-7px;left:8px;background:black;color:white;font-size:7px;letter-spacing:0.14em;padding:2px 6px}
-  .one-finding p{font-family:'Instrument Serif',serif;font-style:italic;font-size:13px;line-height:1.35}
-  .tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px}
-  .tag{font-size:8px;letter-spacing:0.06em;padding:2px 6px;border:1px solid black;background:black;color:white}
-  .tag.yellow{background:var(--yellow);color:black;font-weight:800}
-  .tag.white{background:white;color:black}
-  .tag.red{background:var(--red);color:white;border-color:var(--red)}
-  .foot{margin-top:10px;border-top:1px dashed #d4d4d8;padding-top:8px;display:flex;justify-content:space-between;font-size:8px;color:#a1a1aa;letter-spacing:0.06em}
-  .empty{border:2px dashed #3f3f46;background:var(--paper);padding:48px;text-align:center;margin-top:20px}
-  .empty .mono{font-size:10px;letter-spacing:0.2em;color:#71717a}
-  .empty .serif{font-family:'Instrument Serif',serif;font-size:24px;margin-top:8px}
-  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:50;display:none;place-items:center;padding:16px;overflow:auto}
-  .modal-backdrop.open{display:grid}
-  .dossier{width:100%;max-width:860px;background:var(--paper);border:4px solid black;box-shadow:12px 12px 0 white;max-height:95vh;overflow:auto}
-  .dossier-head{position:sticky;top:0;background:var(--paper);border-bottom:4px solid black;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;z-index:2}
-  .dossier-tabs{display:flex;gap:4px;background:black;padding:8px 12px}
-  .dossier-tab{font-family:inherit;font-size:10px;letter-spacing:0.12em;padding:8px 12px;border:2px solid #27272a;background:transparent;color:#a1a1aa;cursor:pointer}
-  .dossier-tab.active{background:var(--yellow);color:black;border-color:var(--yellow);font-weight:800}
-  .dossier-body{padding:18px}
-  section{border:2px solid black;background:white;padding:16px;margin-bottom:16px;box-shadow:3px 3px 0 black}
-  section.kraft{background:var(--kraft)}
-  section.yellow{background:var(--yellow)}
-  section.black{background:black;color:white;border-color:black}
-  section.red{background:#fef2f2;border-color:var(--red)}
-  .sec-head{font-size:11px;font-weight:800;letter-spacing:0.18em;display:flex;align-items:center;gap:8px;margin-bottom:12px}
-  .sec-head .num{width:20px;height:20px;background:black;color:white;display:grid;place-items:center;font-size:10px}
-  .black .sec-head .num{background:white;color:black}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .form-grid.full{grid-template-columns:1fr}
-  label.mono{font-size:10px;letter-spacing:0.12em;color:#52525b;display:block;margin-bottom:4px}
-  .black label.mono{color:#a1a1aa}
-  input, textarea, select{width:100%;border:1px solid black;padding:10px;font-family:inherit;font-size:12px;background:white;outline:none}
-  input:focus, textarea:focus{border-width:2px}
-  textarea{min-height:60px;resize:vertical}
-  .black input,.black textarea,.black select{background:#18181b;color:white;border-color:#3f3f46}
-  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-  .chip{border:2px solid black;padding:5px 10px;font-size:10px;letter-spacing:0.06em;background:white;cursor:pointer;user-select:none;transition:.1s}
-  .chip.on{background:black;color:white}
-  .chip.on.red{background:var(--red);border-color:var(--red)}
-  .chip.yellow.on{background:var(--yellow);color:black}
-  .stars{display:flex;gap:4px;margin-top:4px}
-  .star{width:28px;height:28px;border-radius:50%;border:1px solid black;display:grid;place-items:center;font-size:12px;cursor:pointer;background:#f4f4f5}
-  .star.on{background:black;color:white;border-color:black}
-  .range-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #e4e4e7}
-  .range-row span:first-child{width:150px;font-size:11px}
-  .range-row input[type=range]{flex:1;accent-color:black}
-  .range-val{width:30px;text-align:center;font-weight:800;font-size:13px}
-  .score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-  .score-box-edit{border:2px solid black;padding:10px;background:var(--paper)}
-  .score-box-edit .s-label{font-size:9px;letter-spacing:0.12em;margin-bottom:6px}
-  .score-btns{display:flex;gap:4px;flex-wrap:wrap}
-  .score-btn{width:26px;height:26px;border:2px solid black;background:white;font-size:11px;font-weight:800;cursor:pointer}
-  .score-btn.on{background:black;color:white}
-  .actions{display:flex;gap:10px;margin-top:12px}
-  .comms-item{border:1px solid black;padding:10px;background:white;margin-bottom:8px}
-  .comms-item .meta{font-size:8px;color:#71717a;display:flex;justify-content:space-between}
-  .alert-banner{background:var(--red);color:white;padding:10px 24px;font-size:10px;letter-spacing:0.1em;display:flex;justify-content:space-between;align-items:center}
-  
-  @media(max-width:700px){
-    .grid{grid-template-columns:1fr}
-    .form-grid{grid-template-columns:1fr}
-    .score-grid{grid-template-columns:1fr 1fr}
-    .header-inner{padding:10px 14px}
-    .wrap{padding:14px 14px 80px}
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JAY Investigation Dossier</title>
+  <style>
+    :root {
+      --ink: #1c1917;
+      --muted: #6b5f55;
+      --paper: #fff8e8;
+      --paper-2: #f6ead2;
+      --line: #d7c7a8;
+      --accent: #92400e;
+      --accent-2: #f59e0b;
+      --green: #065f46;
+      --red: #991b1b;
+      --white: #fffdf7;
+      --shadow: 0 20px 60px rgba(12, 10, 9, .28);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 10% 6%, rgba(245, 158, 11, .9), transparent 18rem),
+        linear-gradient(135deg, #292524 0%, #1c1917 48%, #0c0a09 100%);
+      min-height: 100vh;
+    }
+
+    button, input, textarea, select { font: inherit; }
+
+    button { cursor: pointer; }
+
+    a { color: inherit; }
+
+    .wrap {
+      width: min(1440px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 28px 0 60px;
+    }
+
+    .hero {
+      overflow: hidden;
+      border: 1px solid rgba(255, 236, 179, .35);
+      border-radius: 34px;
+      background: var(--paper-2);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 28px;
+      padding: 34px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fde68a;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 22px 0 0;
+      max-width: 860px;
+      font-size: clamp(2.4rem, 6vw, 5.6rem);
+      line-height: .9;
+      letter-spacing: -.07em;
+    }
+
+    .hero p {
+      max-width: 740px;
+      color: #55483d;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      align-content: end;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255,255,255,.6);
+      padding: 18px;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 38px;
+      line-height: 1;
+    }
+
+    .hero-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      background: var(--ink);
+      color: #fff7ed;
+      border-top: 1px solid var(--line);
+    }
+
+    .hero-strip div {
+      padding: 18px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .hero-strip div + div { border-left: 1px solid rgba(255,255,255,.12); }
+
+    .toolbar {
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      margin: 18px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid rgba(255, 236, 179, .22);
+      border-radius: 22px;
+      background: rgba(28, 25, 23, .92);
+      padding: 12px;
+      color: #fff7ed;
+      box-shadow: 0 12px 30px rgba(0,0,0,.22);
+      backdrop-filter: blur(16px);
+    }
+
+    .toolbar-left, .toolbar-right { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+    .search {
+      min-width: min(420px, 100%);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 16px;
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      padding: 12px 14px;
+      outline: none;
+    }
+
+    .search::placeholder { color: rgba(255,255,255,.55); }
+
+    .btn {
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: var(--accent-2);
+      color: #1c1917;
+      font-size: 13px;
+      font-weight: 950;
+      transition: transform .18s, filter .18s, background .18s;
+    }
+
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.04); }
+    .btn.dark { background: #fff7ed; color: var(--ink); }
+    .btn.ghost { background: rgba(255,255,255,.1); color: #fff7ed; border: 1px solid rgba(255,255,255,.16); }
+    .btn.red { background: #fee2e2; color: var(--red); }
+    .btn.green { background: #dcfce7; color: var(--green); }
+
+    .file-input { display: none; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: .82fr 1.18fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: linear-gradient(180deg, var(--white), var(--paper));
+      box-shadow: 0 18px 45px rgba(0,0,0,.16);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 20px;
+      border-bottom: 1px dashed var(--line);
+      background: var(--paper-2);
+    }
+
+    .panel-head small {
+      display: block;
+      color: var(--accent);
+      font-weight: 950;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .panel-head h2, .panel-head h3 { margin: 8px 0 0; font-size: 26px; line-height: 1.05; }
+
+    .panel-body { padding: 18px; }
+
+    .case-list {
+      display: grid;
+      gap: 12px;
+      max-height: 820px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .case-card {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255,255,255,.58);
+      padding: 16px;
+      color: var(--ink);
+      transition: transform .18s, box-shadow .18s, border-color .18s;
+    }
+
+    .case-card:hover, .case-card.active {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 30px rgba(146, 64, 14, .14);
+    }
+
+    .case-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: #fff7ed;
+      border: 1px solid var(--line);
+      padding: 5px 8px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .pill.dark { background: var(--ink); color: #fde68a; border-color: var(--ink); }
+    .pill.green { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+    .pill.red { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+
+    .case-card h3 { margin: 0; font-size: 20px; }
+    .case-card p { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    .stamp {
+      float: right;
+      margin-left: 10px;
+      border: 3px double currentColor;
+      border-radius: 16px;
+      padding: 8px 10px;
+      color: var(--accent);
+      text-align: center;
+      transform: rotate(2deg);
+      min-width: 76px;
+      background: rgba(255,255,255,.62);
+    }
+
+    .stamp strong { display: block; font-size: 22px; line-height: 1; }
+    .stamp span { display: block; margin-top: 4px; font-size: 9px; font-weight: 950; letter-spacing: .1em; text-transform: uppercase; }
+
+    .empty {
+      border: 2px dashed var(--line);
+      border-radius: 24px;
+      padding: 28px;
+      text-align: center;
+      background: rgba(255,255,255,.42);
+      color: var(--muted);
+    }
+
+    form { display: grid; gap: 16px; }
+
+    details.section {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 250, 240, .72);
+      overflow: hidden;
+    }
+
+    details.section[open] { background: rgba(255, 250, 240, .94); }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink);
+      font-weight: 950;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+    summary span { color: var(--accent); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+    summary::after { content: "＋"; color: var(--accent); font-size: 20px; }
+    details[open] summary::after { content: "−"; }
+
+    .section-content { padding: 0 16px 16px; }
+
+    .fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .fields.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .fields.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .fields.five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .full { grid-column: 1 / -1; }
+
+    label.field span, .check-title {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.82);
+      padding: 12px 13px;
+      color: var(--ink);
+      outline: none;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,.04);
+    }
+
+    textarea { min-height: 96px; resize: vertical; line-height: 1.55; }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(245, 158, 11, .16); }
+
+    .checks {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.45);
+      padding: 14px;
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .check {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      border-radius: 12px;
+      background: rgba(255, 248, 232, .95);
+      padding: 9px 10px;
+      color: #4b4038;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .check input { width: auto; accent-color: var(--ink); box-shadow: none; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 6px;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .clue {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fffaf0;
+      padding: 14px;
+      min-height: 118px;
+    }
+
+    .clue small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .clue p { margin: 8px 0 0; color: #4b4038; white-space: pre-wrap; line-height: 1.55; font-size: 14px; }
+
+    .logs { display: grid; gap: 10px; margin-top: 14px; }
+
+    .log {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.72);
+      padding: 12px;
+    }
+
+    .log-head { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; font-weight: 950; letter-spacing: .08em; text-transform: uppercase; }
+    .log p { margin: 8px 0 0; white-space: pre-wrap; color: #4b4038; font-size: 13px; line-height: 1.5; }
+
+    .relationship-os {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .routine-card, .ping-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 250, 240, .88);
+      padding: 14px;
+    }
+
+    .routine-card small, .ping-card small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .routine-card strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 22px;
+      line-height: 1.05;
+    }
+
+    .routine-card p, .ping-card p {
+      margin: 8px 0 0;
+      color: #4b4038;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .ping-list { display: grid; gap: 10px; }
+
+    .ping-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .ping-card.overdue { border-color: #fca5a5; background: #fff1f2; }
+    .ping-card.due { border-color: #f59e0b; background: #fffbeb; }
+    .ping-card.soon { border-color: #86efac; background: #f0fdf4; }
+
+    .tier-dot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      border-radius: 999px;
+      padding: 8px 10px;
+      background: var(--ink);
+      color: #fde68a;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .system-note {
+      border-left: 5px solid var(--accent-2);
+      border-radius: 18px;
+      background: rgba(255,255,255,.62);
+      padding: 14px;
+      color: #4b4038;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      max-width: min(420px, calc(100vw - 36px));
+      border-radius: 18px;
+      background: var(--ink);
+      color: #fff7ed;
+      box-shadow: 0 18px 45px rgba(0,0,0,.3);
+      padding: 14px 16px;
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all .25s;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    .danger-zone {
+      border: 1px dashed #fca5a5;
+      border-radius: 20px;
+      background: #fff1f2;
+      padding: 14px;
+      color: #7f1d1d;
+    }
+
+    .small-note { color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+    @media (max-width: 1100px) {
+      .hero-main, .grid { grid-template-columns: 1fr; }
+      .case-list { max-height: 460px; }
+    }
+
+    @media (max-width: 760px) {
+      .hero-main { padding: 22px; }
+      .hero-strip, .stats, .fields, .fields.three, .fields.four, .fields.five, .preview-grid, .relationship-os { grid-template-columns: 1fr; }
+      .ping-card { grid-template-columns: 1fr; }
+      .toolbar { position: static; }
+      .search { min-width: 100%; }
+    }
+
+    @media print {
+      body { background: white; }
+      .toolbar, .left-panel, .actions, .danger-zone, #importFile { display: none !important; }
+      .wrap { width: 100%; padding: 0; }
+      .hero, .panel { box-shadow: none; }
+      .grid { grid-template-columns: 1fr; }
+      details.section { break-inside: avoid; }
+    }
+  </style>
 </head>
 <body>
-<div class="tape"></div>
-<header>
-  <div class="header-inner">
-    <div class="brand">
-      <div class="j-logo">J</div>
-      <div class="brand-text">
-        <div class="title">JAY INVESTIGATION BUREAU</div>
-        <div class="sub"><span>CASE BOARD • EST. 2024</span><span style="width:4px;height:4px;background:var(--yellow);border-radius:50%;display:inline-block"></span><span>DETECTIVE: <b>SEGUN FALADE</b></span></div>
-      </div>
-    </div>
-    <nav>
-      <button class="nav-btn active" data-view="board" onclick="setView('board')">CASE BOARD • <span id="count-board">0</span></button>
-      <button class="nav-btn" data-view="evidence" onclick="setView('evidence')">EVIDENCE • <span id="count-ev">0</span></button>
-      <button class="nav-btn" data-view="rolodex" onclick="setView('rolodex')">THE ROLODEX • <span id="count-rolodex">0</span></button>
-      <button class="nav-btn" data-view="guide" onclick="setView('guide')">DOSSIER GUIDE</button>
-    </nav>
-  </div>
-</header>
-<div class="stats-bar" id="global-stats-bar">
-  <span>CASES TOTAL: <b id="stat-total">0</b></span>
-  <span>WORTH PURSUING: <b id="stat-worth">0</b></span>
-  <span>AVG SCORE: <b id="stat-avg">0</b>/25</span>
-  <span style="margin-left:auto" class="hide-mobile">TIP: One hour of investigation should produce multiple assets • SAVES TO BROWSER</span>
-</div>
-<div class="alert-banner" id="ping-alert" style="display:none">
-  <span>🚨 <b id="ping-count">0</b> ASSETS IN YOUR ROLODEX NEED A PING TODAY.</span>
-  <button class="btn btn-white" style="padding:4px 8px;font-size:8px" onclick="setView('rolodex'); document.getElementById('filter-tier-rolodex').value='due'; renderRolodex();">VIEW DUE PINGS</button>
-</div>
-
-<div class="wrap">
-  <!-- TOOLBAR BOARD -->
-  <div class="toolbar" id="toolbar-board">
-    <div class="search-box">
-      <span>SEARCH&gt;</span>
-      <input id="search" placeholder="brand, founder, one finding, discovery story..." oninput="renderBoard()">
-      <select id="filter-status" onchange="renderBoard()" style="margin-left:8px;border:2px solid black;padding:0 8px;font-family:inherit;font-size:10px;min-width:140px">
-        <option value="all">ALL CASES</option>
-        <option value="under_investigation">UNDER INVESTIGATION</option>
-        <option value="worth_pursuing">WORTH PURSUING</option>
-        <option value="cold_trail">COLD TRAIL</option>
-        <option value="closed">CLOSED</option>
-      </select>
-    </div>
-    <div class="toolbar-right">
-      <label class="btn btn-white" style="font-size:9px"><input type="checkbox" id="filter-score" onchange="renderBoard()" style="margin-right:6px;width:auto"> ONLY ≥15/25</label>
-      <button class="btn btn-white" onclick="downloadData()">⬇ BACKUP</button>
-      <label class="btn btn-white" style="cursor:pointer">⬆ UPLOAD <input type="file" id="upload-input" accept=".json" style="display:none" onchange="uploadData(event)"></label>
-      <button class="btn btn-yellow" onclick="openNewCase()">+ NEW CASE</button>
-    </div>
-  </div>
-
-  <!-- TOOLBAR ROLODEX -->
-  <div class="toolbar" id="toolbar-rolodex" style="display:none">
-    <div class="search-box">
-      <span>SEARCH&gt;</span>
-      <input id="search-rolodex" placeholder="name, role, common ground..." oninput="renderRolodex()">
-      <select id="filter-tier-rolodex" onchange="renderRolodex()" style="margin-left:8px;border:2px solid black;padding:0 8px;font-family:inherit;font-size:10px;min-width:140px">
-        <option value="all">ALL TIERS</option>
-        <option value="due">🚨 DUE FOR PING</option>
-        <option value="1">TIER 1 (MONTHLY)</option>
-        <option value="2">TIER 2 (QUARTERLY)</option>
-        <option value="3">TIER 3 (ASPIRED)</option>
-      </select>
-    </div>
-    <div class="toolbar-right">
-      <button class="btn btn-yellow" onclick="openNewRolodex()">+ NEW ALLY</button>
-    </div>
-  </div>
-
-  <div id="view-board"></div>
-  <div id="view-evidence" style="display:none"></div>
-  <div id="view-rolodex" style="display:none"></div>
-  
-  <div id="view-guide" style="display:none">
-    <div style="max-width:900px;background:var(--paper);border:4px solid black;padding:28px;box-shadow:8px 8px 0 white">
-      <div style="font-size:10px;letter-spacing:0.2em;color:#71717a">JAY INVESTIGATION PROTOCOL • CLASSIFIED</div>
-      <h1 style="font-family:'Instrument Serif',serif;font-size:42px;line-height:0.9;margin-top:10px">From Checklist to Detective Dossier</h1>
-      <p style="font-size:12px;margin-top:12px;line-height:1.5;color:#3f3f46">Every prospect becomes a case. Every answer is a clue. Once a case is cracked (or proves valuable), move them to The Rolodex to nurture the relationship.</p>
-      
-      <div style="margin-top:20px;background:black;color:white;padding:16px;border:2px solid black">
-        <div style="font-size:10px;letter-spacing:0.12em;color:#a1a1aa">THE ROLODEX • TIER SYSTEM</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;font-size:10px">
-          <div style="border:1px solid #3f3f46;padding:10px"><b style="color:var(--yellow)">TIER 1 (ANCHOR)</b><br>15-20 people. Ping 1x/month. 70% of energy goes here. Deep Intel required.</div>
-          <div style="border:1px solid #3f3f46;padding:10px"><b style="color:white">TIER 2 (ACTIVE)</b><br>50-60 people. Ping every 60 days. Regular check-ins.</div>
-          <div style="border:1px solid #3f3f46;padding:10px"><b style="color:#a1a1aa">TIER 3 (ASPIRED)</b><br>Everyone else. Keep warm with content. Ping every 90 days.</div>
-        </div>
-      </div>
-      <div style="margin-top:20px;display:grid;gap:10px;font-size:11px;line-height:1.5">
-        <div style="border-left:4px solid black;padding-left:12px"><b>🤝 BUCKETS:</b> Connector (Brings clients), Amplifier (Borrowed Trust), Client, Collaborator, Peer, Teacher.</div>
-        <div style="border-left:4px solid var(--yellow);padding-left:12px"><b>🎁 THE 3 C's (CURRENCIES):</b> Hook/Angle, Intro, Content Share, Quick Loom (2min max), Opportunity Invite.</div>
-        <div style="border-left:4px solid #dc2626;padding-left:12px"><b>🚨 PING ROUTINE:</b> Morning: 5 pings (comment+DM). Afternoon: 3 new connection requests. Friday: 1 deeper follow-up (Tier 1).</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- CASE DOSSIER MODAL -->
-<div class="modal-backdrop" id="dossier-modal">
-  <div class="dossier">
-    <div class="dossier-head">
-      <div style="display:flex;gap:10px;align-items:center">
-        <div id="dossier-avatar" style="width:36px;height:36px;background:black;color:var(--yellow);display:grid;place-items:center;font-weight:800;border:2px solid black">J</div>
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-main">
         <div>
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-            <span id="dossier-case-number" style="background:var(--yellow);border:1px solid black;padding:2px 6px;font-size:9px;font-weight:800;letter-spacing:0.12em">CASE-0000</span>
-            <span id="dossier-brand" style="font-family:'Instrument Serif',serif;font-weight:800;font-size:18px"></span>
-            <span id="dossier-score" style="border:2px solid black;padding:2px 8px;font-size:12px;font-weight:800">0/25</span>
-          </div>
-          <div style="font-size:9px;color:#71717a">DETECTIVE: <span id="dossier-investigator">Segun Falade</span> • OPENED <span id="dossier-date"></span></div>
+          <span class="badge">🕵️ JAY Case Board</span>
+          <h1>Every brand is a case. Every relationship needs a rhythm.</h1>
+          <p>This pure HTML dossier saves directly in your browser. Qualify cases, categorize contacts, tier relationships, and run a give-first ping routine. Download a backup whenever you want, then upload it later if browser storage gets cleared.</p>
+        </div>
+        <div class="stats">
+          <div class="stat"><span>Open investigations</span><strong id="statOpen">0</strong></div>
+          <div class="stat"><span>Worth pursuing</span><strong id="statWorth">0</strong></div>
+          <div class="stat"><span>Pings due now</span><strong id="statDue">0</strong></div>
+          <div class="stat"><span>Tier 1 relationships</span><strong id="statTier1">0</strong></div>
         </div>
       </div>
-      <div style="display:flex;gap:6px">
-        <button class="btn btn-yellow" style="padding:6px 10px;font-size:9px" onclick="convertCaseToRolodex()">🤝 SEND TO ROLODEX</button>
-        <button class="btn btn-white" style="padding:6px 10px;font-size:9px" onclick="deleteCurrentCase()">DELETE</button>
-        <button class="btn btn-black" style="padding:6px 10px" onclick="closeDossier()">✕</button>
+      <div class="hero-strip">
+        <div><strong>Cases, not leads:</strong> build evidence instead of grinding admin.</div>
+        <div><strong>Buckets + tiers:</strong> know who they are and how close to keep them.</div>
+        <div><strong>Ping routine:</strong> nurture with useful touches before you need anything.</div>
       </div>
-    </div>
-    <div class="dossier-tabs">
-      <button class="dossier-tab active" data-tab="dossier" onclick="setDossierTab('dossier')">🕵️ FULL DOSSIER</button>
-      <button class="dossier-tab" data-tab="evidence" onclick="setDossierTab('evidence')">🚨 EVIDENCE</button>
-      <button class="dossier-tab" data-tab="comms" onclick="setDossierTab('comms')">✉️ COMMS LOG</button>
-    </div>
-    <div class="dossier-body" id="dossier-body"></div>
-  </div>
-</div>
+    </section>
 
-<!-- ROLODEX DOSSIER MODAL -->
-<div class="modal-backdrop" id="rolodex-modal">
-  <div class="dossier">
-    <div class="dossier-head">
-      <div style="display:flex;gap:10px;align-items:center">
-        <div id="rolo-avatar" style="width:36px;height:36px;background:var(--kraft);color:black;display:grid;place-items:center;font-weight:800;border:2px solid black">A</div>
-        <div>
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-            <span id="rolo-tier-badge" style="background:black;color:white;border:1px solid black;padding:2px 6px;font-size:9px;font-weight:800;letter-spacing:0.12em">TIER 1</span>
-            <span id="rolo-name" style="font-family:'Instrument Serif',serif;font-weight:800;font-size:18px"></span>
-          </div>
-          <div style="font-size:9px;color:#71717a">ROLE: <span id="rolo-bucket"></span></div>
+    <section class="toolbar" aria-label="Case board controls">
+      <div class="toolbar-left">
+        <input id="search" class="search" type="search" placeholder="Search cases, clues, contradictions, offers..." />
+        <select id="statusFilter" class="search" style="min-width: 210px;">
+          <option value="">All statuses</option>
+          <option>Under Investigation</option>
+          <option>Worth Pursuing</option>
+          <option>Cold Trail</option>
+          <option>Closed</option>
+        </select>
+        <select id="tierFilter" class="search" style="min-width: 190px;">
+          <option value="">All tiers</option>
+          <option value="Tier 1">Tier 1 · Inner circle</option>
+          <option value="Tier 2">Tier 2 · Active nurture</option>
+          <option value="Tier 3">Tier 3 · Light touch</option>
+        </select>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn" id="newCaseBtn" type="button">＋ New case</button>
+        <button class="btn dark" id="saveBtn" type="button">Save to browser</button>
+        <button class="btn green" id="downloadBtn" type="button">Download backup</button>
+        <button class="btn ghost" id="uploadBtn" type="button">Upload backup</button>
+        <input id="importFile" class="file-input" type="file" accept="application/json,.json" />
+      </div>
+    </section>
+
+    <section class="grid">
+      <aside class="panel left-panel">
+        <div class="panel-head">
+          <small>Open investigations</small>
+          <h2>Case files</h2>
         </div>
-      </div>
-      <div style="display:flex;gap:6px">
-        <button class="btn btn-white" style="padding:6px 10px;font-size:9px" onclick="deleteCurrentRolodex()">DELETE</button>
-        <button class="btn btn-black" style="padding:6px 10px" onclick="closeRolodex()">✕</button>
-      </div>
-    </div>
-    <div class="dossier-tabs">
-      <button class="dossier-tab active" data-tab="intel" onclick="setRolodexTab('intel')">🧠 ASSET INTEL</button>
-      <button class="dossier-tab" data-tab="pings" onclick="setRolodexTab('pings')">✉️ PING LOG</button>
-    </div>
-    <div class="dossier-body" id="rolodex-body"></div>
-  </div>
-</div>
+        <div class="panel-body">
+          <div id="caseList" class="case-list"></div>
+        </div>
+      </aside>
 
-<!-- NEW CASE MODAL -->
-<div class="modal-backdrop" id="newcase-modal">
-  <div style="width:100%;max-width:560px;background:var(--paper);border:4px solid black;padding:20px;box-shadow:8px 8px 0 white">
-    <div style="display:flex;justify-content:space-between">
-      <div>
-        <div style="background:black;color:white;padding:2px 8px;font-size:9px;letter-spacing:0.14em;display:inline-block">NEW INVESTIGATION</div>
-        <h2 style="font-family:'Instrument Serif',serif;font-size:26px;margin-top:8px">Open a Case</h2>
-      </div>
-      <div id="newcase-count" style="width:36px;height:36px;border:2px solid black;background:var(--yellow);display:grid;place-items:center;font-weight:800">1</div>
-    </div>
-    <div class="form-grid" style="margin-top:16px">
-      <div style="grid-column:span 2"><label class="mono">BRAND / BUSINESS *</label><input id="new-brand" placeholder="Klarity Coaching"></div>
-      <div><label class="mono">FOUNDER</label><input id="new-founder" placeholder="Sarah Chen"></div>
-      <div><label class="mono">NICHE</label><input id="new-niche" placeholder="Coaching, Investing..."></div>
-      <div style="grid-column:span 2"><label class="mono">WEBSITE</label><input id="new-website" placeholder="https://..."></div>
-      <div style="grid-column:span 2"><label class="mono">WHAT MADE YOU STOP SCROLLING?</label><textarea id="new-discovery" placeholder="Only ex-JP Morgan advisor who explains without jargon..."></textarea></div>
-    </div>
-    <div class="actions" style="margin-top:16px">
-      <button class="btn btn-white" style="flex:1" onclick="document.getElementById('newcase-modal').classList.remove('open')">CANCEL</button>
-      <button class="btn btn-black" style="flex:2" onclick="createCase()">OPEN CASE FILE →</button>
-    </div>
-  </div>
-</div>
-
-<div class="tape-bottom"></div>
-
-<script>
-const STORAGE_KEYS = { cases: 'jay_cases_v3', evidence: 'jay_evidence_v3', outreaches: 'jay_outreaches_v3', rolodex: 'jay_rolodex_v3' };
-const DISCOVERY = ["LinkedIn","Instagram","YouTube","Podcast","Referral","Other"];
-const EVIDENCE_TAGS = ["Comments","Shares","Testimonials","Podcast interviews","Newsletter","Speaking","Community","Case studies"];
-const GROWTH_TAGS = ["Professional branding","Website","Lead magnet","Email list","Webinar","Podcast","Application funnel","Discovery calls","Paid community","Video content"];
-const TRUST_LEAKS = ["Generic messaging","Weak CTA","Missing proof","Confusing offer","Too much jargon","Poor hierarchy","Weak headline","Unclear next step","Inconsistent tone","Pricing anxiety","Weak positioning","Other"];
-const JOURNEY_OPTS = ["Instagram","Website","Sales Page","Booking","Checkout","Email","Lead Magnet","Linktree","YouTube","LinkedIn","Application","Other"];
-const VERDICTS = ["Investigate further","Send outreach","Create case study","Follow on LinkedIn","Revisit later","Not worth pursuing"];
-
-const ROLO_BUCKETS = ["Connector", "Amplifier", "Client", "Collaborator", "Peer", "Teacher"];
-const ROLO_CURRENCIES = ["Hook/Angle", "Intro", "Content Share", "Loom Teardown", "Opportunity Invite"];
-
-let cases = [], evidences = [], outreaches = [], rolodex = [];
-let currentCaseId=null, currentRolodexId=null, currentTab='dossier', currentView='board';
-
-function load(){
-  try{
-    cases = JSON.parse(localStorage.getItem(STORAGE_KEYS.cases)||'[]');
-    evidences = JSON.parse(localStorage.getItem(STORAGE_KEYS.evidence)||'[]');
-    outreaches = JSON.parse(localStorage.getItem(STORAGE_KEYS.outreaches)||'[]');
-    rolodex = JSON.parse(localStorage.getItem(STORAGE_KEYS.rolodex)||'[]');
-  }catch(e){ cases=[]; evidences=[]; outreaches=[]; rolodex=[]; }
-}
-function save(){
-  localStorage.setItem(STORAGE_KEYS.cases, JSON.stringify(cases));
-  localStorage.setItem(STORAGE_KEYS.evidence, JSON.stringify(evidences));
-  localStorage.setItem(STORAGE_KEYS.outreaches, JSON.stringify(outreaches));
-  localStorage.setItem(STORAGE_KEYS.rolodex, JSON.stringify(rolodex));
-  updateStats();
-}
-
-function genId(){ return Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
-function genCaseNumber(){ return 'CASE-'+Math.floor(1000+Math.random()*9000); }
-
-function getDaysBetween(d1, d2) {
-  return Math.floor((new Date(d1) - new Date(d2)) / (1000 * 60 * 60 * 24));
-}
-
-function updateStats(){
-  document.getElementById('count-board').textContent=cases.length;
-  document.getElementById('count-ev').textContent=evidences.length;
-  document.getElementById('count-rolodex').textContent=rolodex.length;
-  document.getElementById('stat-total').textContent=cases.length;
-  document.getElementById('stat-worth').textContent=cases.filter(c=>c.status==='worth_pursuing').length;
-  const avg = cases.length? (cases.reduce((a,b)=>a+(b.totalScore25||0),0)/cases.length).toFixed(1):'0';
-  document.getElementById('stat-avg').textContent=avg;
-  
-  // Ping Alerts
-  const today = new Date().toISOString();
-  const duePings = rolodex.filter(r => r.nextPingDate && r.nextPingDate <= today).length;
-  const alertBanner = document.getElementById('ping-alert');
-  if(duePings > 0) {
-    alertBanner.style.display = 'flex';
-    document.getElementById('ping-count').textContent = duePings;
-  } else {
-    alertBanner.style.display = 'none';
-  }
-}
-
-function setView(v){
-  currentView=v;
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
-  document.getElementById('view-board').style.display=v==='board'?'block':'none';
-  document.getElementById('view-evidence').style.display=v==='evidence'?'block':'none';
-  document.getElementById('view-rolodex').style.display=v==='rolodex'?'block':'none';
-  document.getElementById('view-guide').style.display=v==='guide'?'block':'none';
-  document.getElementById('toolbar-board').style.display=v==='board'?'flex':'none';
-  document.getElementById('toolbar-rolodex').style.display=v==='rolodex'?'flex':'none';
-  document.getElementById('global-stats-bar').style.display=(v==='board' || v==='evidence')?'flex':'none';
-  
-  if(v==='board') renderBoard();
-  if(v==='evidence') renderEvidence();
-  if(v==='rolodex') renderRolodex();
-}
-
-function setDossierTab(t){
-  currentTab=t;
-  document.querySelectorAll('.dossier-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===t));
-  renderDossierBody();
-}
-function setRolodexTab(t){
-  currentTab=t;
-  document.querySelectorAll('#rolodex-modal .dossier-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===t));
-  renderRolodexBody();
-}
-
-/* ==================== CASE BOARD ==================== */
-
-function renderBoard(){
-  const search = document.getElementById('search').value.toLowerCase();
-  const statusF = document.getElementById('filter-status').value;
-  const minScore = document.getElementById('filter-score').checked;
-  let filtered = cases.filter(c=>{
-    if(statusF!=='all' && c.status!==statusF) return false;
-    if(minScore && (c.totalScore25||0)<15) return false;
-    if(search){
-      const hay = (c.brandName+' '+(c.founderName||'')+' '+(c.oneFinding||'')+' '+(c.discoveryStory||'')+' '+(c.commercialOffer||'')).toLowerCase();
-      if(!hay.includes(search)) return false;
-    }
-    return true;
-  });
-  const container = document.getElementById('view-board');
-
-  if(filtered.length===0){
-    container.innerHTML = `<div class="empty"><div class="mono">NO OPEN CASES MATCH FILTER</div><div class="serif">Find people who create genuinely good content.</div><p style="margin-top:8px;font-size:11px;color:#52525b;max-width:420px;margin-inline:auto">Then ask: Does the website deliver on the expectation the content created? If not — that's your prime candidate.</p><button class="btn btn-black" style="margin-top:16px" onclick="openNewCase()">+ OPEN FIRST CASE</button></div>`;
-    return;
-  }
-  let html = `<div class="grid">`;
-  filtered.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
-  filtered.forEach(c=>{
-    const conf=[c.confidenceBefore||0,c.confidenceAfterContent||0,c.confidenceHomepage||0,c.confidenceOfferPage||0,c.confidenceCheckout||0,c.confidenceEnd||0];
-    const drop = (c.confidenceAfterContent||0)-(c.confidenceHomepage||0);
-    const stampClass = c.status==='worth_pursuing'?'worth':c.status==='cold_trail'?'cold':c.status==='closed'?'closed':'under';
-    const tags = (c.trustLeaksTags||[]).slice(0,3).map(t=>`<span class="tag">${t.toUpperCase()}</span>`).join('');
-    html+=`
-      <div class="case-file" onclick="openDossier('${c.id}')">
-        <div class="case-tab">${c.caseNumber||'CASE-####'}</div>
-        <div class="case-inner">
-          <div class="case-head">
-            <div style="display:flex;gap:10px;flex:1;min-width:0">
-              <div class="case-avatar">${(c.brandName||'?')[0].toUpperCase()}</div>
-              <div class="case-meta">
-                <div class="case-brand">${esc(c.brandName)}</div>
-                <div class="case-founder">${esc(c.founderName||'Founder-led?')} • ${esc(c.niche||'Niche')}</div>
-                <span class="stamp ${stampClass}">${(c.status||'under_investigation').replace(/_/g,' ').toUpperCase()}</span>
+      <section class="panel">
+        <div class="panel-head">
+          <small id="editorEyebrow">Investigation dossier</small>
+          <h2 id="editorTitle">Open a new case</h2>
+        </div>
+        <div class="panel-body">
+          <form id="caseForm">
+            <details class="section" open>
+              <summary><span>Case details</span> File the basics</summary>
+              <div class="section-content fields">
+                <label class="field"><span>Case #</span><input name="caseNumber" placeholder="JAY-0001" /></label>
+                <label class="field"><span>Brand</span><input name="brandName" required placeholder="Brand or creator-led business" /></label>
+                <label class="field"><span>Founder / lead person</span><input name="founderName" placeholder="Who is visible?" /></label>
+                <label class="field"><span>Investigator</span><input name="investigator" value="Segun Falade" /></label>
+                <label class="field"><span>Date opened</span><input name="dateOpened" type="date" /></label>
+                <label class="field"><span>Status</span><select name="status"><option>Under Investigation</option><option>Worth Pursuing</option><option>Cold Trail</option><option>Closed</option></select></label>
+                <label class="field"><span>Niche</span><input name="niche" placeholder="Consulting, coaching, investing..." /></label>
+                <label class="field"><span>Website URL</span><input name="websiteUrl" placeholder="https://..." /></label>
+                <label class="field"><span>Best content URL</span><input name="contentUrl" placeholder="LinkedIn, Instagram, YouTube, podcast..." /></label>
               </div>
-            </div>
-            <div style="text-align:right">
-              <div class="score-box" style="background:${scoreBg(c.totalScore25||0)}"><div class="score-num">${c.totalScore25||0}<small>/25</small></div></div>
-            </div>
-          </div>
-          <div class="conf-grid">${conf.map(v=>`<div class="conf-col"><div class="conf-fill" style="height:${v*10}%"></div></div>`).join('')}</div>
-          <div class="conf-labels"><span>BEFORE</span><span>CONTENT</span><span>HOME</span><span>OFFER</span><span>CHECKOUT</span><span>END</span></div>
-          ${c.oneFinding?`<div class="one-finding"><p>"${esc(c.oneFinding)}"</p></div>`:''}
-          <div class="tags">${tags}</div>
-        </div>
-      </div>`;
-  });
-  html+=`</div>`;
-  container.innerHTML = html;
-}
+            </details>
 
-function scoreBg(s){ if(s>=20) return 'black'; if(s>=15) return 'var(--yellow)'; if(s>=10) return '#fef3c7'; return '#f4f4f5'; }
-
-/* ==================== THE ROLODEX ==================== */
-
-function renderRolodex(){
-  const search = document.getElementById('search-rolodex').value.toLowerCase();
-  const tierF = document.getElementById('filter-tier-rolodex').value;
-  const today = new Date().toISOString();
-  
-  let filtered = rolodex.filter(r=>{
-    if(tierF==='due' && (!r.nextPingDate || r.nextPingDate > today)) return false;
-    if(tierF!=='all' && tierF!=='due' && String(r.tier)!==tierF) return false;
-    if(search){
-      const hay = (r.name+' '+(r.bucket||'')+' '+(r.commonGround||'')).toLowerCase();
-      if(!hay.includes(search)) return false;
-    }
-    return true;
-  });
-  
-  const container = document.getElementById('view-rolodex');
-  if(filtered.length===0){
-    container.innerHTML = `<div class="empty"><div class="mono">NO ALLIES IN ROLODEX</div><div class="serif">Relationships are built, not collected.</div><p style="margin-top:8px;font-size:11px">Convert cracked cases into assets, or manually add your Anchor contacts.</p><button class="btn btn-yellow" style="margin-top:16px" onclick="openNewRolodex()">+ ADD FIRST ALLY</button></div>`;
-    return;
-  }
-  
-  // Sort by nextPingDate ascending (due first)
-  filtered.sort((a,b) => (a.nextPingDate||'9999') > (b.nextPingDate||'9999') ? 1 : -1);
-  
-  let html = `<div class="grid">`;
-  filtered.forEach(r=>{
-    const isDue = r.nextPingDate && r.nextPingDate <= today;
-    const daysLeft = r.nextPingDate ? getDaysBetween(r.nextPingDate, today) : 0;
-    const statusText = isDue ? (daysLeft < 0 ? `${Math.abs(daysLeft)} DAYS OVERDUE` : 'DUE TODAY') : `IN ${daysLeft} DAYS`;
-    
-    html+=`
-      <div class="case-file" style="border-color:${isDue?'var(--red)':'black'}" onclick="openRolodex('${r.id}')">
-        <div class="case-tab" style="background:${isDue?'var(--red)':'var(--kraft)'};color:${isDue?'white':'black'}">${isDue?'🚨 PING DUE':statusText}</div>
-        <div class="case-inner">
-          <div class="case-head">
-            <div style="display:flex;gap:10px;flex:1">
-              <div class="case-avatar" style="background:var(--kraft);color:black">${(r.name||'?')[0].toUpperCase()}</div>
-              <div class="case-meta">
-                <div class="case-brand">${esc(r.name)}</div>
-                <div class="case-founder">${esc(r.bucket||'Uncategorized')} • ${r.warmth||'Warm'}</div>
-                <span class="stamp ${r.tier==1?'closed':r.tier==2?'worth':'cold'}">TIER ${r.tier||3}</span>
+            <details class="section" open>
+              <summary><span>First impression</span> What made this case interesting?</summary>
+              <div class="section-content fields">
+                <label class="field"><span>How did I discover them?</span><select name="discoverySource"><option value="">Select</option><option>LinkedIn</option><option>Instagram</option><option>YouTube</option><option>Podcast</option><option>Referral</option><option>Other</option></select></label>
+                <label class="field full"><span>What made me stop scrolling?</span><textarea name="scrollStopper" placeholder="The line, post, idea, reputation signal, or moment that made them worth investigating."></textarea></label>
               </div>
+            </details>
+
+            <details class="section">
+              <summary><span>Visibility check</span> Are people paying attention?</summary>
+              <div class="section-content">
+                <div class="fields">
+                  <label class="field"><span>Content quality ⭐ /5</span><select name="contentQualityRating" data-range="5"></select></label>
+                  <label class="field"><span>Audience engagement ⭐ /5</span><select name="audienceEngagementRating" data-range="5"></select></label>
+                  <label class="field"><span>Posting consistency ⭐ /5</span><select name="postingConsistencyRating" data-range="5"></select></label>
+                  <label class="field"><span>Recent activity</span><select name="recentActivityLevel"><option value="">Select</option><option>This week</option><option>This month</option><option>Dormant</option></select></label>
+                </div>
+                <div class="checks" style="margin-top:14px;">
+                  <div class="check-title">Evidence people actually care</div>
+                  <div class="check-grid" data-checks="careEvidence" data-options="Comments|Shares|Testimonials|Podcast interviews|Newsletter|Speaking|Community|Case studies"></div>
+                </div>
+              </div>
+            </details>
+
+            <details class="section">
+              <summary><span>Commercial strength</span> Is there money behind the problem?</summary>
+              <div class="section-content fields three">
+                <label class="field"><span>What are they selling?</span><input name="offer" placeholder="Program, service, consulting, community..." /></label>
+                <label class="field"><span>Price</span><input name="offerPrice" placeholder="$5,000, premium retainer..." /></label>
+                <label class="field"><span>Would one additional client be valuable?</span><select name="oneAdditionalClientValuable"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+              </div>
+            </details>
+
+            <details class="section">
+              <summary><span>Growth signals</span> What have they already invested in?</summary>
+              <div class="section-content checks">
+                <div class="check-title">Signals already present</div>
+                <div class="check-grid" data-checks="growthSignals" data-options="Professional branding|Website|Lead magnet|Email list|Webinar|Podcast|Application funnel|Discovery calls|Paid community|Video content"></div>
+              </div>
+            </details>
+
+            <details class="section">
+              <summary><span>Buyer journey map</span> Trace the route</summary>
+              <div class="section-content fields">
+                <label class="field full"><span>Journey path</span><textarea name="buyerJourney" placeholder="Instagram ↓ Website ↓ Sales Page ↓ Booking ↓ Checkout ↓ Email ↓ Other"></textarea></label>
+                <label class="field"><span>How many steps?</span><input name="journeySteps" type="number" min="0" max="30" /></label>
+                <label class="field"><span>More than 4?</span><select name="moreThanFourSteps"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+              </div>
+            </details>
+
+            <details class="section">
+              <summary><span>Confidence meter</span> Where does trust rise or leak?</summary>
+              <div class="section-content">
+                <div class="fields three">
+                  <label class="field"><span>Before discovering /10</span><select name="confidenceBefore" data-range="10"></select></label>
+                  <label class="field"><span>After consuming content /10</span><select name="confidenceAfterContent" data-range="10"></select></label>
+                  <label class="field"><span>Homepage /10</span><select name="confidenceHomepage" data-range="10"></select></label>
+                  <label class="field"><span>Offer page /10</span><select name="confidenceOfferPage" data-range="10"></select></label>
+                  <label class="field"><span>Checkout /10</span><select name="confidenceCheckout" data-range="10"></select></label>
+                  <label class="field"><span>End of journey /10</span><select name="confidenceEndJourney" data-range="10"></select></label>
+                </div>
+                <div class="fields" style="margin-top:14px;">
+                  <label class="field"><span>Where did confidence first decline?</span><textarea name="confidenceDeclinePoint"></textarea></label>
+                  <label class="field"><span>What triggered it?</span><textarea name="confidenceTrigger"></textarea></label>
+                </div>
+              </div>
+            </details>
+
+            <details class="section">
+              <summary><span>Contradictions</span> This might become the outreach</summary>
+              <div class="section-content fields">
+                <label class="field"><span>They say...</span><textarea name="theySay" placeholder="We simplify investing. We're premium. We're personal."></textarea></label>
+                <label class="field"><span>But the website...</span><textarea name="websiteContradiction" placeholder="Uses jargon. Feels templated. Sounds corporate."></textarea></label>
+                <label class="field"><span>The content makes me feel...</span><textarea name="contentMakesMeFeel"></textarea></label>
+                <label class="field"><span>But the funnel makes me feel...</span><textarea name="funnelMakesMeFeel"></textarea></label>
+              </div>
+            </details>
+
+            <details class="section">
+              <summary><span>Trust leaks</span> Tick every clue you notice</summary>
+              <div class="section-content checks">
+                <div class="check-title">Leak evidence</div>
+                <div class="check-grid" data-checks="trustLeaks" data-options="Generic messaging|Weak CTA|Missing proof|Confusing offer|Too much jargon|Poor hierarchy|Weak headline|Unclear next step|Inconsistent tone|Pricing anxiety|Weak positioning|Other"></div>
+              </div>
+            </details>
+
+            <details class="section" open>
+              <summary><span>The one finding</span> If I could tell them only one thing</summary>
+              <div class="section-content fields">
+                <label class="field full"><span>Useful finding</span><textarea name="oneFinding" placeholder="The clearest, most useful insight you could send if they replied, 'Interesting. Show me what you found.'"></textarea></label>
+              </div>
+            </details>
+
+            <details class="section" open>
+              <summary><span>Outreach angle</span> Turn the clues into a conversation</summary>
+              <div class="section-content fields">
+                <label class="field"><span>Subject idea</span><textarea name="subjectIdea"></textarea></label>
+                <label class="field"><span>Opening sentence</span><textarea name="openingSentence"></textarea></label>
+                <label class="field"><span>Curiosity gap</span><textarea name="curiosityGap"></textarea></label>
+                <label class="field"><span>Question I'll ask</span><textarea name="questionToAsk"></textarea></label>
+              </div>
+            </details>
+
+            <details class="section" open>
+              <summary><span>Case score</span> Score the opportunity</summary>
+              <div class="section-content fields five">
+                <label class="field"><span>Visibility /5</span><select name="visibilityScore" data-range="5"></select></label>
+                <label class="field"><span>Commercial value /5</span><select name="commercialValueScore" data-range="5"></select></label>
+                <label class="field"><span>Trust gap /5</span><select name="trustGapScore" data-range="5"></select></label>
+                <label class="field"><span>Growth signals /5</span><select name="growthSignalsScore" data-range="5"></select></label>
+                <label class="field"><span>Outreach potential /5</span><select name="outreachPotentialScore" data-range="5"></select></label>
+              </div>
+            </details>
+
+            <details class="section" open>
+              <summary><span>Final verdict</span> Do you have evidence worth sharing?</summary>
+              <div class="section-content fields">
+                <label class="field"><span>Verdict</span><select name="finalVerdict"><option value="">Select</option><option>Investigate further</option><option>Send outreach</option><option>Create case study</option><option>Follow on LinkedIn</option><option>Revisit later</option><option>Not worth pursuing</option></select></label>
+                <label class="field"><span>If they ask, can I send something genuinely useful?</span><select name="usefulInsightReady"><option value="">Select</option><option>Yes</option><option>No</option></select></label>
+                <p class="small-note full"><strong>Rule:</strong> If the answer is no, don't send the email yet. If yes, you're reaching out because you uncovered an insight worth sharing.</p>
+              </div>
+            </details>
+
+            <details class="section" open>
+              <summary><span>Relationship OS</span> Categorize, tier, and schedule pings</summary>
+              <div class="section-content">
+                <div class="system-note">
+                  <strong>Never Eat Alone-inspired routine:</strong> sort every case into a relationship bucket, assign a tier, then use the ping rhythm to give value before you need anything. Tier 1 gets frequent thoughtful touches, Tier 2 gets consistent nurture, Tier 3 stays warm without becoming admin-heavy.
+                </div>
+                <div class="fields four" style="margin-top:14px;">
+                  <label class="field"><span>Contact bucket</span><select name="contactBucket"><option value="">Select</option><option>Dream Client</option><option>Warm Prospect</option><option>Strategic Partner</option><option>Connector / Super-connector</option><option>Past Client / Alumni</option><option>Mentor / Advisor</option><option>Peer / Collaborator</option><option>Media / Creator</option><option>Investor / Sponsor</option><option>Community Member</option><option>Rekindle / Dormant</option></select></label>
+                  <label class="field"><span>Relationship tier</span><select name="relationshipTier"><option value="">Select</option><option>Tier 1</option><option>Tier 2</option><option>Tier 3</option></select></label>
+                  <label class="field"><span>Relationship stage</span><select name="relationshipStage"><option value="">Select</option><option>Not contacted</option><option>Lightly aware</option><option>Conversation started</option><option>Warm relationship</option><option>Active opportunity</option><option>Client / partner</option><option>Dormant</option></select></label>
+                  <label class="field"><span>Preferred channel</span><select name="preferredChannel"><option value="">Select</option><option>LinkedIn DM</option><option>Email</option><option>Instagram DM</option><option>Comment</option><option>Voice note</option><option>Call</option><option>Event / in person</option><option>Referral intro</option></select></label>
+                  <label class="field"><span>Ping cadence</span><select name="pingCadence"><option value="">Auto by tier</option><option>Weekly</option><option>Every 2 weeks</option><option>Monthly</option><option>Every 6 weeks</option><option>Quarterly</option><option>Twice a year</option></select></label>
+                  <label class="field"><span>Last ping date</span><input name="lastPingDate" type="date" /></label>
+                  <label class="field"><span>Next ping date</span><input name="nextPingDate" type="date" /></label>
+                  <label class="field"><span>Relationship strength /5</span><select name="relationshipStrength" data-range="5"></select></label>
+                  <label class="field"><span>Personal context</span><textarea name="personalContext" placeholder="Family, interests, goals, recent milestones, preferences, what they care about."></textarea></label>
+                  <label class="field"><span>Value currency</span><textarea name="valueCurrency" placeholder="What can I give them? Useful insight, intro, article, opportunity, feedback, encouragement, amplification."></textarea></label>
+                  <label class="field"><span>Next give-first ping</span><textarea name="nextPingIdea" placeholder="A specific low-friction touch that helps them or shows genuine attention."></textarea></label>
+                  <label class="field"><span>Follow-up promise</span><textarea name="followUpPromise" placeholder="Anything I said I would send, introduce, review, or remember."></textarea></label>
+                </div>
+                <div class="checks" style="margin-top:14px;">
+                  <div class="check-title">Ping type menu</div>
+                  <div class="check-grid" data-checks="pingTypes" data-options="Share useful resource|Send relevant intro|Congratulate / celebrate|Comment thoughtfully|Invite to something|Ask a generous question|Offer useful feedback|Send case insight|Reconnect personally|Amplify their work"></div>
+                </div>
+              </div>
+            </details>
+
+            <div class="actions">
+              <button class="btn" type="submit">Save case</button>
+              <button class="btn dark" type="button" id="duplicateBtn">Duplicate case</button>
+              <button class="btn ghost" type="button" id="printBtn">Print / PDF</button>
             </div>
-          </div>
-          ${r.theyWant?`<div style="margin-top:12px;font-size:11px;color:#52525b;background:#f4f4f5;padding:6px"><b>WANTS:</b> ${esc(r.theyWant)}</div>`:''}
-          <div class="tags" style="margin-top:8px">${(r.currencies||[]).map(c=>`<span class="tag white">${c}</span>`).join('')}</div>
-          <div class="foot"><span>LAST PING: ${r.lastPingDate?new Date(r.lastPingDate).toLocaleDateString():'Never'}</span><span style="text-decoration:underline">OPEN DOSSIER →</span></div>
-        </div>
-      </div>`;
-  });
-  html+=`</div>`;
-  container.innerHTML = html;
-}
 
-function openNewRolodex(){
-  const name = prompt("Enter Ally Name:");
-  if(!name) return;
-  const id = genId();
-  rolodex.unshift({
-    id, name, bucket: 'Peer', tier: 3, warmth: 'Cold',
-    theyWant: '', iCanGive: '', commonGround: '', 
-    tier1Goal: '', tier1Nightmare: '', tier1Meet: '', tier1LookGood: '',
-    currencies: [], pings: [],
-    lastPingDate: null, nextPingDate: new Date(Date.now() + 90*86400000).toISOString(), createdAt: new Date().toISOString()
-  });
-  save(); renderRolodex(); openRolodex(id);
-}
-
-function convertCaseToRolodex(){
-  const c = cases.find(x=>x.id===currentCaseId);
-  if(!c) return;
-  const name = prompt("Confirm Asset Name (Founder or Contact):", c.founderName || c.brandName);
-  if(!name) return;
-  
-  const r = {
-    id: genId(), name, bucket: 'Client', tier: 2, warmth: 'Warm',
-    theyWant: c.commercialOffer || '', 
-    iCanGive: c.oneFinding || '', 
-    commonGround: c.discoveryStory || '',
-    tier1Goal: '', tier1Nightmare: '', tier1Meet: '', tier1LookGood: '',
-    currencies: [], pings: [],
-    lastPingDate: new Date().toISOString(), nextPingDate: new Date(Date.now() + 60*86400000).toISOString(), createdAt: new Date().toISOString()
-  };
-  rolodex.unshift(r);
-  save();
-  alert(`${name} added to The Rolodex!`);
-  closeDossier();
-  setView('rolodex');
-  openRolodex(r.id);
-}
-
-function openRolodex(id){
-  currentRolodexId=id;
-  const r = rolodex.find(x=>x.id===id);
-  if(!r) return;
-  document.getElementById('rolo-avatar').textContent=(r.name[0]||'A').toUpperCase();
-  document.getElementById('rolo-name').textContent=r.name;
-  document.getElementById('rolo-bucket').textContent=r.bucket||'Uncategorized';
-  document.getElementById('rolo-tier-badge').textContent=`TIER ${r.tier}`;
-  document.getElementById('rolodex-modal').classList.add('open');
-  setRolodexTab('intel');
-}
-
-function closeRolodex(){ document.getElementById('rolodex-modal').classList.remove('open'); currentRolodexId=null; save(); renderRolodex(); }
-
-function updateRolodexField(key, val){
-  const idx = rolodex.findIndex(x=>x.id===currentRolodexId);
-  if(idx===-1) return;
-  rolodex[idx][key]=val;
-  
-  // Auto-update next ping if tier changes
-  if(key === 'tier') {
-    document.getElementById('rolo-tier-badge').textContent=`TIER ${val}`;
-    calcNextPing(idx);
-  }
-  if(key === 'bucket') {
-    document.getElementById('rolo-bucket').textContent=val;
-  }
-  
-  clearTimeout(window._saveT); window._saveT=setTimeout(save, 300);
-}
-
-function calcNextPing(idx){
-  const r = rolodex[idx];
-  const days = r.tier == 1 ? 30 : r.tier == 2 ? 60 : 90;
-  const baseDate = r.lastPingDate ? new Date(r.lastPingDate) : new Date();
-  r.nextPingDate = new Date(baseDate.getTime() + days*86400000).toISOString();
-}
-
-function toggleRoloArray(key, val){
-  const idx = rolodex.findIndex(x=>x.id===currentRolodexId);
-  if(idx===-1) return;
-  const arr = rolodex[idx][key]||[];
-  const pos = arr.indexOf(val);
-  if(pos>-1) arr.splice(pos,1); else arr.push(val);
-  rolodex[idx][key]=arr;
-  save(); renderRolodexBody();
-}
-
-function addPing(){
-  const idx = rolodex.findIndex(x=>x.id===currentRolodexId);
-  if(idx===-1) return;
-  const r = rolodex[idx];
-  const type=document.getElementById('ping-type').value;
-  const notes=document.getElementById('ping-notes').value.trim();
-  if(!notes) return alert('Notes required');
-  
-  const ping = { id: genId(), type, notes, date: new Date().toISOString() };
-  if(!r.pings) r.pings = [];
-  r.pings.unshift(ping);
-  r.lastPingDate = ping.date;
-  calcNextPing(idx);
-  
-  save(); renderRolodexBody();
-}
-
-function deleteCurrentRolodex(){
-  if(!confirm('Delete this Ally?')) return;
-  rolodex = rolodex.filter(r=>r.id!==currentRolodexId);
-  save(); closeRolodex();
-}
-
-function renderRolodexBody(){
-  const r = rolodex.find(x=>x.id===currentRolodexId);
-  if(!r) return;
-  const body = document.getElementById('rolodex-body');
-  
-  if(currentTab==='intel'){
-    body.innerHTML = `
-      <section><div class="sec-head"><span class="num">01</span> ASSET CLASSIFICATION</div>
-        <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr">
-          <div><label class="mono">NAME *</label><input value="${esc(r.name)}" oninput="updateRolodexField('name', this.value); document.getElementById('rolo-name').textContent=this.value"></div>
-          <div><label class="mono">LINKEDIN URL</label><input value="${esc(r.linkedin||'')}" oninput="updateRolodexField('linkedin', this.value)"></div>
-          <div><label class="mono">WARMTH</label><select onchange="updateRolodexField('warmth', this.value)"><option value="Cold" ${r.warmth==='Cold'?'selected':''}>❄️ COLD</option><option value="Warm" ${r.warmth==='Warm'?'selected':''}>🔥 WARM</option><option value="Hot" ${r.warmth==='Hot'?'selected':''}>🌋 HOT</option></select></div>
-          <div><label class="mono">BUCKET (ROLE)</label><select onchange="updateRolodexField('bucket', this.value)">${ROLO_BUCKETS.map(b=>`<option value="${b}" ${r.bucket===b?'selected':''}>${b.toUpperCase()}</option>`).join('')}</select></div>
-          <div><label class="mono">TIER (DEPTH)</label><select onchange="updateRolodexField('tier', parseInt(this.value))"><option value="1" ${r.tier==1?'selected':''}>1 - ANCHOR (30 Days)</option><option value="2" ${r.tier==2?'selected':''}>2 - ACTIVE (60 Days)</option><option value="3" ${r.tier==3?'selected':''}>3 - ASPIRED (90 Days)</option></select></div>
+            <div class="danger-zone">
+              <strong>Danger zone:</strong> deleting removes this case from browser storage. Download a backup first if you may need it later.
+              <div class="actions"><button class="btn red" type="button" id="deleteBtn">Delete current case</button></div>
+            </div>
+          </form>
         </div>
       </section>
-      <section class="kraft"><div class="sec-head"><span class="num">02</span> THE VALUE EXCHANGE</div>
-        <div class="form-grid">
-          <div><label class="mono">WHAT THEY WANT RIGHT NOW</label><textarea oninput="updateRolodexField('theyWant', this.value)">${esc(r.theyWant||'')}</textarea></div>
-          <div><label class="mono">WHAT I CAN GIVE THEM</label><textarea oninput="updateRolodexField('iCanGive', this.value)">${esc(r.iCanGive||'')}</textarea></div>
-          <div style="grid-column:span 2"><label class="mono">COMMON GROUND</label><input value="${esc(r.commonGround||'')}" oninput="updateRolodexField('commonGround', this.value)"></div>
-        </div>
-        <div style="margin-top:12px"><label class="mono">CURRENCIES I CAN OFFER (The 3 C's)</label>
-          <div class="chips">${ROLO_CURRENCIES.map(c=>`<div class="chip ${(r.currencies||[]).includes(c)?'on':''}" onclick="toggleRoloArray('currencies','${c}')">${c.toUpperCase()}</div>`).join('')}</div>
-        </div>
-      </section>
-      ${r.tier == 1 ? `
-      <section class="black"><div class="sec-head"><span class="num">03</span> TIER 1 DEEP DIVE (Ferrazzi Questions)</div>
-        <div class="form-grid">
-          <div><label class="mono">6-MONTH GOAL?</label><textarea oninput="updateRolodexField('tier1Goal', this.value)">${esc(r.tier1Goal||'')}</textarea></div>
-          <div><label class="mono">WHAT KEEPS THEM UP AT NIGHT?</label><textarea oninput="updateRolodexField('tier1Nightmare', this.value)">${esc(r.tier1Nightmare||'')}</textarea></div>
-          <div><label class="mono">WHO DO THEY WANT TO MEET?</label><textarea oninput="updateRolodexField('tier1Meet', this.value)">${esc(r.tier1Meet||'')}</textarea></div>
-          <div><label class="mono">HOW TO HELP THEM LOOK GOOD?</label><textarea oninput="updateRolodexField('tier1LookGood', this.value)">${esc(r.tier1LookGood||'')}</textarea></div>
-        </div>
-      </section>` : ''}
-    `;
-  } else if (currentTab==='pings'){
-    body.innerHTML = `
-      <section class="yellow">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div class="sec-head" style="margin:0"><span class="num">✉️</span> LOG A PING</div>
-          <div style="font-size:10px;font-weight:800">NEXT DUE: ${new Date(r.nextPingDate).toLocaleDateString()}</div>
-        </div>
-        <div class="form-grid">
-          <div><label class="mono">TYPE</label><select id="ping-type"><option value="Comment">Content Comment</option><option value="DM">Direct Message</option><option value="Email">Email Share/Intro</option><option value="Call">Call / Coffee</option></select></div>
-          <div style="grid-column:span 2"><label class="mono">NOTES / VALUE ADDED</label><textarea id="ping-notes" placeholder="Sent quick loom teardown..."></textarea></div>
-        </div>
-        <button class="btn btn-black" style="width:100%;margin-top:10px" onclick="addPing()">LOG PING (AUTO-SCHEDULES NEXT)</button>
-      </section>
-      <div>${(r.pings||[]).map(p=>`
-        <div class="comms-item"><div class="meta"><span>${esc(p.type).toUpperCase()}</span><span>${new Date(p.date).toLocaleString()}</span></div>
-        <div style="margin-top:4px;font-size:11px;white-space:pre-wrap">${esc(p.notes)}</div></div>`).join('') || '<div style="text-align:center;padding:20px;font-size:11px;color:#71717a">No pings yet. Reach out!</div>'}
+    </section>
+
+    <section class="panel" style="margin-top:18px;">
+      <div class="panel-head">
+        <small>Relationship command center</small>
+        <h2>Ping routine</h2>
       </div>
-    `;
-  }
-}
+      <div class="panel-body">
+        <div class="relationship-os">
+          <article class="routine-card"><small>Tier 1 · Inner circle</small><strong>Ping weekly to every 2 weeks</strong><p>High-value relationships, active opportunities, mentors, partners, and people you want to be meaningfully close to. Every touch should be personal or useful.</p></article>
+          <article class="routine-card"><small>Tier 2 · Active nurture</small><strong>Ping monthly to every 6 weeks</strong><p>Warm prospects, collaborators, and connectors. Keep context alive with insight, congratulations, thoughtful comments, or relevant introductions.</p></article>
+          <article class="routine-card"><small>Tier 3 · Light touch</small><strong>Ping quarterly to twice a year</strong><p>Weak ties, dormant contacts, and future opportunities. Stay visible without forcing urgency. Use lightweight value and memory hooks.</p></article>
+        </div>
+        <div style="margin-top:16px;" id="pingList" class="ping-list"></div>
+      </div>
+    </section>
 
-/* ==================== CORE UTILS & RENDER (Unchanged mostly) ==================== */
-function renderEvidence(){
-  const container = document.getElementById('view-evidence');
-  if(evidences.length===0){
-    container.innerHTML = `<div class="empty"><div class="mono">NO EVIDENCE LOGGED</div><div class="serif">Brilliant storyteller. Weak About page.</div><button class="btn btn-yellow" style="margin-top:12px" onclick="openEvidenceModal()">+ LOG EVIDENCE</button></div>`;
-    return;
-  }
-  let html=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px">`;
-  evidences.forEach(ev=>{
-    html+=`<div style="border:2px solid black;padding:12px;background:white"><div style="font-size:11px"><b>BRILLIANT:</b> ${esc(ev.brilliantPart)} → <b>WEAK:</b> ${esc(ev.weakPart)}</div></div>`;
-  });
-  html+=`</div>`;
-  container.innerHTML=html;
-}
+    <section class="panel" style="margin-top:18px;">
+      <div class="panel-head">
+        <small>Selected case preview</small>
+        <h2 id="previewTitle">No case selected</h2>
+      </div>
+      <div class="panel-body">
+        <div id="preview" class="preview-grid"></div>
+        <form id="logForm" style="margin-top:16px;">
+          <details class="section" open>
+            <summary><span>Evidence log</span> Outreach and conversation history</summary>
+            <div class="section-content">
+              <div class="fields three">
+                <label class="field"><span>Channel</span><input name="channel" value="LinkedIn" /></label>
+                <label class="field"><span>Date</span><input name="date" type="date" /></label>
+                <label class="field"><span>Outcome</span><input name="outcome" value="Sent" /></label>
+                <label class="field"><span>Message / conversation note</span><textarea name="message" required placeholder="What you sent, noticed, or discussed."></textarea></label>
+                <label class="field"><span>Next step</span><textarea name="nextStep" placeholder="Follow-up date, asset to send, question to ask..."></textarea></label>
+              </div>
+              <div class="actions"><button class="btn" type="submit">Add evidence log</button></div>
+            </div>
+          </details>
+        </form>
+        <div id="logs" class="logs"></div>
+      </div>
+    </section>
+  </main>
 
-function esc(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-function openNewCase(){ document.getElementById('newcase-modal').classList.add('open'); }
-function createCase(){
-  const brand = document.getElementById('new-brand').value.trim();
-  if(!brand) return alert('Brand required');
-  const c = {
-    id: genId(), caseNumber: genCaseNumber(), brandName: brand,
-    founderName: document.getElementById('new-founder').value.trim(),
-    status: 'under_investigation',
-    createdAt: new Date().toISOString()
-  };
-  cases.unshift(c); save();
-  document.getElementById('newcase-modal').classList.remove('open');
-  renderBoard(); openDossier(c.id);
-}
+  <script>
+    (function () {
+      var STORAGE_KEY = "jay-investigation-dossier-v1";
+      var state = { cases: [], selectedId: null, lastSavedAt: null };
+      var form = document.getElementById("caseForm");
+      var logForm = document.getElementById("logForm");
+      var caseList = document.getElementById("caseList");
+      var preview = document.getElementById("preview");
+      var logs = document.getElementById("logs");
+      var search = document.getElementById("search");
+      var statusFilter = document.getElementById("statusFilter");
+      var tierFilter = document.getElementById("tierFilter");
+      var importFile = document.getElementById("importFile");
+      var pingList = document.getElementById("pingList");
+      var toastTimer;
 
-function openDossier(id){
-  currentCaseId=id;
-  const c = cases.find(x=>x.id===id);
-  if(!c) return;
-  document.getElementById('dossier-brand').textContent=c.brandName;
-  document.getElementById('dossier-modal').classList.add('open');
-  setDossierTab('dossier');
-}
-function closeDossier(){ document.getElementById('dossier-modal').classList.remove('open'); currentCaseId=null; save(); renderBoard(); }
+      function uid() {
+        if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+        return "case-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+      }
 
-function renderDossierBody(){
-  const c = cases.find(x=>x.id===currentCaseId);
-  if(!c) return;
-  const body = document.getElementById('dossier-body');
-  if(currentTab==='dossier'){
-    body.innerHTML = `
-      <section><div class="sec-head">01 BRAND</div><input value="${esc(c.brandName||'')}" oninput="updateField('brandName', this.value)"></section>
-      <section><div class="sec-head">02 STATUS</div><select onchange="updateField('status', this.value)"><option value="under_investigation" ${c.status==='under_investigation'?'selected':''}>UNDER INVESTIGATION</option><option value="worth_pursuing" ${c.status==='worth_pursuing'?'selected':''}>WORTH PURSUING</option><option value="closed" ${c.status==='closed'?'selected':''}>CLOSED</option></select></section>
-      <section class="yellow"><div class="sec-head">03 ONE FINDING</div><textarea oninput="updateField('oneFinding', this.value)">${esc(c.oneFinding||'')}</textarea></section>
-    `;
-  }
-}
+      function today() { return new Date().toISOString().slice(0, 10); }
 
-function updateField(key, val){
-  const idx = cases.findIndex(x=>x.id===currentCaseId);
-  if(idx===-1) return;
-  cases[idx][key]=val; save();
-}
+      function addDays(dateString, days) {
+        var date = dateString ? new Date(dateString + "T12:00:00") : new Date();
+        date.setDate(date.getDate() + days);
+        return date.toISOString().slice(0, 10);
+      }
 
-function deleteCurrentCase(){
-  cases = cases.filter(c=>c.id!==currentCaseId);
-  save(); closeDossier();
-}
+      function daysBetween(dateString) {
+        if (!dateString) return null;
+        var start = new Date(today() + "T12:00:00");
+        var end = new Date(dateString + "T12:00:00");
+        return Math.ceil((end - start) / 86400000);
+      }
 
-// init
-load();
-updateStats();
-setView('board');
+      function cadenceDays(caseFile) {
+        var cadence = caseFile.pingCadence || "";
+        if (cadence === "Weekly") return 7;
+        if (cadence === "Every 2 weeks") return 14;
+        if (cadence === "Monthly") return 30;
+        if (cadence === "Every 6 weeks") return 42;
+        if (cadence === "Quarterly") return 90;
+        if (cadence === "Twice a year") return 180;
+        if (caseFile.relationshipTier === "Tier 1") return 14;
+        if (caseFile.relationshipTier === "Tier 2") return 30;
+        if (caseFile.relationshipTier === "Tier 3") return 90;
+        return 45;
+      }
 
-document.addEventListener('keydown', e=>{
-  if(e.key==='Escape'){
-    document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));
-  }
-});
-document.getElementById('dossier-modal').addEventListener('click', e=>{ if(e.target.id==='dossier-modal') closeDossier(); });
-document.getElementById('rolodex-modal').addEventListener('click', e=>{ if(e.target.id==='rolodex-modal') closeRolodex(); });
-</script>
+      function computedNextPing(caseFile) {
+        return caseFile.nextPingDate || addDays(caseFile.lastPingDate || caseFile.updatedAt?.slice(0, 10) || today(), cadenceDays(caseFile));
+      }
+
+      function pingStatus(caseFile) {
+        var days = daysBetween(computedNextPing(caseFile));
+        if (days === null) return { className: "soon", label: "Unscheduled", days: null };
+        if (days < 0) return { className: "overdue", label: Math.abs(days) + " days overdue", days: days };
+        if (days === 0) return { className: "due", label: "Due today", days: days };
+        if (days <= 7) return { className: "soon", label: "Due in " + days + " days", days: days };
+        return { className: "", label: "Due in " + days + " days", days: days };
+      }
+
+      function showToast(message) {
+        var toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2600);
+      }
+
+      function escapeHtml(value) {
+        return String(value || "").replace(/[&<>'"]/g, function (char) {
+          return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#039;", '"': "&quot;" })[char];
+        });
+      }
+
+      function fillRanges() {
+        document.querySelectorAll("select[data-range]").forEach(function (select) {
+          var max = Number(select.getAttribute("data-range"));
+          select.innerHTML = "";
+          for (var i = 0; i <= max; i += 1) {
+            var option = document.createElement("option");
+            option.value = String(i);
+            option.textContent = i + " / " + max;
+            select.appendChild(option);
+          }
+        });
+      }
+
+      function fillChecks() {
+        document.querySelectorAll("[data-checks]").forEach(function (box) {
+          var name = box.getAttribute("data-checks");
+          var options = (box.getAttribute("data-options") || "").split("|");
+          box.innerHTML = options.map(function (option) {
+            return '<label class="check"><input type="checkbox" name="' + escapeHtml(name) + '" value="' + escapeHtml(option) + '"> ' + escapeHtml(option) + '</label>';
+          }).join("");
+        });
+      }
+
+      function load() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          var parsed = JSON.parse(raw);
+          if (Array.isArray(parsed.cases)) state = parsed;
+        } catch (error) {
+          showToast("Could not read saved browser data. You can upload a backup if you have one.");
+        }
+      }
+
+      function persist(silent) {
+        state.lastSavedAt = new Date().toISOString();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (!silent) showToast("Saved to this browser.");
+      }
+
+      function score(caseFile) {
+        return ["visibilityScore", "commercialValueScore", "trustGapScore", "growthSignalsScore", "outreachPotentialScore"].reduce(function (sum, key) {
+          return sum + Number(caseFile[key] || 0);
+        }, 0);
+      }
+
+      function completeness(caseFile) {
+        var fields = ["brandName", "discoverySource", "scrollStopper", "offer", "offerPrice", "growthSignals", "buyerJourney", "confidenceDeclinePoint", "confidenceTrigger", "theySay", "websiteContradiction", "trustLeaks", "oneFinding", "subjectIdea", "openingSentence", "questionToAsk", "finalVerdict", "usefulInsightReady", "contactBucket", "relationshipTier", "preferredChannel", "valueCurrency", "nextPingIdea", "nextPingDate"];
+        var filled = fields.filter(function (key) {
+          var value = caseFile[key];
+          return Array.isArray(value) ? value.length : Boolean(value);
+        }).length;
+        return Math.round((filled / fields.length) * 100);
+      }
+
+      function caseNumber(caseFile, index) {
+        return caseFile.caseNumber || "JAY-" + String(index + 1).padStart(4, "0");
+      }
+
+      function currentCase() {
+        return state.cases.find(function (item) { return item.id === state.selectedId; }) || null;
+      }
+
+      function newCaseData() {
+        return {
+          id: uid(), caseNumber: "", brandName: "", founderName: "", investigator: "Segun Falade", dateOpened: today(), status: "Under Investigation",
+          niche: "", websiteUrl: "", contentUrl: "", discoverySource: "", scrollStopper: "",
+          contentQualityRating: "0", audienceEngagementRating: "0", postingConsistencyRating: "0", recentActivityLevel: "", careEvidence: [],
+          offer: "", offerPrice: "", oneAdditionalClientValuable: "", growthSignals: [], buyerJourney: "", journeySteps: "", moreThanFourSteps: "",
+          confidenceBefore: "0", confidenceAfterContent: "0", confidenceHomepage: "0", confidenceOfferPage: "0", confidenceCheckout: "0", confidenceEndJourney: "0",
+          confidenceDeclinePoint: "", confidenceTrigger: "", theySay: "", websiteContradiction: "", contentMakesMeFeel: "", funnelMakesMeFeel: "", trustLeaks: [],
+          oneFinding: "", subjectIdea: "", openingSentence: "", curiosityGap: "", questionToAsk: "",
+          visibilityScore: "0", commercialValueScore: "0", trustGapScore: "0", growthSignalsScore: "0", outreachPotentialScore: "0", finalVerdict: "", usefulInsightReady: "",
+          contactBucket: "", relationshipTier: "", relationshipStage: "", preferredChannel: "", pingCadence: "", lastPingDate: "", nextPingDate: "", relationshipStrength: "0", personalContext: "", valueCurrency: "", nextPingIdea: "", followUpPromise: "", pingTypes: [],
+          logs: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+        };
+      }
+
+      function formToCase(existing) {
+        var data = existing || newCaseData();
+        new FormData(form).forEach(function (value, key) {
+          if (key === "careEvidence" || key === "growthSignals" || key === "trustLeaks" || key === "pingTypes") return;
+          data[key] = String(value).trim();
+        });
+        ["careEvidence", "growthSignals", "trustLeaks", "pingTypes"].forEach(function (key) {
+          data[key] = Array.from(form.querySelectorAll('input[name="' + key + '"]:checked')).map(function (input) { return input.value; });
+        });
+        if (data.relationshipTier && !data.nextPingDate) data.nextPingDate = addDays(data.lastPingDate || today(), cadenceDays(data));
+        data.updatedAt = new Date().toISOString();
+        return data;
+      }
+
+      function setForm(caseFile) {
+        form.reset();
+        var data = caseFile || newCaseData();
+        Array.from(form.elements).forEach(function (element) {
+          if (!element.name) return;
+          if (element.type === "checkbox") {
+            element.checked = Array.isArray(data[element.name]) && data[element.name].includes(element.value);
+          } else if (Object.prototype.hasOwnProperty.call(data, element.name)) {
+            element.value = data[element.name] == null ? "" : data[element.name];
+          }
+        });
+        document.getElementById("editorTitle").textContent = data.brandName || "Open a new case";
+        document.getElementById("editorEyebrow").textContent = caseFile ? "Editing case file" : "Investigation dossier";
+      }
+
+      function filteredCases() {
+        var term = search.value.trim().toLowerCase();
+        var status = statusFilter.value;
+        var tier = tierFilter.value;
+        return state.cases.filter(function (caseFile) {
+          if (status && caseFile.status !== status) return false;
+          if (tier && caseFile.relationshipTier !== tier) return false;
+          if (!term) return true;
+          return JSON.stringify(caseFile).toLowerCase().includes(term);
+        });
+      }
+
+      function renderStats() {
+        document.getElementById("statOpen").textContent = state.cases.filter(function (c) { return c.status === "Under Investigation"; }).length;
+        document.getElementById("statWorth").textContent = state.cases.filter(function (c) { return c.status === "Worth Pursuing" || score(c) >= 18; }).length;
+        document.getElementById("statDue").textContent = state.cases.filter(function (c) { return c.relationshipTier && daysBetween(computedNextPing(c)) <= 0; }).length;
+        document.getElementById("statTier1").textContent = state.cases.filter(function (c) { return c.relationshipTier === "Tier 1"; }).length;
+      }
+
+      function renderList() {
+        var cases = filteredCases();
+        if (!cases.length) {
+          caseList.innerHTML = '<div class="empty"><strong>No cases found.</strong><br>Open a new investigation or adjust your search/filter.</div>';
+          return;
+        }
+        caseList.innerHTML = cases.map(function (caseFile) {
+          var originalIndex = state.cases.findIndex(function (item) { return item.id === caseFile.id; });
+          var total = score(caseFile);
+          var statusClass = caseFile.usefulInsightReady === "Yes" ? "green" : (caseFile.status === "Cold Trail" ? "red" : "dark");
+          var pStatus = caseFile.relationshipTier ? pingStatus(caseFile) : { label: "No ping tier", className: "" };
+          return '<button class="case-card ' + (caseFile.id === state.selectedId ? 'active' : '') + '" data-id="' + escapeHtml(caseFile.id) + '" type="button">'
+            + '<div class="stamp"><strong>' + total + '</strong><span>/25</span></div>'
+            + '<div class="case-meta"><span class="pill ' + statusClass + '">' + escapeHtml(caseFile.status || 'Under Investigation') + '</span><span class="pill">' + escapeHtml(caseNumber(caseFile, originalIndex)) + '</span><span class="pill">' + completeness(caseFile) + '% complete</span><span class="pill">' + escapeHtml(caseFile.relationshipTier || 'No tier') + '</span></div>'
+            + '<h3>' + escapeHtml(caseFile.brandName || 'Untitled case') + '</h3>'
+            + '<p>' + escapeHtml([caseFile.founderName, caseFile.niche, caseFile.discoverySource].filter(Boolean).join(' • ') || 'Add founder, niche, and discovery clues') + '</p>'
+            + '<p><strong>Bucket:</strong> ' + escapeHtml(caseFile.contactBucket || 'Uncategorized') + ' · <strong>Ping:</strong> ' + escapeHtml(pStatus.label) + '</p>'
+            + '<p><strong>Finding:</strong> ' + escapeHtml(caseFile.oneFinding || 'No useful finding captured yet.') + '</p>'
+            + '</button>';
+        }).join("");
+      }
+
+      function clue(label, value) {
+        return '<article class="clue"><small>' + escapeHtml(label) + '</small><p>' + escapeHtml(value || 'No clue captured yet.') + '</p></article>';
+      }
+
+      function renderPreview() {
+        var caseFile = currentCase();
+        if (!caseFile) {
+          document.getElementById("previewTitle").textContent = "No case selected";
+          preview.innerHTML = '<div class="empty full"><strong>Select or save a case.</strong><br>The preview and evidence logs will appear here.</div>';
+          logs.innerHTML = "";
+          return;
+        }
+        var index = state.cases.findIndex(function (item) { return item.id === caseFile.id; });
+        document.getElementById("previewTitle").textContent = (caseFile.brandName || "Untitled case") + " · " + caseNumber(caseFile, index);
+        preview.innerHTML = [
+          clue("What made me stop scrolling", caseFile.scrollStopper),
+          clue("The one finding", caseFile.oneFinding),
+          clue("They say / but the website", [caseFile.theySay, caseFile.websiteContradiction].filter(Boolean).join("\n\n")),
+          clue("Confidence first declined", [caseFile.confidenceDeclinePoint, caseFile.confidenceTrigger].filter(Boolean).join("\n\n")),
+          clue("Trust leaks", (caseFile.trustLeaks || []).join(", ")),
+          clue("Opening angle", [caseFile.subjectIdea, caseFile.openingSentence, caseFile.questionToAsk].filter(Boolean).join("\n\n")),
+          clue("Relationship category", [caseFile.contactBucket, caseFile.relationshipTier, caseFile.relationshipStage, caseFile.preferredChannel].filter(Boolean).join(" · ")),
+          clue("Next give-first ping", [caseFile.nextPingIdea, caseFile.valueCurrency, caseFile.followUpPromise].filter(Boolean).join("\n\n"))
+        ].join("");
+        renderPings();
+        renderLogs(caseFile);
+      }
+
+      function renderLogs(caseFile) {
+        var caseLogs = caseFile.logs || [];
+        if (!caseLogs.length) {
+          logs.innerHTML = '<div class="empty"><strong>No evidence logs yet.</strong><br>Add outreach or conversation history for this case.</div>';
+          return;
+        }
+        logs.innerHTML = caseLogs.slice().sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); }).map(function (log) {
+          return '<article class="log"><div class="log-head"><span>' + escapeHtml(log.channel || 'Channel') + ' • ' + escapeHtml(log.outcome || 'Outcome') + '</span><span>' + escapeHtml(log.date || '') + '</span></div><p>' + escapeHtml(log.message || '') + '</p>' + (log.nextStep ? '<p><strong>Next clue:</strong> ' + escapeHtml(log.nextStep) + '</p>' : '') + '</article>';
+        }).join("");
+      }
+
+      function renderPings() {
+        var pingCases = state.cases
+          .filter(function (caseFile) { return caseFile.relationshipTier; })
+          .map(function (caseFile) { return { caseFile: caseFile, due: computedNextPing(caseFile), status: pingStatus(caseFile) }; })
+          .sort(function (a, b) { return String(a.due).localeCompare(String(b.due)); })
+          .slice(0, 12);
+
+        if (!pingCases.length) {
+          pingList.innerHTML = '<div class="empty"><strong>No ping routine yet.</strong><br>Add a relationship tier inside any case to activate the Never Eat Alone follow-up queue.</div>';
+          return;
+        }
+
+        pingList.innerHTML = pingCases.map(function (item) {
+          var c = item.caseFile;
+          return '<article class="ping-card ' + escapeHtml(item.status.className) + '">'
+            + '<div><small>' + escapeHtml(c.contactBucket || 'Uncategorized') + ' · ' + escapeHtml(c.preferredChannel || 'Any channel') + '</small>'
+            + '<h3 style="margin:6px 0 0;">' + escapeHtml(c.brandName || 'Untitled case') + '</h3>'
+            + '<p><strong>' + escapeHtml(item.status.label) + '</strong> · Next ping: ' + escapeHtml(item.due) + ' · Cadence: every ' + cadenceDays(c) + ' days</p>'
+            + '<p><strong>Give-first idea:</strong> ' + escapeHtml(c.nextPingIdea || c.valueCurrency || 'Add one specific generous touch before reaching out.') + '</p></div>'
+            + '<button class="tier-dot" data-pinged="' + escapeHtml(c.id) + '" type="button">' + escapeHtml(c.relationshipTier || 'Tier') + '</button>'
+            + '</article>';
+        }).join("");
+      }
+
+      function render() {
+        renderStats();
+        renderList();
+        renderPreview();
+        renderPings();
+      }
+
+      function selectCase(id) {
+        state.selectedId = id;
+        setForm(currentCase());
+        persist(true);
+        render();
+      }
+
+      function openNewCase() {
+        state.selectedId = null;
+        setForm(null);
+        document.querySelector('[name="dateOpened"]').value = today();
+        document.querySelector('[name="investigator"]').value = "Segun Falade";
+        render();
+        window.scrollTo({ top: document.querySelector(".toolbar").offsetTop, behavior: "smooth" });
+      }
+
+      function saveCase() {
+        var existing = currentCase();
+        var data = formToCase(existing || newCaseData());
+        if (!data.brandName) {
+          showToast("Add a brand name before saving this case.");
+          return;
+        }
+        if (existing) {
+          var idx = state.cases.findIndex(function (item) { return item.id === existing.id; });
+          state.cases[idx] = data;
+        } else {
+          state.cases.unshift(data);
+          state.selectedId = data.id;
+        }
+        persist(false);
+        setForm(data);
+        render();
+      }
+
+      function downloadBackup() {
+        persist(true);
+        var payload = JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), cases: state.cases }, null, 2);
+        var blob = new Blob([payload], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "jay-investigation-dossier-backup-" + today() + ".json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast("Backup downloaded. Keep it somewhere safe.");
+      }
+
+      function importBackup(file) {
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            var parsed = JSON.parse(String(reader.result || "{}"));
+            var importedCases = Array.isArray(parsed) ? parsed : parsed.cases;
+            if (!Array.isArray(importedCases)) throw new Error("No cases array found");
+            importedCases = importedCases.map(function (item) { return Object.assign(newCaseData(), item, { id: item.id || uid(), logs: item.logs || [] }); });
+            var replace = confirm("Replace current cases with this backup? Click Cancel to merge instead.");
+            if (replace) {
+              state.cases = importedCases;
+            } else {
+              var existingIds = new Set(state.cases.map(function (item) { return item.id; }));
+              importedCases.forEach(function (item) {
+                if (!item.id || existingIds.has(item.id)) item.id = uid();
+                state.cases.push(item);
+              });
+            }
+            state.selectedId = state.cases[0] ? state.cases[0].id : null;
+            persist(false);
+            setForm(currentCase());
+            render();
+            showToast("Backup uploaded successfully.");
+          } catch (error) {
+            showToast("That file could not be imported. Please upload a valid dossier JSON backup.");
+          } finally {
+            importFile.value = "";
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function deleteCurrent() {
+        var caseFile = currentCase();
+        if (!caseFile) return showToast("No saved case is selected.");
+        if (!confirm("Delete this case permanently from browser storage?")) return;
+        state.cases = state.cases.filter(function (item) { return item.id !== caseFile.id; });
+        state.selectedId = state.cases[0] ? state.cases[0].id : null;
+        persist(false);
+        setForm(currentCase());
+        render();
+      }
+
+      function duplicateCurrent() {
+        var caseFile = currentCase();
+        if (!caseFile) return showToast("Save or select a case before duplicating.");
+        var copy = JSON.parse(JSON.stringify(caseFile));
+        copy.id = uid();
+        copy.brandName = (copy.brandName || "Untitled case") + " copy";
+        copy.caseNumber = "";
+        copy.createdAt = new Date().toISOString();
+        copy.updatedAt = new Date().toISOString();
+        state.cases.unshift(copy);
+        state.selectedId = copy.id;
+        persist(false);
+        setForm(copy);
+        render();
+      }
+
+      function addLog() {
+        var caseFile = currentCase();
+        if (!caseFile) return showToast("Save or select a case before adding an evidence log.");
+        var data = new FormData(logForm);
+        var message = String(data.get("message") || "").trim();
+        if (!message) return showToast("Add a message or note before saving the evidence log.");
+        caseFile.logs = caseFile.logs || [];
+        caseFile.logs.push({ id: uid(), channel: String(data.get("channel") || ""), date: String(data.get("date") || today()), outcome: String(data.get("outcome") || ""), message: message, nextStep: String(data.get("nextStep") || "").trim(), createdAt: new Date().toISOString() });
+        caseFile.lastPingDate = String(data.get("date") || today());
+        caseFile.nextPingDate = addDays(caseFile.lastPingDate, cadenceDays(caseFile));
+        caseFile.updatedAt = new Date().toISOString();
+        persist(false);
+        setForm(caseFile);
+        logForm.reset();
+        logForm.querySelector('[name="channel"]').value = "LinkedIn";
+        logForm.querySelector('[name="date"]').value = today();
+        logForm.querySelector('[name="outcome"]').value = "Sent";
+        render();
+      }
+
+      function markPinged(caseId) {
+        var caseFile = state.cases.find(function (item) { return item.id === caseId; });
+        if (!caseFile) return;
+        caseFile.logs = caseFile.logs || [];
+        caseFile.logs.push({ id: uid(), channel: caseFile.preferredChannel || "Ping", date: today(), outcome: "Pinged", message: caseFile.nextPingIdea || "Relationship ping completed.", nextStep: "Next ping scheduled for " + addDays(today(), cadenceDays(caseFile)), createdAt: new Date().toISOString() });
+        caseFile.lastPingDate = today();
+        caseFile.nextPingDate = addDays(today(), cadenceDays(caseFile));
+        caseFile.updatedAt = new Date().toISOString();
+        state.selectedId = caseFile.id;
+        persist(false);
+        setForm(caseFile);
+        render();
+        showToast("Ping logged and next date advanced.");
+      }
+
+      fillRanges();
+      fillChecks();
+      load();
+      state.cases = state.cases.map(function (item) { return Object.assign(newCaseData(), item, { id: item.id || uid(), logs: item.logs || [] }); });
+      if (state.cases.length && !state.selectedId) state.selectedId = state.cases[0].id;
+      setForm(currentCase());
+      document.querySelector('[name="dateOpened"]').value = currentCase() ? currentCase().dateOpened : today();
+      logForm.querySelector('[name="date"]').value = today();
+      render();
+
+      form.addEventListener("submit", function (event) { event.preventDefault(); saveCase(); });
+      logForm.addEventListener("submit", function (event) { event.preventDefault(); addLog(); });
+      caseList.addEventListener("click", function (event) {
+        var card = event.target.closest(".case-card");
+        if (card) selectCase(card.getAttribute("data-id"));
+      });
+      search.addEventListener("input", renderList);
+      statusFilter.addEventListener("change", renderList);
+      tierFilter.addEventListener("change", renderList);
+      pingList.addEventListener("click", function (event) {
+        var button = event.target.closest("[data-pinged]");
+        if (button) markPinged(button.getAttribute("data-pinged"));
+      });
+      document.getElementById("newCaseBtn").addEventListener("click", openNewCase);
+      document.getElementById("saveBtn").addEventListener("click", saveCase);
+      document.getElementById("downloadBtn").addEventListener("click", downloadBackup);
+      document.getElementById("uploadBtn").addEventListener("click", function () { importFile.click(); });
+      importFile.addEventListener("change", function () { if (importFile.files[0]) importBackup(importFile.files[0]); });
+      document.getElementById("deleteBtn").addEventListener("click", deleteCurrent);
+      document.getElementById("duplicateBtn").addEventListener("click", duplicateCurrent);
+      document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
+      window.addEventListener("beforeunload", function () { persist(true); });
+    })();
+  </script>
 </body>
 </html>
-
-```

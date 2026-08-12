@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Story Circle — The Jay Saga Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   STORY CIRCLE — single-file platform
+   Palette: warm ink / parchment / gold. Order above, chaos below.
+   ============================================================ */
+:root{
+  --ink:#0c0a07; --panel:#131009; --panel2:#1a150d; --line:#251f12; --line2:#3b3018;
+  --paper:#ede3cb; --muted:#9a8f75; --faint:#675f4e;
+  --gold:#e4b04a; --gold2:#f3d089; --ember:#c9704a; --teal:#4e8391; --sage:#7a945b; --red:#b4452f;
+  --display:'Fraunces',Georgia,serif; --sans:'Space Grotesk',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--ink)}
+body{background:var(--ink);color:var(--paper);font-family:var(--sans);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5}
+::selection{background:rgba(228,176,74,.28)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#332a18;border-radius:8px;border:2px solid var(--ink)}
+::-webkit-scrollbar-track{background:transparent}
+
+.mono{font-family:var(--mono)}
+.label{font-family:var(--mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--faint)}
+.label--gold{color:var(--gold)}
+.serif-i{font-family:var(--display);font-style:italic}
+
+/* ---------- layout ---------- */
+#app{display:flex;min-height:100vh}
+#sidebar{position:fixed;inset:0 auto 0 0;width:252px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:40;overflow:hidden}
+#brand{display:flex;gap:12px;align-items:center;padding:24px 22px 18px}
+#brand svg{flex:none}
+#brand .t1{font-family:var(--display);font-size:18px;letter-spacing:-.01em}
+#brand .t1 em{color:var(--gold)}
+#brand .t2{font-family:var(--mono);font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--faint);margin-top:4px}
+#nav{flex:1;overflow-y:auto;padding:4px 10px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;color:var(--muted);font-size:13px;font-weight:500;transition:.18s;position:relative;margin-bottom:2px}
+.nav-item:hover{color:var(--paper);background:var(--panel2)}
+.nav-item.active{color:var(--paper);background:var(--panel2)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:2px;height:18px;background:var(--gold);border-radius:2px}
+.nav-item svg{flex:none;opacity:.75}
+.nav-item.active svg{opacity:1;color:var(--gold)}
+.nav-item .chip{margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--faint)}
+.nav-group{font-family:var(--mono);font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--faint);padding:14px 12px 6px}
+#side-foot{border-top:1px solid var(--line);padding:14px}
+#savestate{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:0 2px 10px}
+#savestate .dot{width:6px;height:6px;border-radius:50%;background:var(--sage);box-shadow:0 0 8px var(--sage);transition:.3s}
+#savestate.dirty .dot{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+main{flex:1;margin-left:252px;padding:38px 44px 120px;max-width:1460px;width:calc(100% - 252px)}
+@media(max-width:960px){#sidebar{display:none}main{margin-left:0;padding:20px 16px 90px;width:100%}}
+#topbar{display:none;position:sticky;top:0;z-index:30;background:rgba(12,10,7,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:10px 14px;align-items:center;gap:6px;overflow-x:auto}
+@media(max-width:960px){#topbar{display:flex}}
+#topbar .nav-item{padding:7px 10px;font-size:11.5px;white-space:nowrap}
+
+/* ---------- buttons / pills / fields ---------- */
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:8px 15px;font-size:12px;font-weight:500;letter-spacing:.02em;transition:.18s}
+.btn:hover{border-color:var(--line2);background:var(--panel2);color:var(--paper)}
+.btn--gold{border-color:rgba(228,176,74,.4);background:var(--gold);color:#0c0a07;font-weight:600}
+.btn--gold:hover{background:var(--gold2);color:#0c0a07;box-shadow:0 0 22px rgba(228,176,74,.22)}
+.btn--danger{border-color:rgba(192,112,74,.3);background:rgba(192,112,74,.08);color:var(--ember)}
+.btn--danger:hover{background:rgba(192,112,74,.16);color:var(--paper)}
+.btn--sm{padding:5px 11px;font-size:11px}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.pill--gold{border-color:rgba(228,176,74,.35);background:rgba(228,176,74,.1);color:var(--gold)}
+.pill--ember{border-color:rgba(192,112,74,.35);background:rgba(192,112,74,.1);color:var(--ember)}
+.pill--sage{border-color:rgba(122,148,91,.4);background:rgba(122,148,91,.1);color:#a8bd8a}
+.pill--teal{border-color:rgba(78,131,145,.4);background:rgba(78,131,145,.1);color:#8fb8c4}
+.field{width:100%;background:rgba(12,10,7,.55);border:1px solid var(--line);border-radius:10px;padding:9px 13px;font-size:13px;color:var(--paper);font-family:var(--sans);outline:none;transition:.18s}
+.field::placeholder{color:var(--faint)}
+.field:focus{border-color:rgba(228,176,74,.55);box-shadow:0 0 0 3px rgba(228,176,74,.09)}
+textarea.field{resize:vertical;line-height:1.6}
+select.field{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239a8f75' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+input[type=date].field{color-scheme:dark}
+.fld-label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.fld-label .hint{font-size:10px;color:var(--faint);font-family:var(--mono);letter-spacing:.06em}
+
+/* segmented control */
+.seg{display:inline-flex;border:1px solid var(--line);background:rgba(12,10,7,.6);border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--faint);border-radius:999px;padding:5px 12px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;transition:.15s}
+.seg button:hover{color:var(--muted)}
+.seg button.on{background:var(--panel2);color:var(--paper);box-shadow:inset 0 1px 0 rgba(237,227,203,.06)}
+
+/* toggle switch */
+.tgl{position:relative;width:34px;height:19px;flex:none;display:inline-block}
+.tgl input{position:absolute;opacity:0;inset:0;cursor:pointer;z-index:2;margin:0;width:100%;height:100%}
+.tgl .tk{position:absolute;inset:0;background:var(--panel2);border:1px solid var(--line2);border-radius:999px;transition:.2s;pointer-events:none}
+.tgl .tk::after{content:'';position:absolute;top:2px;left:2px;width:13px;height:13px;background:var(--faint);border-radius:50%;transition:.2s}
+.tgl input:checked+.tk{background:rgba(228,176,74,.25);border-color:var(--gold)}
+.tgl input:checked+.tk::after{left:17px;background:var(--gold)}
+
+/* ---------- cards / sections ---------- */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.card--glow{border-color:rgba(228,176,74,.25);background:linear-gradient(180deg,rgba(228,176,74,.06),transparent 55%),var(--panel)}
+.card--teal{border-color:rgba(78,131,145,.3);background:linear-gradient(180deg,rgba(78,131,145,.06),transparent 55%),var(--panel)}
+.sec-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:26px}
+.sec-head h2{font-family:var(--display);font-size:28px;letter-spacing:-.01em;margin-top:10px;line-height:1.15}
+.divider{border:0;border-top:1px solid var(--line);margin:44px 0}
+
+/* ---------- dashboard ---------- */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);padding-bottom:44px;margin-bottom:36px}
+.hero h1{font-family:var(--display);font-size:52px;line-height:1.02;letter-spacing:-.015em;margin-top:14px}
+.hero h1 em{color:var(--gold)}
+.hero .lede{max-width:660px;color:var(--muted);font-size:15px;line-height:1.7;margin-top:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:30px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat .n{font-family:var(--display);font-size:28px;line-height:1.05}
+.stat .l{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-top:7px}
+
+/* heat maps */
+.heat{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.hcell{width:26px;height:26px;border-radius:7px;border:1px solid var(--line2);display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:8px;color:#0c0a07;cursor:pointer;transition:.15s}
+.hcell:hover{transform:scale(1.18)}
+.hcell.empty{background:transparent;border-style:dashed;color:var(--faint)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+/* ---------- episode rows ---------- */
+.ep-row{display:grid;grid-template-columns:60px minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:10px;transition:.18s;cursor:pointer}
+.ep-row:hover{border-color:var(--line2);background:var(--panel2);transform:translateY(-1px)}
+.ep-row .num{font-family:var(--display);font-size:26px;color:var(--faint)}
+.ep-row h3{font-family:var(--display);font-size:18px;font-weight:500;letter-spacing:-.01em}
+.ep-row .hooksnippet{font-family:var(--display);font-style:italic;font-size:12.5px;color:var(--faint);margin-top:4px}
+.ep-row .sub{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+@media(max-width:700px){.ep-row{grid-template-columns:44px minmax(0,1fr)}.ep-row>:last-child{display:none}}
+
+.ring{--p:0;width:40px;height:40px;border-radius:50%;background:conic-gradient(var(--gold) calc(var(--p)*1%),#2b2416 0);display:flex;align-items:center;justify-content:center;flex:none}
+.ring>div{width:31px;height:31px;border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:8.5px;color:var(--muted)}
+
+.bar{height:6px;background:#241e11;border-radius:99px;overflow:hidden}
+.bar>div{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;transition:width .4s ease}
+
+/* ---------- beat cards (the flow) ---------- */
+.beat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.beat-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;position:relative;transition:.2s;scroll-margin:90px}
+.beat-card.filled{border-left:3px solid var(--bc,#e4b04a)}
+.beat-card:focus-within{border-color:var(--bc,#e4b04a)}
+.beat-card .bn{font-family:var(--mono);font-size:28px;font-weight:500;color:var(--bc,#e4b04a);line-height:1}
+.beat-card .bk{font-family:var(--display);font-style:italic;font-size:21px;letter-spacing:-.01em}
+.beat-card .bq{font-size:11.5px;color:var(--muted);font-style:italic;font-family:var(--display);margin-top:2px}
+.beat-card textarea{margin-top:12px;min-height:92px}
+.beat-card .wc{font-family:var(--mono);font-size:9px;color:var(--faint);margin-top:6px;letter-spacing:.1em}
+
+/* wheel */
+.wheel-wrap{max-width:720px;margin:0 auto;position:relative}
+.tooltip{position:fixed;z-index:80;background:#201a10;border:1px solid var(--line2);border-radius:10px;padding:10px 13px;max-width:280px;font-size:11.5px;color:var(--muted);pointer-events:none;box-shadow:0 14px 40px rgba(0,0,0,.55);display:none;line-height:1.5}
+.tooltip .tt-k{font-family:var(--mono);font-size:8.5px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;display:block;margin-bottom:4px}
+
+/* mapping rows */
+.map-row{display:grid;grid-template-columns:104px minmax(0,1fr);gap:14px;align-items:start;padding:11px 0;border-bottom:1px solid var(--line)}
+.map-row:last-child{border-bottom:0}
+.mchip{display:inline-flex;align-items:center;gap:6px;border:1px dashed var(--line2);background:transparent;color:var(--muted);border-radius:999px;padding:4px 11px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;margin:3px;transition:.15s}
+.mchip:hover{border-color:var(--gold);color:var(--paper)}
+.mchip.on{border-style:solid;border-color:var(--bc,#e4b04a);background:var(--panel2);color:var(--paper)}
+
+/* checklist */
+.check{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.check:last-child{border-bottom:0}
+.check .box{width:19px;height:19px;flex:none;margin-top:1px;border:1.5px solid var(--line2);border-radius:6px;display:flex;align-items:center;justify-content:center;transition:.15s;color:transparent}
+.check.on .box{background:var(--teal);border-color:var(--teal);color:#0c0a07}
+.check .ct{font-size:12.5px;font-weight:500;color:var(--muted)}
+.check.on .ct{color:var(--paper)}
+.check .cd{font-size:11px;color:var(--faint);margin-top:2px;line-height:1.45}
+.auto-badge{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);border:1px solid rgba(78,131,145,.4);padding:1px 6px;border-radius:99px;margin-left:6px;vertical-align:1px;white-space:nowrap}
+
+/* notebook card */
+.notebook{position:relative;background:linear-gradient(160deg,rgba(228,176,74,.09),rgba(228,176,74,.02));border:1px solid rgba(228,176,74,.3);border-radius:14px;padding:18px 18px 12px;margin-top:10px}
+.notebook::before{content:'JAY’S NOTEBOOK';position:absolute;top:-8px;left:16px;background:var(--ink);padding:0 8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;color:var(--gold)}
+.notebook textarea{border:0;background:transparent;box-shadow:none;padding:6px 2px;font-family:var(--display);font-style:italic;font-size:16px;line-height:1.55}
+.notebook textarea:focus{box-shadow:none;border:0}
+
+/* character cards */
+.char-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.char-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:.2s}
+.char-card:hover{transform:translateY(-2px);border-color:var(--line2)}
+.char-head{display:flex;gap:13px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line);background:var(--panel2)}
+.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:600;color:#0c0a07;flex:none}
+.char-body{padding:16px 18px;display:grid;gap:11px}
+.appears{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.apchip{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 8px}
+
+/* library */
+.lib-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;transition:.2s}
+.lib-card:hover{border-color:var(--line2);transform:translateY(-2px)}
+.lib-card .tk2{font-family:var(--display);font-style:italic;font-size:16.5px;line-height:1.5;color:var(--paper)}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;margin-top:20px}
+.cats{display:flex;flex-wrap:wrap;gap:7px}
+.catchip{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:5px 13px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;transition:.15s}
+.catchip:hover{color:var(--paper)}
+.catchip.on{border-color:var(--gold);background:rgba(228,176,74,.12);color:var(--gold)}
+
+/* filter bar */
+.fbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:20px}
+.fbar .field{width:auto}
+.search{background:rgba(12,10,7,.55);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:12.5px;color:var(--paper);font-family:var(--sans);outline:none;width:230px}
+.search:focus{border-color:rgba(228,176,74,.55)}
+.search::placeholder{color:var(--faint)}
+
+/* method table */
+.mtable{width:100%;border-collapse:collapse;margin-top:6px;min-width:640px}
+.mtable th{font-family:var(--mono);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line2)}
+.mtable td{padding:13px 12px;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--muted);vertical-align:top;line-height:1.55}
+.mtable td.k{font-family:var(--display);font-style:italic;font-size:16px;white-space:nowrap}
+.mtable tr:hover td{background:rgba(26,21,13,.5)}
+
+/* toast */
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:#221b0f;border:1px solid var(--line2);color:var(--paper);padding:11px 20px;border-radius:999px;font-size:12.5px;opacity:0;transition:.3s;z-index:90;pointer-events:none;box-shadow:0 18px 50px rgba(0,0,0,.5);white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* modal */
+#modal{position:fixed;inset:0;background:rgba(12,10,7,.82);backdrop-filter:blur(4px);z-index:70;display:none;align-items:center;justify-content:center;padding:20px}
+#modal.show{display:flex}
+#modal .mbox{background:var(--panel);border:1px solid var(--line2);border-radius:16px;padding:26px;max-width:430px;width:100%;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+#modal h3{font-family:var(--display);font-size:21px;margin-bottom:10px}
+#modal p{color:var(--muted);font-size:13px;line-height:1.6;word-break:break-word}
+#modal .mrow{display:flex;justify-content:flex-end;gap:9px;margin-top:22px}
+
+.crumb{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);transition:.15s;margin-bottom:18px}
+.crumb:hover{color:var(--gold)}
+.title-input{width:100%;background:transparent;border:0;outline:none;color:var(--paper);font-family:var(--display);font-size:38px;letter-spacing:-.015em;line-height:1.1;padding:0}
+.title-input::placeholder{color:rgba(103,95,78,.6)}
+@media(max-width:700px){.title-input{font-size:28px}.hero h1{font-size:36px}}
+.ep-nav{display:inline-flex;gap:2px;border:1px solid var(--line);border-radius:999px;padding:3px}
+.ep-nav button{background:transparent;border:0;color:var(--faint);border-radius:999px;padding:5px 13px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em}
+.ep-nav button:hover{color:var(--paper);background:var(--panel2)}
+.grain{position:fixed;inset:0;z-index:65;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div id="brand">
+      <svg width="32" height="32" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="17.5" stroke="#E4B04A" stroke-opacity=".35" stroke-width="1.5"/><circle cx="20" cy="2.5" r="2.4" fill="#E9C668"/><circle cx="32.4" cy="7.6" r="1.6" fill="#E3A24C"/><circle cx="37.5" cy="20" r="2.4" fill="#D7833F"/><circle cx="32.4" cy="32.4" r="1.6" fill="#C1604D"/><circle cx="20" cy="37.5" r="2.4" fill="#9A4C60"/><circle cx="7.6" cy="32.4" r="1.6" fill="#5E5480"/><circle cx="2.5" cy="20" r="2.4" fill="#3F6E78"/><circle cx="7.6" cy="7.6" r="1.6" fill="#7A945B"/><circle cx="20" cy="20" r="3.2" fill="#EDE3CB"/><line x1="2.5" y1="20" x2="37.5" y2="20" stroke="#EDE3CB" stroke-opacity=".22" stroke-dasharray="2 3"/></svg>
+      <div>
+        <div class="t1">Story <em>Circle</em></div>
+        <div class="t2">The Jay Saga</div>
+      </div>
+    </div>
+    <nav id="nav"></nav>
+    <div id="side-foot">
+      <div id="savestate"><span class="dot"></span><span id="savetext">autosaved locally</span></div>
+      <div style="display:grid;gap:7px">
+        <button class="btn" data-action="export" style="justify-content:center">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          Download progress (.json)
+        </button>
+        <button class="btn" data-action="import" style="justify-content:center">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+          Upload progress (.json)
+        </button>
+        <button class="btn btn--sm" data-action="reset" style="justify-content:center;color:var(--faint)">Reset to demo story</button>
+      </div>
+    </div>
+  </aside>
+
+  <div id="topbar"></div>
+  <main id="view"></main>
+</div>
+
+<div class="tooltip" id="tip"></div>
+<div id="toast"></div>
+<div id="modal"><div class="mbox" id="mbox"></div></div>
+<input type="file" id="importFile" accept="application/json,.json" style="display:none" />
+<div class="grain"></div>
+
+<script>
+/* ================================================================
+   STORY CIRCLE — THE JAY SAGA PLATFORM
+   Single-file app. State -> localStorage. Export/import via JSON.
+   ================================================================ */
+'use strict';
+
+/* ---------------- constants ---------------- */
+
+const BEATS = [
+  { key:'COMFORT', q:'Where does the character start?',  color:'#E9C668', generic:'A character in a zone of comfort / established equilibrium', jay:'Jay in a moment — often a false equilibrium. He’s “fine.”' },
+  { key:'DESIRE',  q:'What do they want?',               color:'#E3A24C', generic:'But they want something — a want surfaces',                 jay:'The want surfaces — restlessness, curiosity, a pull toward something.' },
+  { key:'ENTER',   q:'Where do they go to get it?',      color:'#D7833F', generic:'They enter an unfamiliar situation / pursue the want',    jay:'He encounters the offer — a page, a call, an app, a room.' },
+  { key:'ADAPT',   q:'How do they handle it?',           color:'#C1604D', generic:'They adapt to it — struggle, test, encounter resistance', jay:'He tests it. The guard flares. Pressure mounts. The Two-Jay war begins.' },
+  { key:'GET',     q:'Do they get what they wanted?',    color:'#9A4C60', generic:'They get what they wanted (or a version of it)',          jay:'A truth, a proof point, a moment of clarity. The takeaway lives here — 5 & 6.' },
+  { key:'PAY',     q:'What does it cost?',               color:'#5E5480', generic:'They pay a heavy price for it',                           jay:'The emotional cost — invisible, naive, exposed. Make the reader FEEL why it matters.' },
+  { key:'RETURN',  q:'Where do they end up?',            color:'#3F6E78', generic:'They return to their familiar situation — but different', jay:'Back to baseline — but something has shifted and won’t shift back.' },
+  { key:'CHANGE',  q:'How have they changed?',           color:'#7A945B', generic:'They have changed — internally, permanently',             jay:'Subtle in early seasons. A crack, not a transformation. The cracks compound.' },
+];
+
+const STATUSES  = ['idea','outlined','drafted','published'];
+const STATUS_COLOR = { idea:'#675f4e', outlined:'#4e8391', drafted:'#e4b04a', published:'#7a945b' };
+const ENCOUNTERS = ['coaching page','financial advisor call','health site','fintech app','course checkout','webinar','conversation','email sequence','social post','search spiral','memory / flashback','other'];
+const WOUNDS    = ['Marcus','Module 7','Both','Neither'];
+const PRESSURES = ['None','Light','Pressed','Torn open'];
+const PRESSURE_COLOR = { 'None':'#2b2416', 'Light':'#4e8391', 'Pressed':'#c9704a', 'Torn open':'#b4452f' };
+const PRESSURE_TEXT  = { 'Light':'#8fb8c4', 'Pressed':'#e0a584', 'Torn open':'#e2876f' };
+const CHANGES   = ['None','Crack','Shift','Breakthrough'];
+const CHANGE_COLOR = { 'None':'#675f4e', 'Crack':'#e9c668', 'Shift':'#c9704a', 'Breakthrough':'#7a945b' };
+const RELFNS    = ['introduce','deepen','strain','heal','mirror'];
+const CATEGORIES= ['Trust','Proof','Tone','Friction','Psychology','Objection','AI','Sequence'];
+const PITCHV    = ['None','A','B','C'];
+const CHAR_KEYS = ['Maya','Danny','Marcus','Priya','Dad','Seller','Solo'];
+
+const CHECKS = [
+  { k:'c_takeaway', t:'Complete takeaway for a first-time reader', d:'No prior context needed — the principle lands on its own.' },
+  { k:'c_open',     t:'Opens on a charged moment', d:'Not exposition. Drop into the charge.' },
+  { k:'c_beats',    t:'All 8 story-circle beats present', d:'Comfort through change — nothing skipped, nothing fused.' },
+  { k:'c_line',     t:'Takeaway delivered in ONE line through the turn', d:'Not a lecture. The turn carries it.' },
+  { k:'c_button',   t:'Ends on an emotional button', d:'The ending lands without backstory.' },
+  { k:'c_notebook', t:'Jay’s Notebook line included', d:'The shareable one-liner.' },
+  { k:'c_specific', t:'Passes the “couldn’t be sent to anyone else” test', d:'Specific enough to belong to this reader alone.' },
+];
+
+const LS_KEY = 'storycircle.jay.v1';
+
+/* ---------------- seed data ---------------- */
+
+function blankEpisode(id, number, season, title){
+  return {
+    id:id, number:number, season:season, title:title||'', status:'idea',
+    beats:['','','','','','','',''],
+    encounter:'coaching page', woundPressed:'Neither', pressure:'None', changeLevel:'None',
+    twoJay:false, notebook:'', almost:'',
+    relBeat:'', relChars:[], relFn:'deepen',
+    takeaway:'', category:'Trust', pitch:false, pitchVersion:'None',
+    wordTarget:800, hook:'', tease:'', publishDate:'', perfNotes:'',
+    checks:{ c_takeaway:false, c_open:false, c_beats:false, c_line:false, c_button:false, c_notebook:false, c_specific:false },
+  };
+}
+
+function seedState(){
+  const E = function(id,number,season,title,patch){ const ep = blankEpisode(id,number,season,title); if(patch){ for(const k in patch){ ep[k]=patch[k]; } } return ep; };
+  const CH = function(a,b,c,d,e,f,g){ return {c_takeaway:!!a,c_open:!!b,c_beats:!!c,c_line:!!d,c_button:!!e,c_notebook:!!f,c_specific:!!g}; };
+
+  const episodes = [
+    E(1,1,1,'The Tab He Closed',{
+      status:'published',
+      beats:[
+        'Jay got the promotion. He’s “fine.” New title in the email signature, same chair, same second-monitor glow. Maya made the good pasta. He said “this is great” twice, with the fork down, in the voice people use when they mean: notice that I’m noticing.',
+        'The promotion felt hollow by 6:40. The congratulation bubbles were already drying on the phone screen. He opens the laptop “just to look at what’s out there.” Night-Jay doesn’t look at jobs. He looks at cures.',
+        'He lands on a coaching sales page. Black background, one face, one promise: “$6,000. Twelve weeks. Become undeniable.” The cursor moves before he decides to move it. He is in the funnel now, reading like a man casing a house he used to live in.',
+        'He reads the testimonials the way you scan a crowd for your own face. “Sarah 10x’d her pipeline.” “Tom retired his wife.” The guard flares: these people are not you. And deeper, quieter: Module 7 whispers from 2019 — Marcus’s voice saying lean in, this is where it happens.',
+        'He can’t find himself in a single before-and-after. Not one testimonial starts “I was fine, and that was the problem.” The page is optimized for the impressible. That’s the discovery that keeps: he did everything right, and the everything-right made him invisible — to marketers, to mentors, and lately, to himself.',
+        'He closes the tab. It was never the $6,000. It’s the specific tiredness of wanting something and not reaching for it. The arm untouched, the water undisturbed, the swimmer praised for his discipline at the edge of the pool.',
+        'Back on Google. New search: “do I need a coach or just discipline.” New keyword, same hunger. He tells himself this is research. The search continues, dressed as diligence, filed under tomorrow.',
+        'He keeps searching — but now he knows what he’s looking for. Not a coach. A page that can see him. The armor keeps its shine; nobody at work will notice anything. But underneath, one hairline crack, ticking like a cooling engine.',
+      ],
+      encounter:'coaching page', woundPressed:'Module 7', pressure:'Pressed', changeLevel:'Crack', twoJay:true,
+      notebook:'You’ve never been sold to. You’ve only ever been seen — or not.',
+      almost:'11:47 p.m. — the cursor hovers over “Book a call” for four full seconds, then travels home to the little X like it has done this before. Because it has.',
+      relBeat:'Maya asks from the kitchen if he’s coming to bed. He says “in a minute” in the voice that means an hour. She doesn’t wait to learn the difference tonight.',
+      relChars:['Maya'], relFn:'strain',
+      takeaway:'Testimonials don’t persuade by proof — they persuade by reflection. If your reader can’t find his own face in your before-and-afters, your proof was built for someone else.',
+      category:'Proof', pitch:true, pitchVersion:'A', wordTarget:800,
+      hook:'Jay got the promotion he spent two years wanting. It took him four hours to feel nothing.',
+      tease:'Next: a financial advisor asks Jay one question he can’t answer with a spreadsheet.',
+      publishDate:'2025-01-06', perfNotes:'',
+      checks:CH(1,1,1,1,1,1,1),
+    }),
+    E(2,2,1,'The Number Out Loud',{
+      status:'drafted',
+      beats:[
+        '6:15 a.m. Morning-Jay updates the budget sheet in the blue glow, coffee exactly where the mouse pad leaves room for it. Numbers behave. Numbers have never once asked him how he feels. This is the good part of the day, and it has not yet begun.',
+        'The “complimentary portfolio review” email has been in the inbox nine days. He has read it four times. Free is a want Jay can permit himself — a want with plausible deniability built in.',
+        'He books the call. Twenty minutes, camera off on his side, his first name misspelled in the invite. The advisor is warm, patient, maybe forty, with the calm of someone who has heard every flavor of almost.',
+        'She asks about goals; he answers in allocations. She asks what the money is for; he says “flexibility” and hears how smooth it sounds, oiled by years of saying it. She doesn’t argue. She just lets the word sit there on the table between them, cooling.',
+        '“What does flexibility cost, Jay?” The discovery lands sideways: he cannot say the number out loud. The real one — the quit-by-45 number, the leap fund. Saying it would make hope quantifiable, and therefore falsifiable. He has never once said it into a microphone.',
+        'The call ends kindly. “Take your time.” He hangs up and sits in the rectangle of light the window allows. The spreadsheet was never a plan. It was a hiding place with formulas — the most respectable panic room ever invented.',
+        '6:15 the next morning, the sheet reopens like nothing happened — that is the liturgy. But today a new column appears, far right, headerless. He doesn’t name it. Naming it would be doing the thing he is not doing.',
+        'He declines the follow-up with a courteous lie about Q1 being busy. But the calendar reminder — “advisor follow-up (optional)” — he does not delete. It sits there, weekly, recurring: a door he pays no rent on and refuses to board up.',
+      ],
+      encounter:'financial advisor call', woundPressed:'Neither', pressure:'Light', changeLevel:'Crack', twoJay:true,
+      notebook:'A budget is a confession you get to redact.',
+      almost:'“This call is recorded for quality purposes” — and he catches himself thinking: good. Then, worse: which one of me wanted it recorded — the one hoping to hear it back, or the one betting I never will?',
+      relBeat:'No one else in the room. That is precisely the point of the room.',
+      relChars:['Solo'], relFn:'mirror',
+      takeaway:'People don’t hide from your price. They hide from what saying yes would mean about them. Sell the meaning of yes before the number — a number is only scary when it’s lonely.',
+      category:'Psychology', pitch:false, pitchVersion:'None', wordTarget:800,
+      hook:'The spreadsheet balances. Jay does not.',
+      tease:'Next: 3 a.m., a two-day-old symptom, and the worst website on the internet.',
+      checks:CH(1,1,1,1,1,1,0),
+    }),
+    E(3,3,1,'3:07 A.M.',{
+      status:'outlined',
+      beats:[
+        '3:07 a.m. Night-Jay owns the house. First floor, fridge hum, the brave hour — when questions are allowed because no one is awake to hear them asked.',
+        'A tightness behind the ribs — two days old, manageable, deniable — finally wins the argument. What he wants is small and enormous: to be told he’s fine by something that cannot be fooled.',
+        'He searches. The health site loads like a slot machine: forty-one symptoms, six autoplay videos, a carousel of stock-photo worry, and a cookie banner covering the exact word he needs.',
+        'He clicks through. Every path terminates at the same modal: “Start your free 7-day reset.” The guard doesn’t even flare — it laughs. Nobody on this site is talking to a person. A funnel is talking to a metric that resembles one.',
+        'Between pop-up three and the exit-intent discount, he finds it: a plain page, no buttons, written by a night-shift nurse in a comment thread. “Here’s when to worry. Here’s when to sleep.” He reads it twice. His shoulders drop for the first time in two days. It was trustworthy because it was free of wanting.',
+        'What it costs him to notice: he trusted the nurse instantly precisely because she wanted nothing. The inversion lands like a fist — everyone who has ever wanted something from him got filed under noise. Including, maybe, the ones who were trying to help. Module 7 flashes: how much did he pay to learn to distrust the paid?',
+        'He closes the laptop with the guilty gentleness of a man caught being honest. The “reset” email arrives at 3:31. He renames the sender NOBODY in his head and silences the phone. Unread — not deleted. Even his contempt keeps receipts.',
+        'Morning-Jay deletes it without pulse. But Night-Jay’s question stays pinned behind the sternum, next to the tightness that turned out to be nothing: who in his life is trying to help while dressed like a funnel — and how would he ever know?',
+      ],
+      encounter:'health site', woundPressed:'Both', pressure:'Light', changeLevel:'Crack', twoJay:true,
+      notebook:'Trust is what’s left when nothing is for sale.',
+      almost:'3:31 a.m. — the email lands on the nightstand: “Jay, your body is waiting.” In the dark, the phone lights his face from below like a campfire story.',
+      relBeat:'Maya sleeps through all of it. He doesn’t wake her. That, too, is a pattern with a name he’s saving for later.',
+      relChars:['Solo'], relFn:'mirror',
+      takeaway:'Every pop-up is a tax on trust — and your reader will only pay it once. After that, the only thing they believe is the page that stopped asking.',
+      category:'Friction', pitch:false, pitchVersion:'None', wordTarget:800,
+      hook:'The fridge hums. Google glows. Jay types with one hand pressed flat over his ribs.',
+      tease:'Next: Danny says something at a barbecue that Jay will spend three weeks not thinking about.',
+      checks:CH(1,1,1,1,1,1,0),
+    }),
+    E(4,4,1,'The Barbecue',{status:'outlined',hook:'Danny flips a burger and casually dismantles a decade.',encounter:'conversation',woundPressed:'Neither',relChars:['Danny','Maya'],relFn:'mirror',category:'Tone',tease:'Next: Jay runs the numbers on “good enough” and the numbers fight back.',checks:CH(0,1,0,0,0,0,0)}),
+    E(5,5,1,'Good Enough',{status:'idea',hook:'Two promotions in three years. On paper, this is the dream. The paper is the problem.',encounter:'search spiral',relChars:['Solo'],relFn:'deepen',category:'Psychology'}),
+    E(6,6,1,'The Demo',{status:'idea',hook:'The app promises to make his money feel like a game. Jay has never once felt like playing.',encounter:'fintech app',relChars:['Solo'],relFn:'mirror',category:'Friction'}),
+    E(7,7,1,'The Cart',{status:'idea',hook:'$247 in the cart, thumb hovering — the exact four centimeters between the man and the risk.',encounter:'course checkout',woundPressed:'Module 7',relChars:['Solo'],relFn:'strain',category:'Objection'}),
+    E(8,8,1,'Module 7 (The Tape)',{status:'outlined',hook:'2019. A hotel ballroom in Phoenix. Marcus walks to the mic stand and finds the switch in his voice.',encounter:'memory / flashback',woundPressed:'Both',pressure:'Light',relChars:['Seller'],relFn:'introduce',category:'Tone',tease:'Next: Maya stops waiting in the other room.',checks:CH(0,1,0,0,0,0,0)}),
+    E(9,9,1,'Maya Leaves the Space',{status:'idea',hook:'She doesn’t argue anymore. She just checks if he’s coming to bed, and then she goes.',encounter:'conversation',relChars:['Maya'],relFn:'strain',category:'Trust'}),
+    E(10,10,1,'The Waitlist',{status:'idea',hook:'The season ends where the first episode ended: a tab, open. But this time, a confirmation.',encounter:'email sequence',woundPressed:'Both',relChars:['Solo','Maya'],relFn:'heal',category:'Sequence',tease:'Season 2: the email from 2019 resurfaces — and this time it has his name on it.'}),
+    E(11,11,2,'The Email From 2019',{status:'idea',encounter:'email sequence',relChars:['Seller'],relFn:'introduce',woundPressed:'Both'}),
+    E(12,12,2,'Marcus, Unmuted',{status:'idea',encounter:'memory / flashback',relChars:['Solo'],woundPressed:'Marcus'}),
+    E(13,13,2,'The Authentic Voice',{status:'idea',relChars:['Danny'],relFn:'mirror'}),
+    E(14,14,2,'Two Seats From the Front',{status:'idea',relChars:['Priya'],relFn:'introduce'}),
+    E(15,15,2,'The Breakout Room',{status:'idea',relChars:['Priya','Solo'],relFn:'deepen'}),
+    E(16,16,2,'What He Paid For',{status:'idea',relChars:['Solo'],relFn:'mirror',woundPressed:'Module 7'}),
+    E(17,17,2,'The Reckoning Call',{status:'idea',relChars:['Solo'],relFn:'strain',woundPressed:'Marcus'}),
+    E(18,18,2,'Priya Replies',{status:'idea',relChars:['Priya'],relFn:'heal'}),
+    E(19,19,2,'The Old Funnel',{status:'idea',relChars:['Seller'],relFn:'mirror'}),
+    E(20,20,2,'The Bonfire',{status:'idea',relChars:['Maya','Danny'],relFn:'heal',tease:'Season 3: the leap.'}),
+    E(21,21,3,'The Leap Fund',{status:'idea',relChars:['Maya'],relFn:'deepen'}),
+    E(22,22,3,'The Proposal',{status:'idea',relChars:['Solo']}),
+    E(23,23,3,'Dad’s Garage',{status:'idea',relChars:['Dad'],relFn:'introduce'}),
+    E(24,24,3,'The Almost Customer',{status:'idea',relChars:['Solo'],relFn:'mirror'}),
+    E(25,25,3,'Testimonials',{status:'idea',relChars:['Danny'],relFn:'mirror'}),
+    E(26,26,3,'The Draft He Sends',{status:'idea',relChars:['Priya'],relFn:'deepen'}),
+    E(27,27,3,'Maya Comes Back to the Room',{status:'idea',relChars:['Maya'],relFn:'heal'}),
+    E(28,28,3,'Module 8',{status:'idea',relChars:['Seller'],relFn:'mirror',woundPressed:'Marcus'}),
+    E(29,29,3,'The Price of Wanting',{status:'idea',relChars:['Dad'],relFn:'mirror'}),
+    E(30,30,3,'Something Worth Buying',{status:'idea',relChars:['Maya','Danny','Priya'],relFn:'heal'}),
+  ];
+
+  return {
+    meta:{ savedAt:Date.now(), lastOpen:1 },
+    saga:{
+      title:'The Almost Customer',
+      lie:'“Hoping = getting hurt.”',
+      tested:'Season 1 — every offer is audited as a threat. The lie passes for wisdom; comfort is reframed as control.',
+      broken:'Season 2 — Module 7 resurfaces. The lie can’t survive being remembered out loud, in a real voice, to a real person.',
+      transformed:'Season 3 — Jay buys a future, then builds the page he wishes he’d found. The lie becomes the thing he sells against — as the seller.',
+      beats:[
+        { text:'Fine as a fortress — the promotion, the spreadsheet, the armor polished to a mirror finish.', seasons:[1] },
+        { text:'The hollow feeling finally gets a name: help. Wanting it feels like a diagnosis.', seasons:[1] },
+        { text:'Into the marketplace of promises — every funnel a small mirror, every page an audition for his trust.', seasons:[1,2] },
+        { text:'Testing trust itself: coaches, calls, apps — and the memory of Module 7 knocking from the basement of the decade.', seasons:[2] },
+        { text:'He finds the lesson buried under the wound: being seen is the product. Everything else is packaging.', seasons:[2] },
+        { text:'The reckoning with Marcus — what the armor cost him, itemized in a voice he can’t un-hear.', seasons:[2,3] },
+        { text:'Back to ordinary life — except now he builds instead of browses.', seasons:[3] },
+        { text:'The almost-customer becomes the seller who refuses to funnel the next Jay. The circle closes one story higher.', seasons:[3] },
+      ],
+    },
+    seasons:[
+      {
+        number:1, title:'The Problem With Good Enough',
+        theme:'The cost of fine — how comfort masquerades as a plan.',
+        movement:'paralysis → admission', question:'Will Jay admit he wants help before the year is out?',
+        woundFocus:'Module 7',
+        marcusRole:'The ghost in every sales page — the authentic voice Jay craves and distrusts in the same breath.',
+        mayaRole:'The mirror at home. She sees the restlessness before he will name it — and pays for the unnamed.',
+        finaleHook:'E10: a waitlist confirmation at 2 a.m. He joined something — but Morning-Jay hasn’t been told.',
+        beatMap:[[1,2],[3],[4],[5,6],[7],[8],[9],[10]],
+      },
+      {
+        number:2, title:'Module 7',
+        theme:'Hope is a subscription he keeps cancelling.',
+        movement:'hope → test → reckoning', question:'Can Jay let himself be helped without being had?',
+        woundFocus:'Both',
+        marcusRole:'Contact, then reckoning. The wound gets a phone number and a Tuesday afternoon.',
+        mayaRole:'She stops leaving the space — and starts naming it. The silence gets a vocabulary.',
+        finaleHook:'E20: Jay finally emails Marcus back. The reply has been in drafts for six years.',
+        beatMap:[[],[],[],[],[],[],[],[]],
+      },
+      {
+        number:3, title:'The Almost Customer',
+        theme:'Becoming someone who can buy a future.',
+        movement:'decision → leap', question:'Will Jay become the buyer — and what does he owe every Jay still hovering over the button?',
+        woundFocus:'Marcus',
+        marcusRole:'The wound becomes the teacher. Then the cautionary tale. Then, possibly, the colleague.',
+        mayaRole:'Partner in the leap — her trust becomes the runway.',
+        finaleHook:'E30: Jay writes the sales page he wished existed in Episode 1. A reader arrives at 11:47 p.m. The circle restarts, one story higher.',
+        beatMap:[[],[],[],[],[],[],[],[]],
+      },
+    ],
+    characters:[
+      { id:1, name:'Jay', role:'Protagonist', color:'#E9C668', fn:'The almost-customer as hero — the skeptic every funnel was built to lose.', arc:'S1: paralysis → admission. S2: hope → test → reckoning. S3: decision → leap.', wound:'The lie: “Hoping = getting hurt” — installed at Module 7, 2019.', wantNeed:'Wants: to want nothing. Needs: to hope out loud, where Maya can hear it.', move:'Closes the tab. Says “I’m just looking.”' },
+      { id:2, name:'Maya', role:'Partner', color:'#3F6E78', fn:'The relationship barometer — what the armor costs at home.', arc:'S1: orbit and patience. S2: naming the space. S3: co-pilot of the leap.', wound:'Being planned around instead of planned with.', wantNeed:'Wants: partnership in the wanting, not just the outcome. Needs: to be let in before the decision is made.', move:'Leaves the space — a silence timed to the exact wrong moment.' },
+      { id:3, name:'Danny', role:'Mirror', color:'#C1604D', fn:'Offhand-truth delivery system. Jay without the armor.', arc:'S1: the barbecue line. S2: joins something without anguish. S3: first believer.', wound:'None visible — which is precisely the mirror’s cruelty.', wantNeed:'Wants: Jay to lighten up. Needs: nothing he’d ever admit.', move:'Says the offhand devastating thing, then immediately changes the subject.' },
+      { id:4, name:'Marcus', role:'The wound', color:'#5E5480', fn:'The coach from 2019. Module 7 personified. The authentic voice as weapon and gift.', arc:'S1: ghost. S2: contact → reckoning. S3: teacher, then cautionary tale.', wound:'He learned that the authentic voice converts — and lost track of where persuasion ends.', wantNeed:'Wants: to have been right. Needs: to hear that he also did harm.', move:'Uses the authentic voice — you can hear the exact second it turns on.' },
+      { id:5, name:'Priya', role:'Hopeful ghost', color:'#9A4C60', fn:'The version of Jay that bought in fully — what hope looks like when it survives.', arc:'S1: a comment thread. S2: the reply. S3: the collaborator.', wound:'Burned once too — and stayed open anyway.', wantNeed:'Wants: people to finish things. Needs: Jay to be her proof that staying open works.', move:'Replies with one line that re-frames the entire thread.' },
+      { id:6, name:'Dad', role:'Deepest mirror', color:'#7A945B', fn:'The origin of the armor — where “hoping = getting hurt” was first installed.', arc:'S1: off-screen weight. S2: one phone call. S3: the garage.', wound:'A business he almost started in 1994. The almost he passed down like a trade.', wantNeed:'Wants: for Jay to want less so he can’t be hurt. Needs: to see the leap happen once before he goes.', move:'Answers questions about the past with stories about the weather.' },
+      { id:7, name:'Seller', role:'Antagonist-adjacent', color:'#D7833F', fn:'Every funnel, pop-up, and follow-up email — the machine Jay audits and out-measures.', arc:'S1: noise. S2: studied. S3: out-built.', wound:'—', wantNeed:'Wants: conversion. Needs: a Jay-shaped hole in every funnel.', move:'The exit-intent discount.' },
+    ],
+    episodes:episodes,
+  };
+}
+
+/* ---------------- state ---------------- */
+
+let S = load();
+const ui = { epSeason:'all', epStatus:'all', epQuery:'', libCat:'all', libQuery:'' };
+let saveTimer = null;
+
+function load(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw){ const d = JSON.parse(raw); if(d && Array.isArray(d.episodes) && Array.isArray(d.seasons)) return normalize(d); }
+  }catch(e){ /* corrupted storage falls through to seed */ }
+  return seedState();
+}
+function normalize(d){
+  const base = seedState();
+  const out = {};
+  for(const k in base) out[k] = (d[k]!==undefined ? d[k] : base[k]);
+  out.saga = Object.assign({}, base.saga, d.saga||{});
+  out.meta = Object.assign({}, base.meta, d.meta||{});
+  out.seasons = (d.seasons||[]).map(function(s,i){
+    const b = base.seasons[i] || {beatMap:[[],[],[],[],[],[],[],[]]};
+    const o = Object.assign({}, b, s);
+    if(!Array.isArray(o.beatMap) || o.beatMap.length!==8) o.beatMap = [[],[],[],[],[],[],[],[]];
+    o.beatMap = o.beatMap.map(function(a){ return Array.isArray(a)?a:[]; });
+    return o;
+  });
+  out.episodes = (d.episodes||[]).map(function(e){
+    const o = Object.assign(blankEpisode(e.id,e.number,e.season,e.title), e);
+    o.checks = Object.assign(blankEpisode(0,0,0,'').checks, (e&&e.checks)||{});
+    if(!Array.isArray(o.beats) || o.beats.length!==8) o.beats = ['','','','','','','',''];
+    if(!Array.isArray(o.relChars)) o.relChars = [];
+    return o;
+  });
+  out.characters = Array.isArray(d.characters) ? d.characters : base.characters;
+  return out;
+}
+function save(){
+  const el = document.getElementById('savestate');
+  const st = document.getElementById('savetext');
+  if(el) el.classList.add('dirty');
+  if(st) st.textContent = 'saving…';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    S.meta.savedAt = Date.now();
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }
+    catch(e){ toast('Could not save locally — storage may be full.'); }
+    if(el) el.classList.remove('dirty');
+    if(st) st.textContent = 'saved locally · ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }, 350);
+}
+
+/* ---------------- helpers ---------------- */
+
+const esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+const words = function(s){ return (String(s||'').trim().match(/\S+/g)||[]).length; };
+const epById = function(id){ return S.episodes.find(function(e){ return e.id===id; }); };
+const epFilled = function(e){ return e.beats.filter(function(b){ return b.trim(); }).length; };
+const epDone = function(e){ return epFilled(e)===8; };
+const epChecks = function(e){ return CHECKS.filter(function(c){ return e.checks[c.k]; }).length; };
+const seasonEps = function(n){ return S.episodes.filter(function(e){ return e.season===n; }).sort(function(a,b){ return a.number-b.number; }); };
+const seasonOf = function(n){ return S.seasons.find(function(s){ return s.number===n; }); };
+const epInSeason = function(e){ return seasonEps(e.season).indexOf(e)+1; };
+const epTag = function(e){ return 'S'+e.season+' · E'+epInSeason(e); };
+function setPath(path, value){
+  const keys = path.split('.');
+  let o = S;
+  for(let i=0;i<keys.length-1;i++) o = o[keys[i]];
+  o[keys[keys.length-1]] = value;
+}
+function getEpFromPath(path){ const p = path.split('.'); return p[0]==='ep' ? epById(Number(p[1])) : null; }
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('show'); }, 2400);
+}
+function confirmModal(title, msg, okLabel){
+  return new Promise(function(res){
+    const m = document.getElementById('modal'), box = document.getElementById('mbox');
+    box.innerHTML = '<h3>'+esc(title)+'</h3><p>'+esc(msg)+'</p>'+
+      '<div class="mrow"><button class="btn" id="mNo">Cancel</button><button class="btn btn--danger" id="mYes">'+esc(okLabel||'Delete')+'</button></div>';
+    m.classList.add('show');
+    document.getElementById('mNo').onclick = function(){ m.classList.remove('show'); res(false); };
+    document.getElementById('mYes').onclick = function(){ m.classList.remove('show'); res(true); };
+    m.onclick = function(e){ if(e.target===m){ m.classList.remove('show'); res(false); } };
+  });
+}
+
+/* ---------------- the story circle wheel (with callout text) ---------------- */
+
+function storyWheel(items, centerHTML, opts){
+  /* items: 8 × {key, color, filled, partial, innerShort, tip, stepto}
+     Canvas 760×760 — ring at center, beat text in callouts around it. */
+  opts = opts||{};
+  const W=760, cx=380, cy=380, R=150, Ri=66, Rb=(R+Ri)/2, GAP=7;
+  const polar = function(r,aDeg){ const a=aDeg*Math.PI/180; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; };
+  const wedge = function(a0,a1){
+    const p0=polar(R,a0), p1=polar(R,a1), p2=polar(Ri,a1), p3=polar(Ri,a0);
+    return 'M'+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' A'+R+' '+R+' 0 0 1 '+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+
+      ' L'+p2[0].toFixed(1)+' '+p2[1].toFixed(1)+' A'+Ri+' '+Ri+' 0 0 0 '+p3[0].toFixed(1)+' '+p3[1].toFixed(1)+' Z';
+  };
+  let out = '<svg viewBox="0 0 '+W+' '+W+'" style="width:100%;height:auto;display:block" role="img" aria-label="Story circle">';
+  out += '<defs><radialGradient id="discG'+ (opts.uid||'') +'" cx="50%" cy="42%" r="72%"><stop offset="0%" stop-color="#1c1710"/><stop offset="100%" stop-color="#0c0a07"/></radialGradient></defs>';
+  out += '<circle cx="'+cx+'" cy="'+cy+'" r="'+(Ri-4)+'" fill="url(#discG'+(opts.uid||'')+')" stroke="#33291a"/>';
+  out += '<line x1="'+(cx-R-8)+'" y1="'+cy+'" x2="'+(cx+R+8)+'" y2="'+cy+'" stroke="#EDE3CB" stroke-opacity=".16" stroke-width="1.4" stroke-dasharray="0.5 7" stroke-linecap="round"/>';
+  out += '<text x="'+(cx-R+2)+'" y="'+(cy-12)+'" fill="#675f4e" font-size="9" letter-spacing="3" font-family="JetBrains Mono,monospace">ORDER</text>';
+  out += '<text x="'+(cx+R-2)+'" y="'+(cy+21)+'" fill="#675f4e" font-size="9" letter-spacing="3" font-family="JetBrains Mono,monospace" text-anchor="end">CHAOS</text>';
+
+  items.forEach(function(it,i){
+    const ca = -90 + i*45;
+    const a0 = ca-22.5+GAP/2, a1 = ca+22.5-GAP/2;
+    const bp = polar(Rb, ca);
+    const fillOp = it.partial ? 0.55 : (it.filled ? 0.92 : 0.15);
+    out += '<g class="wseg" style="cursor:pointer" data-stepto="'+esc(it.stepto||'')+'" data-tip="'+esc(it.tip||'')+'">';
+    out += '<path d="'+wedge(a0,a1)+'" fill="'+it.color+'" fill-opacity="'+fillOp+'" stroke="#0c0a07" stroke-width="1.6"/>';
+    out += '<circle cx="'+bp[0].toFixed(1)+'" cy="'+bp[1].toFixed(1)+'" r="11.5" fill="#0c0a07" fill-opacity=".88" stroke="'+it.color+'" stroke-width="1.2"/>';
+    out += '<text x="'+bp[0]+'" y="'+(bp[1]+0.5)+'" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="600" fill="'+it.color+'" font-family="JetBrains Mono,monospace">'+(i+1)+'</text>';
+    out += '</g>';
+  });
+
+  /* callout text boxes around the ring */
+  items.forEach(function(it,i){
+    const ca = -90 + i*45;
+    const cos = Math.cos(ca*Math.PI/180), sin = Math.sin(ca*Math.PI/180);
+    const ap = polar(196, ca);
+    const bw = 178, bh = 88;
+    let x = cos>0.35 ? ap[0]-2 : (cos<-0.35 ? ap[0]-bw+2 : ap[0]-bw/2);
+    let y = sin>0.35 ? ap[1]-4 : (sin<-0.35 ? ap[1]-bh+4 : ap[1]-bh/2);
+    x = Math.max(2, Math.min(W-bw-2, x));
+    y = Math.max(2, Math.min(W-bh-2, y));
+    const body = it.filled
+      ? '<span style="font-family:\'JetBrains Mono\',monospace;font-size:7.5px;letter-spacing:.22em;font-weight:600;color:'+it.color+'">'+esc(it.key)+'</span><br/><span style="color:rgba(237,227,203,.82)">'+esc(it.innerShort||'')+'</span>'
+      : '<span style="font-family:\'JetBrains Mono\',monospace;font-size:7.5px;letter-spacing:.26em;color:#675f4e">'+esc(it.key)+' — UNWRITTEN</span>';
+    out += '<foreignObject x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw+'" height="'+bh+'">' +
+      '<div xmlns="http://www.w3.org/1999/xhtml" style="width:'+bw+'px;height:'+bh+'px;overflow:hidden;text-align:'+(cos>0.35?'left':(cos<-0.35?'right':'center'))+';font-family:\'Space Grotesk\',sans-serif;font-size:8.5px;line-height:1.4">'+body+'</div></foreignObject>';
+  });
+  out += '</svg>';
+  return '<div class="wheel-wrap" style="position:relative">'+out+
+    '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">'+
+      '<div style="text-align:center;max-width:132px">'+(centerHTML||'')+'</div>'+
+    '</div></div>';
+}
+
+function beatItemsFrom(e){
+  return e.beats.map(function(b,i){
+    const t = b.trim();
+    return {
+      key:BEATS[i].key, color:BEATS[i].color, filled:!!t,
+      innerShort: t.length>112 ? t.slice(0,112)+'…' : t,
+      tip: (i+1)+'. '+BEATS[i].key+' — '+(t ? (t.length>150 ? t.slice(0,150)+'…' : t) : 'unwritten'),
+      stepto:'beat-'+(i+1),
+    };
+  });
+}
+
+/* ---------------- field builders ---------------- */
+
+const F = {
+  text:function(path, label, opts){
+    opts=opts||{};
+    return '<div><div class="fld-label"><span class="label">'+esc(label)+'</span>'+(opts.hint?'<span class="hint">'+esc(opts.hint)+'</span>':'')+'</div>'+
+      '<input class="field" data-field="'+path+'" value="'+esc(opts.val)+'" placeholder="'+esc(opts.ph||'')+'"'+(opts.type?' type="'+opts.type+'"':'')+' /></div>';
+  },
+  area:function(path, label, opts){
+    opts=opts||{};
+    return '<div>'+(label?'<div class="fld-label"><span class="label">'+esc(label)+'</span>'+(opts.hint?'<span class="hint">'+esc(opts.hint)+'</span>':'')+'</div>':'')+
+      '<textarea class="field" rows="'+(opts.rows||3)+'" data-field="'+path+'" placeholder="'+esc(opts.ph||'')+'">'+esc(opts.val)+'</textarea></div>';
+  },
+  select:function(path, label, val, options, hint){
+    const opts = options.map(function(o){ return '<option '+(o===val?'selected':'')+'>'+esc(o)+'</option>'; }).join('');
+    return '<div>'+(label?'<div class="fld-label"><span class="label">'+esc(label)+'</span>'+(hint?'<span class="hint">'+esc(hint)+'</span>':'')+'</div>':'')+
+      '<select class="field" data-field="'+path+'">'+opts+'</select></div>';
+  },
+  toggle:function(path, label, val, hint){
+    return '<div style="display:flex;gap:11px;align-items:flex-start">'+
+      '<label class="tgl"><input type="checkbox" data-field="'+path+'"'+(val?' checked':'')+'/><span class="tk"></span></label>'+
+      '<div><div style="font-size:12.5px;font-weight:500;color:'+(val?'var(--paper)':'var(--muted)')+'">'+esc(label)+'</div>'+(hint?'<div style="font-size:11px;color:var(--faint);margin-top:2px">'+esc(hint)+'</div>':'')+'</div></div>';
+  },
+};
+
+function segControl(action, current, options){
+  return '<div class="seg">'+options.map(function(o){ return '<button data-action="'+action+'" data-val="'+esc(o)+'" class="'+(o===current?'on':'')+'">'+esc(o)+'</button>'; }).join('')+'</div>';
+}
+
+/* ---------------- nav ---------------- */
+
+const NAV = [
+  { hash:'#/', label:'Overview', icon:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/>' },
+  { hash:'#/episodes', label:'Episodes', icon:'<rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="12" width="18" height="4" rx="1"/><rect x="3" y="20" width="12" height="2.5" rx="1"/>' },
+  { hash:'#/saga', label:'Saga Circle', icon:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.5"/>' },
+  { hash:'#/season/1', label:'S1 — Good Enough', group:'SEASON CIRCLES' },
+  { hash:'#/season/2', label:'S2 — Module 7', group:'SEASON CIRCLES' },
+  { hash:'#/season/3', label:'S3 — Almost Customer', group:'SEASON CIRCLES' },
+  { hash:'#/characters', label:'Characters', group:'THE CAST & BANK', icon:'<circle cx="9" cy="8" r="3.4"/><path d="M3.5 20c.7-3.4 2.9-5.4 5.5-5.4s4.8 2 5.5 5.4"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 14.4c2.8.2 4.5 2 5.2 5"/>' },
+  { hash:'#/library', label:'Takeaway Library', group:'THE CAST & BANK', icon:'<path d="M5 4h11l3 3v13H5z"/><path d="M8.5 9.5h7M8.5 13h7M8.5 16.5h4"/>' },
+  { hash:'#/method', label:'The Method', group:'THE CAST & BANK', icon:'<path d="M4 5.5C6 4 9 4 12 5.5c3-1.5 6-1.5 8-.5v13c-2-1-5-1-8 .5-3-1.5-6-1.5-8-.5z"/><path d="M12 5.5v13"/>' },
+];
+function renderNav(){
+  const cur = location.hash || '#/';
+  const groups = {};
+  document.getElementById('nav').innerHTML = NAV.map(function(item){
+    let g='';
+    if(item.group && groups[item.group]===undefined){ groups[item.group]=1; g='<div class="nav-group">'+item.group+'</div>'; }
+    const badge = item.hash==='#/episodes' ? '<span class="chip">'+S.episodes.length+'</span>'
+      : item.hash==='#/library' ? '<span class="chip">'+S.episodes.filter(function(e){return e.takeaway.trim();}).length+'</span>'
+      : (item.hash.indexOf('#/season')===0 ? '<span class="chip">'+Math.round(seasonProgress(Number(item.hash.split('/')[2]))*100)+'%</span>' : '');
+    return g+'<a class="nav-item '+(cur===item.hash?'active':'')+'" href="'+item.hash+'">'+
+      (item.icon?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+item.icon+'</svg>':'')+
+      '<span style="'+(item.hash.indexOf('#/season')===0?'font-size:12px':'')+'">'+esc(item.label)+'</span>'+badge+'</a>';
+  }).join('');
+  document.getElementById('topbar').innerHTML = NAV.map(function(item){
+    return '<a class="nav-item '+(cur===item.hash?'active':'')+'" href="'+item.hash+'">'+esc(item.label.split('—')[0].trim())+'</a>';
+  }).join('');
+}
+function seasonProgress(n){
+  const eps = seasonEps(n);
+  if(!eps.length) return 0;
+  return eps.reduce(function(a,e){ return a+epFilled(e)/8; },0)/eps.length;
+}
+
+/* ================================================================
+   VIEWS
+   ================================================================ */
+
+function viewDashboard(){
+  const totalEps = S.episodes.length;
+  const filledTotal = S.episodes.reduce(function(a,e){ return a+epFilled(e); },0);
+  const pct = totalEps ? Math.round(filledTotal/(totalEps*8)*100) : 0;
+  const takeaways = S.episodes.filter(function(e){ return e.takeaway.trim(); });
+  const byStatus = STATUSES.map(function(s){ return {s:s, n:S.episodes.filter(function(e){ return e.status===s; }).length}; });
+  const avgChecks = totalEps ? (S.episodes.reduce(function(a,e){ return a+epChecks(e); },0)/totalEps).toFixed(1) : '0';
+  const lastOpen = epById(S.meta.lastOpen) || S.episodes[0];
+  const titleWords = (S.saga.title||'The Almost Customer').split(' ');
+
+  const heatMap = function(colorOf){
+    return S.seasons.map(function(se){
+      const eps = seasonEps(se.number);
+      return '<div style="margin-top:14px"><div class="label">S'+se.number+' — '+esc(se.title)+'</div>'+
+        '<div class="heat">'+eps.map(function(e){
+          const c = colorOf(e);
+          return '<a href="#/episode/'+e.id+'" title="'+esc(epTag(e)+' — '+e.title)+'" class="hcell '+(c?'':'empty')+'" style="'+(c?('background:'+c+';border-color:'+c):'')+'">'+epInSeason(e)+'</a>';
+        }).join('')+'</div></div>';
+    }).join('');
+  };
+
+  document.getElementById('view').innerHTML =
+  '<div class="hero">'+
+    '<div class="label">The Jay saga · an ongoing serial · 3 seasons · ~'+totalEps+' episodes</div>'+
+    '<h1>'+esc(titleWords.slice(0,-1).join(' '))+' <em>'+esc(titleWords.slice(-1)[0])+'</em></h1>'+
+    '<p class="lede"><span class="serif-i" style="color:var(--paper)">The lie he lives by: '+esc(S.saga.lie)+'</span><br/>'+
+    'Thirty episodes. Every episode a complete circle — every season a bigger one — each lap of the saga closing one story above where it began. This board keeps the whole machine honest: beats, wounds, relationships, takeaways, and the standalone test every episode must pass.</p>'+
+    '<div class="stats">'+
+      '<div class="stat"><div class="n">'+totalEps+'</div><div class="l">Episodes planned</div></div>'+
+      '<div class="stat"><div class="n">'+pct+'%</div><div class="l">Beats structured</div></div>'+
+      '<div class="stat"><div class="n">'+takeaways.length+'</div><div class="l">Takeaways banked</div></div>'+
+      '<div class="stat"><div class="n">'+avgChecks+'<span style="font-size:14px;color:var(--faint)"> / 7</span></div><div class="l">Avg standalone score</div></div>'+
+      byStatus.map(function(x){ return '<div class="stat"><div class="n" style="color:'+STATUS_COLOR[x.s]+'">'+x.n+'</div><div class="l">'+x.s+'</div></div>'; }).join('')+
+    '</div>'+
+  '</div>'+
+
+  '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:34px">'+
+    (lastOpen?'<a class="btn btn--gold" href="#/episode/'+lastOpen.id+'">Continue: '+esc(epTag(lastOpen))+' — '+esc(lastOpen.title||'Untitled')+' →</a>':'')+
+    '<button class="btn" data-action="add-episode">+ New episode</button>'+
+    '<button class="btn" data-action="export">Download progress</button>'+
+    '<button class="btn" data-action="import">Upload progress</button>'+
+  '</div>'+
+
+  '<div class="divider"></div>'+
+
+  '<div class="sec-head"><div><div class="label">The wound map</div>'+
+    '<h2>Pressure pacing <span class="serif-i" style="color:var(--muted)">across the saga</span></h2></div>'+
+    '<div style="max-width:380px;font-size:12px;color:var(--faint);line-height:1.6">Which wound gets pressed — Marcus, Module 7, both — and how hard. Pace the pain: breakthroughs are expensive, so buy them rarely.</div></div>'+
+  '<div class="card">'+
+    '<div class="label label--gold">Wound pressure — how hard it’s pressed</div>'+
+    heatMap(function(e){ return (e.pressure!=='None' && epFilled(e)>0) ? PRESSURE_COLOR[e.pressure] : null; })+
+    '<div class="legend">'+
+      '<span><span class="swatch" style="background:#2b2416;border:1px dashed var(--line2)"></span> none</span>'+
+      '<span><span class="swatch" style="background:#4e8391"></span> light</span>'+
+      '<span><span class="swatch" style="background:#c9704a"></span> pressed</span>'+
+      '<span><span class="swatch" style="background:#b4452f"></span> torn open</span>'+
+    '</div>'+
+  '</div>'+
+  '<div class="card" style="margin-top:14px">'+
+    '<div class="label label--gold">Jay’s change per episode — the compounding curve</div>'+
+    heatMap(function(e){ return (e.changeLevel!=='None' && epFilled(e)>0) ? CHANGE_COLOR[e.changeLevel] : null; })+
+    '<div class="legend">'+
+      '<span><span class="swatch" style="background:#2b2416;border:1px dashed var(--line2)"></span> none</span>'+
+      '<span><span class="swatch" style="background:#e9c668"></span> crack</span>'+
+      '<span><span class="swatch" style="background:#c9704a"></span> shift</span>'+
+      '<span><span class="swatch" style="background:#7a945b"></span> breakthrough</span>'+
+    '</div>'+
+  '</div>'+
+
+  '<div class="divider"></div>'+
+
+  '<div class="sec-head"><div><div class="label">Three layers, one machine</div>'+
+    '<h2>Episodes → Seasons → <span class="serif-i" style="color:var(--gold)">Saga</span></h2></div></div>'+
+  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">'+
+    S.seasons.map(function(se){
+      const eps=seasonEps(se.number);
+      const doneEps = eps.filter(epDone).length;
+      return '<a class="card" href="#/season/'+se.number+'" style="display:block">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center">'+
+          '<span class="pill pill--gold">Season '+se.number+'</span>'+
+          '<span class="mono" style="font-size:9px;color:var(--faint);letter-spacing:.14em">'+doneEps+'/'+eps.length+' FULL CIRCLES</span>'+
+        '</div>'+
+        '<h3 style="font-family:var(--display);font-size:21px;margin-top:12px">'+esc(se.title)+'</h3>'+
+        '<div class="mono" style="font-size:9px;letter-spacing:.16em;color:var(--ember);text-transform:uppercase;margin-top:6px">'+esc(se.movement)+'</div>'+
+        '<p style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6">'+esc(se.theme)+'</p>'+
+        '<div class="bar" style="margin-top:14px"><div style="width:'+Math.round(seasonProgress(se.number)*100)+'%"></div></div>'+
+      '</a>';
+    }).join('')+
+  '</div>';
+}
+
+/* ---------------- episodes list ---------------- */
+
+function episodesListHTML(){
+  const q = ui.epQuery.toLowerCase();
+  let eps = S.episodes.slice().sort(function(a,b){ return a.number-b.number; });
+  if(ui.epSeason!=='all') eps = eps.filter(function(e){ return e.season===Number(ui.epSeason); });
+  if(ui.epStatus!=='all') eps = eps.filter(function(e){ return e.status===ui.epStatus; });
+  if(q) eps = eps.filter(function(e){ return (e.title+' '+e.hook+' '+e.takeaway+' '+e.notebook).toLowerCase().indexOf(q)>=0; });
+
+  if(!eps.length) return '<div class="card" style="text-align:center;padding:60px 20px;color:var(--faint)">No episodes match the filters.</div>';
+
+  return eps.map(function(e){
+    const filled = epFilled(e);
+    const pctW = Math.round(filled/8*100);
+    return '<div class="ep-row" data-goto="#/episode/'+e.id+'">'+
+      '<div class="num">'+String(e.number).padStart(2,'0')+'</div>'+
+      '<div>'+
+        '<h3>'+esc(e.title||'Untitled Episode')+'</h3>'+
+        '<div class="sub">'+
+          '<span class="pill" style="border-color:'+STATUS_COLOR[e.status]+'55;color:'+STATUS_COLOR[e.status]+'">'+esc(e.status)+'</span>'+
+          '<span class="pill">'+epTag(e)+'</span>'+
+          (e.woundPressed!=='Neither'?'<span class="pill pill--ember">wound: '+esc(e.woundPressed)+'</span>':'')+
+          (e.pressure!=='None'?'<span class="pill" style="border-color:'+PRESSURE_COLOR[e.pressure]+'88;color:'+PRESSURE_TEXT[e.pressure]+'">'+esc(e.pressure.toLowerCase())+'</span>':'')+
+          (e.changeLevel!=='None'?'<span class="pill pill--sage">Δ '+esc(e.changeLevel.toLowerCase())+'</span>':'')+
+          (e.twoJay?'<span class="pill pill--teal">two-jay war</span>':'')+
+          (e.takeaway.trim()?'<span class="pill pill--gold">'+esc(e.category)+'</span>':'')+
+          '<span class="pill">'+epChecks(e)+'/7 standalone</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="ring" style="--p:'+pctW+'"><div>'+filled+'/8</div></div>'+
+    '</div>';
+  }).join('');
+}
+
+function viewEpisodes(){
+  document.getElementById('view').innerHTML =
+  '<div class="sec-head"><div>'+
+    '<div class="label">'+S.episodes.length+' episodes · ~800 words each · one circle apiece</div>'+
+    '<h2>Every episode, <span class="serif-i" style="color:var(--gold)">a complete meal</span></h2></div>'+
+    '<button class="btn btn--gold" data-action="add-episode">+ New episode</button>'+
+  '</div>'+
+  '<div class="fbar">'+
+    '<select class="field" data-ui="epSeason">'+
+      '<option value="all" '+(ui.epSeason==='all'?'selected':'')+'>All seasons</option>'+
+      '<option value="1" '+(String(ui.epSeason)==='1'?'selected':'')+'>Season 1</option>'+
+      '<option value="2" '+(String(ui.epSeason)==='2'?'selected':'')+'>Season 2</option>'+
+      '<option value="3" '+(String(ui.epSeason)==='3'?'selected':'')+'>Season 3</option>'+
+    '</select>'+
+    '<select class="field" data-ui="epStatus">'+
+      '<option value="all" '+(ui.epStatus==='all'?'selected':'')+'>All statuses</option>'+
+      STATUSES.map(function(s){ return '<option '+(ui.epStatus===s?'selected':'')+'>'+s+'</option>'; }).join('')+
+    '</select>'+
+    '<input class="search" id="epSearch" data-ui="epQuery" placeholder="Search title, hook, takeaway…" value="'+esc(ui.epQuery)+'"/>'+
+    '<span class="mono" id="epShown" style="font-size:9.5px;color:var(--faint);letter-spacing:.14em;margin-left:auto"></span>'+
+  '</div>'+
+  '<div id="epResults">'+episodesListHTML()+'</div>';
+  updateEpShown();
+}
+function updateEpShown(){
+  const el = document.getElementById('epShown');
+  if(!el) return;
+  const n = document.querySelectorAll('#epResults .ep-row').length;
+  el.textContent = n + ' SHOWN';
+}
+
+/* ---------------- episode editor ---------------- */
+
+function viewEpisode(id){
+  const e = epById(id);
+  if(!e){ location.hash = '#/episodes'; return; }
+  S.meta.lastOpen = e.id; save();
+
+  const sorted = S.episodes.slice().sort(function(a,b){ return a.number-b.number; });
+  const idx = sorted.indexOf(e);
+  const prev = sorted[idx-1], next = sorted[idx+1];
+  const se = seasonOf(e.season);
+  const filled = epFilled(e);
+  const totalWords = e.beats.reduce(function(a,b){ return a+words(b); },0);
+  const weakSpots = BEATS.filter(function(b,i){ return !e.beats[i].trim(); }).map(function(b){ return b.key; });
+
+  const wheel = storyWheel(beatItemsFrom(e),
+    '<div class="mono" style="font-size:23px;color:var(--paper)">'+filled+'<span style="font-size:12px;color:var(--faint)">/8</span></div>'+
+    '<div class="label" style="margin-top:5px;font-size:8.5px">circle '+(filled===8?'complete':'in progress')+'</div>'+
+    (weakSpots.length
+      ? '<div class="mono" style="font-size:8px;color:var(--ember);letter-spacing:.14em;margin-top:8px">WEAK: '+weakSpots.join(' · ')+'</div>'
+      : '<div class="mono" style="font-size:8px;color:#a8bd8a;letter-spacing:.14em;margin-top:8px">NO WEAK BEATS</div>'),
+    {uid:'e'+e.id});
+
+  document.getElementById('view').innerHTML =
+  '<a class="crumb" href="#/season/'+e.season+'">← Season '+e.season+' — '+esc(se?se.title:'')+'</a>'+
+  '<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:26px">'+
+    '<div style="flex:1;min-width:260px">'+
+      '<div class="label label--gold" style="margin-bottom:8px">EPISODE '+e.number+' — '+epTag(e)+'</div>'+
+      '<input class="title-input" data-field="ep.'+e.id+'.title" value="'+esc(e.title)+'" placeholder="Untitled Episode"/>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end">'+
+      segControl('set-status', e.status, STATUSES)+
+      '<div style="display:flex;gap:8px;align-items:center">'+
+        '<div class="ep-nav">'+
+          (prev?'<button data-action="goto" data-goto="#/episode/'+prev.id+'">← E'+prev.number+'</button>':'')+
+          (next?'<button data-action="goto" data-goto="#/episode/'+next.id+'">E'+next.number+' →</button>':'')+
+        '</div>'+
+        '<button class="btn btn--sm btn--danger" data-action="del-episode" data-id="'+e.id+'">Delete</button>'+
+      '</div>'+
+    '</div>'+
+  '</div>'+
+
+  '<div style="display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:26px;align-items:start" id="epLayout">'+
+    '<div>'+
+      '<div class="card" style="padding:22px 22px 16px;margin-bottom:22px">'+
+        '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">'+
+          '<div class="label">The circle at a glance — the whole arc on one screen</div>'+
+          '<div class="mono" style="font-size:9.5px;color:var(--faint);letter-spacing:.12em">≈ '+totalWords+' / '+e.wordTarget+' words</div>'+
+        '</div>'+
+        '<div id="wheelHost">'+wheel+'</div>'+
+      '</div>'+
+      '<div class="label" style="margin:6px 0 14px">The eight beats — write the turn, not the theme</div>'+
+      '<div class="beat-grid">'+
+        BEATS.map(function(b,i){
+          return '<div class="beat-card '+(e.beats[i].trim()?'filled':'')+'" id="beat-'+(i+1)+'" style="--bc:'+b.color+'">'+
+          '<div style="display:flex;gap:13px;align-items:baseline">'+
+            '<span class="bn">'+(i+1)+'</span>'+
+            '<div><div class="bk">'+b.key+'</div><div class="bq">'+b.q+'</div></div>'+
+          '</div>'+
+          '<div style="font-size:10.5px;color:var(--faint);margin-top:8px;line-height:1.5">'+esc(b.jay)+'</div>'+
+          '<textarea class="field" data-field="ep.'+e.id+'.beats.'+i+'" placeholder="'+esc(b.generic)+'…">'+esc(e.beats[i])+'</textarea>'+
+          '<div class="wc">'+words(e.beats[i])+' words</div>'+
+        '</div>';
+        }).join('')+
+      '</div>'+
+    '</div>'+
+
+    '<div style="display:grid;gap:16px">'+
+      '<div class="card card--teal">'+
+        '<div style="display:flex;justify-content:space-between;align-items:baseline">'+
+          '<div class="label" style="color:var(--teal)">The standalone test</div>'+
+          '<div class="mono" style="font-size:11px;color:var(--paper)">'+epChecks(e)+'/7</div>'+
+        '</div>'+
+        '<div style="font-size:11.5px;color:var(--faint);margin:8px 0 4px;line-height:1.55">A reader who gets <span class="serif-i">only this episode</span> must feel fulfilled — and still want tomorrow’s.</div>'+
+        '<div>'+
+        CHECKS.map(function(c){
+          const auto = c.k==='c_beats' ? (filled===8?'auto ✓':'auto — '+(8-filled)+' missing')
+                     : c.k==='c_notebook' ? (e.notebook.trim()?'auto ✓':'auto — empty')
+                     : c.k==='c_takeaway' ? (e.takeaway.trim()?'auto ✓':'auto — empty') : null;
+          return '<div class="check '+(e.checks[c.k]?'on':'')+'" data-action="toggle-check" data-id="'+e.id+'" data-k="'+c.k+'">'+
+            '<span class="box"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>'+
+            '<span><span class="ct">'+esc(c.t)+(auto?'<span class="auto-badge">'+auto+'</span>':'')+'</span><span class="cd" style="display:block">'+esc(c.d)+'</span></span>'+
+          '</div>';
+        }).join('')+
+        '</div>'+
+      '</div>'+
+
+      '<div class="card">'+
+        '<div class="label label--gold" style="margin-bottom:14px">The Jay file</div>'+
+        '<div style="display:grid;gap:13px">'+
+          F.select('ep.'+e.id+'.encounter','Encounter type',e.encounter,ENCOUNTERS,'the page / call / app this circle orbits')+
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+            F.select('ep.'+e.id+'.woundPressed','Wound pressed',e.woundPressed,WOUNDS)+
+            F.select('ep.'+e.id+'.pressure','Pressure level',e.pressure,PRESSURES)+
+          '</div>'+
+          F.select('ep.'+e.id+'.changeLevel','Jay’s change level',e.changeLevel,CHANGES,'pace the transformation per season')+
+          F.toggle('ep.'+e.id+'.twoJay','Two-Jay war present',e.twoJay,'Night-Jay vs Morning-Jay appears')+
+        '</div>'+
+      '</div>'+
+
+      '<div class="notebook">'+
+        '<textarea class="field" rows="2" data-field="ep.'+e.id+'.notebook" placeholder="The crystallized one-liner…">'+esc(e.notebook)+'</textarea>'+
+      '</div>'+
+
+      '<div class="card">'+
+        '<div class="label label--gold" style="margin-bottom:14px">The almost moment</div>'+
+        F.area('ep.'+e.id+'.almost','',{val:e.almost,rows:3,ph:'The specific timestamp / moment that encapsulates the episode…'})+
+      '</div>'+
+
+      '<div class="card">'+
+        '<div class="label label--gold" style="margin-bottom:14px">Relationships</div>'+
+        '<div style="display:grid;gap:13px">'+
+          F.area('ep.'+e.id+'.relBeat','Relationship beat', {val:e.relBeat,rows:2,ph:'Who, and what happens between them…'})+
+          '<div>'+
+            '<div class="label" style="margin-bottom:8px">Characters present</div>'+
+            '<div>'+CHAR_KEYS.map(function(c){ return '<button class="mchip '+(e.relChars.indexOf(c)>=0?'on':'')+'" data-action="toggle-char" data-id="'+e.id+'" data-val="'+esc(c)+'">'+esc(c)+'</button>'; }).join('')+'</div>'+
+          '</div>'+
+          F.select('ep.'+e.id+'.relFn','Arc function',e.relFn,RELFNS)+
+        '</div>'+
+      '</div>'+
+
+      '<div class="card card--glow">'+
+        '<div class="label label--gold" style="margin-bottom:14px">Marketing value</div>'+
+        '<div style="display:grid;gap:13px">'+
+          F.area('ep.'+e.id+'.takeaway','The takeaway', {val:e.takeaway,rows:3,ph:'The principle the reader learns — gettable with zero context…'})+
+          F.select('ep.'+e.id+'.category','Category',e.category,CATEGORIES)+
+          F.toggle('ep.'+e.id+'.pitch','Soft pitch included',e.pitch,'Trust Gap Breakdown mention')+
+          F.select('ep.'+e.id+'.pitchVersion','Pitch version',e.pitchVersion,PITCHV)+
+        '</div>'+
+      '</div>'+
+
+      '<div class="card">'+
+        '<div class="label" style="margin-bottom:14px">Publishing</div>'+
+        '<div style="display:grid;gap:13px">'+
+          F.text('ep.'+e.id+'.hook','Hook / opening line',{val:e.hook,ph:'The charged first line…'})+
+          F.text('ep.'+e.id+'.tease','Next episode tease',{val:e.tease,ph:'The promise of tomorrow…'})+
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+            F.text('ep.'+e.id+'.wordTarget','Word target',{val:e.wordTarget,type:'number'})+
+            F.text('ep.'+e.id+'.publishDate','Publish date',{val:e.publishDate,type:'date'})+
+          '</div>'+
+          F.area('ep.'+e.id+'.perfNotes','Performance notes', {val:e.perfNotes,rows:2,ph:'Opens, replies, subscribers gained…'})+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+  '</div>'+
+  '<style>@media(max-width:1100px){#epLayout{grid-template-columns:1fr!important}}</style>';
+}
+
+/* ---------------- season view ---------------- */
+
+function viewSeason(n){
+  const se = seasonOf(n);
+  if(!se){ location.hash='#/'; return; }
+  const eps = seasonEps(n);
+  const prog = Math.round(seasonProgress(n)*100);
+
+  const wItems = BEATS.map(function(b,i){
+    const ids = se.beatMap[i]||[];
+    const mapped = ids.map(epById).filter(Boolean);
+    const label = mapped.map(function(m){ return 'E'+epInSeason(m)+(m.title?' '+m.title:''); }).join(' · ');
+    return {
+      key:b.key, color:b.color, filled:mapped.length>0,
+      partial: mapped.length>0 && mapped.every(function(m){ return !epDone(m); }),
+      innerShort: label.length>112 ? label.slice(0,112)+'…' : label,
+      tip:(i+1)+'. '+b.key+' — '+(mapped.length? mapped.map(function(m){ return 'E'+m.number+' '+m.title; }).join(', ') : 'no episode mapped'),
+      stepto:'',
+    };
+  });
+
+  document.getElementById('view').innerHTML =
+  '<a class="crumb" href="#/episodes">← All episodes</a>'+
+  '<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:8px">'+
+    '<div style="flex:1;min-width:280px">'+
+      '<div class="label label--gold" style="margin-bottom:8px">SEASON '+n+' · '+eps.length+' EPISODES · '+prog+'% STRUCTURED</div>'+
+      '<input class="title-input" data-field="seasons.'+(n-1)+'.title" value="'+esc(se.title)+'" placeholder="Untitled Season"/>'+
+    '</div>'+
+    '<div class="ring" style="--p:'+prog+';width:54px;height:54px"><div style="width:43px;height:43px">'+prog+'%</div></div>'+
+  '</div>'+
+
+  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:26px 0 34px">'+
+    '<div class="card">'+F.area('seasons.'+(n-1)+'.theme','Theme',{val:se.theme,rows:2,ph:'What this season is really about…'})+'</div>'+
+    '<div class="card"><div style="display:grid;gap:12px">'+
+      F.text('seasons.'+(n-1)+'.movement','Jay’s movement',{val:se.movement,ph:'paralysis → admission…',hint:'the macro-arc in four words'})+
+      F.select('seasons.'+(n-1)+'.woundFocus','Wound focus',se.woundFocus,WOUNDS.slice(0,3))+
+    '</div></div>'+
+    '<div class="card card--glow">'+F.area('seasons.'+(n-1)+'.question','Central question',{val:se.question,rows:2,ph:'The yes/no question the finale answers…'})+'</div>'+
+    '<div class="card">'+F.area('seasons.'+(n-1)+'.marcusRole','Marcus’s role this season',{val:se.marcusRole,rows:2})+'</div>'+
+    '<div class="card">'+F.area('seasons.'+(n-1)+'.mayaRole','Maya’s role this season',{val:se.mayaRole,rows:2})+'</div>'+
+    '<div class="card card--glow">'+F.area('seasons.'+(n-1)+'.finaleHook','Season finale hook → next season',{val:se.finaleHook,rows:2,ph:'What plants the next season…'})+'</div>'+
+  '</div>'+
+
+  '<div class="sec-head"><div><div class="label">The season circle</div>'+
+    '<h2>Eight season-beats, <span class="serif-i" style="color:var(--gold)">mapped to episodes</span></h2></div>'+
+    '<span class="mono" style="font-size:9.5px;color:var(--faint);letter-spacing:.14em">BEATS 5–6 DETONATE IN THE FINALE STRETCH</span></div>'+
+
+  '<div style="display:grid;grid-template-columns:minmax(0,0.95fr) minmax(0,1.05fr);gap:26px;align-items:start" id="seLayout">'+
+    '<div class="card" style="padding:18px">'+
+      storyWheel(wItems,
+        '<div class="mono" style="font-size:21px;color:var(--paper)">'+se.beatMap.filter(function(m){ return m&&m.length; }).length+'<span style="font-size:11px;color:var(--faint)">/8</span></div>'+
+        '<div class="label" style="margin-top:5px;font-size:8.5px">beats mapped</div>',
+        {uid:'s'+n})+
+    '</div>'+
+    '<div class="card">'+
+      '<div class="label" style="margin-bottom:8px">Assign episodes to season-beats</div>'+
+      BEATS.map(function(b,i){
+        return '<div class="map-row">'+
+        '<div><span class="mono" style="font-size:12px;color:'+b.color+'">'+(i+1)+'</span> <span class="serif-i" style="font-size:15px">'+b.key+'</span></div>'+
+        '<div>'+
+          (eps.map(function(ep){
+            const on = (se.beatMap[i]||[]).indexOf(ep.id)>=0;
+            return '<button class="mchip '+(on?'on':'')+'" style="--bc:'+b.color+'" data-action="map-beat" data-season="'+n+'" data-beat="'+i+'" data-ep="'+ep.id+'">E'+epInSeason(ep)+(ep.title?' · '+esc(ep.title):'')+'</button>';
+          }).join('') || '<span class="mono" style="font-size:9px;color:var(--faint)">NO EPISODES YET</span>')+
+        '</div></div>';
+      }).join('')+
+    '</div>'+
+  '</div>'+
+  '<style>@media(max-width:1100px){#seLayout{grid-template-columns:1fr!important}}</style>'+
+
+  '<div class="divider"></div>'+
+
+  '<div class="sec-head"><div><div class="label">The run of episodes</div>'+
+    '<h2>The episodes <span class="serif-i" style="color:var(--muted)">of season '+n+'</span></h2></div>'+
+    '<button class="btn btn--gold" data-action="add-episode" data-season="'+n+'">+ Add episode</button></div>'+
+  eps.map(function(ep){
+    const filled=epFilled(ep), pctW=Math.round(filled/8*100);
+    return '<div class="ep-row" data-goto="#/episode/'+ep.id+'">'+
+      '<div class="num">'+String(epInSeason(ep)).padStart(2,'0')+'</div>'+
+      '<div>'+
+        '<h3>'+esc(ep.title||'Untitled Episode')+'</h3>'+
+        (ep.hook?'<div class="hooksnippet">“'+esc(ep.hook)+'”</div>':'')+
+        '<div class="sub">'+
+          '<span class="pill" style="border-color:'+STATUS_COLOR[ep.status]+'55;color:'+STATUS_COLOR[ep.status]+'">'+esc(ep.status)+'</span>'+
+          (ep.woundPressed!=='Neither'?'<span class="pill pill--ember">'+esc(ep.woundPressed)+'</span>':'')+
+          (ep.pressure!=='None'?'<span class="pill" style="border-color:'+PRESSURE_COLOR[ep.pressure]+'88;color:'+PRESSURE_TEXT[ep.pressure]+'">'+esc(ep.pressure.toLowerCase())+'</span>':'')+
+          (ep.changeLevel!=='None'?'<span class="pill pill--sage">Δ '+esc(ep.changeLevel.toLowerCase())+'</span>':'')+
+          '<span class="pill">'+epChecks(ep)+'/7</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="ring" style="--p:'+pctW+'"><div>'+filled+'/8</div></div>'+
+    '</div>';
+  }).join('');
+}
+
+/* ---------------- saga view ---------------- */
+
+function viewSaga(){
+  const sa = S.saga;
+  const wItems = BEATS.map(function(b,i){
+    const mapped = sa.beats[i].seasons||[];
+    const t = sa.beats[i].text||'';
+    return {
+      key:b.key, color:b.color, filled: mapped.length>0 || !!t.trim(),
+      innerShort: t.length>112 ? t.slice(0,112)+'…' : t,
+      tip:(i+1)+'. '+b.key+' — '+(mapped.length? 'Season '+mapped.join(' & ') : 'unmapped')+(t? ' — '+(t.length>110?t.slice(0,110)+'…':t):''),
+      stepto:'',
+    };
+  });
+  document.getElementById('view').innerHTML =
+  '<div class="sec-head"><div>'+
+    '<div class="label">Layer three · the mega-arc</div>'+
+    '<h2 style="font-size:36px">The Saga: <span class="serif-i" style="color:var(--gold)">'+esc(sa.title)+'</span></h2></div></div>'+
+  '<p style="max-width:680px;color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:30px">'+
+    'One overarching circle across all three seasons — Jay’s lie is established, tested against hope, broken open at the wound, and transformed into the person the opening episodes were hunting for.</p>'+
+
+  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:13px;margin-bottom:34px">'+
+    '<div class="card"><div class="label" style="color:#e9c668">The lie</div><textarea class="field" rows="2" data-field="saga.lie" style="margin-top:10px">'+esc(sa.lie)+'</textarea></div>'+
+    '<div class="card"><div class="label" style="color:#e3a24c">Tested</div><textarea class="field" rows="2" data-field="saga.tested" style="margin-top:10px">'+esc(sa.tested)+'</textarea></div>'+
+    '<div class="card"><div class="label" style="color:#c1604d">Broken</div><textarea class="field" rows="2" data-field="saga.broken" style="margin-top:10px">'+esc(sa.broken)+'</textarea></div>'+
+    '<div class="card"><div class="label" style="color:#7a945b">Transformed</div><textarea class="field" rows="2" data-field="saga.transformed" style="margin-top:10px">'+esc(sa.transformed)+'</textarea></div>'+
+  '</div>'+
+
+  '<div style="display:grid;grid-template-columns:minmax(0,0.95fr) minmax(0,1.05fr);gap:26px;align-items:start" id="saLayout">'+
+    '<div class="card" style="padding:18px">'+
+      storyWheel(wItems,
+        '<div class="serif-i" style="font-size:16px;color:var(--paper);line-height:1.4">the lie →</div>'+
+        '<div class="serif-i" style="font-size:16px;color:var(--gold);line-height:1.4">the leap</div>',
+        {uid:'saga'})+
+    '</div>'+
+    '<div class="card">'+
+      '<div class="label" style="margin-bottom:8px">Saga beats — which seasons carry them</div>'+
+      BEATS.map(function(b,i){
+        return '<div class="map-row" style="grid-template-columns:104px minmax(0,1fr)">'+
+        '<div><span class="mono" style="font-size:12px;color:'+b.color+'">'+(i+1)+'</span> <span class="serif-i" style="font-size:15px">'+b.key+'</span></div>'+
+        '<div>'+
+          '<div style="margin-bottom:6px">'+[1,2,3].map(function(sn){
+            return '<button class="mchip '+((sa.beats[i].seasons||[]).indexOf(sn)>=0?'on':'')+'" style="--bc:'+b.color+'" data-action="map-saga" data-beat="'+i+'" data-season="'+sn+'">Season '+sn+'</button>';
+          }).join('')+'</div>'+
+          '<textarea class="field" rows="2" data-field="saga.beats.'+i+'.text" placeholder="What this beat means at saga scale…">'+esc(sa.beats[i].text)+'</textarea>'+
+        '</div></div>';
+      }).join('')+
+    '</div>'+
+  '</div>'+
+  '<style>@media(max-width:1100px){#saLayout{grid-template-columns:1fr!important}}</style>'+
+
+  '<div class="divider"></div>'+
+  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">'+
+    S.seasons.map(function(se){
+      return '<a class="card" href="#/season/'+se.number+'" style="display:block">'+
+        '<span class="pill pill--gold">Season '+se.number+'</span>'+
+        '<h3 style="font-family:var(--display);font-size:21px;margin-top:12px">'+esc(se.title)+'</h3>'+
+        '<div class="mono" style="font-size:9px;letter-spacing:.16em;color:var(--ember);text-transform:uppercase;margin-top:6px">'+esc(se.movement)+'</div>'+
+        '<p class="serif-i" style="font-size:12.5px;color:var(--faint);margin-top:10px">“'+esc(se.question)+'”</p>'+
+      '</a>';
+    }).join('')+
+  '</div>'+
+  '<div class="card" style="margin-top:14px">'+F.text('saga.title','Saga title',{val:sa.title})+'</div>';
+}
+
+/* ---------------- characters ---------------- */
+
+function charEpisodes(name){
+  return S.episodes.filter(function(e){ return e.relChars.indexOf(name)>=0; }).sort(function(a,b){ return a.number-b.number; });
+}
+function viewCharacters(){
+  document.getElementById('view').innerHTML =
+  '<div class="sec-head"><div>'+
+    '<div class="label">The cast</div>'+
+    '<h2>Who presses, <span class="serif-i" style="color:var(--gold)">who mirrors, who leaves the space</span></h2></div>'+
+    '<button class="btn btn--gold" data-action="add-character">+ New character</button></div>'+
+  '<p style="max-width:640px;color:var(--muted);font-size:13px;line-height:1.7;margin:-8px 0 26px">Track each arc so relationships stay consistent across thirty episodes. The recurring “move” is the fingerprint — the thing they always do that tells the reader who just walked into the room.</p>'+
+  '<div class="char-grid">'+
+    S.characters.map(function(c,ci){
+      const apps = charEpisodes(c.name);
+      return '<div class="char-card">'+
+        '<div class="char-head">'+
+          '<span class="avatar" style="background:'+(c.color||'#e4b04a')+'">'+esc((c.name||'?').slice(0,2).toUpperCase())+'</span>'+
+          '<div style="flex:1;min-width:0">'+
+            '<input class="field" data-field="characters.'+ci+'.name" value="'+esc(c.name)+'" style="font-family:var(--display);font-size:17px;padding:5px 10px"/>'+
+            '<input class="field" data-field="characters.'+ci+'.role" value="'+esc(c.role)+'" placeholder="role — mirror / wound / partner…" style="font-size:11px;margin-top:5px;padding:4px 10px"/>'+
+          '</div>'+
+          '<button class="btn btn--sm btn--danger" data-action="del-character" data-id="'+c.id+'" title="Delete character">×</button>'+
+        '</div>'+
+        '<div class="char-body">'+
+          F.area('characters.'+ci+'.fn','Core function',{val:c.fn,rows:2})+
+          F.area('characters.'+ci+'.arc','Arc across 3 seasons',{val:c.arc,rows:2})+
+          F.area('characters.'+ci+'.wound','Wound / flaw',{val:c.wound,rows:2})+
+          F.area('characters.'+ci+'.wantNeed','Want vs need',{val:c.wantNeed,rows:2})+
+          F.text('characters.'+ci+'.move','The recurring “move”',{val:c.move,ph:'the thing they always do…'})+
+          '<div><div class="label" style="margin-bottom:6px">Appears in</div>'+
+            '<div class="appears">'+(apps.length?apps.map(function(e){ return '<a class="apchip" href="#/episode/'+e.id+'">'+epTag(e)+'</a>'; }).join(''):'<span class="mono" style="font-size:9px;color:var(--faint)">not cast yet — tag them in an episode</span>')+'</div></div>'+
+        '</div>'+
+      '</div>';
+    }).join('')+
+  '</div>';
+}
+
+/* ---------------- takeaway library ---------------- */
+
+function libraryCardsHTML(){
+  const q = ui.libQuery.toLowerCase();
+  let eps = S.episodes.filter(function(e){ return e.takeaway.trim(); }).sort(function(a,b){ return a.number-b.number; });
+  if(ui.libCat!=='all') eps = eps.filter(function(e){ return e.category===ui.libCat; });
+  if(q) eps = eps.filter(function(e){ return (e.takeaway+' '+e.notebook+' '+e.title).toLowerCase().indexOf(q)>=0; });
+  if(!eps.length) return '<div class="card" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--faint)">No takeaways here yet. They live in beats 5–6 — the GET reveals the principle, the PAY makes the reader feel it.</div>';
+  return eps.map(function(e){
+    return '<div class="lib-card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">'+
+        '<a href="#/episode/'+e.id+'" class="pill">'+epTag(e)+' · '+esc(e.title||'Untitled')+'</a>'+
+        '<span class="pill pill--gold">'+esc(e.category)+'</span>'+
+      '</div>'+
+      '<div class="tk2">“'+esc(e.takeaway)+'”</div>'+
+      (e.notebook.trim()?'<div style="border-top:1px solid var(--line);padding-top:10px;font-family:var(--display);font-style:italic;font-size:12.5px;color:var(--gold)">Notebook: '+esc(e.notebook)+'</div>':'')+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:6px">'+
+        '<span class="mono" style="font-size:8.5px;color:var(--faint);letter-spacing:.14em">'+(e.publishDate?('PUB · '+esc(e.publishDate)):e.status.toUpperCase())+'</span>'+
+        '<button class="btn btn--sm" data-action="copy" data-eid="'+e.id+'">Copy</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function viewLibrary(){
+  document.getElementById('view').innerHTML =
+  '<div class="sec-head"><div>'+
+    '<div class="label">The content bank</div>'+
+    '<h2>The takeaway <span class="serif-i" style="color:var(--gold)">library</span></h2></div>'+
+    '<span class="mono" id="libCount" style="font-size:10px;color:var(--faint);letter-spacing:.16em">'+S.episodes.filter(function(e){return e.takeaway.trim();}).length+' PRINCIPLES BANKED</span></div>'+
+  '<p style="max-width:640px;color:var(--muted);font-size:13px;line-height:1.7;margin:-8px 0 20px">Every episode teaches one principle — banked here, searchable, ready to become LinkedIn posts, Notes, and the seeds of future products.</p>'+
+  '<div class="fbar">'+
+    '<input class="search" id="libSearch" data-ui="libQuery" placeholder="Search principles…" value="'+esc(ui.libQuery)+'"/>'+
+    '<div class="cats">'+
+      '<button class="catchip '+(ui.libCat==='all'?'on':'')+'" data-action="lib-cat" data-val="all">All</button>'+
+      CATEGORIES.map(function(c){ return '<button class="catchip '+(ui.libCat===c?'on':'')+'" data-action="lib-cat" data-val="'+c+'">'+c+'</button>'; }).join('')+
+    '</div>'+
+  '</div>'+
+  '<div class="lib-grid" id="libResults">'+libraryCardsHTML()+'</div>';
+}
+
+/* ---------------- method ---------------- */
+
+function viewMethod(){
+  document.getElementById('view').innerHTML =
+  '<div class="sec-head"><div>'+
+    '<div class="label">The understanding layer</div>'+
+    '<h2 style="font-size:36px">Dan Harmon’s circle, <span class="serif-i" style="color:var(--gold)">tuned for Jay</span></h2></div></div>'+
+  '<p style="max-width:700px;color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:26px">'+
+    'The platform encodes one idea: story is a circle with order above the line and chaos below it. Jay starts comfortable-but-hollow, descends toward what he wants, pays for what he finds, and comes back changed by exactly one hairline. It runs at three scales at once — episode, season, saga.</p>'+
+
+  '<div class="card" style="overflow-x:auto;margin-bottom:26px">'+
+    '<table class="mtable">'+
+      '<thead><tr><th style="width:50px">#</th><th style="width:130px">Beat</th><th style="width:22%">The question</th><th>What it looks like for Jay</th></tr></thead>'+
+      '<tbody>'+
+      BEATS.map(function(b,i){
+        return '<tr><td class="mono" style="color:'+b.color+';font-size:15px">'+(i+1)+'</td><td class="k" style="color:'+b.color+'">'+b.key+'</td><td>'+esc(b.q)+'<div style="font-size:11px;color:var(--faint);margin-top:4px">'+esc(b.generic)+'</div></td><td>'+esc(b.jay)+'</td></tr>';
+      }).join('')+
+      '</tbody>'+
+    '</table>'+
+  '</div>'+
+
+  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:13px;margin-bottom:26px">'+
+    '<div class="card card--glow"><div class="label label--gold">Rule · beats 5–6</div><p style="font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:10px">The marketing takeaway lives in the GET and the PAY. The GET reveals the principle; the PAY makes the reader <span class="serif-i" style="color:var(--paper)">feel</span> why it matters. Deliver it lecture-free: one line, carried by the turn.</p></div>'+
+    '<div class="card card--glow"><div class="label label--gold">Rule · beat 8</div><p style="font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:10px">CHANGE is always subtle in early seasons. Jay doesn’t transform in one episode — he shifts slightly, and the shifts compound into the season arc. Pace it with the change-level field (None / Crack / Shift / Breakthrough), and save Breakthroughs for finales.</p></div>'+
+    '<div class="card card--teal"><div class="label" style="color:var(--teal)">The standalone covenant</div><p style="font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:10px">Every episode is sent to a first-time reader. It must give a full takeaway, open charged, close its own circle, end on an emotional button, and carry Jay’s Notebook — no prior context required. Anticipation is earned by quality, not by withheld resolution.</p></div>'+
+  '</div>'+
+
+  '<div class="card">'+
+    '<div class="label" style="margin-bottom:12px">The standalone test — encoded in every episode record</div>'+
+    CHECKS.map(function(c,i){
+      return '<div class="check" style="cursor:default"><span class="mono" style="color:var(--teal);font-size:12px;width:19px;text-align:center;flex:none">'+(i+1)+'</span><span><span class="ct" style="color:var(--paper)">'+esc(c.t)+'</span><span class="cd" style="display:block">'+esc(c.d)+'</span></span></div>';
+    }).join('')+
+  '</div>';
+}
+
+/* ================================================================
+   ROUTER + RENDER
+   ================================================================ */
+
+function render(){
+  renderNav();
+  const h = location.hash || '#/';
+  let m;
+  if((m=h.match(/^#\/episode\/(\d+)/))) return viewEpisode(Number(m[1]));
+  if((m=h.match(/^#\/season\/(\d+)/))) return viewSeason(Number(m[1]));
+  if(h==='#/episodes') return viewEpisodes();
+  if(h==='#/saga') return viewSaga();
+  if(h==='#/characters') return viewCharacters();
+  if(h==='#/library') return viewLibrary();
+  if(h==='#/method') return viewMethod();
+  return viewDashboard();
+}
+
+/* live refresh of the wheel + word counts without losing focus */
+function refreshWheelFor(ep){
+  const host = document.getElementById('wheelHost');
+  if(!host) return;
+  const filled = epFilled(ep);
+  const weakSpots = BEATS.filter(function(b,i){ return !ep.beats[i].trim(); }).map(function(b){ return b.key; });
+  host.innerHTML = storyWheel(beatItemsFrom(ep),
+    '<div class="mono" style="font-size:23px;color:var(--paper)">'+filled+'<span style="font-size:12px;color:var(--faint)">/8</span></div>'+
+    '<div class="label" style="margin-top:5px;font-size:8.5px">circle '+(filled===8?'complete':'in progress')+'</div>'+
+    (weakSpots.length
+      ? '<div class="mono" style="font-size:8px;color:var(--ember);letter-spacing:.14em;margin-top:8px">WEAK: '+weakSpots.join(' · ')+'</div>'
+      : '<div class="mono" style="font-size:8px;color:#a8bd8a;letter-spacing:.14em;margin-top:8px">NO WEAK BEATS</div>'),
+    {uid:'e'+ep.id});
+}
+function refreshLive(path){
+  // word counters + filled styling next to beat textareas
+  document.querySelectorAll('textarea[data-field]').forEach(function(t){
+    const m = t.dataset.field.match(/^ep\.(\d+)\.beats\.(\d)$/);
+    if(m){
+      const wc = t.parentElement.querySelector('.wc');
+      if(wc) wc.textContent = words(t.value)+' words';
+      if(t.parentElement.classList.contains('beat-card')) t.parentElement.classList.toggle('filled', !!t.value.trim());
+    }
+  });
+  const p = path.split('.');
+  if(p[0]==='ep' && p[2]==='beats'){ const ep = epById(Number(p[1])); if(ep) refreshWheelFor(ep); }
+}
+
+/* ================================================================
+   EXPORT / IMPORT
+   ================================================================ */
+
+function doExport(){
+  const blob = new Blob([JSON.stringify(S,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'jay-story-circle-progress.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+  toast('Progress downloaded — keep it safe.');
+}
+function doImportFile(file){
+  const reader = new FileReader();
+  reader.onload = function(){
+    try{
+      const d = JSON.parse(reader.result);
+      if(!d || !Array.isArray(d.episodes) || !Array.isArray(d.seasons)) throw new Error('bad shape');
+      S = normalize(d); save(); render();
+      toast('Restored: '+S.episodes.length+' episodes, '+S.seasons.length+' seasons.');
+    }catch(e){ toast('That file is not a Story Circle export.'); }
+  };
+  reader.readAsText(file);
+}
+
+/* ================================================================
+   EVENTS
+   ================================================================ */
+
+document.addEventListener('input', function(e){
+  const el = e.target;
+  if(!el.dataset) return;
+  const f = el.dataset.field;
+  if(f){
+    if(el.type==='checkbox') return;                 // checkboxes handled on change
+    setPath(f, el.value); save(); refreshLive(f); return;
+  }
+  const uiKey = el.dataset.ui;
+  if(uiKey){
+    ui[uiKey] = el.value;
+    if(el.id==='epSearch'){ const r=document.getElementById('epResults'); if(r){ r.innerHTML = episodesListHTML(); updateEpShown(); } }
+    if(el.id==='libSearch'){ const r=document.getElementById('libResults'); if(r) r.innerHTML = libraryCardsHTML(); }
+  }
+});
+document.addEventListener('change', function(e){
+  const el = e.target;
+  if(!el.dataset) return;
+  const f = el.dataset.field;
+  if(f){
+    const v = el.type==='checkbox' ? el.checked : (el.type==='number' ? (Number(el.value)||0) : el.value);
+    setPath(f, v); save(); refreshLive(f); return;
+  }
+  if(el.dataset.ui){
+    ui[el.dataset.ui] = el.value;
+    if(el.tagName==='SELECT') render();               // filter selects re-render (focus loss acceptable)
+  }
+  if(el.id==='importFile' && el.files && el.files[0]){ doImportFile(el.files[0]); el.value=''; }
+});
+
+document.addEventListener('click', function(e){
+  // wheel segment → scroll to its beat card (works everywhere Stepto != "")
+  const seg = e.target.closest ? e.target.closest('.wseg') : null;
+  if(seg && seg.dataset.stepto){
+    const t = document.getElementById(seg.dataset.stepto);
+    if(t){ t.scrollIntoView({behavior:'smooth',block:'center'}); const ta=t.querySelector('textarea'); if(ta) ta.focus({preventScroll:true}); }
+    return;
+  }
+
+  // row navigation (click anywhere on the row card)
+  const row = e.target.closest ? e.target.closest('[data-goto]') : null;
+  if(row && !e.target.closest('button,a,input,textarea,select')){ location.hash = row.dataset.goto; return; }
+
+  const btn = e.target.closest ? e.target.closest('[data-action]') : null;
+  if(!btn) return;
+  const act = btn.dataset.action;
+
+  if(act==='goto'){ location.hash = btn.dataset.goto; return; }
+  if(act==='export'){ doExport(); return; }
+  if(act==='import'){ document.getElementById('importFile').click(); return; }
+  if(act==='reset'){
+    confirmModal('Reset to the demo story?','This replaces everything currently saved in this browser with the original Jay demo data. Download your progress first if you want to keep it.','Reset everything').then(function(ok){
+      if(!ok) return; S = seedState(); save(); location.hash='#/'; render(); toast('Demo story restored.');
+    }); return;
+  }
+  if(act==='set-status'){
+    const m = location.hash.match(/^#\/episode\/(\d+)/);
+    if(m){ const ep=epById(Number(m[1])); if(ep){ ep.status=btn.dataset.val; save(); viewEpisode(ep.id);} } return;
+  }
+  if(act==='toggle-check'){
+    const ep = epById(Number(btn.dataset.id));
+    if(ep){ const k=btn.dataset.k; ep.checks[k]=!ep.checks[k]; save(); const c=btn.closest('.check'); if(c) c.classList.toggle('on', ep.checks[k]); }
+    return;
+  }
+  if(act==='toggle-char'){
+    const ep = epById(Number(btn.dataset.id));
+    if(ep){ const v=btn.dataset.val; const i=ep.relChars.indexOf(v); if(i>=0) ep.relChars.splice(i,1); else ep.relChars.push(v); save(); btn.classList.toggle('on', i<0); }
+    return;
+  }
+  if(act==='map-beat'){
+    const se = seasonOf(Number(btn.dataset.season));
+    const b = Number(btn.dataset.beat), id=Number(btn.dataset.ep);
+    if(se){ const arr=se.beatMap[b]||(se.beatMap[b]=[]); const i=arr.indexOf(id); if(i>=0)arr.splice(i,1); else arr.push(id); save(); render(); } return;
+  }
+  if(act==='map-saga'){
+    const b=Number(btn.dataset.beat), sn=Number(btn.dataset.season);
+    const arr=S.saga.beats[b].seasons||(S.saga.beats[b].seasons=[]);
+    const i=arr.indexOf(sn); if(i>=0)arr.splice(i,1); else arr.push(sn); save(); render(); return;
+  }
+  if(act==='add-episode'){
+    const season = btn.dataset.season ? Number(btn.dataset.season) : 1;
+    const maxId = S.episodes.reduce(function(a,x){ return Math.max(a,x.id); },0);
+    const maxN = S.episodes.reduce(function(a,x){ return Math.max(a,x.number); },0);
+    const ep = blankEpisode(maxId+1, maxN+1, season, 'Untitled Episode');
+    S.episodes.push(ep); save(); location.hash = '#/episode/'+ep.id; return;
+  }
+  if(act==='del-episode'){
+    const ep = epById(Number(btn.dataset.id));
+    if(!ep) return;
+    confirmModal('Delete “'+(ep.title||'Untitled Episode')+'”?','The episode, its eight beats, checklist, and takeaway will be removed from your local save.','Delete episode').then(function(ok){
+      if(!ok) return;
+      S.episodes = S.episodes.filter(function(x){ return x.id!==ep.id; });
+      S.seasons.forEach(function(s){ (s.beatMap||[]).forEach(function(arr,i){ s.beatMap[i]=arr.filter(function(id){ return id!==ep.id; }); }); });
+      save(); location.hash='#/season/'+ep.season; toast('Episode deleted.');
+    }); return;
+  }
+  if(act==='add-character'){
+    const maxId = S.characters.reduce(function(a,x){ return Math.max(a,x.id); },0);
+    const palette=['#E9C668','#C1604D','#3F6E78','#5E5480','#7A945B','#D7833F','#9A4C60'];
+    S.characters.push({id:maxId+1,name:'New Character',role:'',color:palette[maxId%palette.length],fn:'',arc:'',wound:'',wantNeed:'',move:''});
+    save(); render(); toast('Character added — name them.'); return;
+  }
+  if(act==='del-character'){
+    const c = S.characters.find(function(x){ return x.id===Number(btn.dataset.id); }); if(!c) return;
+    confirmModal('Delete '+c.name+'?','Their record will be removed. Episode tags keep their names but lose the link.','Delete character').then(function(ok){
+      if(!ok) return; S.characters=S.characters.filter(function(x){ return x.id!==c.id; }); save(); render(); toast('Character deleted.');
+    }); return;
+  }
+  if(act==='lib-cat'){ ui.libCat=btn.dataset.val; const r=document.getElementById('libResults'); if(r) r.innerHTML = libraryCardsHTML();
+    document.querySelectorAll('.catchip').forEach(function(ch){ ch.classList.toggle('on', ch.dataset.val===ui.libCat); }); return; }
+  if(act==='copy'){
+    const ep = epById(Number(btn.dataset.eid));
+    if(!ep) return;
+    const txt = ep.takeaway + (ep.notebook.trim()? '\n\n— '+ep.notebook : '');
+    if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(function(){ toast('Copied to clipboard.'); }, function(){ toast('Copy failed — select the text manually.'); }); }
+    else toast('Clipboard unavailable in this browser.');
+    return;
+  }
+});
+
+/* wheel tooltips */
+const tip = document.getElementById('tip');
+document.addEventListener('mouseover', function(e){
+  const g = e.target.closest ? e.target.closest('.wseg') : null;
+  if(g && g.dataset.tip){ tip.innerHTML = '<span class="tt-k">Story Circle</span>'+esc(g.dataset.tip); tip.style.display='block'; }
+  else tip.style.display='none';
+});
+document.addEventListener('mousemove', function(e){
+  if(tip.style.display==='block'){ tip.style.left=Math.min(e.clientX+16, window.innerWidth-300)+'px'; tip.style.top=(e.clientY+16)+'px'; }
+});
+
+window.addEventListener('hashchange', render);
+render();
+</script>
+</body>
+</html>

@@ -268,6 +268,7 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
 </head>
 <body>
 <div class="atmo"></div>
+
 <header class="top">
   <button class="burger" data-act="sb">Spine</button>
   <button class="brand" data-act="nav:saga">
@@ -289,6 +290,7 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
     <button class="btn" data-act="reset">Reset</button>
   </div>
 </header>
+
 <div class="wrap">
   <aside class="side" id="side">
     <div style="padding:10px;border-bottom:1px solid var(--line)">
@@ -298,6 +300,7 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
   </aside>
   <main id="main"></main>
 </div>
+
 <nav class="mnav" id="mnav">
   <button data-act="nav:saga">Saga</button>
   <button data-act="nav:season">Season</button>
@@ -306,9 +309,11 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
   <button data-act="nav:library">Library</button>
   <button data-act="nav:guide">Circle</button>
 </nav>
+
 <div class="sideover" id="sideover"></div>
 <input type="file" id="filein" accept=".json,application/json" hidden />
 <div class="toast" id="toast"></div>
+
 <div class="overlay" id="welcome" style="display:none">
   <div class="panel box">
     <div class="kick" style="color:var(--gold)">Writer's board</div>
@@ -326,11 +331,13 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
     <button class="btn btn-g" style="width:100%;margin-top:18px;padding:10px" data-act="closewel">Enter the room</button>
   </div>
 </div>
+
 <script>
 "use strict";
 /* ================= DATA ================= */
 var LS = "jay-story-circle-board-v1";
 var WKEY = "jay-story-circle-welcome-v1";
+
 var BEATS = [
  {key:"comfort",n:1,name:"Comfort",short:"YOU",harmon:"You",question:"Where does the character start?",plain:"A character in a zone of comfort / established equilibrium.",jay:"Jay in a moment — often false equilibrium. He's \"fine.\"",rhyme:"get",rhymeWhy:"Comfort rhymes with Get. The discovery at the bottom of the circle should invert or expose the opening equilibrium. If he starts \"fine,\" what he finds must make \"fine\" impossible to believe.",color:"#c4a574",example:"Jay got the promotion. He's \"fine.\""},
  {key:"desire",n:2,name:"Desire",short:"NEED",harmon:"Need",question:"What do they want?",plain:"But they want something — a want surfaces.",jay:"The want surfaces — restlessness, curiosity, a pull toward something.",rhyme:"pay",rhymeWhy:"Desire rhymes with Pay. What he wants in beat 2 is exactly what costs him in beat 6. The price should be the shadow of the want — not a random wound.",color:"#d4a017",example:"The promotion felt hollow. He opens the laptop."},
@@ -342,6 +349,7 @@ var BEATS = [
  {key:"change",n:8,name:"Change",short:"CHANGE",harmon:"Change",question:"How have they changed?",plain:"They have changed — internally, permanently.",jay:"Subtle internal shift — the armor has a crack, or the hope has grown. Early seasons: never a full transformation. The change compounds.",rhyme:"adapt",rhymeWhy:"Mark how MUCH he changes (None / Crack / Shift / Breakthrough). Episode 8 of a season can breakthrough. Episode 2 should almost never.",color:"#3d6b5a",example:"He keeps searching — but now he knows what he's looking for."}
 ];
 var BMAP = {}; BEATS.forEach(function(b){ BMAP[b.key] = b; });
+
 var STATUS = { idea:{l:"Idea",c:"#8a8074"}, outlined:{l:"Outlined",c:"#d4b45a"}, drafted:{l:"Drafted",c:"#6a8aa0"}, published:{l:"Published",c:"#5d8a74"} };
 var CHANGE = { none:{l:"None",c:"#6b6154",h:"The armor holds. Useful early — but don't stack too many."}, crack:{l:"Crack",c:"#c9a84c",h:"A hairline fracture. The default for most early-season episodes."}, shift:{l:"Shift",c:"#c17f59",h:"He cannot quite go back. Mid-season turns and admissions."}, breakthrough:{l:"Breakthrough",c:"#f0dd9a",h:"Spend these like finales. One per season, maybe two."} };
 var WOUND = { marcus:{l:"Marcus",c:"#8b3a4a"}, module7:{l:"Module 7",c:"#c17f59"}, both:{l:"Both",c:"#d4b45a"}, neither:{l:"Neither",c:"#6b6154"} };
@@ -366,6 +374,7 @@ var IMG = {
  typewriter:"https://images.pexels.com/photos/7610765/pexels-photo-7610765.jpeg?auto=compress&cs=tinysrgb&w=1400",
  papers:"https://images.pexels.com/photos/6980693/pexels-photo-6980693.jpeg?auto=compress&cs=tinysrgb&w=1400"
 };
+
 function emptyBeats(){ return {comfort:"",desire:"",enter:"",adapt:"",get:"",pay:"",return:"",change:""}; }
 function emptyChk(){ return {takeawayStandalone:false,chargedOpening:false,allEightBeats:false,oneLineTurn:false,emotionalButton:false,notebookLine:false,specificityTest:false}; }
 function mkEp(s,n,g,p){ p=p||{};
@@ -375,6 +384,7 @@ function mkEp(s,n,g,p){ p=p||{};
     relationshipFunction:"",marketingTakeaway:"",takeawayCategory:"",softPitch:false,pitchVersion:"None",
     wordCountTarget:800,hook:"",nextTease:"",publishDate:"",performanceNotes:"",checklist:emptyChk(),notes:""}, p);
 }
+
 function SEED(){
   var eps=[];
   var T1=["Fine.","The Hollow","Testimonials","The Guard","Night Jay","Invisible","The Other Room","Close Tab","Search Again","What He's Looking For"];
@@ -451,8 +461,10 @@ function SEED(){
     },
     seasons:seasons, episodes:eps, characters:chars };
 }
+
 /* ================= STATE ================= */
 var S = { data:null, view:"saga", sn:1, eid:"s1e1", beat:"comfort", sq:"", lq:"", lcat:"all" };
+
 function load(){
   try{
     var raw = localStorage.getItem(LS);
@@ -482,6 +494,7 @@ function migrate(d){
   return out;
 }
 S.data = load();
+
 function $id(x){ return document.getElementById(x); }
 function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function words(t){ t=(t||"").trim(); return t?t.split(/\s+/).length:0; }
@@ -503,20 +516,37 @@ function autoChk(ep){
   };
 }
 function chkScore(ep){ var c=autoChk(ep); return Object.keys(c).filter(function(k){return c[k];}).length; }
+
 /* ================= SAVING ================= */
 var saveT=null;
-function scheduleSave(){
-  $id("savestate").classList.add("busy");
-  $id("savestate").childNodes[1].textContent = "Saving…";
-  if(saveT) clearTimeout(saveT);
-  saveT = setTimeout(function(){
-    try{
-      S.data.exportedAt = new Date().toISOString();
-      localStorage.setItem(LS, JSON.stringify(S.data));
-      var el=$id("savestate"); el.classList.remove("busy"); el.childNodes[1].textContent="Saved locally";
-    }catch(e){}
-  },300);
+function setSaveState(cls,msg){
+  var el=$id("savestate");
+  if(!el)return;
+  el.classList.remove("busy");
+  if(cls==="busy")el.classList.add("busy");
+  if(cls==="bad")el.style.color="var(--rose)"; else el.style.color="";
+  if(el.childNodes[1])el.childNodes[1].textContent=msg;
 }
+function persistNow(){
+  try{
+    S.data.exportedAt=new Date().toISOString();
+    localStorage.setItem(LS, JSON.stringify(S.data));
+    setSaveState("ok","Saved locally");
+    return true;
+  }catch(e){
+    setSaveState("bad","Storage blocked");
+    toast("⚠ Storage blocked — use Download to keep your work");
+    return false;
+  }
+}
+function scheduleSave(){
+  setSaveState("busy","Saving…");
+  if(saveT) clearTimeout(saveT);
+  saveT=setTimeout(persistNow,150);
+}
+/* Save instantly when the page is about to close or refresh — no lost keystrokes */
+window.addEventListener("beforeunload",function(){ persistNow(); });
+document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="hidden")persistNow(); });
 var toastT=null;
 function toast(msg){
   var t=$id("toast"); t.textContent=msg; t.style.display="block";
@@ -573,6 +603,7 @@ function doUpload(file){
   };
   r.readAsText(file);
 }
+
 /* ================= CIRCLE SVG ================= */
 var C=300, RO=248, RI=108, GAP=1.6;
 function polar(r,deg){ var a=(deg-90)*Math.PI/180; return [C+r*Math.cos(a), C+r*Math.sin(a)]; }
@@ -640,6 +671,7 @@ function legendHTML(){
     '<span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#3d6b5a"></span> 7–8 Order · Change</span>'+
     '</div>';
 }
+
 /* ================= SIDEBAR ================= */
 function renderSide(){
   var q=S.sq.toLowerCase();
@@ -662,6 +694,7 @@ function renderSide(){
   h+='<button class="addseason" data-act="addseason">+ New season</button>';
   $id("sidelist").innerHTML=h;
 }
+
 /* ================= SAGA VIEW ================= */
 function renderSaga(){
   var d=S.data, s=d.saga;
@@ -700,12 +733,13 @@ function renderSaga(){
   d.seasons.forEach(function(ss){
     var eps=epsOf(ss.number);
     var fb=eps.reduce(function(n,e){return n+filled(e);},0);
-    h+='<button class="season-card" data-act="openseason:'+ss.number+'">'+
-      '<div class="im"><img src="'+(ss.number===1?IMG.desk:ss.number===2?IMG.papers:IMG.windows)+'" alt=""/><div class="shade"></div><div class="k">Season '+ss.number+'</div></div>'+
-      '<div class="b"><h3>'+(esc(ss.title)||"Untitled season")+'</h3>'+
+    h+='<div class="season-card">'+
+      '<button class="im" style="display:block;width:100%;text-align:left" data-act="openseason:'+ss.number+'"><img src="'+(ss.number===1?IMG.desk:ss.number===2?IMG.papers:IMG.windows)+'" alt=""/><div class="shade"></div><div class="k">Season '+ss.number+'</div></button>'+
+      '<div class="b">'+
+      '<input class="in" style="font-family:Cormorant Garamond,serif;font-size:24px;background:transparent;border:1px solid transparent;padding:2px 0;width:100%;margin:0" data-snb="title" data-sns="'+ss.number+'" value="'+esc(ss.title)+'" placeholder="Season title" />'+
       '<div class="mv">'+(esc(ss.movement)||"Movement unset")+'</div>'+
-      '<p>'+(esc(ss.centralQuestion||ss.logline||"Open the season to write the question."))+'</p>'+
-      '<div class="ft"><span>'+eps.length+' episodes</span><span>'+fb+'/'+(eps.length*8)+' beats</span><span>'+WOUND[ss.woundFocus].l+'</span></div></div></button>';
+      '<button style="display:block;width:100%;text-align:left" data-act="openseason:'+ss.number+'"><p>'+(esc(ss.centralQuestion||ss.logline||"Open the season to write the question."))+'</p></button>'+
+      '<div class="ft"><span>'+eps.length+' episodes</span><span>'+fb+'/'+(eps.length*8)+' beats</span><span>'+WOUND[ss.woundFocus].l+'</span></div></div></div>';
   });
   h+='</div>';
   h+='<div class="panel" style="margin-top:20px"><div class="hd"><div><div class="kick">Board health</div><h2>How the saga is landing</h2></div></div><div class="hr"></div>'+
@@ -728,6 +762,7 @@ function renderSaga(){
     '<div class="quote"><img src="'+IMG.desk+'"/><div class="shade"></div><div class="in"><p>He doesn\'t transform in one episode. He shifts. The change compounds.</p><div class="a">Season law</div></div></div></div>';
   $id("main").innerHTML=h;
 }
+
 /* ================= SEASON VIEW ================= */
 function renderSeason(){
   var ss=currentSeason(); if(!ss){ $id("main").innerHTML='<p class="muted">No season selected.</p>'; return; }
@@ -794,6 +829,7 @@ function renderSeason(){
   h+='</div>';
   $id("main").innerHTML=h;
 }
+
 /* ================= EPISODE VIEW ================= */
 function renderEp(){
   var ep=currentEp();
@@ -900,6 +936,7 @@ function renderEp(){
     '<p class="dim">Keys 1–8 jump beats · [ and ] move episodes</p></div>';
   $id("main").innerHTML=h;
 }
+
 /* ================= CHARACTERS ================= */
 function renderChars(){
   var d=S.data;
@@ -934,6 +971,7 @@ function renderChars(){
     '<p class="dim" style="line-height:1.6">Maya leaves the space. Danny says the offhand devastating thing. Marcus uses the authentic voice. If you lose the move, you lose the character.</p></div></div></div>';
   $id("main").innerHTML=h;
 }
+
 /* ================= LIBRARY ================= */
 function libItems(){
   return S.data.episodes
@@ -975,6 +1013,7 @@ function renderLib(){
   $id("main").innerHTML=h;
   renderLibGrid();
 }
+
 /* ================= GUIDE ================= */
 function renderGuide(){
   var h="";
@@ -1018,6 +1057,7 @@ function renderGuide(){
     '<p class="dim" style="margin-top:10px">Shortcuts: 1–8 jump beats · [ and ] move episodes · ⌘/Ctrl S downloads JSON · ⌘/Ctrl O opens upload.</p></div>';
   $id("main").innerHTML=h;
 }
+
 /* ================= RENDER ================= */
 function render(){
   renderSide();
@@ -1030,6 +1070,7 @@ function render(){
   else if(S.view==="library")renderLib();
   else renderGuide();
 }
+
 /* ================= ACTIONS ================= */
 function findEp(id){ return S.data.episodes.find(function(e){return e.id===id;}); }
 function patchEp(id,key,val){
@@ -1042,8 +1083,8 @@ function write(el){
   var v = el.type==="checkbox" ? el.checked : el.value;
   if(el.dataset.type==="num") v = parseInt(v.replace(/\D/g,""))||0;
   var id;
-  if(el.dataset.epb){ patchEp(el.dataset.epId, el.dataset.epb, v); }
-  else if(el.dataset.snb){ var s=S.data.seasons.find(function(x){return x.number===S.sn;}); if(s){ var p=el.dataset.snb.split("."); var t=s; for(var i=0;i<p.length-1;i++)t=t[p[i]]; t[p[p.length-1]]=v; } }
+  if(el.dataset.epb){ patchEp(el.dataset.epId || S.eid, el.dataset.epb, v); }
+  else if(el.dataset.snb){ var sn2 = el.dataset.sns ? parseInt(el.dataset.sns,10) : S.sn; var s=S.data.seasons.find(function(x){return x.number===sn2;}); if(s){ var p=el.dataset.snb.split("."); var t=s; for(var i=0;i<p.length-1;i++)t=t[p[i]]; t[p[p.length-1]]=v; } }
   else if(el.dataset.sgb){ var p=el.dataset.sgb.split("."); var t=S.data.saga; for(var i=0;i<p.length-1;i++)t=t[p[i]]; t[p[p.length-1]]=v; }
   else if(el.dataset.sgf){ S.data.saga[el.dataset.sgf]=v; }
   else if(el.dataset.cb){ var c=S.data.characters.find(function(x){return x.id===el.dataset.char;}); if(c)c[el.dataset.cb]=v; }
@@ -1066,7 +1107,7 @@ document.addEventListener("click", function(e){
   var parts=act.split(":"); var a=parts[0]; var v=parts.slice(1).join(":");
   var ep,list;
   switch(a){
-    case "nav": S.view=v; render(); break;
+    case "nav": S.view=v; if(v==="season" && !currentSeason()){ S.sn = S.data.seasons[0] ? S.data.seasons[0].number : 1; } render(); break;
     case "sb":
       $id("side").classList.toggle("open"); $id("sideover").classList.toggle("on"); break;
     case "openseason": S.sn=parseInt(v); S.view="season"; render(); break;
@@ -1150,6 +1191,7 @@ document.addEventListener("click", function(e){
 });
 $id("sideover").addEventListener("click",function(){ $id("side").classList.remove("open"); this.classList.remove("on"); });
 $id("filein").addEventListener("change",function(){ if(this.files[0])doUpload(this.files[0]); this.value=""; });
+
 /* keyboard */
 document.addEventListener("keydown",function(e){
   var tag=(e.target&&e.target.tagName)||"";
@@ -1166,6 +1208,7 @@ document.addEventListener("keydown",function(e){
     if(nx){S.eid=nx.id;S.view="episode";render();}
   }
 });
+
 /* init */
 if(!localStorage.getItem(WKEY)){ $id("welcome").style.display="flex"; }
 render();

@@ -190,14 +190,14 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
 .zen-bar i{display:block;height:4px;border-radius:99px;background:linear-gradient(90deg,var(--gdim),var(--gold));width:0%;transition:width .3s}
 .zen-body{display:flex;flex:1;min-height:0;position:relative}
 .zen-brief{width:340px;flex-shrink:0;border-right:1px solid var(--line);background:var(--ink);overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:var(--lstr) transparent}
-.zen-draft{flex:1;min-width:0;background:transparent;border:none;outline:none;resize:none;padding:40px 48px;font-family:'Lora',Georgia,'Times New Roman',serif;font-size:19px;line-height:1.95;font-weight:400;letter-spacing:.004em;color:var(--cream);caret-color:var(--gold);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;scrollbar-width:none;font-kerning:normal;font-variant-ligatures:common-ligatures;overflow-y:auto}
+.zen-draft{flex:1;min-width:0;background:#f7f2eb;border:none;outline:none;resize:none;padding:40px 48px;font-family:'Lora',Georgia,'Times New Roman',serif;font-size:19px;line-height:1.95;font-weight:400;letter-spacing:.004em;color:#1a1714;caret-color:#8a6525;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;scrollbar-width:none;font-kerning:normal;font-variant-ligatures:common-ligatures;overflow-y:auto}
 .zen-draft::-webkit-scrollbar{display:none}
-.zen-draft::placeholder{color:var(--faint);font-style:italic}
+.zen-draft::placeholder{color:#9e9282;font-style:italic}
 .zen-pagewrap{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
 .zen-editor{outline:none;cursor:text;min-height:100%;text-align:left}
-.zen-editor:empty::before{content:"Start with the charged moment…";color:var(--faint);font-style:italic}
+.zen-editor:empty::before{content:"Start with the charged moment…";color:#9e9282;font-style:italic}
 .zen-pagewrap,.zen-main{text-align:left}
-.zen-scene{text-align:center;color:var(--gdim);letter-spacing:.6em;margin:1.4em 0}
+.zen-scene{text-align:center;color:#8a7340;letter-spacing:.6em;margin:1.4em 0}
 .md-preview>div{margin:0 0 .9em}
 .zen-main{flex:1;min-width:0;display:flex;flex-direction:column;max-width:832px;width:100%;margin:0 auto}
 .zen-toolbar{display:flex;align-items:center;gap:4px;padding:8px 16px;border-bottom:1px solid var(--line);background:rgba(28,24,20,.6);flex-wrap:wrap}
@@ -208,15 +208,15 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
 .zen.zen-focus .zen-brief{display:none}
 .zen-preview{overflow-y:auto;scrollbar-width:none}
 .zen-preview::-webkit-scrollbar{display:none}
-.md-preview{font-family:'Lora',Georgia,serif;font-size:19px;line-height:1.95;letter-spacing:.004em;color:var(--parch);-webkit-font-smoothing:antialiased}
+.md-preview{font-family:'Lora',Georgia,serif;font-size:19px;line-height:1.95;letter-spacing:.004em;color:#2a2520;-webkit-font-smoothing:antialiased}
 .md-preview p{margin:0 0 1em}
-.md-preview h2{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:26px;letter-spacing:.02em;color:var(--cream);margin:1.2em 0 .4em}
-.md-preview h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:21px;color:var(--cream);margin:1em 0 .3em}
-.md-preview blockquote{border-left:2px solid rgba(212,180,90,.4);padding-left:14px;margin:0 0 1em;font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:19px}
+.md-preview h2{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:26px;letter-spacing:.02em;color:#110e0a;margin:1.2em 0 .4em}
+.md-preview h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:21px;color:#110e0a;margin:1em 0 .3em}
+.md-preview blockquote{border-left:2px solid rgba(184,142,56,.6);padding-left:14px;margin:0 0 1em;font-style:italic;color:#6b5215;font-family:'Cormorant Garamond',serif;font-size:19px}
 .md-preview hr{border:none;margin:1.6em 0}
-.md-preview hr::before{content:"✦ ✦ ✦";color:var(--gdim);letter-spacing:.6em}
+.md-preview hr::before{content:"✦ ✦ ✦";color:#8a7340;letter-spacing:.6em}
 .md-preview ul,.md-preview ol{margin:0 0 1em;padding-left:1.4em}
-.md-preview s{color:var(--mute)}
+.md-preview s{color:#7a6e60}
 .zr{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:2px;padding:7px 10px;margin-bottom:6px;background:rgba(7,6,5,.4)}
 .zr .chk{flex-shrink:0;width:20px;height:20px;border:1px solid var(--lstr);border-radius:2px;font-size:12px;display:flex;align-items:center;justify-content:center;color:transparent}
 .zr.done{border-color:rgba(93,138,116,.4)}
@@ -672,7 +672,7 @@ function dlMD(){
       BEATS.forEach(function(b){ L.push("**"+b.n+". "+b.name+".** "+(e.beats[b.key]||"—")); });
       if(e.notebookLine)L.push("> Notebook: "+e.notebookLine);
       if(e.draft)L.push("\n**Draft:**\n\n"+htmlToMarkdown(e.draft)+"\n");
-      if(e.marketingTakeaway)L.push("**Takeaway ("+(e.takeawayCategory||"—")+"):** "+e.marketingTakeaway);
+      if(e.marketingTakeaway)L.push("**Takeaway ("+(e.takeawayCategory||ymobile||"—")+"):** "+e.marketingTakeaway);
       if(e.nextTease)L.push("**Tease:** "+e.nextTease);
       L.push("");
     });
@@ -1373,8 +1373,7 @@ function renderGuide(){
   });
   h+='</div>';
   h+='<div class="panel" style="margin-top:20px"><div class="hd"><div><div class="kick">This document</div><h2>Download · upload · survive a refresh</h2></div></div><div class="hr"></div>'+
-    '<p class="story" style="font-size:14px;color:var(--parch);line-height:1.7">Everything auto-saves in this browser. That is not a backup. Use <b style="color:var(--gold)">Download</b> after a session. Use <b style="color:var(--gold)">Upload</b> to restore on a new machine, after a clear, or when the tab forgets you. You can also export a Markdown story bible for reading away from the board.</p>'+
-    '<p class="dim" style="margin-top:10px">Shortcuts: 1–8 jump beats · [ and ] move episodes · ⌘/Ctrl S downloads JSON · ⌘/Ctrl O opens upload.</p></div>';
+    '<p class="story" style="font-size:14px;color:var(--parch);line-height:1.7">Everything auto-saves in this browser. That is not a backup. Use <b style="color:var(--gold)">Download</b> after a session. Use <b style="color:var(--gold)">Upload</b> to restore on a new machine, after a clear, or when the tab forgets you. You can also export a Markdown story bible for reading away from the board.</p><p class="dim" style="margin-top:10px">Shortcuts: 1–8 jump beats · [ and ] move episodes · ⌘/Ctrl S downloads JSON · ⌘/Ctrl O opens upload.</p></div>';
   $id("main").innerHTML=h;
 }
 

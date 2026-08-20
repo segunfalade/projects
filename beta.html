@@ -813,7 +813,7 @@ function renderZen(){
 }
 function openZen(){
   if(!currentEp())return;
-  S.zenOpen=true; S.zenPeek=null; S.zenFocus=false; S.zenPreview=false; S.zenTypewriter=true;
+  S.zenOpen=true; S.zenPeek=null; S.zenFocus=false; S.zenPreview=false; S.zenTypewriter=false;
   var z=$id("zen");
   z.classList.remove("zen-focus");
   z.style.display="flex";
@@ -821,10 +821,10 @@ function openZen(){
   $id("zenpreview").style.display="none";
   $id("zendraft").style.display="block";
   $id("zenprevbtn").textContent="Preview";
-  $id("zentypebtn").textContent="Typewriter";
+  $id("zentypebtn").textContent="Typewriter · off";
   document.body.style.overflow="hidden";
   renderZen();
-  setTimeout(function(){ var ta=$id("zendraft"); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); zenMirror(); },40);
+  setTimeout(function(){ var ta=$id("zendraft"); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); },40);
 }
 function closeZen(){
   S.zenOpen=false;
@@ -1399,15 +1399,7 @@ document.addEventListener("click", function(e){
       $id("zentypebtn").textContent="Typewriter"+(S.zenTypewriter?" · on":" · off");
       if(S.zenTypewriter)zenMirror();
       break;
-    case "fmt:bold": zenApply("bold"); break;
-    case "fmt:italic": zenApply("italic"); break;
-    case "fmt:strike": zenApply("strike"); break;
-    case "fmt:h2": zenApply("h2"); break;
-    case "fmt:h3": zenApply("h3"); break;
-    case "fmt:quote": zenApply("quote"); break;
-    case "fmt:list": zenApply("list"); break;
-    case "fmt:em": zenApply("em"); break;
-    case "fmt:break": zenApply("break"); break;
+    case "fmt": zenApply(v); break;
     case "zenchk":
       var zep=currentEp();
       if(zep){

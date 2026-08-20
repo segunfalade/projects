@@ -194,7 +194,11 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
 .zen-draft::-webkit-scrollbar{display:none}
 .zen-draft::placeholder{color:var(--faint);font-style:italic}
 .zen-pagewrap{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
-.zen-mirror{position:absolute;inset:0;visibility:hidden;pointer-events:none;white-space:pre-wrap;word-break:break-word;overflow:hidden;font-family:'Lora',Georgia,serif;font-size:19px;line-height:1.95;letter-spacing:.004em;padding:40px 48px}
+.zen-editor{outline:none;cursor:text;min-height:100%;text-align:left}
+.zen-editor:empty::before{content:"Start with the charged moment…";color:var(--faint);font-style:italic}
+.zen-pagewrap,.zen-main{text-align:left}
+.zen-scene{text-align:center;color:var(--gdim);letter-spacing:.6em;margin:1.4em 0}
+.md-preview>div{margin:0 0 .9em}
 .zen-main{flex:1;min-width:0;display:flex;flex-direction:column;max-width:832px;width:100%;margin:0 auto}
 .zen-toolbar{display:flex;align-items:center;gap:4px;padding:8px 16px;border-bottom:1px solid var(--line);background:rgba(28,24,20,.6);flex-wrap:wrap}
 .zen-toolbar button{min-width:30px;height:30px;padding:0 8px;border:1px solid transparent;border-radius:2px;color:var(--mute);font-size:13px;display:inline-flex;align-items:center;justify-content:center}
@@ -226,7 +230,6 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
 @media(max-width:900px){
   .zen-brief{position:absolute;left:0;top:0;bottom:0;z-index:5;box-shadow:20px 0 40px rgba(0,0,0,.5)}
   .zen-draft{padding:24px 20px}
-  .zen-mirror{padding:24px 20px}
 }
 /* hero */
 .hero{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:6px;padding:36px;margin-bottom:20px}
@@ -400,23 +403,20 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
       <div class="zen-toolbar" style="max-width:832px">
         <button data-act="fmt:bold" onmousedown="event.preventDefault()" title="Bold · Ctrl+B"><b>B</b></button>
         <button data-act="fmt:italic" onmousedown="event.preventDefault()" title="Italic · Ctrl+I"><i>I</i></button>
+        <button data-act="fmt:underline" onmousedown="event.preventDefault()" title="Underline · Ctrl+U"><u>U</u></button>
         <button data-act="fmt:strike" onmousedown="event.preventDefault()" title="Strikethrough"><s>S</s></button>
         <span class="zsep"></span>
         <button data-act="fmt:h2" onmousedown="event.preventDefault()" title="Section heading">H2</button>
         <button data-act="fmt:h3" onmousedown="event.preventDefault()" title="Sub-heading">H3</button>
         <button data-act="fmt:quote" onmousedown="event.preventDefault()" title="Quote / Notebook line">❝</button>
         <button data-act="fmt:list" onmousedown="event.preventDefault()" title="Bullet list">•</button>
+        <button data-act="fmt:body" onmousedown="event.preventDefault()" title="Body text (remove block format)">¶</button>
         <span class="zsep"></span>
         <button data-act="fmt:em" onmousedown="event.preventDefault()" title="Em dash">—</button>
         <button data-act="fmt:break" onmousedown="event.preventDefault()" title="Scene break">✳</button>
-        <span style="flex:1"></span>
-        <button class="zprev" data-act="zentype" onmousedown="event.preventDefault()" id="zentypebtn" title="Keep the line you're writing near the middle of the page">Typewriter</button>
-        <button class="zprev" data-act="zenprev" onmousedown="event.preventDefault()" id="zenprevbtn">Preview</button>
       </div>
       <div class="zen-pagewrap">
-        <textarea class="zen-draft" id="zendraft" spellcheck="false" placeholder="Start with the charged moment…"></textarea>
-        <div class="zen-mirror" id="zenmirror" aria-hidden="true"></div>
-        <div class="zen-draft md-preview zen-preview" id="zenpreview" style="display:none"></div>
+        <div class="zen-draft md-preview zen-editor" id="zeneditor" contenteditable="true" spellcheck="false" aria-label="Draft editor"></div>
       </div>
     </div>
   </div>
@@ -553,7 +553,7 @@ function SEED(){
 }
 
 /* ================= STATE ================= */
-var S = { data:null, view:"saga", sn:1, eid:"s1e1", beat:"comfort", sq:"", lq:"", lcat:"all", zenOpen:false, zenFocus:false, zenPeek:null, zenPreview:false, zenTypewriter:true };
+var S = { data:null, view:"saga", sn:1, eid:"s1e1", beat:"comfort", sq:"", lq:"", lcat:"all", zenOpen:false, zenFocus:false, zenPeek:null };
 
 function load(){
   try{
@@ -575,10 +575,13 @@ function migrate(d){
     characters:d.characters&&d.characters.length?d.characters:seed.characters,
     episodes:(d.episodes||[]).map(function(e){
       var base = mkEp(e.seasonNumber||1,e.number||1,e.globalNumber||1);
+      var dr=e.draft||"";
+      if(dr && dr.indexOf("<")<0) dr=mdToHtml(dr); /* upgrade old markdown drafts to HTML */
       return Object.assign({},base,e,{
         beats:Object.assign({},emptyBeats(),e.beats||{}),
         checklist:Object.assign({},emptyChk(),e.checklist||{}),
-        charactersPresent:e.charactersPresent&&e.charactersPresent.length?e.charactersPresent:["Jay"]
+        charactersPresent:e.charactersPresent&&e.charactersPresent.length?e.charactersPresent:["Jay"],
+        draft:dr
       });
     })};
   return out;
@@ -589,7 +592,7 @@ function $id(x){ return document.getElementById(x); }
 function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function words(t){ t=(t||"").trim(); return t?t.split(/\s+/).length:0; }
 function filled(ep){ return BEATS.filter(function(b){return (ep.beats[b.key]||"").trim();}).length; }
-function epWords(ep){ var n=0; BEATS.forEach(function(b){n+=words(ep.beats[b.key]);}); ["notebookLine","almostMoment","relationshipBeat","marketingTakeaway","hook","nextTease","notes"].forEach(function(k){n+=words(ep[k]);}); return n; }
+function epWords(ep){ var n=0; BEATS.forEach(function(b){n+=words(ep.beats[b.key]);}); ["notebookLine","almostMoment","relationshipBeat","marketingTakeaway","hook","nextTease","notes"].forEach(function(k){n+=words(ep[k]);}); return n+draftWc(ep.draft); }
 function strength(t){ var n=words(t); if(n===0)return "empty"; if(n<8)return "thin"; if(n<24)return "present"; return "developed"; }
 function currentEp(){ return S.data.episodes.find(function(e){return e.id===S.eid;}) || null; }
 function currentSeason(){ return S.data.seasons.find(function(s){return s.number===S.sn;}) || null; }
@@ -668,7 +671,7 @@ function dlMD(){
       if(e.hook)L.push("**Hook:** "+e.hook);
       BEATS.forEach(function(b){ L.push("**"+b.n+". "+b.name+".** "+(e.beats[b.key]||"—")); });
       if(e.notebookLine)L.push("> Notebook: "+e.notebookLine);
-      if(e.draft)L.push("\n**Draft:**\n\n"+e.draft+"\n");
+      if(e.draft)L.push("\n**Draft:**\n\n"+htmlToMarkdown(e.draft)+"\n");
       if(e.marketingTakeaway)L.push("**Takeaway ("+(e.takeawayCategory||"—")+"):** "+e.marketingTakeaway);
       if(e.nextTease)L.push("**Tease:** "+e.nextTease);
       L.push("");
@@ -808,23 +811,32 @@ function renderZen(){
   });
   h+='<p class="dim" style="margin-top:14px;line-height:1.6">Click an element to peek at its brief. Tick each one as your draft covers it. Everything saves as you write.</p>';
   $id("zenbrief").innerHTML=h;
-  var ta=$id("zendraft");
-  if(document.activeElement!==ta)ta.value=ep.draft||"";
+}
+/* Strip any stray right-to-left direction markers from stored draft HTML */
+function sanitizeDir(html){
+  var d=document.createElement("div");
+  d.innerHTML=html||"";
+  var bad=d.querySelectorAll('[dir]');
+  for(var i=0;i<bad.length;i++){ bad[i].removeAttribute("dir"); }
+  /* also drop invisible bidi override characters that flip text */
+  return d.innerHTML.replace(/[\u202e\u202b\u202d\u200f\u200e]/g,"");
 }
 function openZen(){
   if(!currentEp())return;
-  S.zenOpen=true; S.zenPeek=null; S.zenFocus=false; S.zenPreview=false; S.zenTypewriter=false;
+  S.zenOpen=true; S.zenPeek=null; S.zenFocus=false;
   var z=$id("zen");
   z.classList.remove("zen-focus");
   z.style.display="flex";
   $id("zenfocusbtn").textContent="Hide brief";
-  $id("zenpreview").style.display="none";
-  $id("zendraft").style.display="block";
-  $id("zenprevbtn").textContent="Preview";
-  $id("zentypebtn").textContent="Typewriter · off";
   document.body.style.overflow="hidden";
   renderZen();
-  setTimeout(function(){ var ta=$id("zendraft"); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); },40);
+  var ed=$id("zeneditor");
+  var clean=sanitizeDir(currentEp().draft||"");
+  ed.innerHTML=clean;
+  if(clean!==(currentEp().draft||"")){ currentEp().draft=clean; scheduleSave(); }
+  zUndo=[]; zRedo=[]; zLast=clean;
+  updateZenCounts();
+  setTimeout(function(){ placeCaretEnd(ed); },10);
 }
 function closeZen(){
   S.zenOpen=false;
@@ -840,70 +852,86 @@ function toggleZenFull(){
 }
 
 /* ================= ZEN FORMATTING ================= */
+/* Word count from the editor's visible text (no HTML noise) */
 function updateZenCounts(){
   var ep=currentEp(); if(!ep)return;
-  var w2=words(ep.draft||""), t2=ep.wordCountTarget||800;
+  var ed=$id("zeneditor");
+  var w2=words(ed?(ed.innerText||""):(ep.draft||""));
+  var t2=ep.wordCountTarget||800;
   var p2=t2?Math.min(100,Math.round(w2/t2*100)):0;
   $id("zencount").textContent=w2+" / "+t2+" words · "+p2+"%";
   $id("zenbar").style.width=p2+"%";
 }
-/* Typewriter: keep the caret near the vertical middle of the page */
-function zenMirror(){
-  if(!S.zenOpen||!S.zenTypewriter||S.zenPreview)return;
-  var ta=$id("zendraft"), m=$id("zenmirror");
-  if(!ta||!m)return;
-  m.textContent=(ta.value||"").slice(0,ta.selectionEnd||0);
-  var pad=window.innerWidth<=900?24:40;
-  var caretY=m.scrollHeight-pad-16;
-  var target=caretY-ta.clientHeight*0.42;
-  if(target<0)target=0;
-  ta.scrollTop=target;
+function draftWc(d){
+  d=String(d||"");
+  if(d.indexOf("<")>=0)d=d.replace(/<[^>]*>/g," ");
+  return words(d);
 }
-function zenWriteMode(){
-  if(!S.zenPreview)return;
-  S.zenPreview=false;
-  $id("zenpreview").style.display="none";
-  $id("zendraft").style.display="block";
-  $id("zenprevbtn").textContent="Preview";
+/* ---- Undo / redo history (Ctrl+Z / Ctrl+Y) ---- */
+var zUndo=[], zRedo=[], zLast="";
+function edInput(){
+  if(!S.zenOpen)return;
+  var ed=$id("zeneditor");
+  var h=ed.innerHTML;
+  if(h===zLast)return;
+  zUndo.push(zLast);
+  if(zUndo.length>200)zUndo.shift();
+  zRedo=[];
+  zLast=h;
+  var ep=currentEp();
+  if(ep){ ep.draft=h; updateZenCounts(); scheduleSave(); }
+}
+function edSave(){
+  var ed=$id("zeneditor");
+  var ep=currentEp();
+  if(ep){ ep.draft=ed.innerHTML; updateZenCounts(); scheduleSave(); }
+}
+function edUndo(){
+  if(!zUndo.length)return;
+  var ed=$id("zeneditor");
+  zRedo.push(zLast);
+  zLast=zUndo.pop();
+  ed.innerHTML=zLast;
+  edSave();
+  placeCaretEnd(ed);
+}
+function edRedo(){
+  if(!zRedo.length)return;
+  var ed=$id("zeneditor");
+  zUndo.push(zLast);
+  zLast=zRedo.pop();
+  ed.innerHTML=zLast;
+  edSave();
+  placeCaretEnd(ed);
+}
+function placeCaretEnd(el){
+  var range=document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  var sel=window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+/* ---- Real visual formatting: applies directly to the selected text ---- */
+function zenFocus(){
+  var ed=$id("zeneditor");
+  if(document.activeElement!==ed)ed.focus();
 }
 function zenApply(kind){
-  zenWriteMode();
-  var ep=currentEp(); if(!ep)return;
-  var ta=$id("zendraft");
-  var s=ta.selectionStart||0, e=ta.selectionEnd||0;
-  var val, cs, ce;
-  if(kind==="bold"||kind==="italic"||kind==="strike"){
-    var p=kind==="bold"?["**","**","bold"]:kind==="italic"?["*","*","italic"]:["~~","~~","strike"];
-    var body=ta.value.slice(s,e)||p[2];
-    val=ta.value.slice(0,s)+p[0]+body+p[1]+ta.value.slice(e);
-    cs=s+p[0].length; ce=cs+body.length;
-  }else if(kind==="h2"||kind==="h3"||kind==="quote"||kind==="list"){
-    var prefix=kind==="h2"?"## ":kind==="h3"?"### ":kind==="quote"?"> ":"- ";
-    var ls=ta.value.lastIndexOf("\n",s-1)+1;
-    var le=ta.value.indexOf("\n",e); if(le<0)le=ta.value.length;
-    var block=ta.value.slice(ls,le);
-    var lines=block.split("\n");
-    var nonEmpty=lines.filter(function(l){return l.trim();});
-    var strip=nonEmpty.length>0&&nonEmpty.every(function(l){return l.indexOf(prefix)===0;});
-    var out=lines.map(function(l){ return l.trim()?(strip?l.slice(prefix.length):prefix+l):l; }).join("\n");
-    val=ta.value.slice(0,ls)+out+ta.value.slice(le);
-    cs=ce=ls+out.length;
-  }else{
-    var ins=kind==="em"?"—":"\n***\n";
-    val=ta.value.slice(0,s)+ins+ta.value.slice(e);
-    cs=ce=s+ins.length;
+  zenFocus();
+  switch(kind){
+    case "bold": document.execCommand("bold"); break;
+    case "italic": document.execCommand("italic"); break;
+    case "underline": document.execCommand("underline"); break;
+    case "strike": document.execCommand("strikeThrough"); break;
+    case "h2": document.execCommand("formatBlock",false,"H2"); break;
+    case "h3": document.execCommand("formatBlock",false,"H3"); break;
+    case "quote": document.execCommand("formatBlock",false,"BLOCKQUOTE"); break;
+    case "body": document.execCommand("formatBlock",false,"P"); break;
+    case "list": document.execCommand("insertUnorderedList"); break;
+    case "em": document.execCommand("insertText",false,"—"); break;
+    case "break": document.execCommand("insertHTML",false,'<div class="zen-scene">✦ ✦ ✦</div>'); break;
   }
-  ep.draft=val;
-  ta.value=val;
-  ta.focus();
-  ta.setSelectionRange(cs,ce);
-  updateZenCounts();
-  scheduleSave();
-}
-function renderZenPreview(){
-  var ep=currentEp(); if(!ep)return;
-  var html=mdToHtml(ep.draft||"");
-  $id("zenpreview").innerHTML=html||'<p style="font-style:italic;color:var(--faint)">Nothing written yet — switch back to Edit and start typing.</p>';
 }
 function mdToHtml(src){
   function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
@@ -934,6 +962,34 @@ function mdToHtml(src){
   }
   flushP(); closeL();
   return h;
+}
+/* Convert the visual editor's HTML back to markdown for the story-bible export */
+function htmlToMarkdown(html){
+  var div=document.createElement("div"); div.innerHTML=html||"";
+  function walk(node){
+    var out="";
+    for(var i=0;i<node.childNodes.length;i++){
+      var ch=node.childNodes[i];
+      if(ch.nodeType===3){ out+=ch.nodeValue||""; continue; }
+      if(ch.nodeType!==1)continue;
+      var tg=ch.tagName.toUpperCase();
+      var cls=typeof ch.className==="string"?ch.className:"";
+      if(tg==="STRONG"||tg==="B") out+="**"+walk(ch)+"**";
+      else if(tg==="EM"||tg==="I") out+="*"+walk(ch)+"*";
+      else if(tg==="S"||tg==="STRIKE"||tg==="DEL") out+="~~"+walk(ch)+"~~";
+      else if(tg==="BR") out+="\n";
+      else if(tg==="HR"||cls.indexOf("zen-scene")>=0) out+="\n***\n";
+      else if(tg==="H2") out+="\n## "+walk(ch).trim()+"\n";
+      else if(tg==="H3") out+="\n### "+walk(ch).trim()+"\n";
+      else if(tg==="BLOCKQUOTE"){ out+="\n"+walk(ch).split("\n").map(function(l){return "> "+l;}).join("\n")+"\n"; }
+      else if(tg==="LI") out+="- "+walk(ch).trim()+"\n";
+      else if(tg==="UL"||tg==="OL") out+="\n"+walk(ch);
+      else if(tg==="P"||tg==="DIV") out+=walk(ch)+"\n\n";
+      else out+=walk(ch);
+    }
+    return out;
+  }
+  return walk(div).replace(/\n{3,}/g,"\n\n").trim();
 }
 
 /* ================= SIDEBAR ================= */
@@ -1111,7 +1167,7 @@ function renderEp(){
     '<div class="eph"><div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"><span class="num">'+String(ep.number).padStart(2,"0")+'</span>'+
     '<input class="titlein" data-epb="title" value="'+esc(ep.title)+'" placeholder="Untitled episode" /></div>'+
     '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-g" data-act="zen" style="box-shadow:0 0 18px rgba(212,180,90,.15)">✎ Writing room</button><button class="btn" data-act="dupep">Duplicate</button><button class="btn btn-d" data-act="delep">Delete</button></div></div>';
-  h+='<div class="meta">'+gem(ep.changeLevel)+'<span>'+STATUS[ep.status].l+'</span><i>·</i><span>'+fb+'/8 beats</span><i>·</i><span>'+wc+' beat words</span><i>·</i><span>'+words(ep.draft||"")+' draft words · target '+ep.wordCountTarget+'</span><i>·</i><span>Standalone '+score+'/7</span></div>';
+  h+='<div class="meta">'+gem(ep.changeLevel)+'<span>'+STATUS[ep.status].l+'</span><i>·</i><span>'+fb+'/8 beats</span><i>·</i><span>'+wc+' beat words</span><i>·</i><span>'+draftWc(ep.draft)+' draft words · target '+ep.wordCountTarget+'</span><i>·</i><span>Standalone '+score+'/7</span></div>';
   h+='<div class="epstatus">'+Object.keys(STATUS).map(function(k){
     return '<button class="seg" style="display:inline-block;padding:5px 12px;border:1px solid '+(ep.status===k?"rgba(212,180,90,.5)":"var(--line)")+';background:'+(ep.status===k?"rgba(212,180,90,.15)":"transparent")+';color:'+(ep.status===k?"var(--gold)":"var(--faint)")+';font-size:10px;letter-spacing:.16em;text-transform:uppercase;border-radius:2px" data-act="status:'+k+'">'+STATUS[k].l+'</button>';
   }).join("")+'</div>';
@@ -1191,7 +1247,7 @@ function renderEp(){
     var on=auto[item.key];
     var locked=item.key==="allEightBeats"||item.key==="notebookLine"||item.key==="oneLineTurn";
     h+='<div class="chk'+(on?" on":"")+'">'+
-      '<button class="box"'+(locked?"":" data-act='chk:"+item.key+"'")+'>✓</button>'+
+      '<button class="box"'+(locked?"":" data-act='chk:"+item.key+"'")+'><span style="color:'+(on?"var(--void)":"transparent")+'">✓</span></button>'+
       '<div><div class="t">'+item.label+'</div><div class="w">'+item.why+(locked?" · computed automatically":"")+'</div></div></div>';
   });
   h+='</div>';
@@ -1359,16 +1415,6 @@ document.addEventListener("input", function(e){
   if(el.dataset.epb||el.dataset.snb||el.dataset.sgb||el.dataset.sgf||el.dataset.cb) write(el);
   if(el.id==="sq"){ S.sq=el.value; renderSide(); }
   if(el.id==="lq"){ S.lq=el.value; renderLibGrid(); }
-  if(el.id==="zendraft"){
-    var zep=currentEp();
-    if(zep){
-      zep.draft=el.value;
-      updateZenCounts();
-      zenMirror();
-      if(S.zenPreview)renderZenPreview();
-      scheduleSave();
-    }
-  }
 });
 document.addEventListener("change", function(e){
   var el=e.target;
@@ -1387,18 +1433,6 @@ document.addEventListener("click", function(e){
     case "zenfocus": S.zenFocus=!S.zenFocus; $id("zen").classList.toggle("zen-focus",S.zenFocus); $id("zenfocusbtn").textContent=S.zenFocus?"Show brief":"Hide brief"; break;
     case "zenfull": toggleZenFull(); break;
     case "zenpeek": S.zenPeek=S.zenPeek===v?null:v; renderZen(); break;
-    case "zenprev":
-      S.zenPreview=!S.zenPreview;
-      $id("zenpreview").style.display=S.zenPreview?"block":"none";
-      $id("zendraft").style.display=S.zenPreview?"none":"block";
-      $id("zenprevbtn").textContent=S.zenPreview?"Edit":"Preview";
-      if(S.zenPreview)renderZenPreview();
-      break;
-    case "zentype":
-      S.zenTypewriter=!S.zenTypewriter;
-      $id("zentypebtn").textContent="Typewriter"+(S.zenTypewriter?" · on":" · off");
-      if(S.zenTypewriter)zenMirror();
-      break;
     case "fmt": zenApply(v); break;
     case "zenchk":
       var zep=currentEp();
@@ -1490,14 +1524,24 @@ document.addEventListener("click", function(e){
 });
 $id("sideover").addEventListener("click",function(){ $id("side").classList.remove("open"); this.classList.remove("on"); });
 $id("filein").addEventListener("change",function(){ if(this.files[0])doUpload(this.files[0]); this.value=""; });
-$id("zendraft").addEventListener("click",zenMirror);
-$id("zendraft").addEventListener("keyup",zenMirror);
-$id("zendraft").addEventListener("select",zenMirror);
+/* Writing-room editor: save on every change, paste as clean text */
+$id("zeneditor").addEventListener("input",edInput);
+$id("zeneditor").addEventListener("paste",function(e){
+  e.preventDefault();
+  var txt=(e.clipboardData||window.clipboardData).getData("text/plain")||"";
+  if(!txt)return;
+  
+  /* Strip invisible bidi override characters before inserting */
+  txt = txt.replace(/[\u202e\u202b\u202d\u200f\u200e]/g,"");
+  
+  var html=txt.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").split(/\r?\n/).join("<br/>");
+  document.execCommand("insertHTML",false,html);
+});
 
 /* keyboard */
 document.addEventListener("keydown",function(e){
   var tag=(e.target&&e.target.tagName)||"";
-  var typing=tag==="INPUT"||tag==="TEXTAREA"||tag==="SELECT";
+  var typing=tag==="INPUT"||tag==="TEXTAREA"||tag==="SELECT"||(e.target&&e.target.isContentEditable);
   if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="s"){e.preventDefault();dlJSON();return;}
   if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="o"){e.preventDefault();$id("filein").click();return;}
   if(e.key==="Escape"&&S.zenOpen&&!document.fullscreenElement){ e.preventDefault(); closeZen(); return; }
@@ -1505,6 +1549,9 @@ document.addEventListener("keydown",function(e){
     var k2=e.key.toLowerCase();
     if(k2==="b"){ e.preventDefault(); zenApply("bold"); return; }
     if(k2==="i"){ e.preventDefault(); zenApply("italic"); return; }
+    if(k2==="u"){ e.preventDefault(); zenApply("underline"); return; }
+    if(k2==="z"){ e.preventDefault(); if(e.shiftKey)edRedo(); else edUndo(); return; }
+    if(k2==="y"){ e.preventDefault(); edRedo(); return; }
   }
   if(typing)return;
   if(e.key>="1"&&e.key<="8"){S.beat=BEATS[parseInt(e.key)-1].key;S.view="episode";render();}

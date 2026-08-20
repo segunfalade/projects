@@ -182,6 +182,32 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
 /* overlay */
 .overlay{position:fixed;inset:0;z-index:100;background:rgba(7,6,5,.85);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px}
 .overlay .box{max-width:520px;max-height:88vh;overflow-y:auto}
+/* zen writing room */
+.zen{position:fixed;inset:0;z-index:95;background:var(--void);display:flex;flex-direction:column}
+.zen-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--ink);flex-wrap:wrap}
+.zen-count{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.zen-bar{height:4px;border-radius:99px;background:var(--line);margin-top:8px;min-width:220px;max-width:360px;overflow:hidden}
+.zen-bar i{display:block;height:4px;border-radius:99px;background:linear-gradient(90deg,var(--gdim),var(--gold));width:0%;transition:width .3s}
+.zen-body{display:flex;flex:1;min-height:0;position:relative}
+.zen-brief{width:340px;flex-shrink:0;border-right:1px solid var(--line);background:var(--ink);overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:var(--lstr) transparent}
+.zen-draft{flex:1;min-width:0;background:transparent;border:none;outline:none;resize:none;padding:40px 48px;font-family:'Source Serif 4',Georgia,serif;font-size:17px;line-height:1.9;color:var(--cream);caret-color:var(--gold)}
+.zen-draft::placeholder{color:var(--faint)}
+.zen.zen-focus .zen-brief{display:none}
+.zen.zen-focus .zen-draft{max-width:720px;width:100%;margin:0 auto}
+.zr{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:2px;padding:7px 10px;margin-bottom:6px;background:rgba(7,6,5,.4)}
+.zr .chk{flex-shrink:0;width:20px;height:20px;border:1px solid var(--lstr);border-radius:2px;font-size:12px;display:flex;align-items:center;justify-content:center;color:transparent}
+.zr.done{border-color:rgba(93,138,116,.4)}
+.zr.done .chk{background:var(--sage);border-color:var(--sage);color:var(--void)}
+.zr .main{flex:1;text-align:left;min-width:0}
+.zr .nm{display:block;font-size:13px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zr .sb{display:block;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.zr .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.zpeek{font-family:'Source Serif 4',serif;font-style:italic;font-size:13px;color:var(--mute);line-height:1.6;padding:2px 12px 10px 12px}
+.zgroup{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gdim);margin:16px 0 8px}
+@media(max-width:900px){
+  .zen-brief{position:absolute;left:0;top:0;bottom:0;z-index:5;box-shadow:20px 0 40px rgba(0,0,0,.5)}
+  .zen-draft{padding:24px 20px}
+}
 /* hero */
 .hero{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:6px;padding:36px;margin-bottom:20px}
 .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35}
@@ -332,6 +358,28 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
   </div>
 </div>
 
+<div class="zen" id="zen" style="display:none">
+  <div class="zen-top">
+    <div>
+      <div class="kick" id="zenid" style="margin:0">Writing room</div>
+      <div class="zen-count">
+        <span id="zencount">0 words</span>
+        <span class="dim" id="zenprogress">0 covered</span>
+      </div>
+      <div class="zen-bar"><i id="zenbar"></i></div>
+    </div>
+    <div class="seg" style="gap:8px">
+      <button class="btn" data-act="zenfocus" id="zenfocusbtn">Hide brief</button>
+      <button class="btn" data-act="zenfull">Fullscreen</button>
+      <button class="btn btn-g" data-act="zenclose">Done — back to board</button>
+    </div>
+  </div>
+  <div class="zen-body">
+    <div class="zen-brief" id="zenbrief"></div>
+    <textarea class="zen-draft" id="zendraft" spellcheck="false" placeholder="Start with the charged moment…"></textarea>
+  </div>
+</div>
+
 <script>
 "use strict";
 /* ================= DATA ================= */
@@ -378,7 +426,7 @@ var IMG = {
 function emptyBeats(){ return {comfort:"",desire:"",enter:"",adapt:"",get:"",pay:"",return:"",change:""}; }
 function emptyChk(){ return {takeawayStandalone:false,chargedOpening:false,allEightBeats:false,oneLineTurn:false,emotionalButton:false,notebookLine:false,specificityTest:false}; }
 function mkEp(s,n,g,p){ p=p||{};
-  return Object.assign({id:"s"+s+"e"+n,number:n,globalNumber:g,seasonNumber:s,title:"",status:"idea",
+  return Object.assign({id:"s"+s+"e"+n,number:n,globalNumber:g,seasonNumber:s,title:"",draft:"",zenChecks:[],status:"idea",
     beats:emptyBeats(),encounterType:"",woundPressed:"neither",woundPressure:"none",changeLevel:"none",
     twoJayWar:false,notebookLine:"",almostMoment:"",relationshipBeat:"",charactersPresent:["Jay"],
     relationshipFunction:"",marketingTakeaway:"",takeawayCategory:"",softPitch:false,pitchVersion:"None",
@@ -463,7 +511,7 @@ function SEED(){
 }
 
 /* ================= STATE ================= */
-var S = { data:null, view:"saga", sn:1, eid:"s1e1", beat:"comfort", sq:"", lq:"", lcat:"all" };
+var S = { data:null, view:"saga", sn:1, eid:"s1e1", beat:"comfort", sq:"", lq:"", lcat:"all", zenOpen:false, zenFocus:false, zenPeek:null };
 
 function load(){
   try{
@@ -578,6 +626,7 @@ function dlMD(){
       if(e.hook)L.push("**Hook:** "+e.hook);
       BEATS.forEach(function(b){ L.push("**"+b.n+". "+b.name+".** "+(e.beats[b.key]||"—")); });
       if(e.notebookLine)L.push("> Notebook: "+e.notebookLine);
+      if(e.draft)L.push("\n**Draft:**\n\n"+e.draft+"\n");
       if(e.marketingTakeaway)L.push("**Takeaway ("+(e.takeawayCategory||"—")+"):** "+e.marketingTakeaway);
       if(e.nextTease)L.push("**Tease:** "+e.nextTease);
       L.push("");
@@ -670,6 +719,78 @@ function legendHTML(){
     '<span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#6b2d3c"></span> 5–6 Chaos · Price</span>'+
     '<span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#3d6b5a"></span> 7–8 Order · Change</span>'+
     '</div>';
+}
+
+/* ================= ZEN WRITING ROOM ================= */
+function zenItems(ep){
+  var beats=BEATS.map(function(b){
+    return {key:b.key,nm:String(b.n).padStart(2,"0")+" · "+b.name,sb:b.short,txt:ep.beats[b.key],dot:b.color};
+  });
+  var extra=[
+    {key:"takeaway",nm:"Marketing takeaway",sb:"The principle",txt:ep.marketingTakeaway,dot:"#8b3a4a"},
+    {key:"notebook",nm:"Jay's Notebook",sb:"The one-liner",txt:ep.notebookLine,dot:"#d4b45a"},
+    {key:"hook",nm:"Hook / opening",sb:"The entry",txt:ep.hook,dot:"#c17f59"},
+    {key:"tease",nm:"Next episode tease",sb:"The lean-forward",txt:ep.nextTease,dot:"#4a6b6b"},
+    {key:"relationship",nm:"Relationship beat",sb:"The other people",txt:ep.relationshipBeat,dot:"#c4898a"}
+  ];
+  return {beats:beats,extra:extra,all:beats.concat(extra)};
+}
+function renderZen(){
+  var ep=currentEp(); if(!ep)return;
+  var w=words(ep.draft||"");
+  var tgt=ep.wordCountTarget||800;
+  var pct=tgt?Math.min(100,Math.round(w/tgt*100)):0;
+  $id("zenid").textContent="S"+ep.seasonNumber+"E"+ep.number+(ep.title?" · "+ep.title:" · Untitled")+" — writing room";
+  $id("zencount").textContent=w+" / "+tgt+" words · "+pct+"%";
+  $id("zenbar").style.width=pct+"%";
+  var zi=zenItems(ep);
+  var covered=(ep.zenChecks||[]).filter(function(k){return zi.all.some(function(i){return i.key===k;});}).length;
+  $id("zenprogress").textContent=covered+" / "+zi.all.length+" covered";
+  var h='<div class="zgroup">The circle — 8 beats</div>';
+  zi.beats.forEach(function(i){
+    var done=(ep.zenChecks||[]).indexOf(i.key)>=0;
+    h+='<div class="zr'+(done?" done":"")+'">'+
+      '<button class="chk" data-act="zenchk:'+i.key+'">✓</button>'+
+      '<button class="main" data-act="zenpeek:'+i.key+'"><span class="nm">'+i.nm+'</span><span class="sb">'+i.sb+'</span></button>'+
+      '<span class="dot" style="background:'+i.dot+'"></span></div>';
+    if(S.zenPeek===i.key&&i.txt)h+='<div class="zpeek">'+esc(i.txt)+'</div>';
+  });
+  h+='<div class="zgroup">The turn &amp; the send</div>';
+  zi.extra.forEach(function(i){
+    var done=(ep.zenChecks||[]).indexOf(i.key)>=0;
+    h+='<div class="zr'+(done?" done":"")+'">'+
+      '<button class="chk" data-act="zenchk:'+i.key+'">✓</button>'+
+      '<button class="main" data-act="zenpeek:'+i.key+'"><span class="nm">'+i.nm+'</span><span class="sb">'+i.sb+'</span></button>'+
+      '<span class="dot" style="background:'+i.dot+'"></span></div>';
+    if(S.zenPeek===i.key&&i.txt)h+='<div class="zpeek">'+esc(i.txt)+'</div>';
+  });
+  h+='<p class="dim" style="margin-top:14px;line-height:1.6">Click an element to peek at its brief. Tick each one as your draft covers it. Everything saves as you write.</p>';
+  $id("zenbrief").innerHTML=h;
+  var ta=$id("zendraft");
+  if(document.activeElement!==ta)ta.value=ep.draft||"";
+}
+function openZen(){
+  if(!currentEp())return;
+  S.zenOpen=true; S.zenPeek=null; S.zenFocus=false;
+  var z=$id("zen");
+  z.classList.remove("zen-focus");
+  z.style.display="flex";
+  $id("zenfocusbtn").textContent="Hide brief";
+  document.body.style.overflow="hidden";
+  renderZen();
+  setTimeout(function(){ var ta=$id("zendraft"); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); },40);
+}
+function closeZen(){
+  S.zenOpen=false;
+  $id("zen").style.display="none";
+  document.body.style.overflow="";
+  render();
+}
+function toggleZenFull(){
+  var z=$id("zen");
+  if(document.fullscreenElement){ if(document.exitFullscreen)document.exitFullscreen(); }
+  else if(z.requestFullscreen){ z.requestFullscreen(); }
+  else if(z.webkitRequestFullscreen){ z.webkitRequestFullscreen(); }
 }
 
 /* ================= SIDEBAR ================= */
@@ -846,8 +967,8 @@ function renderEp(){
   h+='<div class="kick">Season '+ep.seasonNumber+(ss&&ss.title?" · "+esc(ss.title):"")+" · Global #"+ep.globalNumber+'</div>'+
     '<div class="eph"><div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"><span class="num">'+String(ep.number).padStart(2,"0")+'</span>'+
     '<input class="titlein" data-epb="title" value="'+esc(ep.title)+'" placeholder="Untitled episode" /></div>'+
-    '<div style="display:flex;gap:8px"><button class="btn" data-act="dupep">Duplicate</button><button class="btn btn-d" data-act="delep">Delete</button></div></div>';
-  h+='<div class="meta">'+gem(ep.changeLevel)+'<span>'+STATUS[ep.status].l+'</span><i>·</i><span>'+fb+'/8 beats</span><i>·</i><span>'+wc+' words · target '+ep.wordCountTarget+'</span><i>·</i><span>Standalone '+score+'/7</span></div>';
+    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-g" data-act="zen" style="box-shadow:0 0 18px rgba(212,180,90,.15)">✎ Writing room</button><button class="btn" data-act="dupep">Duplicate</button><button class="btn btn-d" data-act="delep">Delete</button></div></div>';
+  h+='<div class="meta">'+gem(ep.changeLevel)+'<span>'+STATUS[ep.status].l+'</span><i>·</i><span>'+fb+'/8 beats</span><i>·</i><span>'+wc+' beat words</span><i>·</i><span>'+words(ep.draft||"")+' draft words · target '+ep.wordCountTarget+'</span><i>·</i><span>Standalone '+score+'/7</span></div>';
   h+='<div class="epstatus">'+Object.keys(STATUS).map(function(k){
     return '<button class="seg" style="display:inline-block;padding:5px 12px;border:1px solid '+(ep.status===k?"rgba(212,180,90,.5)":"var(--line)")+';background:'+(ep.status===k?"rgba(212,180,90,.15)":"transparent")+';color:'+(ep.status===k?"var(--gold)":"var(--faint)")+';font-size:10px;letter-spacing:.16em;text-transform:uppercase;border-radius:2px" data-act="status:'+k+'">'+STATUS[k].l+'</button>';
   }).join("")+'</div>';
@@ -1095,6 +1216,17 @@ document.addEventListener("input", function(e){
   if(el.dataset.epb||el.dataset.snb||el.dataset.sgb||el.dataset.sgf||el.dataset.cb) write(el);
   if(el.id==="sq"){ S.sq=el.value; renderSide(); }
   if(el.id==="lq"){ S.lq=el.value; renderLibGrid(); }
+  if(el.id==="zendraft"){
+    var zep=currentEp();
+    if(zep){
+      zep.draft=el.value;
+      var w2=words(el.value), t2=zep.wordCountTarget||800;
+      var p2=t2?Math.min(100,Math.round(w2/t2*100)):0;
+      $id("zencount").textContent=w2+" / "+t2+" words · "+p2+"%";
+      $id("zenbar").style.width=p2+"%";
+      scheduleSave();
+    }
+  }
 });
 document.addEventListener("change", function(e){
   var el=e.target;
@@ -1108,6 +1240,18 @@ document.addEventListener("click", function(e){
   var ep,list;
   switch(a){
     case "nav": S.view=v; if(v==="season" && !currentSeason()){ S.sn = S.data.seasons[0] ? S.data.seasons[0].number : 1; } render(); break;
+    case "zen": openZen(); break;
+    case "zenclose": closeZen(); break;
+    case "zenfocus": S.zenFocus=!S.zenFocus; $id("zen").classList.toggle("zen-focus",S.zenFocus); $id("zenfocusbtn").textContent=S.zenFocus?"Show brief":"Hide brief"; break;
+    case "zenfull": toggleZenFull(); break;
+    case "zenpeek": S.zenPeek=S.zenPeek===v?null:v; renderZen(); break;
+    case "zenchk":
+      var zep=currentEp();
+      if(zep){
+        var zc=zep.zenChecks||[]; var zi3=zc.indexOf(v);
+        if(zi3>=0)zc.splice(zi3,1); else zc.push(v);
+        zep.zenChecks=zc; scheduleSave(); renderZen();
+      } break;
     case "sb":
       $id("side").classList.toggle("open"); $id("sideover").classList.toggle("on"); break;
     case "openseason": S.sn=parseInt(v); S.view="season"; render(); break;
@@ -1198,6 +1342,7 @@ document.addEventListener("keydown",function(e){
   var typing=tag==="INPUT"||tag==="TEXTAREA"||tag==="SELECT";
   if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="s"){e.preventDefault();dlJSON();return;}
   if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="o"){e.preventDefault();$id("filein").click();return;}
+  if(e.key==="Escape"&&S.zenOpen&&!document.fullscreenElement){ e.preventDefault(); closeZen(); return; }
   if(typing)return;
   if(e.key>="1"&&e.key<="8"){S.beat=BEATS[parseInt(e.key)-1].key;S.view="episode";render();}
   if(e.key==="["||e.key==="]"){

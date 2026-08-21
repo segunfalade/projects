@@ -17,7 +17,7 @@
   --wine:#8b3a4a; --winedeep:#5c2230; --sage:#5d8a74; --ember:#c17f59; --dusk:#6a8aa0; --rose:#c4898a; --iron:#8a8074;
 }
 html,body{min-height:100%}
-body{margin:0;background:var(--void);color:var(--cream);font-family:'Outfit',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--void);color:var(--cream);font-family:'Outfit',ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;direction:ltr;unicode-bidi:isolate}
 ::selection{background:rgba(212,180,90,.28)}
 button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer;padding:0}
 input,textarea,select{font-family:inherit;color:var(--cream)}
@@ -190,14 +190,14 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
 .zen-bar i{display:block;height:4px;border-radius:99px;background:linear-gradient(90deg,var(--gdim),var(--gold));width:0%;transition:width .3s}
 .zen-body{display:flex;flex:1;min-height:0;position:relative}
 .zen-brief{width:340px;flex-shrink:0;border-right:1px solid var(--line);background:var(--ink);overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:var(--lstr) transparent}
-.zen-draft{flex:1;min-width:0;background:#f7f2eb;border:none;outline:none;resize:none;padding:40px 48px;font-family:'Lora',Georgia,'Times New Roman',serif;font-size:19px;line-height:1.95;font-weight:400;letter-spacing:.004em;color:#1a1714;caret-color:#8a6525;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;scrollbar-width:none;font-kerning:normal;font-variant-ligatures:common-ligatures;overflow-y:auto}
+.zen-draft{flex:1;min-width:0;background:transparent;border:none;outline:none;resize:none;padding:40px 48px;font-family:'Lora',Georgia,'Times New Roman',serif;font-size:19px;line-height:1.95;font-weight:400;letter-spacing:.004em;color:var(--cream);caret-color:var(--gold);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;scrollbar-width:none;font-kerning:normal;font-variant-ligatures:common-ligatures}
 .zen-draft::-webkit-scrollbar{display:none}
-.zen-draft::placeholder{color:#9e9282;font-style:italic}
+.zen-draft::placeholder{color:var(--faint);font-style:italic}
 .zen-pagewrap{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
-.zen-editor{outline:none;cursor:text;min-height:100%;text-align:left}
-.zen-editor:empty::before{content:"Start with the charged moment…";color:#9e9282;font-style:italic}
-.zen-pagewrap,.zen-main{text-align:left}
-.zen-scene{text-align:center;color:#8a7340;letter-spacing:.6em;margin:1.4em 0}
+.zen-editor{outline:none;cursor:text;min-height:100%;direction:ltr;unicode-bidi:isolate;text-align:left}
+.zen-editor:empty::before{content:"Start with the charged moment…";color:var(--faint);font-style:italic;direction:ltr;unicode-bidi:isolate}
+.zen-pagewrap,.zen-main{direction:ltr;unicode-bidi:isolate;text-align:left}
+.zen-scene{text-align:center;color:var(--gdim);letter-spacing:.6em;margin:1.4em 0;direction:ltr;unicode-bidi:isolate}
 .md-preview>div{margin:0 0 .9em}
 .zen-main{flex:1;min-width:0;display:flex;flex-direction:column;max-width:832px;width:100%;margin:0 auto}
 .zen-toolbar{display:flex;align-items:center;gap:4px;padding:8px 16px;border-bottom:1px solid var(--line);background:rgba(28,24,20,.6);flex-wrap:wrap}
@@ -208,15 +208,15 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
 .zen.zen-focus .zen-brief{display:none}
 .zen-preview{overflow-y:auto;scrollbar-width:none}
 .zen-preview::-webkit-scrollbar{display:none}
-.md-preview{font-family:'Lora',Georgia,serif;font-size:19px;line-height:1.95;letter-spacing:.004em;color:#2a2520;-webkit-font-smoothing:antialiased}
+.md-preview{font-family:'Lora',Georgia,serif;font-size:19px;line-height:1.95;letter-spacing:.004em;color:var(--parch);-webkit-font-smoothing:antialiased}
 .md-preview p{margin:0 0 1em}
-.md-preview h2{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:26px;letter-spacing:.02em;color:#110e0a;margin:1.2em 0 .4em}
-.md-preview h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:21px;color:#110e0a;margin:1em 0 .3em}
-.md-preview blockquote{border-left:2px solid rgba(184,142,56,.6);padding-left:14px;margin:0 0 1em;font-style:italic;color:#6b5215;font-family:'Cormorant Garamond',serif;font-size:19px}
+.md-preview h2{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:26px;letter-spacing:.02em;color:var(--cream);margin:1.2em 0 .4em}
+.md-preview h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:21px;color:var(--cream);margin:1em 0 .3em}
+.md-preview blockquote{border-left:2px solid rgba(212,180,90,.4);padding-left:14px;margin:0 0 1em;font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:19px}
 .md-preview hr{border:none;margin:1.6em 0}
-.md-preview hr::before{content:"✦ ✦ ✦";color:#8a7340;letter-spacing:.6em}
+.md-preview hr::before{content:"✦ ✦ ✦";color:var(--gdim);letter-spacing:.6em}
 .md-preview ul,.md-preview ol{margin:0 0 1em;padding-left:1.4em}
-.md-preview s{color:#7a6e60}
+.md-preview s{color:var(--mute)}
 .zr{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:2px;padding:7px 10px;margin-bottom:6px;background:rgba(7,6,5,.4)}
 .zr .chk{flex-shrink:0;width:20px;height:20px;border:1px solid var(--lstr);border-radius:2px;font-size:12px;display:flex;align-items:center;justify-content:center;color:transparent}
 .zr.done{border-color:rgba(93,138,116,.4)}
@@ -328,6 +328,7 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
     <button data-act="nav:saga">Saga</button>
     <button data-act="nav:season">Season</button>
     <button data-act="nav:episode">Episode</button>
+    <button data-act="nav:questions">Questions</button>
     <button data-act="nav:characters">Characters</button>
     <button data-act="nav:library">Library</button>
     <button data-act="nav:guide">Circle</button>
@@ -354,6 +355,7 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
   <button data-act="nav:saga">Saga</button>
   <button data-act="nav:season">Season</button>
   <button data-act="nav:episode">Episode</button>
+  <button data-act="nav:questions">Questions</button>
   <button data-act="nav:characters">Cast</button>
   <button data-act="nav:library">Library</button>
   <button data-act="nav:guide">Circle</button>
@@ -378,47 +380,6 @@ td{border-top:1px solid var(--line);padding:10px 12px 10px 0;vertical-align:top}
       <li>Download JSON after every session. Upload to restore. Refresh is safe; a new browser is not.</li>
     </ul>
     <button class="btn btn-g" style="width:100%;margin-top:18px;padding:10px" data-act="closewel">Enter the room</button>
-  </div>
-</div>
-
-<div class="zen" id="zen" style="display:none">
-  <div class="zen-top">
-    <div>
-      <div class="kick" id="zenid" style="margin:0">Writing room</div>
-      <div class="zen-count">
-        <span id="zencount">0 words</span>
-        <span class="dim" id="zenprogress">0 covered</span>
-      </div>
-      <div class="zen-bar"><i id="zenbar"></i></div>
-    </div>
-    <div class="seg" style="gap:8px">
-      <button class="btn" data-act="zenfocus" id="zenfocusbtn">Hide brief</button>
-      <button class="btn" data-act="zenfull">Fullscreen</button>
-      <button class="btn btn-g" data-act="zenclose">Done — back to board</button>
-    </div>
-  </div>
-  <div class="zen-body">
-    <div class="zen-brief" id="zenbrief"></div>
-    <div class="zen-main">
-      <div class="zen-toolbar" style="max-width:832px">
-        <button data-act="fmt:bold" onmousedown="event.preventDefault()" title="Bold · Ctrl+B"><b>B</b></button>
-        <button data-act="fmt:italic" onmousedown="event.preventDefault()" title="Italic · Ctrl+I"><i>I</i></button>
-        <button data-act="fmt:underline" onmousedown="event.preventDefault()" title="Underline · Ctrl+U"><u>U</u></button>
-        <button data-act="fmt:strike" onmousedown="event.preventDefault()" title="Strikethrough"><s>S</s></button>
-        <span class="zsep"></span>
-        <button data-act="fmt:h2" onmousedown="event.preventDefault()" title="Section heading">H2</button>
-        <button data-act="fmt:h3" onmousedown="event.preventDefault()" title="Sub-heading">H3</button>
-        <button data-act="fmt:quote" onmousedown="event.preventDefault()" title="Quote / Notebook line">❝</button>
-        <button data-act="fmt:list" onmousedown="event.preventDefault()" title="Bullet list">•</button>
-        <button data-act="fmt:body" onmousedown="event.preventDefault()" title="Body text (remove block format)">¶</button>
-        <span class="zsep"></span>
-        <button data-act="fmt:em" onmousedown="event.preventDefault()" title="Em dash">—</button>
-        <button data-act="fmt:break" onmousedown="event.preventDefault()" title="Scene break">✳</button>
-      </div>
-      <div class="zen-pagewrap">
-        <div class="zen-draft md-preview zen-editor" id="zeneditor" contenteditable="true" spellcheck="false" aria-label="Draft editor"></div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -456,6 +417,38 @@ var CHECKLIST = [
  {key:"notebookLine",label:"Includes Jay's Notebook (the shareable one-liner)",why:"The line that can live on LinkedIn without the episode. Crystallized."},
  {key:"specificityTest",label:"Passes the \"couldn't be sent to anyone else\" specificity test",why:"If it has a teardown, it could only be about this page, this voice, this offer."}
 ];
+var QCATS=["Coaching & Consulting","Financial Services","Health & Wellness","Online Courses","Fintech & SaaS","Memberships & Masterminds","B2B Services"];
+var QOUT=[{v:"walk",l:"Walk away",d:"The gap wins. Jay doesn't buy.",c:"#8b3a4a"},{v:"almost",l:"The tight almost",d:"The condition is tight — the gap nearly closes. He almost buys.",c:"#d4b45a"},{v:"buy",l:"He buys",d:"The condition holds. The brand closes the gap.",c:"#5d8a74"}];
+var QWOUNDS=["Module 7","Marcus","Both","Invisibility (Ep 1)","Immunity (saturation)","Wound #1 — auto-bill","Wound #2 — phantom sale","Wound #3 — curated proof","Wound #4 — hidden compensation","Wound #5 — fake guarantee","Wound #6 — recycled course","Wound #7 — data / email storm"];
+var QPATTERN=[["The exception (what if it doesn't work for me?)","The rule (it works for most people!)"],["The cost (what will this require of me?)","The benefit (here's what you'll get!)"],["The failure (what happens when it goes wrong?)","The success (here's our success rate!)"],["The specifics (someone EXACTLY like me?)","The generalities (people at all stages!)"],["The reality (what's the boring middle?)","The transformation (you'll transform!)"],["The exit (can I leave easily?)","The entry (here's how to start!)"],["The incentives (do you profit from saying yes?)","The values (we act in your best interest!)"]];
+var QSTEPS=["Pick one question that fits the episode's encounter type.","Set up the scene — Jay meets the founder. The conversation begins.","Build to the question — let the brand's standard answers play out first (hero, testimonials, guarantee).","Jay asks the real question — from the catalog, or adapted.","The brand answers the wrong question — competently, sincerely, but off-target.","The silence — Jay notices the gap. The founder can't close it.","The takeaway emerges from the gap, felt not told."];
+var CATQ=[
+{id:"q1",category:"Coaching & Consulting",title:"Will this work for someone like me?",realQuestion:"Has anyone done this who was already fifteen years into a career — not starting out, not chasing their first win, but wondering if they built the wrong thing?",brandAnswer:"Our program works for professionals at all stages! Whether you're just starting out or well-established, our proven system meets you where you are.",gap:"\"All stages\" is code for \"we wrote this for the majority, and you're not the majority.\" Universal language reads as evasive to someone asking a specific question. The buyer doesn't want to be included generically — they want to be recognized specifically.",wound:"Module 7 (internal distrust — \"will I follow through if I can't even see myself in the success stories?\")",silence:"David reaches for a specific client story. The closest match is someone ten years younger who was \"exploring options.\" Not the same. The gap shows."},
+{id:"q2",category:"Coaching & Consulting",title:"What happens if I get busy and can't keep up?",realQuestion:"What happens when life gets in the way? Because it always does. Client work piles up, momentum dies, and suddenly I've missed three modules. What then?",brandAnswer:"Our program is self-paced! You have lifetime access, so you can always catch up on your own schedule.",gap:"Self-paced is the PROBLEM, not the solution — for someone whose pattern is \"starts strong, drifts, never returns.\" Lifetime access is just permission to quit quietly. The buyer isn't asking for flexibility. They're asking: \"Will you notice if I disappear? Will you pull me back?\"",wound:"Module 7 (directly — this IS the Module 7 fear spoken aloud)",silence:"David mentions the community and weekly check-ins. Jay asks: \"Has anyone used the lifetime access to actually come back after dropping off?\" David doesn't have a clean answer."},
+{id:"q3",category:"Coaching & Consulting",title:"Is this actually different, or the same framework repackaged?",realQuestion:"I've taken a course before. Three pillars, modules, worksheets, a community. Yours has... three pillars, modules, worksheets, a community. What's actually different?",brandAnswer:"Our methodology is proprietary and battle-tested! Developed over five years with hundreds of clients.",gap:"\"Proprietary\" and \"battle-tested\" are words, not evidence. The buyer has heard both before from the course that was 60% free YouTube content. The question isn't \"is it proven?\" It's \"show me the part I couldn't get for free.\"",wound:"Wound #6 (the recycled course — \"I paid $900 to find out the free version was the real version\")",silence:"David starts describing the pillars. They sound like every other program's pillars. Jay waits for the differentiator. It doesn't come. Not because David is dishonest — because the differentiation is in the marketing, not the method."},
+{id:"q4",category:"Coaching & Consulting",title:"Can I see the people it didn't work for?",realQuestion:"Show me someone it didn't work for. What happened? Why didn't it work? What did you learn?",brandAnswer:"(Silence. Or: \"Our success rate is 94%!\" Or: \"We carefully select clients who are a good fit.\")",gap:"Asking to see failures is the highest-trust request a buyer can make — and almost no brand can answer it. The buyer knows success stories are curated. They're asking for the uncensored version. The brand's inability to show failure reads as either dishonesty or self-ignorance. Both erode trust.",wound:"Wound #3 (fake reviews — \"I trust the ones they didn't promote\")",silence:"David genuinely doesn't have a failure story ready. He's never been asked. The absence is louder than any testimonial."},
+{id:"q5",category:"Financial Services",title:"Will you tell me the truth even if it costs you the sale?",realQuestion:"If I don't actually need what you're selling, will you tell me that? Or will you find a reason I need it anyway?",brandAnswer:"We always act in our clients' best interests! Your success is our success.",gap:"\"Your success is our success\" is a slogan, not a structural guarantee. The buyer is asking whether the INCENTIVES are aligned — and in most financial services, they're not (commissions, AUM fees, upsell paths). The buyer can't verify the claim, so the claim registers as marketing.",wound:"Marcus / Wound #4 (someone he trusted was secretly compensated)",silence:"Jay asks how the advisor gets paid. The answer is complex enough that Jay's guard goes up. The complexity IS the answer."},
+{id:"q6",category:"Financial Services",title:"What's the worst that happens if I do nothing?",realQuestion:"Honestly — what happens if I don't work with you? Am I actually in trouble, or are you creating urgency?",brandAnswer:"Every year you wait, you lose compounding returns! The cost of inaction is significant.",gap:"\"Cost of inaction\" framing is a sales technique — and the buyer recognizes it as one. The question was genuine (\"how bad is my situation really?\"), and the answer was a pressure tactic. The buyer wanted honesty and got a playbook move.",wound:"Wound #2 (phantom sale — manufactured urgency)",silence:"Jay asks for specific numbers based on his actual situation. The advisor gives a general illustration. The generality is the tell."},
+{id:"q7",category:"Financial Services",title:"Is this 'free consultation' actually free?",realQuestion:"I've done \"free consultations\" before. They weren't free. They were sales calls with warm-up questions. Is yours different?",brandAnswer:"Our initial consultation is completely free and no-obligation! Just a friendly conversation to see if we're a fit.",gap:"\"No obligation\" addresses the contract, not the experience. The buyer's concern isn't being OBLIGATED — it's being PRESSURED. They've been through the warm-questions-to-concerning-gaps-to-package-pivot sequence. \"Free\" doesn't address the real fear: \"this call is structured to close me, not help me.\"",wound:"Wound #1 (auto-bill ambush — \"free\" is never free)",silence:"Jay asks what happens during the call, step by step. The advisor describes: review, findings, recommendations. Jay recognizes the shape. The shape is the tell."},
+{id:"q8",category:"Financial Services",title:"What do you do when the plan goes wrong?",realQuestion:"Markets crash. Plans fail. Life happens. When things go wrong — not if — what do you actually do? Not \"we monitor and adjust.\" What do you DO?",brandAnswer:"We provide ongoing portfolio management and regular reviews to keep your plan on track!",gap:"\"Ongoing management\" is a feature, not a crisis response. The buyer is asking about the WORST CASE — and the brand is answering with the best case. The fear isn't \"will you manage my money?\" It's \"will you be there when the money disappears?\"",wound:"Module 7 (internal distrust — \"will I panic and pull out at the worst moment?\")",silence:"Jay asks about 2008. Or the last correction. The advisor gives a general \"we guided clients through.\" Jay wants a specific story of a specific client in a specific crisis. The specificity gap shows."},
+{id:"q9",category:"Health & Wellness",title:"What if I'm the person it doesn't work for?",realQuestion:"Your testimonials are people who lost weight, got energy, transformed. What about the people who didn't? What happened to them?",brandAnswer:"Results vary! As long as you follow the program, most people see significant improvements.",gap:"\"Results vary\" is a disclaimer, not an answer. The buyer is asking about the failure mode — and the brand is deflecting with legal language. The fear isn't \"will it work for most people?\" It's \"will it work for ME, and what happens if I'm the exception?\"",wound:"Module 7 (\"I'm the one who doesn't finish\") + Wound #3 (curated proof)",silence:"Jay asks for the non-responder rate. The brand doesn't track it. The not-tracking is the tell — they only measure success."},
+{id:"q10",category:"Health & Wellness",title:"Can you talk to me like an adult, not a transformation story?",realQuestion:"I don't need to be inspired. I need information. What's actually in this? What will I feel? What's the boring, unsexy reality of doing this program?",brandAnswer:"Get ready to transform your life! Our holistic approach addresses mind, body, and spirit for total wellness!",gap:"The buyer asked for logistics. The brand answered with a mission statement. The buyer isn't unmotivated — they're saturated with motivation. They need the part the marketing skips: the day-to-day reality, the hard parts, the unglamorous middle.",wound:"General immunity (saturation with transformation language)",silence:"Jay asks what week three actually looks like. The brand describes outcomes, not the experience. The buyer wanted a map; they got a postcard."},
+{id:"q11",category:"Health & Wellness",title:"Is there a human, or is this an app?",realQuestion:"When I have a question at 11pm about whether what I'm feeling is normal — who do I talk to? A chatbot? A forum? A person?",brandAnswer:"You'll have access to our vibrant community and comprehensive resource library!",gap:"\"Community\" and \"resource library\" are not a person. The buyer is asking about loneliness in the process — and the brand is pointing to infrastructure. The fear isn't \"is there information?\" It's \"will anyone notice if I'm struggling?\"",wound:"Module 7 (the drift — \"nobody noticed when I stopped\")",silence:"Jay asks if there's a dedicated coach or contact. The answer is \"community support.\" The translation: no. You're on your own with a forum."},
+{id:"q12",category:"Health & Wellness",title:"Will you tell me if this isn't right for my situation?",realQuestion:"I'm not twenty-eight. I'm not starting from zero. I have a specific situation. Will you tell me honestly if this isn't designed for me?",brandAnswer:"Our program is customizable and works for all body types and fitness levels!",gap:"\"Works for everyone\" is the most suspicious claim to an immune buyer. The buyer is asking for honest exclusion — \"tell me if I don't fit\" — and the brand is offering universal inclusion. Universality reads as desperation. Exclusion reads as confidence.",wound:"General immunity + Module 7",silence:"Jay asks what type of person the program ISN'T for. The brand can't answer. Or won't. Both are bad."},
+{id:"q13",category:"Online Courses",title:"How much of this is actually new vs. what I could find free?",realQuestion:"Be honest — if I spent twenty hours on YouTube and Reddit, how much of this course would I already know?",brandAnswer:"Our course distills years of expertise into a structured, step-by-step system that saves you time and guesswork!",gap:"The buyer asked about CONTENT OVERLAP. The brand answered about CONVENIENCE. Those are different questions. The buyer isn't asking \"is it organized?\" They're asking \"is the premium content actually premium, or am I paying for curation of free material?\"",wound:"Wound #6 (recycled course — \"the free version was the real version\")",silence:"Jay asks to see the table of contents. The topics are familiar. The \"proprietary\" label is on the structure, not the substance."},
+{id:"q14",category:"Online Courses",title:"What happens after I buy — specifically, week one?",realQuestion:"Walk me through the first seven days after I enroll. Not the outcome. The actual experience. What am I doing on day three?",brandAnswer:"You'll get immediate access to all modules, bonus resources, and our private community!",gap:"The brand answered \"what do you GET?\" The buyer asked \"what do you DO?\" Access isn't experience. The buyer's fear is the gap between buying and doing — the exact gap where Module 7 lives. They want to know someone's thought about the first week, not just the sales page.",wound:"Module 7 (directly — the gap between purchase and follow-through)",silence:"Jay asks what day one looks like. The brand describes the platform. The platform isn't the experience."},
+{id:"q15",category:"Online Courses",title:"Will I actually finish this?",realQuestion:"I've started courses before. I finished six modules of one. The seventh is still waiting. What makes this different — not the content, but the support that keeps me from drifting?",brandAnswer:"Our structured curriculum and weekly milestones keep you on track!",gap:"Structure doesn't prevent drift — Jay's last course was structured too. He drifted anyway. The buyer is asking about ACCOUNTABILITY and HUMAN SUPPORT, and the brand is offering ORGANIZATION. Modules don't notice when you disappear. People do.",wound:"Module 7 (the core wound, named directly)",silence:"Jay asks what happens if he misses a week. The brand says \"you can catch up anytime.\" That's permission to drift. The drift is what he's afraid of."},
+{id:"q16",category:"Online Courses",title:"Can I talk to someone who finished — someone regular?",realQuestion:"I don't want the highlight reel. Can I talk to someone who finished the course, had a normal experience, didn't transform their life but got something real?",brandAnswer:"Check out our testimonials page! Hundreds of students have shared their success stories!",gap:"The buyer wants the MEDIAN experience, not the outlier. Testimonials are selected for drama. The buyer is asking: \"what does normal look like?\" The brand only showcases exceptional. The absence of \"normal\" makes the buyer distrust the exceptional.",wound:"Wound #3 (curated/fake proof)",silence:"Jay asks for an average completion rate. The brand doesn't share it. The not-sharing is the tell."},
+{id:"q17",category:"Fintech & SaaS",title:"Why do you need my data before you've shown me anything?",realQuestion:"You want my bank login, my full name, and a selfie — before I've seen a single feature. Why? What do I get first, and what do you get first?",brandAnswer:"We need this information to verify your identity and connect your accounts securely! Your data is protected with bank-level encryption.",gap:"The brand answered \"is your data safe?\" The buyer asked \"why NOW, before trust?\" Security doesn't address sequence. The buyer's concern is being asked to commit before seeing value — the same dynamic as a pushy salesperson demanding a decision before showing the product.",wound:"Wound #7 (email storm — \"giving my data is giving up control\")",silence:"Jay asks if he can see a demo first. The answer is \"after onboarding.\" The sequence is the problem, and the brand can't see it."},
+{id:"q18",category:"Fintech & SaaS",title:"What happens to my data if I leave?",realQuestion:"If I try this and decide it's not for me — what happens to all the data I gave you? Do you delete it? Keep it? Sell it?",brandAnswer:"We take your privacy seriously! Read our privacy policy for full details.",gap:"\"Read our privacy policy\" is the brand saying \"the answer is in there somewhere, go find it.\" The buyer wants a one-sentence human answer: \"We delete everything.\" The brand's inability to say that simply, in the moment, is the tell. Complexity in privacy language = data is being used.",wound:"Wound #7 (data betrayal)",silence:"Jay asks directly: \"Do you sell my data — yes or no?\" The answer is nuanced. Nuance is the tell."},
+{id:"q19",category:"Fintech & SaaS",title:"What's the catch with \"free\"?",realQuestion:"You're offering this for free. I've learned that free means I'm paying in some way I can't see yet. What's the actual business model?",brandAnswer:"We offer a free tier so everyone can experience the value! Premium features are available with a paid upgrade.",gap:"The buyer asked about the BUSINESS MODEL. The brand answered about the PRICING TIER. The buyer suspects the free version is a data-harvesting tool or a funnel to paid. The brand's answer confirms the funnel but doesn't address the data. The ambiguity is the tell.",wound:"Wound #1 (auto-bill) + Wound #7 (email storm)",silence:"Jay asks how they make money from free users. The answer is \"ads and aggregated data.\" Jay closes the tab."},
+{id:"q20",category:"Fintech & SaaS",title:"What happens when the app breaks or makes a mistake?",realQuestion:"Software breaks. Algorithms make mistakes. What happens when yours costs me money or time? Not \"we're committed to resolving issues\" — what ACTUALLY happens?",brandAnswer:"Our platform is reliable and secure! In the rare event of an issue, our support team is here to help.",gap:"The buyer asked about ACCOUNTABILITY for failure. The brand answered about GENERAL RELIABILITY. \"We're here to help\" doesn't address what happens when help isn't enough — refunds, corrections, liability. The buyer is asking about the worst case, and the brand is selling the best case.",wound:"Wound #5 (fake guarantee — promises with fine print)",silence:"Jay asks for a specific example of a time the app failed and how it was handled. The brand gives a generic \"we learn from every incident.\" No specifics. No story. The absence is the tell."},
+{id:"q21",category:"Memberships & Masterminds",title:"Is the value in the content, or in the network?",realQuestion:"Am I paying for knowledge, or for access to people? Because if it's access — who's actually in there? Not \"founders and leaders.\" Who, specifically?",brandAnswer:"Our community includes entrepreneurs, founders, and professionals at all levels! You'll network with amazing people.",gap:"\"Amazing people\" is not an answer. The buyer wants demographics, levels, accessibility. Are these people active? Are they at his level? Will he be the oldest, most experienced, least connected? The vagueness makes the network sound like a selling point, not a reality.",wound:"Episode 1 wound (invisibility — \"will I fit in here?\")",silence:"Jay asks for the average member profile. The brand can't give one. Or the one they give doesn't match Jay."},
+{id:"q22",category:"Memberships & Masterminds",title:"What if I join and realize it's not for me?",realQuestion:"If I join, come to two calls, and realize this isn't my people or my level — can I leave? Easily? With my money back?",brandAnswer:"You can cancel anytime! And we offer a 30-day guarantee.",gap:"\"Cancel anytime\" and \"30-day guarantee\" are the right words — but the buyer has been through the cancellation maze before. The question isn't \"is there a policy?\" It's \"is the policy frictionless in practice?\" The brand states the policy. The buyer wants evidence of the experience.",wound:"Wound #1 (auto-bill / cancellation maze) + Wound #5 (fake guarantee)",silence:"Jay asks how long the average refund takes. The brand says \"5-10 business days, subject to review.\" Subject to review. There it is."},
+{id:"q23",category:"Memberships & Masterminds",title:"Will I be the only one who looks/thinks/is like me in this room?",realQuestion:"Looking at your member photos, your testimonials, your speaker lineup — am I going to be the odd one out? Because I've been in rooms where I was, and it changes the experience.",brandAnswer:"We welcome everyone! Our community is diverse and inclusive.",gap:"\"Diverse and inclusive\" is a values statement, not a demographic reality. The buyer is looking at the evidence (photos, testimonials) and it doesn't match the claim. The claim reads as aspirational marketing. The evidence reads as truth. When they conflict, the buyer trusts the evidence.",wound:"Episode 1 wound (invisibility) + general immunity",silence:"Jay looks at the testimonial photos again. They don't reflect \"diverse and inclusive.\" He doesn't say anything. He just notices. The noticing is the exit."},
+{id:"q24",category:"B2B Services",title:"Have you actually done this for someone in my exact situation?",realQuestion:"I'm not a startup. I'm not scaling. I'm an established professional reconsidering my path. Have you worked with someone in that exact spot — not adjacent, not similar, but exactly here?",brandAnswer:"We work with clients across industries and stages! Our adaptable approach means we can help anyone.",gap:"\"Adaptable approach\" means \"we don't specialize in you.\" The buyer is asking for SPECIFIC RELEVANCE and getting GENERAL COMPETENCE. General competence is the floor, not the differentiator. The buyer wants to know: \"Do you understand MY situation?\" — and \"we can help anyone\" translates to \"we understand no one specifically.\"",wound:"Episode 1 wound (invisibility — the core Jay wound)",silence:"Jay asks for one case study from someone in his exact situation. The agency offers a \"similar\" one. Similar isn't exact. The buyer knows the difference."},
+{id:"q25",category:"B2B Services",title:"What's the boring reality of working with you?",realQuestion:"Strip away the transformation. What's it actually like, day to day, to be your client? The meetings, the homework, the stuff that's not exciting but has to happen?",brandAnswer:"We make the process seamless and enjoyable! Our clients love working with us.",gap:"The buyer asked for REALITY. The brand answered with EXPERIENCE MARKETING (\"seamless,\" \"enjoyable\"). The buyer doesn't want to hear it's fun — they want to know what it COSTS in time, attention, and discomfort. The brand's inability to describe the unglamorous middle signals they're selling the outcome, not preparing the buyer for the work.",wound:"Module 7 (the drift — \"what happens in the boring middle where I usually quit?\")",silence:"Jay asks what the hardest part of the process is for most clients. The brand says \"staying consistent.\" Jay asks what they do about that. The answer is generic accountability language. The buyer hears: nothing structural. The drift will happen again."}
+];
 var IMG = {
  laptop:"https://images.pexels.com/photos/8037008/pexels-photo-8037008.jpeg?auto=compress&cs=tinysrgb&w=1800",
  desk:"https://images.pexels.com/photos/7610763/pexels-photo-7610763.jpeg?auto=compress&cs=tinysrgb&w=1800",
@@ -468,7 +461,7 @@ var IMG = {
 function emptyBeats(){ return {comfort:"",desire:"",enter:"",adapt:"",get:"",pay:"",return:"",change:""}; }
 function emptyChk(){ return {takeawayStandalone:false,chargedOpening:false,allEightBeats:false,oneLineTurn:false,emotionalButton:false,notebookLine:false,specificityTest:false}; }
 function mkEp(s,n,g,p){ p=p||{};
-  return Object.assign({id:"s"+s+"e"+n,number:n,globalNumber:g,seasonNumber:s,title:"",draft:"",zenChecks:[],status:"idea",
+  return Object.assign({id:"s"+s+"e"+n,number:n,globalNumber:g,seasonNumber:s,title:"",draft:"",zenChecks:[],questionPool:[],chosenQuestionId:null,gapOutcome:"walk",gapTension:7,status:"idea",
     beats:emptyBeats(),encounterType:"",woundPressed:"neither",woundPressure:"none",changeLevel:"none",
     twoJayWar:false,notebookLine:"",almostMoment:"",relationshipBeat:"",charactersPresent:["Jay"],
     relationshipFunction:"",marketingTakeaway:"",takeawayCategory:"",softPitch:false,pitchVersion:"None",
@@ -553,7 +546,7 @@ function SEED(){
 }
 
 /* ================= STATE ================= */
-var S = { data:null, view:"saga", sn:1, eid:"s1e1", beat:"comfort", sq:"", lq:"", lcat:"all", zenOpen:false, zenFocus:false, zenPeek:null };
+var S = { data:null, view:"saga", sn:1, eid:"s1e1", beat:"comfort", sq:"", lq:"", lcat:"all", qSearch:"", qCat:"all", qOpen:null };
 
 function load(){
   try{
@@ -581,7 +574,11 @@ function migrate(d){
         beats:Object.assign({},emptyBeats(),e.beats||{}),
         checklist:Object.assign({},emptyChk(),e.checklist||{}),
         charactersPresent:e.charactersPresent&&e.charactersPresent.length?e.charactersPresent:["Jay"],
-        draft:dr
+        draft:dr,
+        questionPool:Array.isArray(e.questionPool)?e.questionPool:[],
+        chosenQuestionId:e.chosenQuestionId||null,
+        gapOutcome:e.gapOutcome||"walk",
+        gapTension:typeof e.gapTension==="number"?e.gapTension:7
       });
     })};
   return out;
@@ -672,7 +669,7 @@ function dlMD(){
       BEATS.forEach(function(b){ L.push("**"+b.n+". "+b.name+".** "+(e.beats[b.key]||"—")); });
       if(e.notebookLine)L.push("> Notebook: "+e.notebookLine);
       if(e.draft)L.push("\n**Draft:**\n\n"+htmlToMarkdown(e.draft)+"\n");
-      if(e.marketingTakeaway)L.push("**Takeaway ("+(e.takeawayCategory||ymobile||"—")+"):** "+e.marketingTakeaway);
+      if(e.marketingTakeaway)L.push("**Takeaway ("+(e.takeawayCategory||"—")+"):** "+e.marketingTakeaway);
       if(e.nextTease)L.push("**Tease:** "+e.nextTease);
       L.push("");
     });
@@ -766,172 +763,112 @@ function legendHTML(){
     '</div>';
 }
 
-/* ================= ZEN WRITING ROOM ================= */
-function zenItems(ep){
-  var beats=BEATS.map(function(b){
-    return {key:b.key,nm:String(b.n).padStart(2,"0")+" · "+b.name,sb:b.short,txt:ep.beats[b.key],dot:b.color};
-  });
-  var extra=[
-    {key:"takeaway",nm:"Marketing takeaway",sb:"The principle",txt:ep.marketingTakeaway,dot:"#8b3a4a"},
-    {key:"notebook",nm:"Jay's Notebook",sb:"The one-liner",txt:ep.notebookLine,dot:"#d4b45a"},
-    {key:"hook",nm:"Hook / opening",sb:"The entry",txt:ep.hook,dot:"#c17f59"},
-    {key:"tease",nm:"Next episode tease",sb:"The lean-forward",txt:ep.nextTease,dot:"#4a6b6b"},
-    {key:"relationship",nm:"Relationship beat",sb:"The other people",txt:ep.relationshipBeat,dot:"#c4898a"}
-  ];
-  return {beats:beats,extra:extra,all:beats.concat(extra)};
-}
-function renderZen(){
-  var ep=currentEp(); if(!ep)return;
-  var w=words(ep.draft||"");
-  var tgt=ep.wordCountTarget||800;
-  var pct=tgt?Math.min(100,Math.round(w/tgt*100)):0;
-  $id("zenid").textContent="S"+ep.seasonNumber+"E"+ep.number+(ep.title?" · "+ep.title:" · Untitled")+" — writing room";
-  $id("zencount").textContent=w+" / "+tgt+" words · "+pct+"%";
-  $id("zenbar").style.width=pct+"%";
-  var zi=zenItems(ep);
-  var covered=(ep.zenChecks||[]).filter(function(k){return zi.all.some(function(i){return i.key===k;});}).length;
-  $id("zenprogress").textContent=covered+" / "+zi.all.length+" covered";
-  var h='<div class="zgroup">The circle — 8 beats</div>';
-  zi.beats.forEach(function(i){
-    var done=(ep.zenChecks||[]).indexOf(i.key)>=0;
-    h+='<div class="zr'+(done?" done":"")+'">'+
-      '<button class="chk" data-act="zenchk:'+i.key+'">✓</button>'+
-      '<button class="main" data-act="zenpeek:'+i.key+'"><span class="nm">'+i.nm+'</span><span class="sb">'+i.sb+'</span></button>'+
-      '<span class="dot" style="background:'+i.dot+'"></span></div>';
-    if(S.zenPeek===i.key&&i.txt)h+='<div class="zpeek">'+esc(i.txt)+'</div>';
-  });
-  h+='<div class="zgroup">The turn &amp; the send</div>';
-  zi.extra.forEach(function(i){
-    var done=(ep.zenChecks||[]).indexOf(i.key)>=0;
-    h+='<div class="zr'+(done?" done":"")+'">'+
-      '<button class="chk" data-act="zenchk:'+i.key+'">✓</button>'+
-      '<button class="main" data-act="zenpeek:'+i.key+'"><span class="nm">'+i.nm+'</span><span class="sb">'+i.sb+'</span></button>'+
-      '<span class="dot" style="background:'+i.dot+'"></span></div>';
-    if(S.zenPeek===i.key&&i.txt)h+='<div class="zpeek">'+esc(i.txt)+'</div>';
-  });
-  h+='<p class="dim" style="margin-top:14px;line-height:1.6">Click an element to peek at its brief. Tick each one as your draft covers it. Everything saves as you write.</p>';
-  $id("zenbrief").innerHTML=h;
-}
-/* Strip any stray right-to-left direction markers from stored draft HTML */
-function sanitizeDir(html){
-  var d=document.createElement("div");
-  d.innerHTML=html||"";
-  var bad=d.querySelectorAll('[dir]');
-  for(var i=0;i<bad.length;i++){ bad[i].removeAttribute("dir"); }
-  /* also drop invisible bidi override characters that flip text */
-  return d.innerHTML.replace(/[\u202e\u202b\u202d\u200f\u200e]/g,"");
-}
-function openZen(){
-  if(!currentEp())return;
-  S.zenOpen=true; S.zenPeek=null; S.zenFocus=false;
-  var z=$id("zen");
-  z.classList.remove("zen-focus");
-  z.style.display="flex";
-  $id("zenfocusbtn").textContent="Hide brief";
-  document.body.style.overflow="hidden";
-  renderZen();
-  var ed=$id("zeneditor");
-  var clean=sanitizeDir(currentEp().draft||"");
-  ed.innerHTML=clean;
-  if(clean!==(currentEp().draft||"")){ currentEp().draft=clean; scheduleSave(); }
-  zUndo=[]; zRedo=[]; zLast=clean;
-  updateZenCounts();
-  setTimeout(function(){ placeCaretEnd(ed); },10);
-}
-function closeZen(){
-  S.zenOpen=false;
-  $id("zen").style.display="none";
-  document.body.style.overflow="";
-  render();
-}
-function toggleZenFull(){
-  var z=$id("zen");
-  if(document.fullscreenElement){ if(document.exitFullscreen)document.exitFullscreen(); }
-  else if(z.requestFullscreen){ z.requestFullscreen(); }
-  else if(z.webkitRequestFullscreen){ z.webkitRequestFullscreen(); }
-}
-
-/* ================= ZEN FORMATTING ================= */
-/* Word count from the editor's visible text (no HTML noise) */
-function updateZenCounts(){
-  var ep=currentEp(); if(!ep)return;
-  var ed=$id("zeneditor");
-  var w2=words(ed?(ed.innerText||""):(ep.draft||""));
-  var t2=ep.wordCountTarget||800;
-  var p2=t2?Math.min(100,Math.round(w2/t2*100)):0;
-  $id("zencount").textContent=w2+" / "+t2+" words · "+p2+"%";
-  $id("zenbar").style.width=p2+"%";
-}
+/* ================= QUESTION ENGINE ================= */
 function draftWc(d){
   d=String(d||"");
   if(d.indexOf("<")>=0)d=d.replace(/<[^>]*>/g," ");
   return words(d);
 }
-/* ---- Undo / redo history (Ctrl+Z / Ctrl+Y) ---- */
-var zUndo=[], zRedo=[], zLast="";
-function edInput(){
-  if(!S.zenOpen)return;
-  var ed=$id("zeneditor");
-  var h=ed.innerHTML;
-  if(h===zLast)return;
-  zUndo.push(zLast);
-  if(zUndo.length>200)zUndo.shift();
-  zRedo=[];
-  zLast=h;
+function qChosen(ep){ var pool=ep.questionPool||[]; return pool.find(function(p){return p.id===ep.chosenQuestionId;})||null; }
+function qUpsert(ep,pair){ var pool=(ep.questionPool||[]).filter(function(p){return p.id!==pair.id;}); pool.push(pair); ep.questionPool=pool; ep.chosenQuestionId=pair.id; }
+function qLoadCatalog(v){
+  var ep=currentEp(); if(!ep)return;
+  var src=CATQ.find(function(c){return c.id===v;}); if(!src)return;
+  var cp={}; for(var k in src)cp[k]=src[k];
+  qUpsert(ep,cp); scheduleSave();
+}
+function qNew(){
+  var ep=currentEp(); if(!ep)return;
+  qUpsert(ep,{id:"c"+Date.now().toString(36),title:"",category:"Custom",realQuestion:"",brandAnswer:"",gap:"",wound:"",silence:""});
+  scheduleSave();
+}
+function qRemix(){
+  var ep=currentEp(); var c=qChosen(ep); if(!c)return;
+  var cp={}; for(var k in c)cp[k]=c[k];
+  cp.id="c"+Date.now().toString(36);
+  qUpsert(ep,cp); scheduleSave();
+}
+function qCatHtml(){
+  var q2=(S.qSearch||"").toLowerCase();
+  var items=CATQ.filter(function(c){ return (S.qCat==="all"||c.category===S.qCat) && (!q2||(c.title+" "+c.realQuestion+" "+c.brandAnswer+" "+c.gap).toLowerCase().indexOf(q2)>=0); });
+  if(!items.length)return '<p class="dim">No catalog questions match.</p>';
+  return items.map(function(c){
+    var open=S.qOpen===c.id;
+    return '<div class="card" style="padding:12px;margin-bottom:8px">'+
+      '<button style="width:100%;text-align:left" data-act="qopen:'+c.id+'">'+
+      '<span style="display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gdim)">'+c.id.toUpperCase()+' · '+esc(c.category)+'</span>'+
+      '<span style="display:block;font-family:Cormorant Garamond,serif;font-size:19px;color:var(--cream);margin-top:2px">'+esc(c.title)+'</span></button>'+
+      (open?
+        '<div class="tp" style="margin-top:8px"><b style="color:var(--gold)">JAY ASKS · </b>'+esc(c.realQuestion)+'</div>'+
+        '<div class="tp" style="margin-top:6px"><b style="color:var(--dusk)">BRAND ANSWERS · </b>'+esc(c.brandAnswer)+'</div>'+
+        '<div class="gp" style="margin-top:6px"><b>THE GAP · </b>'+esc(c.gap)+'</div>'+
+        '<div class="gp" style="margin-top:6px"><b style="color:var(--wine)">WOUND · </b>'+esc(c.wound)+'</div>'+
+        '<div class="gp" style="margin-top:6px"><b style="color:var(--gdim)">THE SILENCE · </b>'+esc(c.silence)+'</div>'
+        :'<div class="tp" style="margin-top:6px">'+esc(c.realQuestion)+'</div>')+
+      '<div class="acts" style="margin-top:10px"><button class="btn btn-g" data-act="qload:'+c.id+'">Load into engine</button><button class="btn" data-act="qadd:'+c.id+'">Add to pool</button></div></div>';
+  }).join("");
+}
+function qPatHtml(){
+  return '<div class="hd"><div><div class="kick">The pattern</div><h2>Jay asks about… / the brand answers about…</h2></div></div><div class="hr"></div>'+
+    '<div class="grid2">'+QPATTERN.map(function(r){return '<div style="border-left:2px solid rgba(212,180,90,.3);padding:8px 12px"><div style="font-size:14px;color:var(--cream)">'+r[0]+'</div><div class="dim">'+r[1]+'</div></div>';}).join("")+'</div>'+
+    '<p class="story" style="font-style:italic;margin-top:14px;color:var(--parch)">Every brand answers the question they WISH the buyer was asking. Jay asks the question the buyer is ACTUALLY asking. The gap between the two is where trust dies — and where your marketing takeaway lives.</p>'+
+    '<div class="grid2" style="margin-top:14px"><div><div class="kick">How to use this in an episode</div><ol class="story" style="font-size:13px;color:var(--mute);line-height:1.9;padding-left:18px;margin:0">'+
+    QSTEPS.map(function(s){return "<li>"+s+"</li>";}).join("")+'</ol></div>'+
+    '<div><div class="kick">The one-line version</div><p class="story" style="font-size:14px;color:var(--parch);line-height:1.7">Jay asks the question every buyer is silently asking. The brand answers the question they prepared for. The gap between the two is where the almost-customer walks away — and where your reader learns exactly why.</p></div></div>';
+}
+function renderQuestions(){
   var ep=currentEp();
-  if(ep){ ep.draft=h; updateZenCounts(); scheduleSave(); }
-}
-function edSave(){
-  var ed=$id("zeneditor");
-  var ep=currentEp();
-  if(ep){ ep.draft=ed.innerHTML; updateZenCounts(); scheduleSave(); }
-}
-function edUndo(){
-  if(!zUndo.length)return;
-  var ed=$id("zeneditor");
-  zRedo.push(zLast);
-  zLast=zUndo.pop();
-  ed.innerHTML=zLast;
-  edSave();
-  placeCaretEnd(ed);
-}
-function edRedo(){
-  if(!zRedo.length)return;
-  var ed=$id("zeneditor");
-  zUndo.push(zLast);
-  zLast=zRedo.pop();
-  ed.innerHTML=zLast;
-  edSave();
-  placeCaretEnd(ed);
-}
-function placeCaretEnd(el){
-  var range=document.createRange();
-  range.selectNodeContents(el);
-  range.collapse(false);
-  var sel=window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(range);
-}
-/* ---- Real visual formatting: applies directly to the selected text ---- */
-function zenFocus(){
-  var ed=$id("zeneditor");
-  if(document.activeElement!==ed)ed.focus();
-}
-function zenApply(kind){
-  zenFocus();
-  switch(kind){
-    case "bold": document.execCommand("bold"); break;
-    case "italic": document.execCommand("italic"); break;
-    case "underline": document.execCommand("underline"); break;
-    case "strike": document.execCommand("strikeThrough"); break;
-    case "h2": document.execCommand("formatBlock",false,"H2"); break;
-    case "h3": document.execCommand("formatBlock",false,"H3"); break;
-    case "quote": document.execCommand("formatBlock",false,"BLOCKQUOTE"); break;
-    case "body": document.execCommand("formatBlock",false,"P"); break;
-    case "list": document.execCommand("insertUnorderedList"); break;
-    case "em": document.execCommand("insertText",false,"—"); break;
-    case "break": document.execCommand("insertHTML",false,'<div class="zen-scene">✦ ✦ ✦</div>'); break;
-  }
+  var h='<div class="kick">The gap is the episode</div><h1 class="big">Question Engine</h1>'+
+    '<p class="story" style="color:var(--mute);max-width:720px">Jay asks the question every buyer is silently asking. The brand answers the question they prepared for. The gap between the two is where trust dies — and where your marketing takeaway lives.</p>';
+  if(!ep){ $id("main").innerHTML=h+'<p class="muted">No episode selected.</p>'; return; }
+  var pool=ep.questionPool||[];
+  var ch=qChosen(ep);
+  var out=QOUT.find(function(o){return o.v===ep.gapOutcome;})||QOUT[0];
+  h+='<div class="frow" style="margin-top:16px;max-width:420px"><label class="lb">Episode</label><select class="in" id="qepsel">';
+  S.data.seasons.forEach(function(s){
+    h+='<optgroup label="Season '+s.number+' — '+esc(s.title||"Untitled")+'">';
+    epsOf(s.number).forEach(function(e){ h+='<option value="'+e.id+'"'+(e.id===S.eid?" selected":"")+'>Ep '+e.number+(e.title?" — "+esc(e.title):"")+'</option>'; });
+    h+='</optgroup>';
+  });
+  h+='</select></div>';
+  h+='<div class="grid2" style="align-items:start;margin-top:20px">';
+  h+='<div class="panel"><div class="hd"><div><div class="kick">The mixing desk</div><h2>'+(ch?(esc(ch.title)||"Untitled pair"):"Untitled pair")+'</h2></div>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
+    '<button class="btn" data-act="qnew">New</button>'+
+    '<button class="btn" data-act="qremix"'+(ch?"":' style="opacity:.4"')+'>Remix</button>'+
+    (ch&&/^q\d+$/.test(ch.id)?'<button class="btn" data-act="qreset:'+ch.id+'">Reset to catalog</button>':"")+
+    '</div></div><div class="hr"></div>'+
+    '<div class="grid2"><div class="frow"><label class="lb">What Jay is really asking</label><textarea class="story" rows="4" data-qf="realQuestion" placeholder="The human question — specific, afraid, real…">'+esc(ch?ch.realQuestion:"")+'</textarea></div>'+
+    '<div class="frow"><label class="lb">What the brand is answering</label><textarea class="story" rows="4" data-qf="brandAnswer" placeholder="The prepared answer — competent, sincere, off-target…">'+esc(ch?ch.brandAnswer:"")+'</textarea></div></div>'+
+    '<div class="frow"><label class="lb">The gap — why the answer misses</label><textarea class="story" rows="3" data-qf="gap" placeholder="This is your marketing takeaway.">'+esc(ch?ch.gap:"")+'</textarea></div>'+
+    '<div class="grid2"><div class="frow"><label class="lb">Wound triggered</label><textarea rows="2" data-qf="wound" placeholder="Which wound fires?">'+esc(ch?ch.wound:"")+'</textarea></div>'+
+    '<div class="frow"><label class="lb">The silence — how the conversation breaks</label><textarea class="story" rows="2" data-qf="silence" placeholder="The climax moment.">'+esc(ch?ch.silence:"")+'</textarea></div></div>'+
+    '<div class="grid2"><div class="frow"><label class="lb">Short title</label><input class="in" data-qf="title" value="'+esc(ch?ch.title:"")+'" placeholder="One line — the question in short" /></div>'+
+    '<div class="frow"><label class="lb">Category</label><select class="in" data-qcat><option value="Custom"'+(ch&&QCATS.indexOf(ch.category)<0?" selected":"")+'>Custom</option>'+QCATS.map(function(c){return '<option value="'+c+'"'+(ch&&ch.category===c?" selected":"")+'>'+c+'</option>';}).join("")+'</select></div></div>'+
+    '<div class="frow"><label class="lb">Where does the gap land?</label><div class="seg">'+QOUT.map(function(o){return '<button class="'+(ep.gapOutcome===o.v?"on":"")+'" style="'+(ep.gapOutcome===o.v?"border-color:"+o.c+";color:"+o.c:"")+'" data-act="qout:'+o.v+'">'+o.l+'</button>';}).join("")+'</div>'+
+    '<p class="dim" style="margin-top:6px">'+out.d+'</p></div>'+
+    '<div class="frow"><label class="lb">Gap width — <span id="qtensionlabel" style="color:var(--gold)">'+ep.gapTension+'</span> / 10</label>'+
+    '<input type="range" min="1" max="10" id="qtension" value="'+ep.gapTension+'" style="width:100%;accent-color:var(--gold)" />'+
+    '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--faint)"><span>Almost closed — he could buy</span><span>Wide open — he walks</span></div></div>'+
+    '<div class="frow"><label class="lb">Quick wound chips</label><div class="seg">'+QWOUNDS.map(function(w){return '<button data-act="qwound:'+w+'">'+w+'</button>';}).join("")+'</div></div>'+
+    '</div>';
+  h+='<div>';
+  h+='<div class="panel"><div class="hd"><div><div class="kick">The pool · mix &amp; select</div><h2>This episode\'s pairs</h2></div><span class="serif" style="font-size:26px;color:var(--gold)">'+pool.length+'</span></div><div class="hr"></div>';
+  if(!pool.length){ h+='<p class="dim">Nothing here yet. Load a catalog pair or hit New to remix your own.</p>'; }
+  pool.forEach(function(p){
+    h+='<div style="display:flex;align-items:center;gap:8px;border:1px solid '+(p.id===ep.chosenQuestionId?"rgba(212,180,90,.5)":"var(--line)")+';border-radius:2px;padding:8px 10px;margin-bottom:6px">'+
+      '<button style="flex:1;text-align:left;min-width:0" data-act="qsel:'+p.id+'"><span style="display:block;font-size:13px;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(p.id===ep.chosenQuestionId?"★ ":"")+(esc(p.title)||"Untitled pair")+'</span>'+
+      '<span style="display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)">'+esc(p.category||"Custom")+' · '+(/^q\d+$/.test(p.id)?"catalog":"custom")+'</span></button>'+
+      '<button class="btn" data-act="qdel:'+p.id+'">Remove</button></div>';
+  });
+  h+='</div>';
+  h+='<div class="panel" style="margin-top:16px"><div class="hd"><div><div class="kick">25 questions · 7 categories</div><h2>The catalog</h2></div></div><div class="hr"></div>'+
+    '<input class="in" id="qsearch" placeholder="Search the catalog…" value="'+esc(S.qSearch)+'" />'+
+    '<div class="cats" style="margin-top:10px"><button class="chip'+(S.qCat==="all"?" on":"")+'" data-act="qcat:all">All</button>'+QCATS.map(function(c){return '<button class="chip'+(S.qCat===c?" on":"")+'" data-act="qcat:'+c+'">'+c+'</button>';}).join("")+'</div>'+
+    '<div id="qcatlist">'+qCatHtml()+'</div></div>';
+  h+='</div></div>';
+  h+='<div class="panel" style="margin-top:20px">'+qPatHtml()+'</div>';
+  $id("main").innerHTML=h;
 }
 function mdToHtml(src){
   function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
@@ -1166,8 +1103,8 @@ function renderEp(){
   h+='<div class="kick">Season '+ep.seasonNumber+(ss&&ss.title?" · "+esc(ss.title):"")+" · Global #"+ep.globalNumber+'</div>'+
     '<div class="eph"><div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"><span class="num">'+String(ep.number).padStart(2,"0")+'</span>'+
     '<input class="titlein" data-epb="title" value="'+esc(ep.title)+'" placeholder="Untitled episode" /></div>'+
-    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-g" data-act="zen" style="box-shadow:0 0 18px rgba(212,180,90,.15)">✎ Writing room</button><button class="btn" data-act="dupep">Duplicate</button><button class="btn btn-d" data-act="delep">Delete</button></div></div>';
-  h+='<div class="meta">'+gem(ep.changeLevel)+'<span>'+STATUS[ep.status].l+'</span><i>·</i><span>'+fb+'/8 beats</span><i>·</i><span>'+wc+' beat words</span><i>·</i><span>'+draftWc(ep.draft)+' draft words · target '+ep.wordCountTarget+'</span><i>·</i><span>Standalone '+score+'/7</span></div>';
+    '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-g" data-act="nav:questions">❓ Question Lab</button><button class="btn" data-act="dupep">Duplicate</button><button class="btn btn-d" data-act="delep">Delete</button></div></div>';
+  h+='<div class="meta">'+gem(ep.changeLevel)+'<span>'+STATUS[ep.status].l+'</span><i>·</i><span>'+fb+'/8 beats</span><i>·</i><span>'+wc+' beat words</span><i>·</i><span>Standalone '+score+'/7</span></div>';
   h+='<div class="epstatus">'+Object.keys(STATUS).map(function(k){
     return '<button class="seg" style="display:inline-block;padding:5px 12px;border:1px solid '+(ep.status===k?"rgba(212,180,90,.5)":"var(--line)")+';background:'+(ep.status===k?"rgba(212,180,90,.15)":"transparent")+';color:'+(ep.status===k?"var(--gold)":"var(--faint)")+';font-size:10px;letter-spacing:.16em;text-transform:uppercase;border-radius:2px" data-act="status:'+k+'">'+STATUS[k].l+'</button>';
   }).join("")+'</div>';
@@ -1176,6 +1113,20 @@ function renderEp(){
     (prev?'<div class="t">Ep '+prev.number+(prev.title?" · "+esc(prev.title):"")+'</div><span class="q">'+(esc(prev.beats.change)||"No change yet.")+'</span>':'<div class="e">Season cold open — no prior change to inherit.</div>')+'</button>'+
     '<button '+(next?'data-act="openep:'+next.id+'"':"")+'><div class="k">Hands off to</div>'+
     (next?'<div class="t">Ep '+next.number+(next.title?" · "+esc(next.title):"")+'</div><span class="q">'+(esc(next.beats.comfort)||"No comfort yet.")+'</span>':'<div class="e">Season edge — this change should feed the finale hook.</div>')+'</button></div>';
+  var qpc=(ep.questionPool||[]).find(function(p){return p.id===ep.chosenQuestionId;})||null;
+  var qout=QOUT.find(function(o){return o.v===ep.gapOutcome;})||QOUT[0];
+  if(qpc){
+    h+='<div class="panel" style="margin:16px 0"><div class="hd"><div><div class="kick">The engine</div><h2>'+esc(qpc.title||"Untitled question")+'</h2></div><button class="btn btn-g" data-act="nav:questions">Open the Lab</button></div><div class="hr"></div>'+
+      '<div class="grid2">'+
+      '<div><div class="lb">What Jay is really asking</div><p class="story" style="color:var(--cream);font-size:14px;line-height:1.7">'+esc(qpc.realQuestion)+'</p></div>'+
+      '<div><div class="lb">What the brand is answering</div><p class="story" style="color:var(--mute);font-size:14px;line-height:1.7">'+esc(qpc.brandAnswer)+'</p></div></div>'+
+      '<div class="grid2" style="margin-top:10px">'+
+      '<div><div class="lb">The gap</div><p class="dim" style="line-height:1.6">'+esc(qpc.gap)+'</p></div>'+
+      '<div><div class="lb">Wound · the silence</div><p class="dim" style="line-height:1.6"><b style="color:var(--rose)">'+esc(qpc.wound)+'</b><br/>'+esc(qpc.silence)+'</p></div></div>'+
+      '<div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="gem" style="border-color:'+qout.c+';color:'+qout.c+'"><i></i>'+qout.l+'</span><span class="dim">Gap width '+ep.gapTension+'/10</span></div></div>';
+  } else {
+    h+='<div class="panel" style="margin:16px 0"><div class="hd"><div><div class="kick">The engine</div><h2>No question loaded</h2></div><button class="btn btn-g" data-act="nav:questions">Open the Lab</button></div><p class="dim">Pick one of the 25 catalog pairs — or remix your own. The gap between his question and their answer is the episode.</p></div>';
+  }
   h+='<div class="grid2" style="align-items:start">'+
     '<div class="panel"><div class="circle-wrap">'+circleSVG(items,S.beat,{kicker:"Episode "+ep.number,title:ep.title||"Untitled",meta:fb+" / 8 · "+ep.changeLevel})+legendHTML()+'</div>';
   h+='<div class="bprogrow">'+BEATS.map(function(b){
@@ -1247,7 +1198,7 @@ function renderEp(){
     var on=auto[item.key];
     var locked=item.key==="allEightBeats"||item.key==="notebookLine"||item.key==="oneLineTurn";
     h+='<div class="chk'+(on?" on":"")+'">'+
-      '<button class="box"'+(locked?"":" data-act='chk:"+item.key+"'")+'><span style="color:'+(on?"var(--void)":"transparent")+'">✓</span></button>'+
+      '<button class="box"'+(locked?"":" data-act='chk:"+item.key+"'")+'>✓</button>'+
       '<div><div class="t">'+item.label+'</div><div class="w">'+item.why+(locked?" · computed automatically":"")+'</div></div></div>';
   });
   h+='</div>';
@@ -1373,7 +1324,8 @@ function renderGuide(){
   });
   h+='</div>';
   h+='<div class="panel" style="margin-top:20px"><div class="hd"><div><div class="kick">This document</div><h2>Download · upload · survive a refresh</h2></div></div><div class="hr"></div>'+
-    '<p class="story" style="font-size:14px;color:var(--parch);line-height:1.7">Everything auto-saves in this browser. That is not a backup. Use <b style="color:var(--gold)">Download</b> after a session. Use <b style="color:var(--gold)">Upload</b> to restore on a new machine, after a clear, or when the tab forgets you. You can also export a Markdown story bible for reading away from the board.</p><p class="dim" style="margin-top:10px">Shortcuts: 1–8 jump beats · [ and ] move episodes · ⌘/Ctrl S downloads JSON · ⌘/Ctrl O opens upload.</p></div>';
+    '<p class="story" style="font-size:14px;color:var(--parch);line-height:1.7">Everything auto-saves in this browser. That is not a backup. Use <b style="color:var(--gold)">Download</b> after a session. Use <b style="color:var(--gold)">Upload</b> to restore on a new machine, after a clear, or when the tab forgets you. You can also export a Markdown story bible for reading away from the board.</p>'+
+    '<p class="dim" style="margin-top:10px">Shortcuts: 1–8 jump beats · [ and ] move episodes · ⌘/Ctrl S downloads JSON · ⌘/Ctrl O opens upload.</p></div>';
   $id("main").innerHTML=h;
 }
 
@@ -1385,6 +1337,7 @@ function render(){
   if(S.view==="saga")renderSaga();
   else if(S.view==="season")renderSeason();
   else if(S.view==="episode")renderEp();
+  else if(S.view==="questions")renderQuestions();
   else if(S.view==="characters")renderChars();
   else if(S.view==="library")renderLib();
   else renderGuide();
@@ -1414,10 +1367,29 @@ document.addEventListener("input", function(e){
   if(el.dataset.epb||el.dataset.snb||el.dataset.sgb||el.dataset.sgf||el.dataset.cb) write(el);
   if(el.id==="sq"){ S.sq=el.value; renderSide(); }
   if(el.id==="lq"){ S.lq=el.value; renderLibGrid(); }
+  if(el.dataset.qf){
+    var qe=currentEp();
+    if(qe){
+      var qp=qChosen(qe);
+      if(!qp){ qp={id:"c"+Date.now().toString(36),title:"",category:"Custom",realQuestion:"",brandAnswer:"",gap:"",wound:"",silence:""}; (qe.questionPool=qe.questionPool||[]).push(qp); qe.chosenQuestionId=qp.id; }
+      qp[el.dataset.qf]=el.value; scheduleSave();
+    }
+  }
+  if(el.dataset.qcat){
+    var qe2=currentEp();
+    if(qe2){
+      var qp2=qChosen(qe2);
+      if(!qp2){ qp2={id:"c"+Date.now().toString(36),title:"",category:"Custom",realQuestion:"",brandAnswer:"",gap:"",wound:"",silence:""}; (qe2.questionPool=qe2.questionPool||[]).push(qp2); qe2.chosenQuestionId=qp2.id; }
+      qp2.category=el.value; scheduleSave();
+    }
+  }
+  if(el.id==="qsearch"){ S.qSearch=el.value; $id("qcatlist").innerHTML=qCatHtml(); }
 });
 document.addEventListener("change", function(e){
   var el=e.target;
   if(el.dataset.epb||el.dataset.snb||el.dataset.sgb||el.dataset.sgf||el.dataset.cb) write(el);
+  if(el.id==="qepsel"){ var qe3=findEp(el.value); if(qe3){ S.eid=qe3.id; S.sn=qe3.seasonNumber; renderQuestions(); } }
+  if(el.id==="qtension"){ var qe4=currentEp(); if(qe4){ qe4.gapTension=parseInt(el.value)||1; var tl=$id("qtensionlabel"); if(tl)tl.textContent=qe4.gapTension; scheduleSave(); } }
 });
 document.addEventListener("click", function(e){
   var b=e.target.closest("[data-act]");
@@ -1427,18 +1399,37 @@ document.addEventListener("click", function(e){
   var ep,list;
   switch(a){
     case "nav": S.view=v; if(v==="season" && !currentSeason()){ S.sn = S.data.seasons[0] ? S.data.seasons[0].number : 1; } render(); break;
-    case "zen": openZen(); break;
-    case "zenclose": closeZen(); break;
-    case "zenfocus": S.zenFocus=!S.zenFocus; $id("zen").classList.toggle("zen-focus",S.zenFocus); $id("zenfocusbtn").textContent=S.zenFocus?"Show brief":"Hide brief"; break;
-    case "zenfull": toggleZenFull(); break;
-    case "zenpeek": S.zenPeek=S.zenPeek===v?null:v; renderZen(); break;
-    case "fmt": zenApply(v); break;
-    case "zenchk":
-      var zep=currentEp();
-      if(zep){
-        var zc=zep.zenChecks||[]; var zi3=zc.indexOf(v);
-        if(zi3>=0)zc.splice(zi3,1); else zc.push(v);
-        zep.zenChecks=zc; scheduleSave(); renderZen();
+    case "qnew": qNew(); renderQuestions(); break;
+    case "qremix": qRemix(); renderQuestions(); break;
+    case "qreset": qLoadCatalog(v); renderQuestions(); break;
+    case "qload": qLoadCatalog(v); renderQuestions(); break;
+    case "qadd":
+      var epA=currentEp(); var srcA=CATQ.find(function(c){return c.id===v;});
+      if(epA&&srcA){
+        var cpA={}; for(var kA in srcA)cpA[kA]=srcA[kA];
+        cpA.id="c"+Date.now().toString(36);
+        epA.questionPool=epA.questionPool||[]; epA.questionPool.push(cpA);
+        scheduleSave(); renderQuestions();
+      } break;
+    case "qopen": S.qOpen=S.qOpen===v?null:v; $id("qcatlist").innerHTML=qCatHtml(); break;
+    case "qcat": S.qCat=v; $id("qcatlist").innerHTML=qCatHtml(); break;
+    case "qsel":
+      var epS=currentEp(); if(epS){ epS.chosenQuestionId=v; scheduleSave(); renderQuestions(); } break;
+    case "qdel":
+      var epD=currentEp();
+      if(epD){
+        epD.questionPool=(epD.questionPool||[]).filter(function(p){return p.id!==v;});
+        if(epD.chosenQuestionId===v)epD.chosenQuestionId=null;
+        scheduleSave(); renderQuestions();
+      } break;
+    case "qout":
+      var epO=currentEp(); if(epO){ epO.gapOutcome=v; scheduleSave(); renderQuestions(); } break;
+    case "qwound":
+      var epW=currentEp();
+      if(epW){
+        var cw=qChosen(epW);
+        if(!cw){ qNew(); cw=qChosen(epW); }
+        cw.wound=(cw.wound?cw.wound+" ":"")+v; scheduleSave(); renderQuestions();
       } break;
     case "sb":
       $id("side").classList.toggle("open"); $id("sideover").classList.toggle("on"); break;
@@ -1523,19 +1514,6 @@ document.addEventListener("click", function(e){
 });
 $id("sideover").addEventListener("click",function(){ $id("side").classList.remove("open"); this.classList.remove("on"); });
 $id("filein").addEventListener("change",function(){ if(this.files[0])doUpload(this.files[0]); this.value=""; });
-/* Writing-room editor: save on every change, paste as clean text */
-$id("zeneditor").addEventListener("input",edInput);
-$id("zeneditor").addEventListener("paste",function(e){
-  e.preventDefault();
-  var txt=(e.clipboardData||window.clipboardData).getData("text/plain")||"";
-  if(!txt)return;
-  
-  /* Strip invisible bidi override characters before inserting */
-  txt = txt.replace(/[\u202e\u202b\u202d\u200f\u200e]/g,"");
-  
-  var html=txt.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").split(/\r?\n/).join("<br/>");
-  document.execCommand("insertHTML",false,html);
-});
 
 /* keyboard */
 document.addEventListener("keydown",function(e){
@@ -1543,15 +1521,6 @@ document.addEventListener("keydown",function(e){
   var typing=tag==="INPUT"||tag==="TEXTAREA"||tag==="SELECT"||(e.target&&e.target.isContentEditable);
   if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="s"){e.preventDefault();dlJSON();return;}
   if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="o"){e.preventDefault();$id("filein").click();return;}
-  if(e.key==="Escape"&&S.zenOpen&&!document.fullscreenElement){ e.preventDefault(); closeZen(); return; }
-  if(S.zenOpen&&typing&&(e.ctrlKey||e.metaKey)){
-    var k2=e.key.toLowerCase();
-    if(k2==="b"){ e.preventDefault(); zenApply("bold"); return; }
-    if(k2==="i"){ e.preventDefault(); zenApply("italic"); return; }
-    if(k2==="u"){ e.preventDefault(); zenApply("underline"); return; }
-    if(k2==="z"){ e.preventDefault(); if(e.shiftKey)edRedo(); else edUndo(); return; }
-    if(k2==="y"){ e.preventDefault(); edRedo(); return; }
-  }
   if(typing)return;
   if(e.key>="1"&&e.key<="8"){S.beat=BEATS[parseInt(e.key)-1].key;S.view="episode";render();}
   if(e.key==="["||e.key==="]"){

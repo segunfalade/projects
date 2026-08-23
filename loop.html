@@ -112,8 +112,8 @@
                 <span class="text-xs font-semibold text-amber-200"><span id="xpCount">0</span> XP</span>
             </div>
             <div class="hidden md:flex items-center space-x-2 bg-charcoal/80 px-3.5 py-2 rounded-xl border border-white/5">
-                <i data-lucide="calendar" class="w-4 h-4 text-emerald-400"></i>
-                <span class="text-xs font-semibold text-emerald-300">Day <span id="currentDayDisplay">1</span> / 30</span>
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                <span class="text-xs font-semibold text-emerald-300"><span id="completedCount">0</span>/30 Completed</span>
             </div>
         </div>
     </header>
@@ -131,11 +131,11 @@
                 </button>
                 <button onclick="switchTab('lab')" id="nav-lab" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-white hover:bg-white/5 transition-all">
                     <i data-lucide="sparkles" class="w-4 h-4"></i>
-                    <span>Today's Drill (Lab)</span>
+                    <span>The Loop Lab (Drills)</span>
                 </button>
                 <button onclick="switchTab('curriculum')" id="nav-curriculum" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-white hover:bg-white/5 transition-all">
                     <i data-lucide="calendar" class="w-4 h-4"></i>
-                    <span>30-Day Curriculum (Locked)</span>
+                    <span>30-Day Curriculum</span>
                 </button>
                 <button onclick="switchTab('milestones')" id="nav-milestones" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:text-white hover:bg-white/5 transition-all">
                     <i data-lucide="trophy" class="w-4 h-4"></i>
@@ -143,19 +143,15 @@
                 </button>
             </div>
 
-            <!-- Developer Simulation Control (For testing the 24-hr lock without waiting) -->
-            <div class="glass-card p-4 rounded-2xl border border-amber-500/20 bg-charcoal/40 space-y-2">
-                <div class="flex items-center justify-between text-xs text-amber-400 font-bold">
-                    <span class="flex items-center space-x-1"><i data-lucide="lock" class="w-3.5 h-3.5"></i><span>Daily Lock Active</span></span>
-                    <span id="lockStatusBadge" class="px-2 py-0.5 rounded bg-amber-500/10 text-[10px]">Strict Mode</span>
+            <!-- Elegant Quote Card -->
+            <div class="glass-card p-5 rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-950/20 to-charcoal/60 hidden md:block space-y-3">
+                <div class="flex items-center space-x-2 text-amber-400">
+                    <i data-lucide="quote" class="w-4 h-4"></i>
+                    <span class="text-[11px] font-bold uppercase tracking-wider">The Copywriting Rule</span>
                 </div>
-                <p class="text-[11px] text-slate-400 leading-relaxed">
-                    Future days are locked until the next calendar day arrives or today's drill is graded & completed.
+                <p class="text-xs text-slate-300 leading-relaxed font-serif italic text-sm">
+                    "People don't read because of what you say. They read because of what you refuse to tell them yet."
                 </p>
-                <button onclick="simNextDay()" class="w-full py-2 rounded-lg bg-surface hover:bg-slate-800 text-xs text-amber-300 border border-amber-500/20 font-medium transition flex items-center justify-center space-x-1.5">
-                    <i data-lucide="fast-forward" class="w-3.5 h-3.5"></i>
-                    <span>Simulate Next Day (Test Lock)</span>
-                </button>
             </div>
         </aside>
 
@@ -169,23 +165,23 @@
                     <div class="absolute -right-20 -top-20 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
                     <div class="relative z-10 space-y-5">
                         <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                            <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
-                            <span>Strict Daily Drip Enforcement</span>
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                            <span>Mastering Retention for Intangible Service Outcomes</span>
                         </div>
                         <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                            Master Retention with <span class="serif-title italic font-normal text-amber-400 text-4xl sm:text-6xl">AI-Graded Drills</span>
+                            Command Attention with <span class="serif-title italic font-normal text-amber-400 text-4xl sm:text-6xl">Curiosity Loops</span>
                         </h1>
                         <p class="text-slate-300 max-w-2xl text-sm sm:text-base leading-relaxed">
-                            To ensure true mastery without rushing, LoopMaster Pro enforces a strict daily lock. You can only practice and submit today's assigned drill. Once graded and completed, tomorrow's session unlocks when the next day arrives.
+                            When selling high-ticket advisory, agencies, executive coaching, or legal strategy, your buyers cannot touch the product. Attention and mental momentum are your only conversion levers. This platform trains your copywriting reflexes to make intangible expertise irresistible.
                         </p>
                         <div class="flex flex-wrap gap-4 pt-2">
-                            <button onclick="switchTab('lab'); loadTodayScenario();" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold shadow-lg shadow-amber-500/20 hover:opacity-95 transition flex items-center space-x-2.5 text-sm">
+                            <button onclick="switchTab('lab'); loadRandomScenario();" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold shadow-lg shadow-amber-500/20 hover:opacity-95 transition flex items-center space-x-2.5 text-sm">
                                 <i data-lucide="play" class="w-4 h-4 fill-current"></i>
-                                <span>Enter Today's Lab</span>
+                                <span>Start Today's Drill</span>
                             </button>
                             <button onclick="switchTab('curriculum')" class="px-7 py-3.5 rounded-xl bg-surface hover:bg-slate-800 text-slate-200 font-semibold border border-white/10 transition flex items-center space-x-2.5 text-sm">
-                                <i data-lucide="lock" class="w-4 h-4 text-amber-400"></i>
-                                <span>View Locked Curriculum</span>
+                                <i data-lucide="compass" class="w-4 h-4 text-amber-400"></i>
+                                <span>View Curriculum Assurance</span>
                             </button>
                         </div>
                     </div>
@@ -198,10 +194,10 @@
                             <i data-lucide="target" class="w-7 h-7"></i>
                         </div>
                         <div class="space-y-1">
-                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Curriculum Progress</p>
-                            <h3 class="text-2xl font-bold text-white"><span id="masteryPercent">3</span>%</h3>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Overall Mastery</p>
+                            <h3 class="text-2xl font-bold text-white"><span id="masteryPercent">0</span>%</h3>
                             <div class="w-36 bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
-                                <div id="progressBar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 3%"></div>
+                                <div id="progressBar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
@@ -213,7 +209,7 @@
                         <div class="space-y-1">
                             <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Active Streak</p>
                             <h3 class="text-2xl font-bold text-white"><span id="dashStreak">1</span> Days</h3>
-                            <p class="text-[11px] text-amber-300/80">Streak locked until tomorrow!</p>
+                            <p class="text-[11px] text-amber-300/80">Keep your momentum daily!</p>
                         </div>
                     </div>
 
@@ -222,53 +218,90 @@
                             <i data-lucide="award" class="w-7 h-7"></i>
                         </div>
                         <div class="space-y-1">
-                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Current Training Day</p>
-                            <h3 class="text-2xl font-bold text-white">Day <span id="dashDay">1</span> / 30</h3>
-                            <p class="text-[11px] text-purple-300/80">Next unlock in 24h</p>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Badges Unlocked</p>
+                            <h3 class="text-2xl font-bold text-white"><span id="badgeCount">0</span>/5</h3>
+                            <p class="text-[11px] text-purple-300/80">Check milestones tab</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Grading & Rubric Explanation -->
+                <!-- Curriculum Guarantee & Methodology (Addressing User's Assurance Concern) -->
                 <div class="glass-card p-8 rounded-3xl space-y-6 border border-amber-500/20 bg-gradient-to-br from-surface/80 to-obsidian">
                     <div class="flex items-center space-x-3">
                         <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
-                            <i data-lucide="cpu" class="w-6 h-6"></i>
+                            <i data-lucide="shield-check" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-white">How the AI Grading Engine Evaluates Your Loops</h2>
-                            <p class="text-xs text-amber-300">Rigorous syntactic and psychological assessment</p>
+                            <h2 class="text-xl font-bold text-white">How Sure Are We That This Curriculum Will Work?</h2>
+                            <p class="text-xs text-amber-300">The Deliberate Practice Guarantee for 30 Days</p>
                         </div>
                     </div>
 
                     <p class="text-sm text-slate-300 leading-relaxed">
-                        When you submit your rewrite, our grading engine analyzes your hook across 3 strict criteria before marking the day complete:
+                        Mastering loops is not about memorizing copywriting theory—it is about building an automatic neural reflex. If you commit to completing <strong>one drill per day for 30 days (5–10 minutes daily)</strong>, here is why this curriculum guarantees mastery:
                     </p>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
                         <div class="bg-charcoal/80 p-5 rounded-2xl border border-white/5 space-y-2.5">
                             <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 font-bold text-xs">01</div>
-                            <h3 class="text-sm font-bold text-white">Curiosity Gap Check</h3>
+                            <h3 class="text-sm font-bold text-white">Active vs. Passive Learning</h3>
                             <p class="text-xs text-slate-400 leading-relaxed">
-                                Does your opening sentence introduce an unresolved question, counterintuitive claim, or hidden statistic that demands a resolution?
+                                Reading about loops changes nothing. By actively drafting hooks in the Loop Lab and testing them against real scenarios, your brain forms immediate execution pathways.
                             </p>
                         </div>
 
                         <div class="bg-charcoal/80 p-5 rounded-2xl border border-white/5 space-y-2.5">
                             <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 font-bold text-xs">02</div>
-                            <h3 class="text-sm font-bold text-white">Service Outcome Resonance</h3>
+                            <h3 class="text-sm font-bold text-white">Instant Expert Contrast</h3>
                             <p class="text-xs text-slate-400 leading-relaxed">
-                                Does it address intangible value (trust, risk reduction, strategy, leverage) rather than sounding like a generic commodity pitch?
+                                Every drill lets you compare your rewrite against elite expert examples instantly. This immediate feedback loop corrects your pacing and tension in real-time.
                             </p>
                         </div>
 
                         <div class="bg-charcoal/80 p-5 rounded-2xl border border-white/5 space-y-2.5">
                             <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 font-bold text-xs">03</div>
-                            <h3 class="text-sm font-bold text-white">Resolution Withholding</h3>
+                            <h3 class="text-sm font-bold text-white">Progressive Overload</h3>
                             <p class="text-xs text-slate-400 leading-relaxed">
-                                Did you avoid giving away the final secret too early? A passing score (70%+) requires keeping the reader hanging.
+                                Week 1 builds basic single-loop hooks; Week 2 introduces body stallers; Week 3 tackles complex nested loops; Week 4 masters multi-post campaigns.
                             </p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Quick Start Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card glass-card-hover p-7 rounded-3xl space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-white flex items-center space-x-2.5">
+                                <i data-lucide="sparkles" class="w-5 h-5 text-amber-400"></i>
+                                <span>The Loop Lab Arena</span>
+                            </h3>
+                            <span class="text-[11px] px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 font-medium">Interactive Drills</span>
+                        </div>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Practice real service scenarios across fractional advisory, high-ticket agencies, executive coaching, legal strategy, and crisis PR.
+                        </p>
+                        <button onclick="switchTab('lab'); loadRandomScenario();" class="w-full py-3.5 rounded-xl bg-surface hover:bg-slate-800 text-amber-300 font-semibold border border-amber-500/20 transition flex items-center justify-center space-x-2 text-sm">
+                            <span>Launch Loop Lab</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <div class="glass-card glass-card-hover p-7 rounded-3xl space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-white flex items-center space-x-2.5">
+                                <i data-lucide="calendar" class="w-5 h-5 text-emerald-400"></i>
+                                <span>30-Day Roadmap</span>
+                            </h3>
+                            <span class="text-[11px] px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 font-medium">Curriculum</span>
+                        </div>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Follow a structured 4-week progression designed exclusively for consultants, agencies, and professional service brands.
+                        </p>
+                        <button onclick="switchTab('curriculum')" class="w-full py-3.5 rounded-xl bg-surface hover:bg-slate-800 text-emerald-300 font-semibold border border-emerald-500/20 transition flex items-center justify-center space-x-2 text-sm">
+                            <span>View Full Curriculum</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -280,15 +313,23 @@
                         <div>
                             <div class="flex items-center space-x-2 text-amber-400 mb-1">
                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
-                                <span class="text-xs font-bold uppercase tracking-wider">Active Daily Drill</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Service Brand Practice Arena</span>
                             </div>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">The Loop Lab (Day <span id="labDayNum">1</span>)</h2>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">The Loop Lab</h2>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <span class="text-xs px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-300 border border-amber-500/20 font-semibold flex items-center space-x-1.5">
-                                <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-                                <span>Strict Daily Mode Active</span>
-                            </span>
+                            <select id="categoryFilter" onchange="loadRandomScenario()" class="bg-charcoal border border-white/10 text-sm rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-amber-500 transition">
+                                <option value="all">All Service Niches</option>
+                                <option value="Advisory">Fractional Advisory & CFO</option>
+                                <option value="Agency">High-Ticket Agency & Lead Gen</option>
+                                <option value="Coaching">Executive & Mindset Coaching</option>
+                                <option value="Legal">Legal & IP Strategy</option>
+                                <option value="PR">Crisis PR & Reputation</option>
+                            </select>
+                            <button onclick="loadRandomScenario()" class="px-4.5 py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 text-black rounded-xl font-bold text-sm transition flex items-center space-x-2 shadow-lg shadow-amber-500/20">
+                                <i data-lucide="shuffle" class="w-4 h-4"></i>
+                                <span>New Scenario</span>
+                            </button>
                         </div>
                     </div>
 
@@ -296,32 +337,22 @@
                     <div id="scenarioContainer" class="space-y-6">
                         <!-- Populated via JS -->
                     </div>
-
-                    <!-- Grading Result Modal / Box -->
-                    <div id="gradingResultBox" class="hidden mt-6 bg-charcoal/90 p-6 rounded-3xl border border-white/10 space-y-4 animate-fade-in">
-                        <!-- Populated via JS -->
-                    </div>
                 </div>
             </div>
 
-            <!-- ================= TAB 3: 30-DAY CURRICULUM (STRICT LOCK) ================= -->
+            <!-- ================= TAB 3: 30-DAY CURRICULUM ================= -->
             <div id="tab-curriculum" class="space-y-6 hidden">
                 <div class="glass-card p-8 sm:p-10 rounded-3xl space-y-6">
-                    <div class="border-b border-white/5 pb-6 flex items-center justify-between flex-wrap gap-4">
-                        <div>
-                            <div class="flex items-center space-x-2 text-amber-400 mb-1">
-                                <i data-lucide="lock" class="w-4 h-4"></i>
-                                <span class="text-xs font-bold uppercase tracking-wider">Time-Gated Progression</span>
-                            </div>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">The 30-Day Locked Curriculum</h2>
-                            <p class="text-slate-300 text-sm mt-1">Days beyond your current training day are strictly locked until you complete today's drill and the next day arrives.</p>
+                    <div class="border-b border-white/5 pb-6">
+                        <div class="flex items-center space-x-2 text-emerald-400 mb-1">
+                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Service Provider Roadmap</span>
                         </div>
-                        <div class="bg-charcoal px-4 py-2 rounded-xl border border-white/5 text-xs text-slate-300">
-                            Current Unlocked Day: <strong class="text-amber-400">Day <span id="curriculumUnlockedDay">1</span></strong>
-                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white">The 30-Day Retention Curriculum</h2>
+                        <p class="text-slate-300 text-sm mt-1">Structured daily exercises tailored for consultants, agencies, coaches, and professional service brands selling intangible outcomes.</p>
                     </div>
 
-                    <!-- Locked Curriculum List -->
+                    <!-- Weekly Accordions / Tabs -->
                     <div class="space-y-4" id="curriculumList">
                         <!-- Populated via JS -->
                     </div>
@@ -337,7 +368,7 @@
                             <span class="text-xs font-bold uppercase tracking-wider">Achievements & Rewards</span>
                         </div>
                         <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Milestones & Badges</h2>
-                        <p class="text-slate-300 text-sm mt-1">Earn prestigious badges over 30 days as you consistently grade and master intangible service loops.</p>
+                        <p class="text-slate-300 text-sm mt-1">Unlock prestigious badges as you complete drills, maintain streaks, and master the art of looping intangible service value.</p>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5" id="badgesContainer">
@@ -355,10 +386,10 @@
             <div class="w-16 h-16 bg-gradient-to-tr from-amber-400 to-amber-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg text-black font-bold">
                 <i data-lucide="award" class="w-8 h-8"></i>
             </div>
-            <h3 id="modalTitle" class="text-2xl font-bold text-white">Day Completed!</h3>
-            <p id="modalDesc" class="text-slate-300 text-sm">Your loop was successfully graded and passed! Tomorrow's session has been queued.</p>
+            <h3 id="modalTitle" class="text-2xl font-bold text-white">Drill Completed!</h3>
+            <p id="modalDesc" class="text-slate-300 text-sm">Great job crafting a high-retention loop! You earned +50 XP.</p>
             <button onclick="closeModal()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold transition shadow-lg shadow-amber-500/20 text-sm">
-                Return to Dashboard
+                Continue Training
             </button>
         </div>
     </div>
@@ -369,14 +400,13 @@
         let appState = {
             streak: 1,
             xp: 0,
-            currentDay: 1, // 1 to 30 (strict daily lock)
-            completedDays: [], // array of completed day numbers
-            lastCompletedDate: null
+            completedScenarios: [], // array of scenario IDs
+            currentScenario: null
         };
 
         // Load state from localStorage
         function loadState() {
-            const saved = localStorage.getItem('loopmaster_strict_state');
+            const saved = localStorage.getItem('loopmaster_state');
             if (saved) {
                 try {
                     appState = JSON.parse(saved);
@@ -388,7 +418,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('loopmaster_strict_state', JSON.stringify(appState));
+            localStorage.setItem('loopmaster_state', JSON.stringify(appState));
             updateStatsUI();
         }
 
@@ -396,64 +426,81 @@
             document.getElementById('streakCount').innerText = appState.streak;
             document.getElementById('dashStreak').innerText = appState.streak;
             document.getElementById('xpCount').innerText = appState.xp;
-            document.getElementById('currentDayDisplay').innerText = appState.currentDay;
-            document.getElementById('dashDay').innerText = appState.currentDay;
-            document.getElementById('labDayNum').innerText = appState.currentDay;
-            document.getElementById('curriculumUnlockedDay').innerText = appState.currentDay;
+            document.getElementById('completedCount').innerText = appState.completedScenarios.length;
             
-            const pct = Math.min(100, Math.round((appState.completedDays.length / 30) * 100));
+            const pct = Math.min(100, Math.round((appState.completedScenarios.length / 30) * 100));
             document.getElementById('masteryPercent').innerText = pct;
             document.getElementById('progressBar').style.width = pct + '%';
 
             let badgeCount = 0;
-            if (appState.completedDays.length >= 1) badgeCount++;
+            if (appState.completedScenarios.length >= 1) badgeCount++;
             if (appState.streak >= 3) badgeCount++;
-            if (appState.completedDays.length >= 7) badgeCount++;
-            if (appState.completedDays.length >= 15) badgeCount++;
-            if (appState.completedDays.length >= 30) badgeCount++;
-            
-            renderBadges();
+            if (appState.completedScenarios.length >= 6) badgeCount++;
+            if (appState.completedScenarios.length >= 12) badgeCount++;
+            if (appState.completedScenarios.length >= 18) badgeCount++;
+            document.getElementById('badgeCount').innerText = badgeCount;
         }
 
-        // --- 30 Scenarios Database (One for each day of the curriculum) ---
-        const dailyScenarios = [
-            { day: 1, title: "The Fractional CFO Advisory Pitch", category: "Advisory", context: "We provide outsourced CFO advisory to help tech startups manage their burn rate and financial forecasting.", objective: "Open a curiosity gap about a silent cash bleed that tech founders miss in their P&L statements.", hint: "Use numbers or a shocking realization about invisible cash leaks." },
-            { day: 2, title: "The B2B Lead Gen Agency Proposal", category: "Agency", context: "We help B2B consulting firms book 15-20 qualified sales meetings every month through cold email.", objective: "Challenge conventional cold outreach volume and tease why top advisory firms stopped it.", hint: "Challenge standard industry advice." },
-            { day: 3, title: "The Executive Coaching Pitch", category: "Coaching", context: "My coaching program helps mid-level leaders develop executive presence so they can get promoted to C-suite.", objective: "Open a loop around why being 'good at your job' is actually what keeps leaders stuck at the VP level.", hint: "Highlight the trap of technical competence." },
-            { day: 4, title: "The Boutique IP Strategy Firm", category: "Legal", context: "Protect your brand and trademarks with our comprehensive legal advisory services.", objective: "Highlight a high-stakes trademark oversight that digital founders unknowingly make.", hint: "Play on hidden legal risks." },
-            { day: 5, title: "The Crisis PR Agency", category: "PR", context: "We provide 24/7 crisis PR management to protect your brand image during negative press.", objective: "Open a loop around why traditional press release apologies act as kerosene on a PR fire.", hint: "Challenge standard corporate crisis responses." },
-            { day: 6, title: "Brand Positioning Consultancy", category: "Advisory", context: "We help service agencies reposition their offer so they can charge higher prices.", objective: "Tease the 'Commodity Trap' and why lowering retainers attracts nightmare clients.", hint: "Contrast low pricing with client quality." },
-            { day: 7, title: "Fractional CMO Growth Service", category: "Advisory", context: "Hire our fractional CMOs to scale your marketing department without full-time overhead.", objective: "Open a loop on why 80% of marketing hires fail within 6 months.", hint: "Tease the hidden onboarding flaw." },
-            { day: 8, title: "Cybersecurity Audit for Fintechs", category: "Legal", context: "We conduct penetration testing and cybersecurity audits for financial technology firms.", objective: "Tease a vulnerability scanner loophole that automated bots exploit daily.", hint: "Create urgency around invisible digital threats." },
-            { day: 9, title: "Enterprise Sales Training Agency", category: "Agency", context: "We train enterprise sales reps to close 7-figure deals faster using psychological frameworks.", objective: "Open a loop on why standard objection handling scripts actively kill deals.", hint: "Challenge traditional sales training." },
-            { day: 10, title: "Ghostwriting for Founders", category: "Agency", context: "We ghostwrite LinkedIn content for tech founders to build personal brand awareness.", objective: "Tease the algorithm penalty that generic thought leadership posts trigger.", hint: "Highlight hidden reach killers." }
-            // Days 11-30 follow the same strict daily pattern
+        // --- Service-Based Scenarios Database (Intangible Outcomes Only) ---
+        const scenarios = [
+            {
+                id: 1,
+                category: 'Advisory',
+                title: 'The Fractional CFO Advisory Pitch',
+                context: 'You offer fractional CFO services to growing tech startups. Selling financial clarity and cash runway protection (outcomes that cannot be held). Your draft starts with: "We provide outsourced CFO advisory to help tech startups manage their burn rate and financial forecasting."',
+                objective: 'Rewrite this opening using an **Open Loop** that teases a hidden financial blind spot or counterintuitive cash flow truth instead of a generic service description.',
+                expertHint: 'Hint: Tease a silent cash bleed that most founders miss until it is too late. (e.g. "Most 7-figure startups are bleeding 22% of their monthly cash on invisible overhead leaks. Here is the 10-minute audit our Fractional CFOs run before taking on a new client...")',
+                sampleRewrite: 'Most 7-figure founders think their runway is secure until a sudden payroll crunch hits. After auditing 40 tech startups, we discovered a silent cash bleed in 90% of P&L statements. Here is the exact metric you need to check today (plus the forecasting blind spot that kills most Series A rounds).'
+            },
+            {
+                id: 2,
+                category: 'Agency',
+                title: 'The B2B Lead Gen Agency Proposal',
+                context: 'You run a boutique lead generation agency selling predictable outbound pipeline (intangible trust and meetings booked). Your current pitch starts with: "We help B2B consulting firms book 15-20 qualified sales meetings every month through cold email."',
+                objective: 'Open a curiosity loop around why 95% of cold outbound campaigns fail, setting up your proprietary framework as the indispensable resolution.',
+                expertHint: 'Hint: Challenge the standard agency pitch. "Sending more cold emails is actually destroying your domain reputation. Here is why top advisory firms abandoned volume outbound last quarter..."',
+                sampleRewrite: 'Sending more cold emails is actually destroying your advisory firm’s domain reputation. While agencies preach volume, the top 1% of B2B consultants stopped cold outreach entirely last quarter. Here is what they switched to instead—and how it tripled their booked meetings.'
+            },
+            {
+                id: 3,
+                category: 'Coaching',
+                title: 'The Executive Presence Coaching Pitch',
+                context: 'You coach enterprise VPs on executive presence and board-level influence (intangible career outcomes). Your introduction starts: "My coaching program helps mid-level leaders develop executive presence so they can get promoted to C-suite."',
+                objective: 'Replace the generic coaching promise with an open loop about why being "good at your job" is actually what keeps leaders stuck at the VP level.',
+                expertHint: 'Hint: Point out the counterintuitive trap of technical competence. (e.g. "Being exceptional at your job is the exact reason you are being passed over for the C-suite...")',
+                sampleRewrite: 'Being exceptional at your job is the exact reason you are being passed over for the C-suite. Boardrooms don’t promote the hardest worker; they promote one specific psychological signal. Here is the subtle communication shift that changes how executives perceive you overnight.'
+            },
+            {
+                id: 4,
+                category: 'Legal',
+                title: 'The Boutique IP & Trademark Strategy Firm',
+                context: 'You provide intellectual property strategy and brand protection for digital businesses (selling risk reduction and peace of mind). Your landing page starts: "Protect your brand and trademarks with our comprehensive legal advisory services."',
+                objective: 'Open a high-stakes curiosity loop about a common legal oversight that founders unknowingly make in their first 12 months.',
+                expertHint: 'Hint: Highlight a devastating risk founders ignore until they receive a cease-and-desist letter.',
+                sampleRewrite: '90% of digital founders are building their brand on rented legal ground without realizing it. One overlooked trademark loophole can force a complete rebrand overnight. Here is the 2-minute checklist every founder needs before scaling their next campaign.'
+            },
+            {
+                id: 5,
+                category: 'PR',
+                title: 'The Crisis PR & Reputation Management Agency',
+                context: 'You help brands manage reputation disasters and media fallout (selling public trust and crisis mitigation). Your pitch starts: "We provide 24/7 crisis PR management to protect your brand image during negative press."',
+                objective: 'Open a loop around how handling negative press with traditional PR playbooks actually makes the scandal 10x worse.',
+                expertHint: 'Hint: Challenge the standard "issue a corporate press release" response. Reveal that silence or traditional statements prolong the damage.',
+                sampleRewrite: 'Issuing a corporate apology press release is the absolute worst thing you can do when a PR crisis hits. (It acts as kerosene on the fire.) Here is the counter-intuitive silence framework we use to make negative headlines vanish within 48 hours.'
+            },
+            {
+                id: 6,
+                category: 'Advisory',
+                title: 'The Brand Positioning & Strategy Consultancy',
+                context: 'You help service agencies escape commodity pricing through high-level brand positioning (selling differentiation and premium fees). Your intro starts: "We help service agencies reposition their offer so they can charge higher prices."',
+                objective: 'Open a loop around the "Commodity Trap" and why discounting your service rates guarantees client churn.',
+                expertHint: 'Hint: Contrast low-fee positioning with elite positioning. Tease a surprising realization about high-paying clients.',
+                sampleRewrite: 'Lowering your agency retainers to win clients is actually attracting your absolute worst nightmare accounts. After studying 100 service businesses, we found a bizarre correlation between high pricing and client loyalty. Here is what the data revealed.'
+            }
         ];
-
-        // For days beyond index 9, generate professional service scenarios dynamically
-        function getScenarioForDay(dayNum) {
-            const found = dailyScenarios.find(s => s.day === dayNum);
-            if (found) return found;
-            
-            const categories = ["Advisory", "Agency", "Coaching", "Legal", "PR"];
-            const cat = categories[(dayNum - 1) % categories.length];
-            return {
-                day: dayNum,
-                title: `Day ${dayNum}: High-Ticket ${cat} Strategy`,
-                category: cat,
-                context: `We offer elite ${cat.toLowerCase()} services to help scaling businesses achieve transformative intangible outcomes and sustainable leverage.`,
-                objective: `Open a sophisticated curiosity loop challenging common misconceptions in ${cat.toLowerCase()} strategy.`,
-                hint: `Tease an unaddressed bottleneck or counterintuitive principle in Day ${dayNum} methodology.`
-            };
-        }
 
         // --- Navigation Tabs ---
         function switchTab(tabId) {
-            // Check if user is trying to access curriculum or lab when locked
-            if (tabId === 'curriculum') {
-                renderCurriculum();
-            }
-
             document.querySelectorAll('main > div').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
@@ -469,216 +516,199 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function loadTodayScenario() {
-            switchTab('lab');
-            const s = getScenarioForDay(appState.currentDay);
+        // --- Loop Lab Logic ---
+        function loadRandomScenario() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            let filtered = scenarios;
+            if (categoryFilter !== 'all') {
+                filtered = scenarios.filter(s => s.category === categoryFilter);
+            }
+            const randomIndex = Math.floor(Math.random() * filtered.length);
+            appState.currentScenario = filtered[randomIndex];
+
+            renderScenario();
+        }
+
+        function renderScenario() {
+            const s = appState.currentScenario;
             const container = document.getElementById('scenarioContainer');
-            const isCompleted = appState.completedDays.includes(appState.currentDay);
+            const isCompleted = appState.completedScenarios.includes(s.id);
 
             container.innerHTML = `
                 <div class="space-y-6">
                     <div class="flex items-center justify-between">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-300 border border-amber-500/20">Day ${s.day} Drill | Niche: ${s.category}</span>
-                        ${isCompleted ? '<span class="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 flex items-center space-x-1.5"><i data-lucide="check" class="w-3.5 h-3.5"></i><span>Completed & Graded</span></span>' : '<span class="text-xs px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 flex items-center space-x-1"><i data-lucide="clock" class="w-3.5 h-3.5"><span>Pending Today's Submission</span></span>'}
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-300 border border-amber-500/20">Service Niche: ${s.category} (Intangible Outcome)</span>
+                        ${isCompleted ? '<span class="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 flex items-center space-x-1.5"><i data-lucide="check" class="w-3.5 h-3.5"></i><span>Completed</span></span>' : '<span class="text-xs px-3 py-1 rounded-full bg-charcoal text-slate-400 border border-white/5">Drill #${s.id}</span>'}
                     </div>
 
                     <h3 class="text-xl font-bold text-white">${s.title}</h3>
                     
                     <div class="bg-charcoal/90 p-5 rounded-2xl border border-white/5 space-y-2">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Original Context (The Boring Pitch):</p>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Original Context (The Boring Intangible Pitch):</p>
                         <p class="text-sm text-slate-300 italic">"${s.context}"</p>
                     </div>
 
                     <div class="bg-amber-950/20 p-5 rounded-2xl border border-amber-500/20 space-y-2">
-                        <p class="text-xs font-bold text-amber-400 uppercase tracking-wider">Today's Objective:</p>
+                        <p class="text-xs font-bold text-amber-400 uppercase tracking-wider">Your Challenge:</p>
                         <p class="text-sm text-slate-200">${s.objective}</p>
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Draft Your Looped Hook (AI Graded):</label>
-                        <textarea id="userRewriteInput" rows="4" class="w-full bg-charcoal border border-white/10 rounded-2xl p-4 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition leading-relaxed" placeholder="Write your hook featuring an Open Loop here..."></textarea>
+                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Draft Your Looped Hook Below:</label>
+                        <textarea id="userRewriteInput" rows="4" class="w-full bg-charcoal border border-white/10 rounded-2xl p-4 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition leading-relaxed" placeholder="Write your hook featuring an Open Loop for your intangible service here..."></textarea>
                     </div>
 
                     <div class="flex flex-wrap gap-3 pt-2">
-                        <button onclick="gradeAndSubmitDrill()" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold text-sm transition shadow-lg shadow-amber-500/20 flex items-center space-x-2">
-                            <i data-lucide="cpu" class="w-4 h-4"></i>
-                            <span>Submit for AI Grading</span>
+                        <button onclick="submitDrill()" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-black font-bold text-sm transition shadow-lg shadow-amber-500/20 flex items-center space-x-2">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span>Evaluate & Complete Drill</span>
                         </button>
+                        <button onclick="toggleExpertView()" class="px-7 py-3.5 rounded-xl bg-surface hover:bg-slate-800 text-slate-300 font-semibold text-sm transition border border-white/10 flex items-center space-x-2">
+                            <i data-lucide="eye" class="w-4 h-4 text-amber-400"></i>
+                            <span>View Expert Example</span>
+                        </button>
+                    </div>
+
+                    <div id="expertReveal" class="hidden mt-6 bg-charcoal/90 p-6 rounded-2xl border border-white/5 space-y-4 animate-fade-in">
+                        <div class="flex items-center space-x-2 text-emerald-400">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider">Expert Looped Rewrite & Breakdown</span>
+                        </div>
+                        <p class="text-xs text-slate-300 bg-obsidian p-4 rounded-xl border border-white/5 leading-relaxed">${s.expertHint}</p>
+                        <p class="text-sm text-white font-medium bg-amber-950/30 p-5 rounded-xl border border-amber-500/20 leading-relaxed">"${s.sampleRewrite}"</p>
                     </div>
                 </div>
             `;
-            document.getElementById('gradingResultBox').classList.add('hidden');
             lucide.createIcons();
         }
 
-        // --- Smart AI Grading Engine ---
-        function gradeAndSubmitDrill() {
+        function toggleExpertView() {
+            const reveal = document.getElementById('expertReveal');
+            reveal.classList.toggle('hidden');
+        }
+
+        function submitDrill() {
             const input = document.getElementById('userRewriteInput').value.trim();
             if (!input) {
-                alert('Please write your hooked rewrite in the text box before submitting.');
+                alert('Please write your looped hook in the text area before submitting.');
                 return;
             }
 
-            // AI Grading heuristics
-            let score = 60;
-            let feedbackNotes = [];
-
-            // Check length & substance
-            if (input.length > 40) score += 15;
-            else feedbackNotes.push("Your draft is a bit too brief to establish deep tension.");
-
-            // Check for curiosity triggers (question marks, numbers, words like 'secret', 'hidden', 'why', 'actually', 'most', '90%')
-            const lower = input.toLowerCase();
-            const curiosityWords = ['why', 'secret', 'hidden', 'most', 'actually', 'silent', 'blind spot', 'trap', 'never', 'what', 'how', '%', 'last month'];
-            let triggerCount = 0;
-            curiosityWords.forEach(w => {
-                if (lower.includes(w)) triggerCount++;
-            });
-
-            if (triggerCount >= 2) {
-                score += 25;
-                feedbackNotes.push("Excellent inclusion of information gap triggers (curiosity words/stats detected).");
-            } else {
-                feedbackNotes.push("Tip: Introduce more sharp specifics (e.g. '90%', 'silent leak', 'blind spot') to widen the curiosity gap.");
-            }
-
-            // Check if user gave away the resolution immediately
-            if (lower.includes('here is the solution') || lower.includes('buy now') || lower.includes('we will fix it')) {
-                score -= 20;
-                feedbackNotes.push("Warning: You resolved the loop too quickly! Keep the reader hanging before delivering the payoff.");
-            } else {
-                score += 10;
-                feedbackNotes.push("Good job withholding the final resolution in your opening teaser.");
-            }
-
-            // Cap score between 40 and 98
-            score = Math.min(98, Math.max(45, score));
-            const passed = score >= 70;
-
-            const resultBox = document.getElementById('gradingResultBox');
-            resultBox.classList.remove('hidden');
-
-            resultBox.innerHTML = `
-                <div class="flex items-center justify-between border-b border-white/5 pb-4">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-12 h-12 rounded-2xl ${passed ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'} flex items-center justify-center font-bold text-lg">
-                            ${score}%
-                        </div>
-                        <div>
-                            <h4 class="text-base font-bold text-white">AI Grading Evaluation: ${passed ? '<span class="text-emerald-400">PASSED (Grade A)</span>' : '<span class="text-amber-400">NEEDS REFINEMENT</span>'}</h4>
-                            <p class="text-xs text-slate-400">Day ${appState.currentDay} Loop Assessment</p>
-                        </div>
-                    </div>
-                    <span class="text-xs px-3 py-1 rounded-full ${passed ? 'bg-emerald-500/10 text-emerald-300' : 'bg-amber-500/10 text-amber-300'} font-medium">
-                        ${passed ? 'Criteria Met' : 'Try Refining Again'}
-                    </span>
-                </div>
-
-                <div class="space-y-2 pt-2">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">AI Coach Feedback:</p>
-                    <ul class="space-y-1.5 text-xs text-slate-300">
-                        ${feedbackNotes.map(n => `<li class="flex items-center space-x-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i><span>${n}</span></li>`).join('')}
-                    </ul>
-                </div>
-
-                ${passed ? `
-                    <div class="pt-2">
-                        <button onclick="completeDayAndLock()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-black font-bold text-sm transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2">
-                            <i data-lucide="award" class="w-4 h-4"></i>
-                            <span>Claim Day ${appState.currentDay} XP & Lock Until Tomorrow</span>
-                        </button>
-                    </div>
-                ` : `
-                    <div class="pt-2 text-center text-xs text-slate-400">
-                        Revise your hook above based on the feedback and submit again to unlock tomorrow's session.
-                    </div>
-                `}
-            `;
-            lucide.createIcons();
-            resultBox.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function completeDayAndLock() {
-            if (!appState.completedDays.includes(appState.currentDay)) {
-                appState.completedDays.push(appState.currentDay);
+            const s = appState.currentScenario;
+            if (!appState.completedScenarios.includes(s.id)) {
+                appState.completedScenarios.push(s.id);
                 appState.xp += 50;
-            }
-
-            // Lock out until next day arrives (Advance day if under 30)
-            if (appState.currentDay < 30) {
-                appState.currentDay++;
             }
 
             saveState();
             triggerConfetti();
-            showCelebrationModal();
+            showCelebrationModal('Drill Mastered!', `Great work! You successfully engineered a curiosity loop for an intangible service outcome. +50 XP earned.`);
         }
 
-        // Simulate next day for user testing
-        function simNextDay() {
-            if (appState.currentDay < 30) {
-                appState.currentDay++;
-                saveState();
-                alert(`[Dev Simulation] Successfully advanced to Day ${appState.currentDay}! Future days are now accessible for testing.`);
-                loadTodayScenario();
-            } else {
-                alert('You are already at Day 30 (Max day reached)!');
+        // --- Curriculum Data & Rendering ---
+        const curriculumWeeks = [
+            {
+                week: "Week 1: Intangible Value & Zeigarnik Hooks",
+                desc: "Overcoming buyer skepticism when selling outcomes that cannot be held or touched.",
+                days: [
+                    { day: 1, title: "Translating Intangible Trust into Open Loops", desc: "How to tease expertise and strategy without sounding vague." },
+                    { day: 2, title: "The Counterintuitive Service Hook", desc: "Challenging conventional consulting wisdom in your first sentence." },
+                    { day: 3, title: "Framing Invisible Risk", desc: "Making abstract financial or legal dangers feel urgent." },
+                    { day: 4, title: "Avoiding Hype in B2B Advisory", desc: "Ensuring your service payoff matches your high-stakes hook." },
+                    { day: 5, title: "LinkedIn & Proposal Loop Drills", desc: "Writing 1-sentence openers for high-ticket service pitches." },
+                    { day: 6, title: "Newsletter & Case Study Intros", desc: "Hooking busy enterprise buyers in the first 3 lines." },
+                    { day: 7, title: "Week 1 Review & Integration", desc: "Auditing your agency or consulting portfolio for missed loops." }
+                ]
+            },
+            {
+                week: "Week 2: Micro-Loops in Proposals & Case Studies",
+                desc: "Keeping clients reading through long-form proposals and strategic whitepapers.",
+                days: [
+                    { day: 8, title: "The Advisory Staller Technique", desc: "Using strategic pauses before revealing methodology." },
+                    { day: 9, title: "The Escalator in Case Studies", desc: "Raising the stakes halfway through a client success story." },
+                    { day: 10, title: "Micro-Looping in Service Pages", desc: "Structuring service tiers with cliffhangers between tiers." },
+                    { day: 11, title: "Turning Abstract Data into Curiosity", desc: "Making ROI metrics and KPI improvements feel like a mystery." },
+                    { day: 12, title: "The 5-Step Consulting Framework Staller", desc: "Guiding prospects through methodology without giving away the farm." },
+                    { day: 13, title: "Eliminating Corporate Jargon", desc: "Replacing stale buzzwords with sharp, looping narrative tension." },
+                    { day: 14, title: "Week 2 Checkpoint", desc: "Complete 3 Service Loop Lab drills in under 10 minutes." }
+                ]
+            },
+            {
+                week: "Week 3: Nested Loops for High-Ticket Offers",
+                desc: "Juggling multiple open loops across sales pages, webinars, and advisory decks.",
+                days: [
+                    { day: 15, title: "Introduction to Nested Service Loops", desc: "Opening micro-loops while your macro-outcome loop is pending." },
+                    { day: 16, title: "The Resolution Bridge in Sales Calls", desc: "Transitioning from teaser hook to strategic solution." },
+                    { day: 17, title: "Storytelling Loops for Coaches", desc: "Structuring transformation case studies with delayed breakthroughs." },
+                    { day: 18, title: "Enterprise Pitch Deck Looping", desc: "Keeping executive stakeholders engaged from slide 1 to pricing." },
+                    { day: 19, title: "Video & Discovery Call Looping", desc: "Applying retention loops to spoken-word pitches and webinars." },
+                    { day: 20, title: "Rhythm and Cadence in Advisory Copy", desc: "Balancing authoritative tone with irresistible curiosity." },
+                    { day: 21, title: "Week 3 Checkpoint", desc: "Draft a 500-word service proposal containing at least 3 active nested loops." }
+                ]
+            },
+            {
+                week: "Week 4: Campaign Looping & Client Acquisition",
+                desc: "Spanning loops across multi-day email sequences, thought leadership, and client onboarding.",
+                days: [
+                    { day: 22, title: "The Cold Outreach Macro-Loop", desc: "Opening a cliffhanger in Outreach Email 1 that resolves in Email 3." },
+                    { day: 23, title: "Advisory Retainer Launch Teasers", desc: "Building anticipation for new cohort or fractional offerings." },
+                    { day: 24, title: "LinkedIn Thought Leadership Series", desc: "Looping Day 1 industry insights into Day 2 case study reveals." },
+                    { day: 25, title: "Overcoming Skepticism with Social Proof", desc: "Looping skeptical buyers in with counter-intuitive client results." },
+                    { day: 26, title: "The Perfect Service Call Closer", desc: "Satisfying the prospect while sparking immediate action." },
+                    { day: 27, title: "Live Simulation Drill", desc: "Rewriting 3 difficult intangible service pitch cases." },
+                    { day: 28, title: "The 30-Day Service Content Audit", desc: "Overhauling your entire digital presence for maximum retention." },
+                    { day: 29, title: "Speed Looping Practice", desc: "Drafting high-retention hooks for advisory calls in 60 seconds." },
+                    { day: 30, title: "Graduation & Service Mastery", desc: "Claiming your Service Loopmaster badge and closing enterprise clients." }
+                ]
             }
-        }
-
-        // --- Curriculum Data & Strict Lock Rendering ---
-        const curriculumDaysTotal = 30;
+        ];
 
         function renderCurriculum() {
             const container = document.getElementById('curriculumList');
-            let html = '';
-
-            for (let d = 1; d <= curriculumDaysTotal; d++) {
-                const isUnlocked = d <= appState.currentDay;
-                const isCompleted = appState.completedDays.includes(d);
-                const isToday = d === appState.currentDay && !isCompleted;
-
-                html += `
-                    <div class="glass-card rounded-2xl overflow-hidden border ${isUnlocked ? 'border-white/10' : 'border-white/5 opacity-50'}">
-                        <div class="p-5 flex items-center justify-between bg-charcoal/60">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-10 h-10 rounded-xl ${isCompleted ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : isUnlocked ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-surface text-slate-600 border border-white/5'} flex items-center justify-center font-bold text-sm shrink-0">
-                                    ${d}
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-white flex items-center space-x-2">
-                                        <span>Day ${d}: Service Retention Drill</span>
-                                        ${isCompleted ? '<span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300">Completed</span>' : isToday ? '<span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-300">Active Today</span>' : '<span class="text-[10px] px-2 py-0.5 rounded bg-surface text-slate-400 flex items-center space-x-1"><i data-lucide="lock" class="w-3 h-3"></i><span>Locked</span></span>'}
-                                    </h4>
-                                    <p class="text-xs text-slate-400 mt-0.5">
-                                        ${isUnlocked ? 'Drill unlocked and available in The Loop Lab.' : 'Locked until tomorrow arrives and today is completed.'}
-                                    </p>
-                                </div>
-                            </div>
-                            <div>
-                                ${isUnlocked ? `
-                                    <button onclick="appState.currentDay = ${d}; loadTodayScenario();" class="text-xs px-4 py-2 rounded-xl bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 transition border border-amber-500/20 font-medium">
-                                        ${isCompleted ? 'Review Drill' : 'Start Drill'}
-                                    </button>
-                                ` : `
-                                    <span class="text-xs text-slate-500 flex items-center space-x-1"><i data-lucide="lock" class="w-3.5 h-3.5"></i><span>Locked</span></span>
-                                `}
-                            </div>
+            container.innerHTML = curriculumWeeks.map((weekData, wIdx) => `
+                <div class="glass-card rounded-2xl overflow-hidden border border-white/5">
+                    <button onclick="toggleWeek(${wIdx})" class="w-full p-6 flex items-center justify-between text-left bg-charcoal/40 hover:bg-charcoal/80 transition">
+                        <div>
+                            <h3 class="text-base font-bold text-white">${weekData.week}</h3>
+                            <p class="text-xs text-slate-400 mt-1">${weekData.desc}</p>
                         </div>
+                        <i data-lucide="chevron-down" id="chevron-${wIdx}" class="w-5 h-5 text-amber-400 transition-transform"></i>
+                    </button>
+                    <div id="week-content-${wIdx}" class="hidden p-5 space-y-3.5 bg-obsidian/60 border-t border-white/5">
+                        ${weekData.days.map(d => `
+                            <div class="flex items-start space-x-3.5 p-4 rounded-xl bg-charcoal/80 border border-white/5">
+                                <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xs font-bold shrink-0">
+                                    ${d.day}
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-semibold text-white">${d.title}</h4>
+                                    <p class="text-xs text-slate-400 mt-0.5 leading-relaxed">${d.desc}</p>
+                                </div>
+                                <button onclick="switchTab('lab'); loadRandomScenario();" class="text-xs px-3.5 py-2 rounded-xl bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 transition border border-amber-500/20 shrink-0 font-medium">
+                                    Practice Drill
+                                </button>
+                            </div>
+                        `).join('')}
                     </div>
-                `;
-            }
-            container.innerHTML = html;
+                </div>
+            `).join('');
             lucide.createIcons();
+        }
+
+        function toggleWeek(wIdx) {
+            const content = document.getElementById(`week-content-${wIdx}`);
+            const chevron = document.getElementById(`chevron-${wIdx}`);
+            content.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
         }
 
         // --- Milestones & Badges Rendering ---
         const badges = [
-            { id: 'b1', title: 'Loop Apprentice', req: 'Complete Day 1 drill', icon: 'zap', check: () => appState.completedDays.length >= 1 },
-            { id: 'b2', title: 'Consistency Flame', req: 'Maintain streak & Day 3', icon: 'flame', check: () => appState.completedDays.length >= 3 },
-            { id: 'b3', title: 'Intangible Strategist', req: 'Complete 7 days of training', icon: 'sparkles', check: () => appState.completedDays.length >= 7 },
-            { id: 'b4', title: 'Retention Titan', req: 'Complete 15 days of training', icon: 'shield', check: () => appState.completedDays.length >= 15 },
-            { id: 'b5', title: 'Grandmaster of Service Loops', req: 'Complete all 30 days', icon: 'crown', check: () => appState.completedDays.length >= 30 }
+            { id: 'b1', title: 'Loop Apprentice', req: 'Complete your first drill', icon: 'zap', check: () => appState.completedScenarios.length >= 1 },
+            { id: 'b2', title: 'Consistency Flame', req: 'Maintain a 3-day streak', icon: 'flame', check: () => appState.streak >= 3 },
+            { id: 'b3', title: 'Intangible Strategist', req: 'Complete 6 scenarios', icon: 'sparkles', check: () => appState.completedScenarios.length >= 6 },
+            { id: 'b4', title: 'Retention Titan', req: 'Complete 12 scenarios', icon: 'shield', check: () => appState.completedScenarios.length >= 12 },
+            { id: 'b5', title: 'Grandmaster of Service Loops', req: 'Complete all 18+ scenarios', icon: 'crown', check: () => appState.completedScenarios.length >= 18 }
         ];
 
         function renderBadges() {
@@ -704,7 +734,9 @@
         }
 
         // --- Modal & Confetti ---
-        function showCelebrationModal() {
+        function showCelebrationModal(title, desc) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
             document.getElementById('celebrationModal').classList.remove('hidden');
             renderBadges();
             updateStatsUI();
@@ -712,7 +744,7 @@
 
         function closeModal() {
             document.getElementById('celebrationModal').classList.add('hidden');
-            switchTab('dashboard');
+            loadRandomScenario();
         }
 
         function triggerConfetti() {
@@ -727,7 +759,8 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadState();
             lucide.createIcons();
-            loadTodayScenario();
+            loadRandomScenario();
+            renderCurriculum();
             renderBadges();
         });
     </script>

@@ -26,6 +26,9 @@
     }
     .reveal { opacity: 0; transform: translateY(22px); transition: opacity 800ms ease, transform 800ms ease; }
     .reveal.show { opacity: 1; transform: translateY(0); }
+    .attention-flash { animation: attentionFlash 2.8s ease-in-out infinite; }
+    .trust-journey-overlay { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 700ms ease, visibility 700ms ease; }
+    .trust-journey-overlay.is-visible { opacity: 1; visibility: visible; pointer-events: auto; }
     .float-slow { animation: floatSlow 6s ease-in-out infinite; }
     .shine { position: relative; overflow: hidden; }
     .shine::after {
@@ -38,8 +41,14 @@
     }
     @keyframes floatSlow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     @keyframes shine { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
-    .flash-notice { animation: flashNotice 3s ease-in-out infinite; }
-    @keyframes flashNotice { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.99); } }
+    @keyframes attentionFlash {
+      0%, 100% { box-shadow: 0 0 0 rgba(240, 196, 107, 0); }
+      50% { box-shadow: 0 0 0 7px rgba(240, 196, 107, 0.16), 0 14px 38px rgba(154, 106, 20, 0.12); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .attention-flash, .float-slow, .shine::after { animation: none; }
+    }
   </style>
 </head>
 <body class="bg-[#fffaf2] text-[#121422] antialiased">
@@ -90,14 +99,12 @@
 
     <section id="trust" class="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div class="mx-auto max-w-5xl">
-        <div class="reveal border-y-2 border-[#9a6a14] py-8 sm:py-10 bg-[#9a6a14]/5">
-          <p class="flash-notice mx-auto max-w-3xl text-center text-xl font-extrabold leading-tight tracking-tight text-[#9a6a14] sm:text-2xl">
-            The sections below can't be responsibly written from the outside. They require customer insight, brand nuance, and strategic decisions that go beyond a homepage preview.
-          </p>
+        <div class="reveal attention-flash rounded-[1.5rem] border-2 border-[#d8a64a] bg-[#f4ead9] px-6 py-8 sm:px-10 sm:py-10">
+          <p class="max-w-4xl text-xl font-black leading-tight tracking-[-0.02em] text-[#121422] sm:text-3xl">The sections below can't be responsibly written from the outside. They require customer insight, brand nuance, and strategic decisions that go beyond a homepage preview.</p>
         </div>
 
         <div class="mt-12 space-y-6 sm:mt-16 sm:space-y-8">
-          <article class="reveal grid min-h-[320px] gap-8 rounded-[2rem] border border-[#121422]/12 bg-[#f4ead9] p-8 sm:p-14 md:grid-cols-[0.75fr_1.25fr] md:items-center">
+          <article class="reveal attention-flash grid min-h-[320px] gap-8 rounded-[2rem] border border-[#121422]/12 bg-[#f4ead9] p-8 sm:p-14 md:grid-cols-[0.75fr_1.25fr] md:items-center" style="animation-delay: 0.2s">
             <div>
               <h3 class="text-3xl font-black tracking-[-0.035em] sm:text-4xl">🔒 Reality Mirror</h3>
             </div>
@@ -107,7 +114,7 @@
             </div>
           </article>
 
-          <article class="reveal grid min-h-[320px] gap-8 rounded-[2rem] border border-[#121422]/12 bg-[#e9f0ed] p-8 sm:p-14 md:grid-cols-[0.75fr_1.25fr] md:items-center">
+          <article class="reveal attention-flash grid min-h-[320px] gap-8 rounded-[2rem] border border-[#121422]/12 bg-[#e9f0ed] p-8 sm:p-14 md:grid-cols-[0.75fr_1.25fr] md:items-center" style="animation-delay: 0.8s">
             <div>
               <h3 class="text-3xl font-black tracking-[-0.035em] sm:text-4xl">🔒 Reason Why</h3>
             </div>
@@ -116,7 +123,7 @@
             </div>
           </article>
 
-          <article class="reveal grid min-h-[320px] gap-8 rounded-[2rem] border border-[#121422]/12 bg-[#f0e5ef] p-8 sm:p-14 md:grid-cols-[0.75fr_1.25fr] md:items-center">
+          <article class="reveal attention-flash grid min-h-[320px] gap-8 rounded-[2rem] border border-[#121422]/12 bg-[#f0e5ef] p-8 sm:p-14 md:grid-cols-[0.75fr_1.25fr] md:items-center" style="animation-delay: 1.4s">
             <div>
               <h3 class="text-3xl font-black tracking-[-0.035em] sm:text-4xl">🔒 The Method</h3>
             </div>
@@ -226,16 +233,13 @@
     </div>
   </footer>
 
-  <div id="overlay" class="fixed inset-0 z-[100] flex translate-y-full items-center justify-center bg-white/95 p-6 opacity-0 backdrop-blur-md transition-all duration-1000 ease-in-out">
-    <div class="max-w-3xl text-center">
-      <p class="text-xl font-medium text-[#55515e] sm:text-2xl">What you just experienced was created using only publicly available information.</p>
-      <p class="mt-8 text-2xl font-black leading-tight text-[#121422] sm:text-4xl">Imagine the possibilities when it gets built around your customers, your story, and your business success.</p>
-      <p class="mt-8 text-xl text-[#55515e] sm:text-2xl">If this preview already changed how you see your brand, I'd love to show you what the complete version looks like.</p>
-      <div class="mt-12">
-        <a href="https://calendly.com/segunfalade/messaging-audit" class="inline-flex items-center justify-center rounded-full bg-[#121422] px-8 py-4 text-lg font-bold text-white transition hover:bg-black">
-          Let's Complete Your Trust Journey
-        </a>
-      </div>
+  <div id="journeyOverlay" class="trust-journey-overlay fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-[#fffdf8]/[0.98] px-6 py-16 text-[#121422] backdrop-blur-md" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="journeyTitle">
+    <button id="closeJourneyOverlay" class="absolute right-5 top-5 rounded-full border border-[#121422]/15 px-4 py-2 text-sm font-bold text-[#121422]/65 transition hover:border-[#9a6a14] hover:text-[#9a6a14]" type="button" aria-label="Close trust journey preview">Close</button>
+    <div class="mx-auto max-w-3xl text-center">
+      <p id="journeyTitle" class="text-3xl font-black leading-tight tracking-[-0.035em] sm:text-5xl">What you just experienced was created using only publicly available information.</p>
+      <p class="mt-8 text-xl leading-9 text-[#55515e] sm:text-2xl">Imagine the possibilities when it gets built around your customers, your story, and your business success.</p>
+      <p class="mt-8 text-xl leading-9 text-[#55515e] sm:text-2xl">If this preview already changed how you see your brand, I'd love to show you what the complete version looks like.</p>
+      <a href="https://calendly.com/segunfalade/messaging-audit" target="_blank" rel="noopener noreferrer" class="mt-10 inline-flex items-center justify-center rounded-full bg-[#11121e] px-7 py-4 text-base font-extrabold text-white shadow-xl shadow-[#11121e]/15 transition hover:-translate-y-0.5 hover:bg-[#2a2b3d]">Let's Complete Your Trust Journey</a>
     </div>
   </div>
 
@@ -266,29 +270,46 @@
 
     document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
 
-    // Scroll-up trigger for whiteout overlay
-    let hasScrolledPastProducts = false;
-    let lastScrollTop = 0;
     const productsSection = document.getElementById('products');
-    const overlay = document.getElementById('overlay');
+    const journeyOverlay = document.getElementById('journeyOverlay');
+    const closeJourneyOverlay = document.getElementById('closeJourneyOverlay');
+    let lastScrollY = window.scrollY;
+    let journeyOverlayShown = false;
+
+    const showJourneyOverlay = () => {
+      journeyOverlay.classList.add('is-visible');
+      journeyOverlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('overflow-hidden');
+      closeJourneyOverlay.focus();
+    };
+
+    const hideJourneyOverlay = () => {
+      journeyOverlay.classList.remove('is-visible');
+      journeyOverlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('overflow-hidden');
+    };
 
     window.addEventListener('scroll', () => {
-      let st = window.pageYOffset || document.documentElement.scrollTop;
-      
-      // Check if user has reached/passed the products section
-      if (st > productsSection.offsetTop + (productsSection.offsetHeight / 2)) {
-        hasScrolledPastProducts = true;
+      const currentScrollY = window.scrollY;
+      const productsBottom = productsSection.offsetTop + productsSection.offsetHeight;
+      const hasPassedProducts = lastScrollY > productsBottom - 80;
+      const scrollingUp = currentScrollY < lastScrollY - 4;
+
+      if (hasPassedProducts && scrollingUp && !journeyOverlayShown) {
+        journeyOverlayShown = true;
+        showJourneyOverlay();
       }
 
-      // If user has been past products and starts scrolling UP
-      if (hasScrolledPastProducts && st < lastScrollTop && st > 100) {
-        overlay.classList.remove('translate-y-full', 'opacity-0');
-        overlay.classList.add('translate-y-0', 'opacity-100');
-        // Optional: Disable page scrolling after overlay appears
-        document.body.style.overflow = 'hidden';
-      }
-      lastScrollTop = st <= 0 ? 0 : st;
-    }, false);
+      lastScrollY = currentScrollY;
+    }, { passive: true });
+
+    closeJourneyOverlay.addEventListener('click', hideJourneyOverlay);
+    journeyOverlay.addEventListener('click', (event) => {
+      if (event.target === journeyOverlay) hideJourneyOverlay();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && journeyOverlay.classList.contains('is-visible')) hideJourneyOverlay();
+    });
   </script>
 </body>
 </html>

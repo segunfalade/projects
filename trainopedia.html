@@ -1,915 +1,933 @@
 <!doctype html>
 <html lang="en" class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0A0E1A" />
-    <meta
-      name="description"
-      content="Trainopedia moves your child beyond the classroom — mastering the rare digital skills and real-world execution that turn a high schooler into high-value talent before they graduate. Built for JSS1–SS3 students."
-    />
-    <link rel="icon" type="image/png" href="https://segunfalade.github.io/assets/trainopedia.png" />
-    <title>Trainopedia — Set Your Child 10 Years Ahead of Their Peers</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400..800&display=swap"
-      rel="stylesheet"
-    />
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              ink: { DEFAULT: "#0a0e1a", 800: "#10162a" },
-              navy: { DEFAULT: "#0f1a3d", 700: "#172658", 600: "#213476" },
-              lime: { DEFAULT: "#c8f560", 300: "#ddfb8f", 700: "#5f8a00" },
-              amber: { DEFAULT: "#f5b400", 800: "#8a6400" },
-              cream: { DEFAULT: "#f6f4ec", 200: "#ece8db" },
-            },
-            fontFamily: {
-              display: ['"Bricolage Grotesque"', '"Manrope"', "ui-sans-serif", "system-ui", "sans-serif"],
-              sans: ['"Manrope"', "ui-sans-serif", "system-ui", "-apple-system", "sans-serif"],
-            },
-            maxWidth: { "8xl": "88rem" },
-          },
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#06081a" />
+<meta name="description" content="Trainopedia moves your child beyond the classroom — mastering the rare digital skills and real-world execution that turn a high schooler into high-value talent before they graduate. Built for JSS1–SS3 students." />
+<link rel="icon" type="image/png" href="https://segunfalade.github.io/assets/trainopedia.png" />
+<title>Trainopedia — Set Your Child 10 Years Ahead of Their Peers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400..800&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: "#06081a", "ink-900": "#0a0e2a", "ink-800": "#10163d", "ink-700": "#1a2158",
+          violet: "#6b3dff", "violet-600": "#5a2be6", "violet-300": "#b6a0ff",
+          magenta: "#ff3d9a", cyan: "#2ee6ff", lime: "#c8ff3d", "lime-300": "#e0ff8a",
+          orange: "#ff7a1a", yellow: "#ffd60a", cream: "#f7f5ee",
         },
-      };
-    </script>
-
-    <style>
-      html { -webkit-text-size-adjust: 100%; }
-      body {
-        background: #0a0e1a;
-        color: #0f172a;
-        font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        overflow-x: hidden;
-      }
-      ::selection { background: #c8f560; color: #0a0e1a; }
-      h1, h2, h3, h4 { font-family: "Bricolage Grotesque", "Manrope", sans-serif; letter-spacing: -0.02em; }
-
-      /* Scroll reveal */
-      .reveal {
-        opacity: 0;
-        transform: translateY(18px);
-        transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-        transition-delay: var(--d, 0ms);
-      }
-      .reveal.is-visible { opacity: 1; transform: none; }
-
-      /* Progress bars */
-      .bar { width: 0; transition: width 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.35s; }
-      .is-visible .bar { width: var(--w); }
-
-      @media (prefers-reduced-motion: reduce) {
-        .reveal { opacity: 1; transform: none; transition: none; }
-        .bar { width: var(--w); transition: none; }
-        .floaty { animation: none !important; }
-      }
-
-      /* Decorative grids */
-      .bg-grid {
-        background-image:
-          linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-        background-size: 44px 44px;
-      }
-      .bg-grid-dark {
-        background-image:
-          linear-gradient(to right, rgba(15, 26, 61, 0.06) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(15, 26, 61, 0.06) 1px, transparent 1px);
-        background-size: 44px 44px;
-      }
-
-      .mark-lime {
-        background-image: linear-gradient(transparent 62%, rgba(200, 245, 96, 0.85) 62%, rgba(200, 245, 96, 0.85) 92%, transparent 92%);
-        padding: 0 0.1em;
-      }
-
-      @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-      .floaty { animation: floaty 5s ease-in-out infinite; }
-
-      /* Accordion */
-      .acc-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
-      .acc-panel[data-open="true"] { grid-template-rows: 1fr; }
-      .acc-panel > div { overflow: hidden; }
-
-      .mask-hero { -webkit-mask-image: radial-gradient(ellipse at top, black 30%, transparent 75%); mask-image: radial-gradient(ellipse at top, black 30%, transparent 75%); }
-      .mask-center { -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%); mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%); }
-      .mask-tl { -webkit-mask-image: radial-gradient(ellipse at top left, black 10%, transparent 60%); mask-image: radial-gradient(ellipse at top left, black 10%, transparent 60%); }
-      .mask-bottom { -webkit-mask-image: radial-gradient(ellipse at bottom, black 20%, transparent 70%); mask-image: radial-gradient(ellipse at bottom, black 20%, transparent 70%); }
-    </style>
-  </head>
-
-  <body class="min-h-screen bg-ink">
-    <!-- ======================= NAV ======================= -->
-    <header id="site-header" class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-colors duration-300">
-      <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-5 sm:h-[72px] sm:px-8 lg:px-10">
-        <a href="#top" class="flex items-center gap-3" aria-label="Trainopedia — home">
-          <span class="grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-white/20">
-            <img src="https://segunfalade.github.io/assets/trainopedia.png" alt="" class="h-8 w-8 object-contain" width="32" height="32" />
-          </span>
-          <span class="font-display text-lg font-bold tracking-tight text-white">Trainopedia</span>
-        </a>
-
-        <nav class="hidden items-center gap-7 lg:flex" aria-label="Primary">
-          <a href="#gap" class="text-sm font-semibold text-white/75 transition-colors hover:text-lime">The Gap</a>
-          <a href="#tracks" class="text-sm font-semibold text-white/75 transition-colors hover:text-lime">Skill Tracks</a>
-          <a href="#how" class="text-sm font-semibold text-white/75 transition-colors hover:text-lime">How It Works</a>
-          <a href="#outcomes" class="text-sm font-semibold text-white/75 transition-colors hover:text-lime">Outcomes</a>
-          <a href="#results" class="text-sm font-semibold text-white/75 transition-colors hover:text-lime">Results</a>
-          <a href="#faq" class="text-sm font-semibold text-white/75 transition-colors hover:text-lime">FAQ</a>
-        </nav>
-
-        <div class="hidden lg:block">
-          <a href="#book" class="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-5 py-2.5 text-sm font-bold tracking-tight text-ink shadow-[0_12px_34px_-14px_rgba(200,245,96,0.75)] transition-all duration-200 hover:bg-lime-300 active:scale-95">Book Free Assessment</a>
-        </div>
-
-        <button id="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" class="relative grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white lg:hidden">
-          <span class="bar-top absolute h-0.5 w-5 -translate-y-1.5 rounded bg-current transition-transform duration-300"></span>
-          <span class="bar-mid absolute h-0.5 w-5 rounded bg-current transition-opacity duration-200"></span>
-          <span class="bar-bot absolute h-0.5 w-5 translate-y-1.5 rounded bg-current transition-transform duration-300"></span>
-        </button>
+        fontFamily: {
+          display: ['"Bricolage Grotesque"', "Manrope", "ui-sans-serif", "system-ui", "sans-serif"],
+          sans: ["Manrope", "ui-sans-serif", "system-ui", "sans-serif"],
+          mono: ['"JetBrains Mono"', "ui-monospace", "Menlo", "monospace"],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root { color-scheme: dark; }
+  body { background: #06081a; color: #fff; font-family: "Manrope", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1,h2,h3,h4 { font-family: "Bricolage Grotesque", "Manrope", sans-serif; letter-spacing: -0.02em; }
+  ::selection { background: #c8ff3d; color: #06081a; }
+  /* Keyframes */
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes pop { 0%{transform:scale(.4);opacity:0} 60%{transform:scale(1.12);opacity:1} 100%{transform:scale(1);opacity:1} }
+  @keyframes animin { from{opacity:0;transform:translateY(14px) scale(.985)} to{opacity:1;transform:none} }
+  @keyframes pulsering { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(1.9);opacity:0} }
+  @keyframes scrollhint { 0%,100%{transform:translateY(0);opacity:1} 50%{transform:translateY(6px);opacity:.4} }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+  @keyframes gradientx { to { background-position: 300% 50%; } }
+  @keyframes grow { from { width: 0; } to { width: var(--w, 100%); } }
+  @keyframes confetti { to { transform: translate(var(--x), var(--y)) rotate(var(--r)); opacity: 0; } }
+  @keyframes auroraA { to { transform: translate(14%,12%) scale(1.18); } }
+  @keyframes auroraB { to { transform: translate(-12%,16%) scale(1.22); } }
+  @keyframes auroraC { to { transform: translate(10%,-14%) scale(1.12); } }
+  @keyframes shine { from{transform:translateX(-150%) skewX(-20deg)} to{transform:translateX(250%) skewX(-20deg)} }
+  @keyframes ping { 75%,100%{transform:scale(2);opacity:0} }
+  .animate-float { animation: float 6s ease-in-out infinite; }
+  .animate-blink { animation: blink 1s steps(2,start) infinite; }
+  .animate-pop { animation: pop .6s cubic-bezier(.2,1.4,.3,1) both; }
+  .animate-in { animation: animin .5s cubic-bezier(.2,.8,.2,1) both; }
+  .animate-scroll-hint { animation: scrollhint 1.6s ease-in-out infinite; }
+  .animate-ping-slow { animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
+  /* Reveal */
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d,0ms); }
+  .reveal.rv-zoom { transform: scale(.92) translateY(10px); }
+  .reveal.rv-left { transform: translateX(-28px); }
+  .reveal.rv-right { transform: translateX(28px); }
+  .reveal.is-visible { opacity: 1; transform: none; }
+  /* Bars */
+  .bar { width: 0; transition: width 1.4s cubic-bezier(.2,.8,.2,1) .35s; }
+  .is-visible .bar { width: var(--w); }
+  .grow { animation: grow 1s cubic-bezier(.2,.8,.2,1) .15s both; }
+  /* Text FX */
+  .text-grad { background-image: linear-gradient(90deg,#c8ff3d,#2ee6ff 30%,#ff3d9a 60%,#c8ff3d); background-size:300% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent; animation: gradientx 7s linear infinite; }
+  .text-outline { -webkit-text-stroke: 2px rgba(255,255,255,.28); color: transparent; -webkit-text-fill-color: transparent; }
+  /* Holographic border */
+  .holo { position: relative; background-image: linear-gradient(120deg,#c8ff3d,#2ee6ff,#6b3dff,#ff3d9a,#c8ff3d); background-size:300% 300%; animation: gradientx 8s linear infinite; }
+  .holo-ring { border-color: transparent; background-image: linear-gradient(#10163d,#10163d), linear-gradient(120deg,#c8ff3d,#2ee6ff,#6b3dff,#ff3d9a,#c8ff3d); background-origin: border-box; background-clip: padding-box, border-box; }
+  /* Tilt + spotlight */
+  .tilt { transform: perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)); transition: transform .18s ease-out; transform-style: preserve-3d; }
+  .spot { position: relative; }
+  .spot::after { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; background: radial-gradient(360px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.16), transparent 60%); opacity:0; transition:opacity .3s; }
+  .spot:hover::after { opacity: 1; }
+  /* Marquee */
+  .marquee { overflow: hidden; white-space: nowrap; }
+  .marquee-track { display: flex; width: max-content; animation: marquee var(--speed,30s) linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  /* Backgrounds */
+  .bg-grid { background-image: linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 48px 48px; }
+  .bg-grid-dark { background-image: linear-gradient(to right, rgba(6,8,26,.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(6,8,26,.09) 1px, transparent 1px); background-size: 48px 48px; }
+  .noise::before { content:""; position:absolute; inset:0; pointer-events:none; z-index:0; opacity:.07; mix-blend-mode:overlay; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); }
+  .blob { position:absolute; border-radius:9999px; filter: blur(90px); opacity:.55; will-change: transform; }
+  .blob-a { animation: auroraA 16s ease-in-out infinite alternate; }
+  .blob-b { animation: auroraB 20s ease-in-out infinite alternate; }
+  .blob-c { animation: auroraC 18s ease-in-out infinite alternate; }
+  .confetti span { position:absolute; left:50%; top:50%; border-radius:2px; animation: confetti 1.1s cubic-bezier(.1,.8,.3,1) forwards; }
+  .shine { position:absolute; inset:0; overflow:hidden; border-radius:inherit; pointer-events:none; }
+  .shine::after { content:""; position:absolute; top:-20%; bottom:-20%; width:40%; background: linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent); animation: shine 1.2s ease-out .2s both; }
+  /* Accordion */
+  .acc-panel { display:grid; grid-template-rows:0fr; transition: grid-template-rows .35s cubic-bezier(.2,.7,.2,1); }
+  .acc-panel[data-open="true"] { grid-template-rows:1fr; }
+  .acc-panel > div { overflow:hidden; }
+  /* VS rounds */
+  .round { opacity:.28; transform:translateY(10px); transition:opacity .5s, transform .5s; }
+  .round .std-cell { transform:translateX(-16px); opacity:0; transition:transform .5s .1s, opacity .5s .1s; }
+  .round .tp-cell { transform:translateX(16px); opacity:0; transition:transform .5s .25s, opacity .5s .25s; }
+  .round.is-on { opacity:1; transform:none; }
+  .round.is-on .std-cell, .round.is-on .tp-cell { transform:none; opacity:1; }
+  .no-scrollbar { scrollbar-width:none; }
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity:1; transform:none; transition:none; }
+    .bar,.grow { width: var(--w); animation:none; }
+    .marquee-track,.blob,.text-grad,.holo,.confetti span,.shine::after,.animate-float { animation:none !important; }
+    .tilt { transform:none; transition:none; }
+    .round,.round .std-cell,.round .tp-cell { opacity:1; transform:none; transition:none; }
+  }
+</style>
+</head>
+<body class="min-h-screen bg-ink">
+<!-- ============ NAV ============ -->
+<header class="fixed inset-x-0 top-0 z-50">
+  <div id="navbar" class="transition-colors duration-300">
+    <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-5 sm:h-[72px] sm:px-8 lg:px-10">
+      <a href="#top" class="group flex items-center gap-3" aria-label="Trainopedia — home">
+        <span class="grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-white ring-2 ring-transparent transition-all duration-300 group-hover:-rotate-6 group-hover:ring-lime">
+          <img src="https://segunfalade.github.io/assets/trainopedia.png" alt="" class="h-8 w-8 object-contain" width="32" height="32" />
+        </span>
+        <span class="font-display text-lg font-extrabold tracking-tight text-white">Trainopedia</span>
+      </a>
+      <nav class="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 lg:flex" aria-label="Primary">
+        <a href="#gap" class="rounded-full px-4 py-2 text-sm font-semibold text-white/75 transition-colors hover:bg-white/10 hover:text-white">The Gap</a>
+        <a href="#who" class="rounded-full px-4 py-2 text-sm font-semibold text-white/75 transition-colors hover:bg-white/10 hover:text-white">Who It's For</a>
+        <a href="#tracks" class="rounded-full px-4 py-2 text-sm font-semibold text-white/75 transition-colors hover:bg-white/10 hover:text-white">Tracks</a>
+        <a href="#how" class="rounded-full px-4 py-2 text-sm font-semibold text-white/75 transition-colors hover:bg-white/10 hover:text-white">How It Works</a>
+        <a href="#outcomes" class="rounded-full px-4 py-2 text-sm font-semibold text-white/75 transition-colors hover:bg-white/10 hover:text-white">Outcomes</a>
+        <a href="#faq" class="rounded-full px-4 py-2 text-sm font-semibold text-white/75 transition-colors hover:bg-white/10 hover:text-white">FAQ</a>
+      </nav>
+      <div class="hidden lg:block">
+        <a href="#book" class="group inline-flex items-center gap-2 rounded-full bg-lime px-5 py-2.5 text-sm font-bold text-ink shadow-[0_14px_40px_-12px_rgba(200,255,61,.7)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-lime-300">Book Free Assessment →</a>
       </div>
-
-      <div id="mobile-menu" class="max-h-0 overflow-hidden opacity-0 transition-[max-height,opacity] duration-300 ease-out lg:hidden">
-        <div class="mx-auto w-full max-w-7xl px-5 pb-6 pt-2 sm:px-8">
-          <nav class="flex flex-col divide-y divide-white/10" aria-label="Mobile">
-            <a href="#gap" class="menu-link py-4 font-display text-xl font-semibold text-white transition-colors hover:text-lime">The Gap</a>
-            <a href="#tracks" class="menu-link py-4 font-display text-xl font-semibold text-white transition-colors hover:text-lime">Skill Tracks</a>
-            <a href="#how" class="menu-link py-4 font-display text-xl font-semibold text-white transition-colors hover:text-lime">How It Works</a>
-            <a href="#outcomes" class="menu-link py-4 font-display text-xl font-semibold text-white transition-colors hover:text-lime">Outcomes</a>
-            <a href="#results" class="menu-link py-4 font-display text-xl font-semibold text-white transition-colors hover:text-lime">Results</a>
-            <a href="#faq" class="menu-link py-4 font-display text-xl font-semibold text-white transition-colors hover:text-lime">FAQ</a>
-          </nav>
-          <a href="#book" class="menu-link mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-6 py-3.5 text-[15px] font-bold text-ink transition-all hover:bg-lime-300 active:scale-95">Book Free Assessment</a>
+      <button id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" class="relative grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-white/5 text-white lg:hidden">
+        <span class="mb-line absolute h-0.5 w-5 -translate-y-1.5 rounded bg-current transition-transform duration-300"></span>
+        <span class="mb-line absolute h-0.5 w-5 rounded bg-current transition-opacity duration-200"></span>
+        <span class="mb-line absolute h-0.5 w-5 translate-y-1.5 rounded bg-current transition-transform duration-300"></span>
+      </button>
+    </div>
+    <div class="h-[3px] w-full bg-white/[0.06]"><div id="progress" class="h-full w-0 bg-[linear-gradient(90deg,#c8ff3d,#2ee6ff,#ff3d9a)] transition-[width] duration-150 ease-out"></div></div>
+  </div>
+  <!-- Mobile menu -->
+  <div id="mobileMenu" aria-hidden="true" class="pointer-events-none fixed inset-x-0 bottom-0 top-[67px] z-40 flex -translate-y-3 flex-col overflow-y-auto bg-ink/95 px-5 pb-8 pt-4 opacity-0 backdrop-blur-xl transition-all duration-300 sm:top-[75px] lg:hidden">
+    <nav class="flex flex-col divide-y divide-white/10" aria-label="Mobile">
+      <a href="#gap" class="mm-link flex items-center justify-between py-4 font-display text-2xl font-extrabold text-white hover:text-lime"><span>The Gap</span><span class="font-mono text-xs text-slate-500">01</span></a>
+      <a href="#who" class="mm-link flex items-center justify-between py-4 font-display text-2xl font-extrabold text-white hover:text-lime"><span>Who It's For</span><span class="font-mono text-xs text-slate-500">02</span></a>
+      <a href="#tracks" class="mm-link flex items-center justify-between py-4 font-display text-2xl font-extrabold text-white hover:text-lime"><span>Tracks</span><span class="font-mono text-xs text-slate-500">03</span></a>
+      <a href="#how" class="mm-link flex items-center justify-between py-4 font-display text-2xl font-extrabold text-white hover:text-lime"><span>How It Works</span><span class="font-mono text-xs text-slate-500">04</span></a>
+      <a href="#outcomes" class="mm-link flex items-center justify-between py-4 font-display text-2xl font-extrabold text-white hover:text-lime"><span>Outcomes</span><span class="font-mono text-xs text-slate-500">05</span></a>
+      <a href="#faq" class="mm-link flex items-center justify-between py-4 font-display text-2xl font-extrabold text-white hover:text-lime"><span>FAQ</span><span class="font-mono text-xs text-slate-500">06</span></a>
+    </nav>
+    <div class="mt-auto space-y-4 pt-8">
+      <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400">JSS1–SS3 · 3–5 hrs / week · No tech background needed</p>
+      <a href="#book" class="mm-link inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-6 py-4 text-base font-bold text-ink">Book Free Assessment →</a>
+    </div>
+  </div>
+</header>
+<main>
+<!-- ============ 1. HERO ============ -->
+<section id="top" class="noise relative overflow-hidden bg-ink text-white">
+  <div class="pointer-events-none absolute inset-0 overflow-hidden">
+    <span class="blob blob-a left-[-12%] top-[-22%] h-[60vw] max-h-[760px] w-[60vw] max-w-[760px] bg-violet"></span>
+    <span class="blob blob-b right-[-18%] top-[4%] h-[48vw] max-h-[620px] w-[48vw] max-w-[620px] bg-magenta opacity-40"></span>
+    <span class="blob blob-c bottom-[-28%] left-[22%] h-[52vw] max-h-[680px] w-[52vw] max-w-[680px] bg-cyan opacity-30"></span>
+  </div>
+  <div class="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]"></div>
+  <div class="relative mx-auto w-full max-w-7xl px-5 pb-20 pt-28 sm:px-8 sm:pt-36 lg:px-10 lg:pb-28 lg:pt-40">
+    <div class="grid items-center gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+      <div class="max-w-2xl">
+        <div class="reveal inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-lime backdrop-blur sm:text-xs">
+          <span class="relative flex h-2 w-2"><span class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-lime opacity-70"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-lime"></span></span>
+          For parents raising Nigeria's next top 1%
         </div>
+        <h1 class="reveal mt-6 font-display text-[clamp(2.9rem,8.6vw,6rem)] font-extrabold leading-[0.95] tracking-[-0.035em]" style="--d:80ms">
+          Set Your Child <span class="text-grad inline-block">10 Years Ahead</span> of Their Peers
+        </h1>
+        <p class="reveal mt-7 max-w-xl text-lg leading-relaxed text-slate-300 sm:text-xl" style="--d:160ms">
+          Straight As open local doors. Rare skills open global ones. Trainopedia moves your child beyond the classroom — mastering the rare digital skills and real-world execution that turn a high schooler into high-value talent before they graduate.
+        </p>
+        <div class="reveal mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6" style="--d:240ms">
+          <a href="#book" class="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 text-base font-bold text-ink shadow-[0_14px_40px_-12px_rgba(200,255,61,.7)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-lime-300 sm:w-auto">Give My Child the Headstart <span class="transition-transform group-hover:translate-x-1">→</span></a>
+          <a href="#how" class="group inline-flex items-center gap-2 text-[15px] font-semibold text-white/80 transition-colors hover:text-lime">See how it works <span class="animate-scroll-hint inline-block">↓</span></a>
+        </div>
+        <ul class="reveal mt-8 flex flex-wrap gap-2.5" style="--d:320ms">
+          <li class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-300"><span class="text-lime">✓</span> Built for JSS1–SS3 students</li>
+          <li class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-300"><span class="text-lime">✓</span> 3–5 hours a week</li>
+          <li class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-300"><span class="text-lime">✓</span> No tech background needed</li>
+        </ul>
       </div>
-    </header>
-
-    <main>
-      <!-- ======================= HERO ======================= -->
-      <section id="top" class="relative overflow-hidden bg-ink text-white">
-        <div class="bg-grid mask-hero pointer-events-none absolute inset-0"></div>
-        <div class="pointer-events-none absolute -top-40 right-[-10%] h-[520px] w-[520px] rounded-full bg-lime/20 blur-[140px]"></div>
-        <div class="pointer-events-none absolute bottom-[-20%] left-[-10%] h-[420px] w-[420px] rounded-full bg-navy-600/60 blur-[120px]"></div>
-
-        <div class="relative mx-auto w-full max-w-7xl px-5 pb-20 pt-28 sm:px-8 sm:pt-36 lg:px-10 lg:pb-28 lg:pt-40">
-          <div class="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
-            <div class="max-w-2xl">
-              <div class="reveal inline-flex items-center gap-2 rounded-full border border-lime/30 bg-lime/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-lime sm:text-xs">
-                <span class="relative flex h-2 w-2">
-                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime opacity-70"></span>
-                  <span class="relative inline-flex h-2 w-2 rounded-full bg-lime"></span>
-                </span>
-                For parents raising Nigeria's next top 1%
-              </div>
-
-              <h1 class="reveal mt-6 text-[2.6rem] font-bold leading-[1.02] sm:text-6xl lg:text-[4.25rem] xl:text-[4.75rem]" style="--d:80ms">
-                Set Your Child
-                <span class="relative inline-block text-lime">
-                  10 Years Ahead
-                  <svg class="absolute -bottom-2 left-0 h-3 w-full text-lime/70 sm:-bottom-3" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true">
-                    <path d="M2 9C40 3 90 2 198 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none" />
-                  </svg>
-                </span>
-                of Their Peers
-              </h1>
-
-              <p class="reveal mt-7 max-w-xl text-lg leading-relaxed text-slate-300 sm:text-xl" style="--d:160ms">
-                Straight As open local doors. Rare skills open global ones. Trainopedia moves your child beyond the classroom — mastering the rare digital skills and real-world execution that turn a high schooler into high-value talent before they graduate.
-              </p>
-
-              <div class="reveal mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6" style="--d:240ms">
-                <a href="#book" class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-6 py-3.5 text-[15px] font-bold tracking-tight text-ink shadow-[0_12px_34px_-14px_rgba(200,245,96,0.75)] transition-all duration-200 hover:bg-lime-300 active:scale-95 sm:w-auto">
-                  Give My Child the Headstart
-                </a>
-                <a href="#how" class="group inline-flex items-center gap-2 text-[15px] font-semibold text-white/80 transition-colors hover:text-lime">
-                  See how it works
-                  <svg viewBox="0 0 20 20" fill="none" class="h-4 w-4 transition-transform group-hover:translate-y-0.5" aria-hidden="true"><path d="M10 4v12m0 0l-5-5m5 5l5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </a>
-              </div>
-
-              <ul class="reveal mt-8 flex flex-wrap gap-x-5 gap-y-2.5 text-sm text-slate-400" style="--d:320ms">
-                <li class="inline-flex items-center gap-2"><svg viewBox="0 0 20 20" fill="none" class="h-4 w-4 text-lime"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Built for JSS1–SS3 students</li>
-                <li class="inline-flex items-center gap-2"><svg viewBox="0 0 20 20" fill="none" class="h-4 w-4 text-lime"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>3–5 hours a week</li>
-                <li class="inline-flex items-center gap-2"><svg viewBox="0 0 20 20" fill="none" class="h-4 w-4 text-lime"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>No tech background needed</li>
-              </ul>
-            </div>
-
-            <!-- Visual -->
-            <div class="reveal relative mx-auto w-full max-w-md pb-24 pt-6 sm:pb-28 lg:mx-0 lg:max-w-[540px] lg:justify-self-end lg:pl-6" style="--d:200ms">
-              <div class="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] ring-1 ring-white/10 sm:aspect-[5/6] lg:aspect-[4/5]">
-                <img src="https://images.pexels.com/photos/5896921/pexels-photo-5896921.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800" alt="A cheerful teenage student working on a laptop with a textbook beside her" class="h-full w-full object-cover object-[50%_25%]" width="800" height="1200" fetchpriority="high" decoding="async" />
-                <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/0 to-ink/10"></div>
-              </div>
-
-              <div class="floaty absolute -right-2 top-0 flex items-center gap-3 rounded-2xl border border-white/10 bg-ink-800/90 px-4 py-3 shadow-2xl shadow-black/40 backdrop-blur sm:-right-4">
-                <span class="grid h-9 w-9 place-items-center rounded-full bg-lime text-ink"><svg viewBox="0 0 20 20" fill="none" class="h-5 w-5"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                <div class="leading-tight">
-                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-lime">Mission complete</p>
-                  <p class="text-sm font-semibold text-white">Strategy memo shipped</p>
-                </div>
-              </div>
-
-              <div class="absolute -bottom-2 left-0 w-[88%] max-w-[22rem] rounded-3xl border border-white/10 bg-white p-5 text-ink shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] sm:-left-6 sm:bottom-0 sm:p-6 lg:-left-10">
-                <div class="flex items-start justify-between gap-4">
-                  <div>
-                    <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Monthly Talent Audit</p>
-                    <p class="mt-1 font-display text-lg font-bold leading-tight">Chidera N. · SS1</p>
-                    <p class="text-xs text-slate-500">Digital Economy Track</p>
-                  </div>
-                  <div class="rounded-xl bg-navy px-3 py-2 text-right text-white">
-                    <p class="text-[10px] font-semibold uppercase tracking-wider text-white/60">Global rank</p>
-                    <p class="font-display text-lg font-bold leading-none text-lime">Top 8%</p>
-                  </div>
-                </div>
-
-                <ul class="mt-5 space-y-3">
-                  <li>
-                    <div class="mb-1.5 flex items-center justify-between text-xs"><span class="font-semibold text-slate-700">Algorithmic Logic</span><span class="font-display font-bold tabular-nums text-ink">82</span></div>
-                    <div class="h-2 overflow-hidden rounded-full bg-slate-100"><div class="bar h-full rounded-full bg-gradient-to-r from-navy to-lime" style="--w:82%"></div></div>
-                  </li>
-                  <li>
-                    <div class="mb-1.5 flex items-center justify-between text-xs"><span class="font-semibold text-slate-700">AI Collaboration</span><span class="font-display font-bold tabular-nums text-ink">91</span></div>
-                    <div class="h-2 overflow-hidden rounded-full bg-slate-100"><div class="bar h-full rounded-full bg-gradient-to-r from-navy to-lime" style="--w:91%"></div></div>
-                  </li>
-                  <li>
-                    <div class="mb-1.5 flex items-center justify-between text-xs"><span class="font-semibold text-slate-700">Strategic Persuasion</span><span class="font-display font-bold tabular-nums text-ink">64</span></div>
-                    <div class="h-2 overflow-hidden rounded-full bg-slate-100"><div class="bar h-full rounded-full bg-gradient-to-r from-navy to-lime" style="--w:64%"></div></div>
-                  </li>
-                  <li>
-                    <div class="mb-1.5 flex items-center justify-between text-xs"><span class="font-semibold text-slate-700">Financial Data</span><span class="font-display font-bold tabular-nums text-ink">73</span></div>
-                    <div class="h-2 overflow-hidden rounded-full bg-slate-100"><div class="bar h-full rounded-full bg-gradient-to-r from-navy to-lime" style="--w:73%"></div></div>
-                  </li>
-                </ul>
-
-                <div class="mt-5 flex items-center justify-between rounded-2xl bg-cream px-4 py-3">
-                  <div>
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Portfolio</p>
-                    <p class="font-display text-sm font-bold">18 projects shipped</p>
-                  </div>
-                  <div class="flex -space-x-1.5">
-                    <span class="h-6 w-6 rounded-md bg-lime ring-2 ring-cream"></span>
-                    <span class="h-6 w-6 rounded-md bg-amber ring-2 ring-cream"></span>
-                    <span class="h-6 w-6 rounded-md bg-navy ring-2 ring-cream"></span>
-                    <span class="h-6 w-6 rounded-md bg-slate-300 ring-2 ring-cream"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <!-- Visual -->
+      <div class="reveal rv-zoom relative mx-auto w-full max-w-[420px] pb-28 pt-8 sm:max-w-[460px] lg:max-w-[520px] lg:justify-self-end" style="--d:200ms">
+        <div class="tilt holo rounded-[2.25rem] p-[3px]" data-tilt data-max="6">
+          <div class="relative aspect-[4/5] overflow-hidden rounded-[calc(2.25rem-3px)] bg-ink">
+            <img src="https://images.pexels.com/photos/5896921/pexels-photo-5896921.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800" alt="A cheerful teenage student working on a laptop with a textbook beside her" class="h-full w-full object-cover object-[50%_25%]" width="800" height="1200" />
+            <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent"></div>
+            <div class="absolute inset-x-4 bottom-4 rounded-2xl border border-white/10 bg-ink/70 px-4 py-3 font-mono text-[12px] text-slate-200 backdrop-blur sm:text-[13px]"><span class="text-lime">now_building:</span> <span id="typewriter"></span><span class="animate-blink text-lime">▍</span></div>
           </div>
         </div>
-      </section>
-
-      <!-- ======================= THE GAP ======================= -->
-      <section id="gap" class="scroll-mt-20 bg-white py-20 sm:py-28">
-        <div class="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div class="grid gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
-            <div class="reveal max-w-3xl">
-              <div class="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-navy sm:text-xs">
-                <span class="font-display text-xs tabular-nums text-navy/60">01</span>
-                <span class="h-px w-6 bg-navy/40"></span><span>The Gap</span>
-              </div>
-              <h2 class="mt-4 text-3xl font-bold leading-[1.08] text-ink sm:text-4xl lg:text-5xl">The Gap Between “Straight As” and Global Success</h2>
-            </div>
-            <div class="reveal lg:pt-12" style="--d:120ms">
-              <p class="font-display text-2xl font-semibold leading-snug text-ink sm:text-[1.7rem]">In 2026, the global talent market doesn't care what your child memorized. It cares what they can execute.</p>
-              <p class="mt-5 text-lg leading-relaxed text-slate-600">The universities and remote employers your child will one day compete for aren't comparing them to their classmates. They're comparing them to ambitious teenagers in Bangalore, Jakarta, and Delaware — children who started building real skills at 13.</p>
-            </div>
-          </div>
-
-          <!-- Desktop table -->
-          <div class="reveal mt-14 hidden overflow-hidden rounded-3xl border border-slate-200 shadow-[0_30px_60px_-40px_rgba(15,26,61,0.35)] md:block">
-            <table class="w-full border-collapse text-left">
-              <thead>
-                <tr>
-                  <th scope="col" class="w-[18%] bg-cream px-6 py-5 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Compare</th>
-                  <th scope="col" class="w-[41%] bg-cream px-6 py-5 font-display text-lg font-bold text-slate-700">Standard Education</th>
-                  <th scope="col" class="w-[41%] bg-navy px-6 py-5 font-display text-lg font-bold text-white">
-                    <span class="inline-flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-lime"></span>Trainopedia</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody id="gap-table-body"></tbody>
-            </table>
-          </div>
-
-          <!-- Mobile stacked -->
-          <div id="gap-mobile" class="mt-12 space-y-4 md:hidden"></div>
-
-          <div class="reveal mx-auto mt-14 max-w-3xl text-center sm:mt-16">
-            <p class="font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">
-              A report card tells people your child attended school. A portfolio tells the world what they can do. <span class="mark-lime font-bold">That's the gap we close.</span>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ======================= WHO IT'S FOR ======================= -->
-      <section id="who" class="scroll-mt-20 relative overflow-hidden bg-cream py-20 sm:py-28">
-        <div class="bg-grid-dark mask-center pointer-events-none absolute inset-0"></div>
-        <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div class="reveal mx-auto max-w-3xl text-center">
-            <div class="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-navy sm:text-xs">
-              <span class="font-display text-xs tabular-nums text-navy/60">02</span><span class="h-px w-6 bg-navy/40"></span><span>Who It's For</span>
-            </div>
-            <h2 class="mt-4 text-3xl font-bold leading-[1.08] text-ink sm:text-4xl lg:text-5xl">Built for a Certain Kind of Family</h2>
-            <p class="mt-5 text-lg leading-relaxed text-slate-600 sm:text-xl">Trainopedia isn't for everyone — and that's deliberate.</p>
-          </div>
-
-          <div class="mt-14 grid gap-5 md:grid-cols-3 md:gap-6">
-            <article class="reveal group relative flex flex-col overflow-hidden rounded-3xl border border-ink/5 bg-white p-7 shadow-[0_20px_50px_-30px_rgba(15,26,61,0.35)] transition-transform duration-300 hover:-translate-y-1 sm:p-8">
-              <div class="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-lime/25 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100"></div>
-              <div class="relative flex items-center justify-between">
-                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-ink text-2xl shadow-inner">🚀</span>
-                <span class="font-display text-sm font-bold text-slate-300">01</span>
-              </div>
-              <h3 class="relative mt-6 text-2xl font-bold text-ink">The High Flyer</h3>
-              <p class="relative mt-2 text-[15px] italic leading-relaxed text-slate-500">Top of the class, bored by the ceiling.</p>
-              <div class="relative mt-6 border-t border-slate-100 pt-5"><p class="font-display text-lg font-semibold leading-snug text-navy">When school is too easy, we raise the ceiling.</p></div>
-            </article>
-
-            <article class="reveal group relative flex flex-col overflow-hidden rounded-3xl border border-ink/5 bg-white p-7 shadow-[0_20px_50px_-30px_rgba(15,26,61,0.35)] transition-transform duration-300 hover:-translate-y-1 sm:p-8" style="--d:100ms">
-              <div class="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-lime/25 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100"></div>
-              <div class="relative flex items-center justify-between">
-                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-ink text-2xl shadow-inner">🧠</span>
-                <span class="font-display text-sm font-bold text-slate-300">02</span>
-              </div>
-              <h3 class="relative mt-6 text-2xl font-bold text-ink">The Quiet Genius</h3>
-              <p class="relative mt-2 text-[15px] italic leading-relaxed text-slate-500">Bright, but never engaged by lectures and cramming.</p>
-              <div class="relative mt-6 border-t border-slate-100 pt-5"><p class="font-display text-lg font-semibold leading-snug text-navy">Some children don't learn by listening. They learn by doing.</p></div>
-            </article>
-
-            <article class="reveal group relative flex flex-col overflow-hidden rounded-3xl border border-ink/5 bg-white p-7 shadow-[0_20px_50px_-30px_rgba(15,26,61,0.35)] transition-transform duration-300 hover:-translate-y-1 sm:p-8" style="--d:200ms">
-              <div class="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-lime/25 opacity-70 blur-2xl transition-opacity duration-300 group-hover:opacity-100"></div>
-              <div class="relative flex items-center justify-between">
-                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-ink text-2xl shadow-inner">💎</span>
-                <span class="font-display text-sm font-bold text-slate-300">03</span>
-              </div>
-              <h3 class="relative mt-6 text-2xl font-bold text-ink">The Undiscovered Talent</h3>
-              <p class="relative mt-2 text-[15px] italic leading-relaxed text-slate-500">Average grades, unclear direction, real potential.</p>
-              <div class="relative mt-6 border-t border-slate-100 pt-5"><p class="font-display text-lg font-semibold leading-snug text-navy">Grades measure memory. Missions reveal talent.</p></div>
-            </article>
-          </div>
-
-          <div class="reveal mx-auto mt-14 max-w-3xl rounded-3xl border-l-4 border-lime bg-white/70 px-6 py-6 backdrop-blur sm:px-8 sm:py-7">
-            <p class="text-lg leading-relaxed text-slate-600 sm:text-xl">If you're looking for extra lessons to pass an exam, tutors have you covered. <span class="font-display font-bold text-ink">If you're preparing your child to compete — and win — on the world stage, you're in the right place.</span></p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ======================= SKILL TRACKS ======================= -->
-      <section id="tracks" class="scroll-mt-20 relative overflow-hidden bg-navy py-20 text-white sm:py-28">
-        <div class="bg-grid mask-tl pointer-events-none absolute inset-0"></div>
-        <div class="pointer-events-none absolute -bottom-32 -right-32 h-[460px] w-[460px] rounded-full bg-lime/15 blur-[140px]"></div>
-        <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div class="reveal max-w-3xl">
-              <div class="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-lime sm:text-xs">
-                <span class="font-display text-xs tabular-nums text-lime/70">03</span><span class="h-px w-6 bg-lime/60"></span><span>The Skill Tracks</span>
-              </div>
-              <h2 class="mt-4 text-3xl font-bold leading-[1.08] text-white sm:text-4xl lg:text-5xl">Mastering the Skills the Classroom Forgot</h2>
-              <p class="mt-5 text-lg leading-relaxed text-slate-300 sm:text-xl">We don't replace school. We upgrade it with the high-leverage competencies the future actually pays for.</p>
-            </div>
-            <div class="reveal shrink-0 lg:pb-2" style="--d:150ms">
-              <div class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
-                <span class="font-display text-2xl font-bold text-lime">4</span>
-                <span class="leading-tight">specialized tracks<br /><span class="text-slate-400">every child is placed by strength</span></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-14 grid gap-5 md:grid-cols-2 md:gap-6">
-            <article class="reveal group relative flex flex-col rounded-3xl border border-white/10 bg-white/[0.04] p-7 transition-colors duration-300 hover:border-lime/40 hover:bg-white/[0.07] sm:p-8">
-              <div class="flex items-start justify-between gap-4">
-                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-lime/15 text-3xl ring-1 ring-lime/30">⚡</span>
-                <span class="rounded-full border border-white/10 px-3 py-1 font-display text-xs font-bold text-slate-400">Track 01</span>
-              </div>
-              <h3 class="mt-6 text-2xl font-bold leading-tight text-white sm:text-[1.65rem]">Algorithmic Logic &amp; Game Theory</h3>
-              <p class="mt-3 text-[15px] leading-relaxed text-slate-300 sm:text-base">Move beyond basic math. Your child learns to think in systems, patterns, and strategies — the invisible foundation of engineering, investing, and leadership.</p>
-              <div class="mt-6 rounded-2xl border border-white/10 bg-ink/50 p-4 sm:p-5"><p class="text-[10px] font-bold uppercase tracking-[0.18em] text-lime">In practice</p><p class="mt-1.5 text-[15px] leading-relaxed text-white/90">Deconstructing chess openings, negotiation scenarios, and pricing strategies.</p></div>
-            </article>
-
-            <article class="reveal group relative flex flex-col rounded-3xl border border-white/10 bg-white/[0.04] p-7 transition-colors duration-300 hover:border-lime/40 hover:bg-white/[0.07] sm:p-8" style="--d:100ms">
-              <div class="flex items-start justify-between gap-4">
-                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-lime/15 text-3xl ring-1 ring-lime/30">🌐</span>
-                <span class="rounded-full border border-white/10 px-3 py-1 font-display text-xs font-bold text-slate-400">Track 02</span>
-              </div>
-              <h3 class="mt-6 text-2xl font-bold leading-tight text-white sm:text-[1.65rem]">The Digital Economy OS</h3>
-              <p class="mt-3 text-[15px] leading-relaxed text-slate-300 sm:text-base">From blockchain fundamentals to advanced AI-prompting, we ensure your child is a builder of technology, not just a consumer of it.</p>
-              <div class="mt-6 rounded-2xl border border-white/10 bg-ink/50 p-4 sm:p-5"><p class="text-[10px] font-bold uppercase tracking-[0.18em] text-lime">In practice</p><p class="mt-1.5 text-[15px] leading-relaxed text-white/90">Shipping an AI-assisted project and managing a simulated digital-asset portfolio.</p></div>
-            </article>
-
-            <article class="reveal group relative flex flex-col rounded-3xl border border-white/10 bg-white/[0.04] p-7 transition-colors duration-300 hover:border-lime/40 hover:bg-white/[0.07] sm:p-8" style="--d:60ms">
-              <div class="flex items-start justify-between gap-4">
-                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-lime/15 text-3xl ring-1 ring-lime/30">🖋️</span>
-                <span class="rounded-full border border-white/10 px-3 py-1 font-display text-xs font-bold text-slate-400">Track 03</span>
-              </div>
-              <h3 class="mt-6 text-2xl font-bold leading-tight text-white sm:text-[1.65rem]">Strategic Persuasion &amp; Communication</h3>
-              <p class="mt-3 text-[15px] leading-relaxed text-slate-300 sm:text-base">Rare knowledge is worthless if you can't sell it. We train students in high-level writing and presentation modeled after world-class executives.</p>
-              <div class="mt-6 rounded-2xl border border-white/10 bg-ink/50 p-4 sm:p-5"><p class="text-[10px] font-bold uppercase tracking-[0.18em] text-lime">In practice</p><p class="mt-1.5 text-[15px] leading-relaxed text-white/90">Writing a one-page strategy memo — then pitching it like a founder.</p></div>
-            </article>
-
-            <article class="reveal group relative flex flex-col rounded-3xl border border-white/10 bg-white/[0.04] p-7 transition-colors duration-300 hover:border-lime/40 hover:bg-white/[0.07] sm:p-8" style="--d:160ms">
-              <div class="flex items-start justify-between gap-4">
-                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-lime/15 text-3xl ring-1 ring-lime/30">📊</span>
-                <span class="rounded-full border border-white/10 px-3 py-1 font-display text-xs font-bold text-slate-400">Track 04</span>
-              </div>
-              <h3 class="mt-6 text-2xl font-bold leading-tight text-white sm:text-[1.65rem]">Financial Intelligence &amp; Data</h3>
-              <p class="mt-3 text-[15px] leading-relaxed text-slate-300 sm:text-base">Your child learns to read the language of the future: data. They execute real tasks in budgeting, market analysis, and digital asset management.</p>
-              <div class="mt-6 rounded-2xl border border-white/10 bg-ink/50 p-4 sm:p-5"><p class="text-[10px] font-bold uppercase tracking-[0.18em] text-lime">In practice</p><p class="mt-1.5 text-[15px] leading-relaxed text-white/90">Analyzing a market, building a budget, and defending an investment decision.</p></div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- ======================= HOW IT WORKS ======================= -->
-      <section id="how" class="scroll-mt-20 bg-white py-20 sm:py-28">
-        <div class="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div class="reveal max-w-3xl">
-            <div class="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-navy sm:text-xs">
-              <span class="font-display text-xs tabular-nums text-navy/60">04</span><span class="h-px w-6 bg-navy/40"></span><span>How It Works</span>
-            </div>
-            <h2 class="mt-4 text-3xl font-bold leading-[1.08] text-ink sm:text-4xl lg:text-5xl">How We Position Your Child for Success</h2>
-            <p class="mt-5 text-lg leading-relaxed text-slate-600 sm:text-xl">A simple, high-impact framework engineered to fit around a busy school schedule.</p>
-          </div>
-
-          <ol class="relative mt-14 grid gap-6 lg:grid-cols-3 lg:gap-8">
-            <div class="pointer-events-none absolute left-0 right-0 top-[3.25rem] hidden border-t-2 border-dashed border-slate-200 lg:block"></div>
-            <li class="reveal relative rounded-3xl border border-slate-200 bg-cream/60 p-7 sm:p-8">
-              <div class="relative flex items-center gap-4">
-                <span class="grid h-[3.25rem] w-[3.25rem] shrink-0 place-items-center rounded-2xl bg-ink font-display text-xl font-bold text-lime shadow-lg shadow-ink/20">01</span>
-                <span class="ml-auto hidden text-slate-300 lg:block"><svg viewBox="0 0 20 20" fill="none" class="h-6 w-6"><path d="M4 10h12m0 0l-5-5m5 5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-              </div>
-              <h3 class="mt-6 text-2xl font-bold leading-tight text-ink">Discover Their Natural Edge.</h3>
-              <p class="mt-3 text-[15px] leading-relaxed text-slate-600 sm:text-base">We start with a structured assessment that maps your child's unique strengths, then place them in the specialized track where they'll grow fastest — matching what they love to what the market will pay for.</p>
-            </li>
-            <li class="reveal relative rounded-3xl border border-slate-200 bg-cream/60 p-7 sm:p-8" style="--d:120ms">
-              <div class="relative flex items-center gap-4">
-                <span class="grid h-[3.25rem] w-[3.25rem] shrink-0 place-items-center rounded-2xl bg-ink font-display text-xl font-bold text-lime shadow-lg shadow-ink/20">02</span>
-                <span class="ml-auto hidden text-slate-300 lg:block"><svg viewBox="0 0 20 20" fill="none" class="h-6 w-6"><path d="M4 10h12m0 0l-5-5m5 5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-              </div>
-              <h3 class="mt-6 text-2xl font-bold leading-tight text-ink">Master Through Doing.</h3>
-              <p class="mt-3 text-[15px] leading-relaxed text-slate-600 sm:text-base">Your child invests 3 to 5 hours a week in Practical Missions — real projects like writing a go-to-market strategy or cracking a logic system. No lectures to cram. No notes to memorize. Every completed mission is proof they've mastered the skill.</p>
-            </li>
-            <li class="reveal relative rounded-3xl border border-slate-200 bg-cream/60 p-7 sm:p-8" style="--d:240ms">
-              <div class="relative flex items-center gap-4">
-                <span class="grid h-[3.25rem] w-[3.25rem] shrink-0 place-items-center rounded-2xl bg-ink font-display text-xl font-bold text-lime shadow-lg shadow-ink/20">03</span>
-              </div>
-              <h3 class="mt-6 text-2xl font-bold leading-tight text-ink">Verify the Progress.</h3>
-              <p class="mt-3 text-[15px] leading-relaxed text-slate-600 sm:text-base">Every achievement is saved to your child's Digital Career Portfolio. And every month, you receive a Monthly Talent Audit showing exactly how their skills are growing against global standards — so you never have to wonder whether it's working.</p>
-            </li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- ======================= OUTCOMES ======================= -->
-      <section id="outcomes" class="scroll-mt-20 bg-cream py-20 sm:py-28">
-        <div class="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div class="grid items-stretch gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-8">
-            <div class="reveal relative overflow-hidden rounded-[2rem] bg-ink p-7 text-white sm:p-10 lg:p-12">
-              <div class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-lime/20 blur-3xl"></div>
-              <div class="relative">
-                <div class="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-lime sm:text-xs">
-                  <span class="font-display text-xs tabular-nums text-lime/70">05</span><span class="h-px w-6 bg-lime/60"></span><span>The Outcomes</span>
-                </div>
-                <h2 class="mt-4 text-3xl font-bold leading-[1.08] sm:text-4xl lg:text-[2.9rem]">By Graduation Day, Your Child Will Have:</h2>
-                <ul class="mt-9 space-y-5">
-                  <li class="reveal flex gap-4" style="--d:100ms"><span class="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-lime text-ink"><svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p class="text-[15px] leading-relaxed text-slate-200 sm:text-lg">A Digital Career Portfolio of <strong class="font-bold text-white">25+ real, professional-grade projects</strong> — proof of work, not just grades</p></li>
-                  <li class="reveal flex gap-4" style="--d:180ms"><span class="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-lime text-ink"><svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p class="text-[15px] leading-relaxed text-slate-200 sm:text-lg">Fluent, hands-on command of AI tools most graduates won't touch until their first job</p></li>
-                  <li class="reveal flex gap-4" style="--d:260ms"><span class="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-lime text-ink"><svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p class="text-[15px] leading-relaxed text-slate-200 sm:text-lg">A verified talent profile benchmarked against global standards — a decisive edge in university admissions, scholarships, and remote-work applications</p></li>
-                  <li class="reveal flex gap-4" style="--d:340ms"><span class="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-lime text-ink"><svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p class="text-[15px] leading-relaxed text-slate-200 sm:text-lg">Trained judgment in money, markets, and persuasion — the skills schools postpone until it's almost too late</p></li>
-                </ul>
-                <div class="reveal mt-9 rounded-2xl border border-lime/30 bg-lime/10 p-5 sm:p-6" style="--d:420ms">
-                  <p class="font-display text-xl font-bold text-lime sm:text-2xl">And most importantly: clarity.</p>
-                  <p class="mt-2 text-[15px] leading-relaxed text-slate-200 sm:text-lg">They'll choose their degree and career from evidence of their own strengths — not guesswork</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="reveal relative flex flex-col justify-center rounded-[2rem] border border-ink/5 bg-white p-7 sm:p-10" style="--d:150ms">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Digital Career Portfolio</p>
-                  <p class="mt-1 font-display text-xl font-bold text-ink">Proof of work</p>
-                </div>
-                <span class="rounded-full bg-cream px-3 py-1 font-display text-xs font-bold text-slate-600">Updated monthly</span>
-              </div>
-              <ul class="mt-6 space-y-3">
-                <li class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-cream/50 p-4 transition-transform duration-300 hover:-translate-y-0.5"><span class="h-11 w-11 shrink-0 rounded-xl bg-lime"></span><div class="min-w-0 flex-1"><p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Strategy</p><p class="truncate font-display text-[15px] font-bold text-ink sm:text-base">One-page go-to-market memo</p><p class="truncate text-xs text-slate-500">Persuasion &amp; Communication</p></div><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-ink text-lime"><svg viewBox="0 0 20 20" fill="none" class="h-3.5 w-3.5"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
-                <li class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-cream/50 p-4 transition-transform duration-300 hover:-translate-y-0.5"><span class="h-11 w-11 shrink-0 rounded-xl bg-amber"></span><div class="min-w-0 flex-1"><p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Analysis</p><p class="truncate font-display text-[15px] font-bold text-ink sm:text-base">Market analysis &amp; investment defence</p><p class="truncate text-xs text-slate-500">Financial Intelligence &amp; Data</p></div><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-ink text-lime"><svg viewBox="0 0 20 20" fill="none" class="h-3.5 w-3.5"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
-                <li class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-cream/50 p-4 transition-transform duration-300 hover:-translate-y-0.5"><span class="h-11 w-11 shrink-0 rounded-xl bg-navy-600"></span><div class="min-w-0 flex-1"><p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Build</p><p class="truncate font-display text-[15px] font-bold text-ink sm:text-base">AI-assisted project shipped</p><p class="truncate text-xs text-slate-500">Digital Economy OS</p></div><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-ink text-lime"><svg viewBox="0 0 20 20" fill="none" class="h-3.5 w-3.5"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
-                <li class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-cream/50 p-4 transition-transform duration-300 hover:-translate-y-0.5"><span class="h-11 w-11 shrink-0 rounded-xl bg-slate-300"></span><div class="min-w-0 flex-1"><p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Logic</p><p class="truncate font-display text-[15px] font-bold text-ink sm:text-base">Chess opening deconstruction</p><p class="truncate text-xs text-slate-500">Algorithmic Logic &amp; Game Theory</p></div><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-ink text-lime"><svg viewBox="0 0 20 20" fill="none" class="h-3.5 w-3.5"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
-              </ul>
-              <div class="mt-6 flex items-center justify-between rounded-2xl bg-ink px-5 py-4 text-white">
-                <div><p class="text-[10px] font-bold uppercase tracking-[0.16em] text-white/60">Benchmarked against</p><p class="font-display text-base font-bold">Global standards</p></div>
-                <div class="flex items-end gap-1" aria-hidden="true">
-                  <span class="w-2 rounded-sm bg-white/25" style="height:10.5px"></span>
-                  <span class="w-2 rounded-sm bg-white/25" style="height:16.5px"></span>
-                  <span class="w-2 rounded-sm bg-white/25" style="height:13.5px"></span>
-                  <span class="w-2 rounded-sm bg-white/25" style="height:21px"></span>
-                  <span class="w-2 rounded-sm bg-white/25" style="height:25.5px"></span>
-                  <span class="w-2 rounded-sm bg-lime" style="height:30px"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ======================= SOCIAL PROOF ======================= -->
-      <section id="results" class="scroll-mt-20 bg-white py-20 sm:py-28">
-        <div class="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div class="reveal mx-auto max-w-3xl text-center">
-            <div class="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-navy sm:text-xs">
-              <span class="font-display text-xs tabular-nums text-navy/60">06</span><span class="h-px w-6 bg-navy/40"></span><span>Social Proof</span>
-            </div>
-            <h2 class="mt-4 text-3xl font-bold leading-[1.08] text-ink sm:text-4xl lg:text-5xl">The Results Parents Report</h2>
-          </div>
-
-          <div id="stat-bar" class="reveal mx-auto mt-12 grid max-w-4xl grid-cols-1 divide-y divide-white/10 overflow-hidden rounded-3xl bg-navy text-white sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-            <div class="flex flex-col items-center justify-center px-6 py-7 text-center sm:py-9"><p class="font-display text-4xl font-bold leading-none tabular-nums sm:text-5xl"><span class="count" data-target="1800">0</span><span class="text-lime">+</span></p><p class="mt-3 text-sm font-semibold text-slate-300">students trained</p></div>
-            <div class="flex flex-col items-center justify-center px-6 py-7 text-center sm:py-9"><p class="font-display text-4xl font-bold leading-none tabular-nums sm:text-5xl"><span class="count" data-target="36000">0</span><span class="text-lime">+</span></p><p class="mt-3 text-sm font-semibold text-slate-300">Practical Missions completed</p></div>
-            <div class="flex flex-col items-center justify-center px-6 py-7 text-center sm:py-9"><p class="font-display text-4xl font-bold leading-none tabular-nums sm:text-5xl"><span class="count" data-target="92">0</span><span class="text-lime">%</span></p><p class="mt-3 text-sm font-semibold text-slate-300">of parents renew each term</p></div>
-          </div>
-
-          <div class="mt-12 grid gap-5 md:grid-cols-2 md:gap-6">
-            <figure class="reveal relative flex flex-col rounded-3xl border border-slate-200 bg-cream/70 p-7 sm:p-8">
-              <svg viewBox="0 0 24 24" fill="currentColor" class="h-9 w-9 text-navy/30"><path d="M7.2 6C4.9 7.4 3.5 9.6 3.5 12.4c0 3.1 2 5.1 4.4 5.1 2.1 0 3.6-1.5 3.6-3.5 0-1.9-1.3-3.3-3.2-3.3-.4 0-.7 0-1 .1.3-1.6 1.4-2.9 3-3.7L7.2 6zm9.3 0c-2.3 1.4-3.7 3.6-3.7 6.4 0 3.1 2 5.1 4.4 5.1 2.1 0 3.6-1.5 3.6-3.5 0-1.9-1.3-3.3-3.2-3.3-.4 0-.7 0-1 .1.3-1.6 1.4-2.9 3-3.7L16.5 6z"/></svg>
-              <blockquote class="mt-4 flex-1 font-display text-xl font-semibold leading-snug text-ink sm:text-[1.35rem]">“I assumed it was another online class. Then my daughter showed me the strategy memo she'd written — and I realised I couldn't write one that clean.”</blockquote>
-              <figcaption class="mt-7 flex items-center gap-3 border-t border-ink/10 pt-5">
-                <span class="grid h-11 w-11 place-items-center rounded-full bg-navy text-white"><svg viewBox="0 0 24 24" fill="none" class="h-6 w-6"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-                <div class="text-sm leading-tight"><p class="font-bold text-ink">Mrs. Folasade Bakare</p><p class="mt-1 text-slate-500">Lagos</p></div>
-                <span class="ml-auto rounded-full bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-navy ring-1 ring-navy/10">Parent</span>
-              </figcaption>
-            </figure>
-
-            <figure class="reveal relative flex flex-col rounded-3xl border border-slate-200 bg-cream/70 p-7 sm:p-8" style="--d:100ms">
-              <svg viewBox="0 0 24 24" fill="currentColor" class="h-9 w-9 text-navy/30"><path d="M7.2 6C4.9 7.4 3.5 9.6 3.5 12.4c0 3.1 2 5.1 4.4 5.1 2.1 0 3.6-1.5 3.6-3.5 0-1.9-1.3-3.3-3.2-3.3-.4 0-.7 0-1 .1.3-1.6 1.4-2.9 3-3.7L7.2 6zm9.3 0c-2.3 1.4-3.7 3.6-3.7 6.4 0 3.1 2 5.1 4.4 5.1 2.1 0 3.6-1.5 3.6-3.5 0-1.9-1.3-3.3-3.2-3.3-.4 0-.7 0-1 .1.3-1.6 1.4-2.9 3-3.7L16.5 6z"/></svg>
-              <blockquote class="mt-4 flex-1 font-display text-xl font-semibold leading-snug text-ink sm:text-[1.35rem]">“The Monthly Talent Audit is what won me over. For the first time, I can actually see growth — not just fees leaving my account.”</blockquote>
-              <figcaption class="mt-7 flex items-center gap-3 border-t border-ink/10 pt-5">
-                <span class="grid h-11 w-11 place-items-center rounded-full bg-navy text-white"><svg viewBox="0 0 24 24" fill="none" class="h-6 w-6"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-                <div class="text-sm leading-tight"><p class="font-bold text-ink">Mr. Tamunoemi Briggs</p><p class="mt-1 text-slate-500">Port Harcourt</p></div>
-                <span class="ml-auto rounded-full bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-navy ring-1 ring-navy/10">Parent</span>
-              </figcaption>
-            </figure>
-
-            <figure class="reveal relative flex flex-col rounded-3xl border border-slate-200 bg-cream/70 p-7 sm:p-8" style="--d:60ms">
-              <svg viewBox="0 0 24 24" fill="currentColor" class="h-9 w-9 text-navy/30"><path d="M7.2 6C4.9 7.4 3.5 9.6 3.5 12.4c0 3.1 2 5.1 4.4 5.1 2.1 0 3.6-1.5 3.6-3.5 0-1.9-1.3-3.3-3.2-3.3-.4 0-.7 0-1 .1.3-1.6 1.4-2.9 3-3.7L7.2 6zm9.3 0c-2.3 1.4-3.7 3.6-3.7 6.4 0 3.1 2 5.1 4.4 5.1 2.1 0 3.6-1.5 3.6-3.5 0-1.9-1.3-3.3-3.2-3.3-.4 0-.7 0-1 .1.3-1.6 1.4-2.9 3-3.7L16.5 6z"/></svg>
-              <blockquote class="mt-4 flex-1 font-display text-xl font-semibold leading-snug text-ink sm:text-[1.35rem]">“My son used to just consume — games, videos. Now he builds. He talks about AI tools his teachers have never heard of.”</blockquote>
-              <figcaption class="mt-7 flex items-center gap-3 border-t border-ink/10 pt-5">
-                <span class="grid h-11 w-11 place-items-center rounded-full bg-navy text-white"><svg viewBox="0 0 24 24" fill="none" class="h-6 w-6"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-                <div class="text-sm leading-tight"><p class="font-bold text-ink">Mrs. Hauwa Abdullahi</p><p class="mt-1 text-slate-500">Abuja</p></div>
-                <span class="ml-auto rounded-full bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-navy ring-1 ring-navy/10">Parent</span>
-              </figcaption>
-            </figure>
-
-            <figure class="reveal relative flex flex-col rounded-3xl border border-lime/60 bg-gradient-to-br from-lime/25 via-cream to-cream p-7 sm:p-8" style="--d:160ms">
-              <svg viewBox="0 0 24 24" fill="currentColor" class="h-9 w-9 text-lime-700"><path d="M7.2 6C4.9 7.4 3.5 9.6 3.5 12.4c0 3.1 2 5.1 4.4 5.1 2.1 0 3.6-1.5 3.6-3.5 0-1.9-1.3-3.3-3.2-3.3-.4 0-.7 0-1 .1.3-1.6 1.4-2.9 3-3.7L7.2 6zm9.3 0c-2.3 1.4-3.7 3.6-3.7 6.4 0 3.1 2 5.1 4.4 5.1 2.1 0 3.6-1.5 3.6-3.5 0-1.9-1.3-3.3-3.2-3.3-.4 0-.7 0-1 .1.3-1.6 1.4-2.9 3-3.7L16.5 6z"/></svg>
-              <blockquote class="mt-4 flex-1 font-display text-xl font-semibold leading-snug text-ink sm:text-[1.35rem]">“School asks me what I remember. Trainopedia asks me what I can do. It's a completely different feeling.”</blockquote>
-              <figcaption class="mt-7 flex items-center gap-3 border-t border-ink/10 pt-5">
-                <span class="grid h-11 w-11 place-items-center rounded-full bg-ink text-lime"><svg viewBox="0 0 24 24" fill="none" class="h-6 w-6"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-                <div class="text-sm leading-tight"><p class="font-bold text-ink">Chidera N.</p><p class="mt-1 text-slate-500">Age 15 · SS1</p></div>
-                <span class="ml-auto rounded-full bg-ink px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-lime">Student</span>
-              </figcaption>
-            </figure>
-          </div>
-        </div>
-      </section>
-
-      <!-- ======================= WHY NOW ======================= -->
-      <section id="why-now" class="scroll-mt-20 relative overflow-hidden bg-ink py-20 text-white sm:py-28">
-        <div class="pointer-events-none absolute -left-40 top-1/3 h-[420px] w-[420px] rounded-full bg-navy-600/50 blur-[120px]"></div>
-        <div class="pointer-events-none absolute -right-20 bottom-0 h-[360px] w-[360px] rounded-full bg-lime/10 blur-[120px]"></div>
-        <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+        <!-- Stickers -->
+        <div class="animate-float pointer-events-none absolute -left-3 top-3 select-none sm:-left-8"><span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-ink bg-magenta px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-[4px_4px_0_0_#06081a] sm:text-sm" style="transform:rotate(-8deg)">🚫 No lectures</span></div>
+        <div class="animate-float pointer-events-none absolute -right-2 top-20 select-none [animation-delay:1.2s] sm:-right-8"><span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-ink bg-lime px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a] sm:text-sm" style="transform:rotate(7deg)">📁 Proof &gt; grades</span></div>
+        <div class="animate-float pointer-events-none absolute -right-3 top-1/2 select-none [animation-delay:2.1s] sm:-right-10"><span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-ink bg-cyan px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a] sm:text-sm" style="transform:rotate(-5deg)">⏱️ 3–5 hrs / wk</span></div>
+        <div class="animate-float pointer-events-none absolute -left-2 top-[38%] select-none [animation-delay:0.6s] sm:-left-8"><span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-ink bg-yellow px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a] sm:text-sm" style="transform:rotate(5deg)">🌍 Global-ready</span></div>
+        <!-- HUD -->
+        <div class="absolute -bottom-4 left-0 w-[88%] max-w-[22rem] rounded-3xl border border-white/10 bg-ink-800/90 p-5 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] backdrop-blur-xl sm:-left-8 sm:p-6">
+          <div class="flex items-start justify-between gap-4">
             <div>
-              <div class="reveal max-w-3xl">
-                <div class="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-lime sm:text-xs">
-                  <span class="font-display text-xs tabular-nums text-lime/70">07</span><span class="h-px w-6 bg-lime/60"></span><span>Why Now</span>
-                </div>
-                <h2 class="mt-4 text-3xl font-bold leading-[1.08] text-white sm:text-4xl lg:text-5xl">The 10-Year Headstart Is Shrinking</h2>
-              </div>
-              <div class="mt-8 space-y-5 text-lg leading-relaxed text-slate-300">
-                <p class="reveal" style="--d:100ms">Every year, these skills migrate from “rare” to “required.” The children who start today will be the seasoned seniors while everyone else is still starting out.</p>
-                <p class="reveal" style="--d:180ms">AI has collapsed the distance between Lagos and London. Your child can one day work for a global company from their bedroom in Port Harcourt — but only if they build the skills that make distance irrelevant.</p>
-              </div>
-              <div class="reveal mt-9 rounded-2xl border border-white/10 bg-white/[0.04] p-5" style="--d:260ms">
-                <div class="flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.16em]"><span class="text-lime">Rare</span><span class="text-slate-400">Required</span></div>
-                <div class="relative mt-3 h-2 rounded-full bg-white/10">
-                  <div class="absolute inset-y-0 left-0 w-[38%] rounded-full bg-gradient-to-r from-lime to-lime/40"></div>
-                  <span class="absolute left-[38%] top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ink bg-lime shadow-[0_0_0_4px_rgba(200,245,96,0.25)]"></span>
-                </div>
-                <div class="mt-3 flex justify-between text-xs text-slate-400"><span>Today</span><span>Every year the window narrows</span></div>
-              </div>
-              <p class="reveal mt-10 font-display text-2xl font-semibold leading-snug sm:text-3xl" style="--d:340ms"><span class="text-slate-300">The question was never whether Nigerian children will compete globally.</span> <span class="text-lime">It's whether yours will be ready when they do.</span></p>
+              <p class="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400"><span class="h-1.5 w-1.5 rounded-full bg-lime"></span> Monthly Talent Audit</p>
+              <p class="mt-1.5 font-display text-lg font-extrabold leading-tight">Chidera N. · SS1</p>
+              <p class="text-xs text-slate-400">Digital Economy Track</p>
             </div>
-
-            <div class="reveal relative mx-auto w-full max-w-md lg:max-w-none" style="--d:200ms">
-              <div class="relative aspect-[4/5] overflow-hidden rounded-[2rem] ring-1 ring-white/10">
-                <img src="https://images.pexels.com/photos/4144174/pexels-photo-4144174.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800" alt="A smiling teenager working on a tablet at home" class="h-full w-full object-cover" width="800" height="1200" loading="lazy" decoding="async" />
-                <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent"></div>
-                <div class="absolute inset-x-5 bottom-5 flex items-center gap-3 rounded-2xl border border-white/10 bg-ink/70 px-4 py-3 backdrop-blur">
-                  <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-lime font-display text-sm font-bold text-ink">10y</span>
-                  <p class="text-sm leading-snug text-white/90">Start at 13. Be the <span class="font-bold text-lime">seasoned senior</span> while everyone else is starting out.</p>
-                </div>
-              </div>
-              <div class="pointer-events-none absolute -bottom-6 -left-6 -z-10 h-40 w-40 rounded-[2rem] border border-lime/20"></div>
-              <div class="pointer-events-none absolute -right-6 -top-6 -z-10 h-40 w-40 rounded-[2rem] border border-white/10"></div>
-            </div>
+            <div class="rounded-xl bg-lime px-3 py-2 text-right text-ink"><p class="font-mono text-[9px] font-bold uppercase tracking-widest opacity-70">Global rank</p><p class="font-display text-lg font-extrabold leading-none">Top 8%</p></div>
           </div>
-        </div>
-      </section>
-
-      <!-- ======================= FAQ ======================= -->
-      <section id="faq" class="scroll-mt-20 bg-cream py-20 sm:py-28">
-        <div class="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-            <div>
-              <div class="reveal max-w-3xl">
-                <div class="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-navy sm:text-xs">
-                  <span class="font-display text-xs tabular-nums text-navy/60">08</span><span class="h-px w-6 bg-navy/40"></span><span>FAQ</span>
-                </div>
-                <h2 class="mt-4 text-3xl font-bold leading-[1.08] text-ink sm:text-4xl lg:text-5xl">The Questions Smart Parents Ask</h2>
-              </div>
-              <p class="reveal mt-6 max-w-sm text-slate-600" style="--d:100ms">Still have a question we haven't answered? The free talent assessment is the fastest way to see if Trainopedia fits your family.</p>
-              <a href="#book" class="reveal mt-5 inline-flex items-center gap-2 font-bold text-navy underline decoration-lime decoration-[3px] underline-offset-4 transition-colors hover:text-ink" style="--d:160ms">Book the free assessment →</a>
-            </div>
-
-            <div id="faq-list" class="divide-y divide-ink/10 rounded-3xl border border-ink/10 bg-white px-2 sm:px-4"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ======================= FINAL CTA ======================= -->
-      <section id="book" class="scroll-mt-20 relative overflow-hidden bg-ink py-20 text-white sm:py-28">
-        <div class="bg-grid mask-bottom pointer-events-none absolute inset-0"></div>
-        <div class="pointer-events-none absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime/15 blur-[140px]"></div>
-        <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div class="mx-auto max-w-3xl text-center">
-            <h2 class="reveal text-3xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl">In 10 Years, They'll Either Be Thanking You — or Catching Up</h2>
-            <p class="reveal mt-6 text-lg leading-relaxed text-slate-300 sm:text-xl" style="--d:100ms">Somewhere between today and graduation, your child's window for a genuine headstart will quietly close. Every term spent only on exams is a term someone else spent building. You've already given them school. Give them the edge on top of it.</p>
-          </div>
-
-          <div class="reveal mx-auto mt-12 max-w-2xl rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-[0_40px_100px_-40px_rgba(200,245,96,0.35)] backdrop-blur sm:p-8" style="--d:200ms">
-            <form id="book-form" class="space-y-4">
-              <div class="grid gap-4 sm:grid-cols-2">
-                <label class="block">
-                  <span class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-slate-400">Parent's name</span>
-                  <input name="parent" type="text" required placeholder="e.g. Mrs. Adeyemi" class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-[15px] text-white transition placeholder:text-slate-500 focus:border-lime focus:outline-none focus:ring-2 focus:ring-lime/40" />
-                </label>
-                <label class="block">
-                  <span class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-slate-400">WhatsApp number</span>
-                  <input name="phone" type="tel" required placeholder="+234 ..." class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-[15px] text-white transition placeholder:text-slate-500 focus:border-lime focus:outline-none focus:ring-2 focus:ring-lime/40" />
-                </label>
-              </div>
-              <label class="block">
-                <span class="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-slate-400">Child's class</span>
-                <select name="class" required class="w-full appearance-none rounded-xl border border-white/15 bg-ink px-4 py-3.5 text-[15px] text-white transition focus:border-lime focus:outline-none focus:ring-2 focus:ring-lime/40">
-                  <option value="" disabled selected>Select a class (JSS1–SS3)</option>
-                  <option value="JSS1">JSS1</option><option value="JSS2">JSS2</option><option value="JSS3">JSS3</option>
-                  <option value="SS1">SS1</option><option value="SS2">SS2</option><option value="SS3">SS3</option>
-                </select>
-              </label>
-              <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-6 py-4 text-base font-bold tracking-tight text-ink shadow-[0_12px_34px_-14px_rgba(200,245,96,0.75)] transition-all duration-200 hover:bg-lime-300 active:scale-95">Book My Child's Free Talent Assessment</button>
-              <p class="pt-1 text-center text-sm leading-relaxed text-slate-400">The first step is a free strengths assessment. Meet your child's natural edge before you commit to anything</p>
-            </form>
-
-            <div id="book-success" class="hidden py-6 text-center">
-              <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-lime text-ink"><svg viewBox="0 0 20 20" fill="none" class="h-7 w-7"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-              <h3 class="mt-5 text-2xl font-bold">Request received.</h3>
-              <p class="mt-2 text-slate-300">We'll be in touch to schedule your child's free talent assessment.</p>
-              <p class="mt-4 text-xs text-slate-500">(Preview mode — connect this form to your CRM, email, or WhatsApp before launch.)</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- ======================= FOOTER ======================= -->
-    <footer class="border-t border-white/10 bg-ink py-10 text-white">
-      <div class="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-        <div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-          <a href="#top" class="flex items-center gap-3" aria-label="Trainopedia — back to top">
-            <span class="grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-white"><img src="https://segunfalade.github.io/assets/trainopedia.png" alt="" class="h-8 w-8 object-contain" width="32" height="32" loading="lazy" /></span>
-            <span><span class="block font-display text-lg font-bold leading-none tracking-tight">Trainopedia</span><span class="mt-1 block text-xs text-slate-400">Beyond the classroom. Built for JSS1–SS3.</span></span>
-          </a>
-          <nav aria-label="Footer" class="flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-slate-300">
-            <a href="#gap" class="transition-colors hover:text-lime">The Gap</a>
-            <a href="#tracks" class="transition-colors hover:text-lime">Skill Tracks</a>
-            <a href="#how" class="transition-colors hover:text-lime">How It Works</a>
-            <a href="#outcomes" class="transition-colors hover:text-lime">Outcomes</a>
-            <a href="#results" class="transition-colors hover:text-lime">Results</a>
-            <a href="#faq" class="transition-colors hover:text-lime">FAQ</a>
-          </nav>
-        </div>
-        <div class="mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>© <span id="year"></span> Trainopedia. All rights reserved.</p>
-          <p>For parents raising Nigeria's next top 1%.</p>
+          <ul class="mt-5 space-y-3" id="heroSkills"></ul>
+          <div class="mt-5 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3"><div><p class="font-mono text-[10px] uppercase tracking-widest text-slate-400">Portfolio</p><p class="font-display text-sm font-extrabold">18 projects shipped</p></div><span class="rounded-full bg-lime/15 px-3 py-1 font-mono text-xs font-bold text-lime ring-1 ring-lime/40">+150 XP</span></div>
         </div>
       </div>
-    </footer>
-
-    <!-- ======================= SCRIPTS ======================= -->
-    <script>
-      (function () {
-        "use strict";
-
-        /* ---------- Data ---------- */
-        var gapRows = [
-          { label: "Curriculum", s: ["Static", "built to pass exams that haven't changed in decades"], t: ["Dynamic Skill-Tracks", "real-time tasks in AI collaboration, digital assets, and logic"] },
-          { label: "Learning Model", s: ["Passive", "students listen, take notes, cram, forget"], t: ["Proof-of-Work", "students complete professional-grade tasks and build a real portfolio"] },
-          { label: "Ceiling", s: ["The local ceiling", "prepared for local competition and traditional roles"], t: ["Global readiness", "prepared for world-class universities and remote global roles"] },
-          { label: "Feedback", s: ["", "One report card per term"], t: ["Monthly Talent Audit", "progress measured against global standards"] },
-          { label: "Final Proof", s: ["", "A certificate of attendance"], t: ["", "A Digital Career Portfolio of real, demonstrable work"] }
-        ];
-
-        var faqItems = [
-          { q: "Is this a replacement for school?", a: "No — and we're deliberate about that. School handles certification; we handle capability. Trainopedia is engineered to sit alongside school, not on top of it." },
-          { q: "How much time does it take?", a: "3–5 hours per week, fully flexible and built around the school calendar — including exam periods." },
-          { q: "Isn't this just more screen time?", a: "It's the opposite. Most screen time is consumption — scrolling and watching. Our missions are creation: writing, building, analyzing, presenting. Your child will spend fewer hours on a screen, and every hour will produce something." },
-          { q: "My child already gets excellent grades. Why do they need this?", a: "Grades are the local ceiling. A straight-A student with no portfolio is, to a global evaluator, identical to a thousand other straight-A students. We turn “brilliant on paper” into “proven in practice.”" },
-          { q: "My child isn't “technical.” Can they still succeed?", a: "Every track starts from zero — no coding required to begin. The assessment places them where their natural strengths already lie, whether that's logic, communication, or analysis." },
-          { q: "How do I know it's working?", a: "You'll receive a Monthly Talent Audit showing skill growth against global benchmarks — plus a portfolio you can open any day and see with your own eyes." },
-          { q: "What does it cost?", a: "Plans start from ₦60,000 per term — roughly ₦5,000 a week, less than typical extra-lesson fees, for skills no lesson teacher can offer. Every plan includes the Monthly Talent Audit and your child's Digital Career Portfolio. And the first step, the strengths assessment, is free." }
-        ];
-
-        var checkSvg = '<svg viewBox="0 0 20 20" fill="none" class="h-3 w-3"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-        var xSvg = '<svg viewBox="0 0 20 20" fill="none" class="h-3 w-3"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
-
-        function cell(pair, strong) {
-          var lead = pair[0], rest = pair[1];
-          var leadClass = strong ? "font-bold text-white" : "font-bold text-ink";
-          var dashClass = strong ? "text-white/60" : "text-slate-400";
-          var html = "";
-          if (lead) html += '<strong class="' + leadClass + '">' + lead + '</strong><span class="' + dashClass + '"> — </span>';
-          return html + "<span>" + rest + "</span>";
+    </div>
+  </div>
+  <div class="relative py-6"><div class="-mx-4 -rotate-1 border-y-4 border-ink bg-lime py-3 text-ink sm:-mx-6"><div class="marquee font-display text-base font-extrabold uppercase tracking-tight sm:text-lg" style="--speed:26s" data-marquee='["AI Collaboration ⚡","Game Theory ♟️","Digital Assets 🌐","Strategy Memos 🖋️","Market Analysis 📊","Founder Pitches 🎤","Logic Systems 🧩","Proof of Work 📁"]'></div></div></div>
+</section>
+<!-- ============ 2. THE GAP (VS) ============ -->
+<section id="gap" class="relative scroll-mt-20 overflow-hidden bg-ink-900 py-20 text-white sm:py-28">
+  <div class="pointer-events-none absolute right-[-20%] top-[-10%] h-[560px] w-[560px] rounded-full bg-violet/30 blur-[150px]"></div>
+  <div class="pointer-events-none absolute bottom-[-20%] left-[-15%] h-[460px] w-[460px] rounded-full bg-magenta/20 blur-[150px]"></div>
+  <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+    <div class="grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <div class="reveal max-w-3xl">
+        <div class="inline-flex items-center gap-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-lime sm:text-xs"><span class="text-lime/70">01</span><span class="h-px w-6 bg-lime/60"></span><span>The Gap</span></div>
+        <h2 class="mt-4 font-display text-[clamp(2.1rem,5.4vw,3.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em] text-white">The Gap Between “Straight As” and Global Success</h2>
+      </div>
+      <div class="reveal lg:pt-14" style="--d:120ms">
+        <p class="font-display text-2xl font-bold leading-snug sm:text-[1.75rem]">In 2026, the global talent market doesn't care what your child memorized. It cares what they can execute.</p>
+        <p class="mt-5 text-lg leading-relaxed text-slate-300">The universities and remote employers your child will one day compete for aren't comparing them to their classmates. They're comparing them to ambitious teenagers in Bangalore, Jakarta, and Delaware — children who started building real skills at 13.</p>
+      </div>
+    </div>
+    <div id="gapWrap" class="mt-14">
+      <div class="relative z-10 mx-auto flex max-w-3xl items-center justify-between gap-3 rounded-full border border-white/10 bg-ink/80 px-4 py-3 backdrop-blur sm:px-6">
+        <div class="flex items-center gap-3"><span class="font-display text-3xl font-extrabold tabular-nums text-slate-500 sm:text-4xl">0</span><span class="font-mono text-[11px] uppercase tracking-widest text-slate-400"><span class="hidden sm:inline">Standard Education</span><span class="sm:hidden">School</span></span></div>
+        <div class="relative grid h-12 w-12 place-items-center"><span class="animate-ping-slow absolute inset-0 rounded-full bg-magenta/40"></span><span class="relative grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-magenta to-violet font-display text-sm font-extrabold italic">VS</span></div>
+        <div class="flex items-center gap-3"><span class="font-mono text-[11px] uppercase tracking-widest text-lime">Trainopedia</span><span id="gapScore" class="font-display text-3xl font-extrabold tabular-nums text-lime sm:text-4xl">0</span></div>
+      </div>
+      <ol id="gapRounds" class="mt-8 space-y-4"></ol>
+    </div>
+    <div class="reveal mx-auto mt-16 max-w-3xl text-center"><p class="font-display text-2xl font-bold leading-snug sm:text-3xl lg:text-4xl">A report card tells people your child attended school. A portfolio tells the world what they can do. <span class="text-grad">That's the gap we close.</span></p></div>
+  </div>
+</section>
+<!-- ============ 3. WHO IT'S FOR + QUIZ ============ -->
+<section id="who" class="noise relative scroll-mt-20 overflow-hidden bg-violet py-20 text-white sm:py-28">
+  <div class="bg-grid pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]"></div>
+  <div class="pointer-events-none absolute -left-32 bottom-0 h-[460px] w-[460px] rounded-full bg-magenta/40 blur-[130px]"></div>
+  <div class="pointer-events-none absolute -right-20 top-10 h-[380px] w-[380px] rounded-full bg-cyan/30 blur-[130px]"></div>
+  <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+    <div class="reveal mx-auto max-w-3xl text-center">
+      <div class="inline-flex items-center gap-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-lime sm:text-xs"><span class="text-lime/80">02</span><span class="h-px w-6 bg-lime/70"></span><span>Who It's For</span></div>
+      <h2 class="mt-4 font-display text-[clamp(2.1rem,5.4vw,3.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em]">Built for a Certain Kind of Family</h2>
+      <p class="mt-5 text-lg leading-relaxed text-white/80 sm:text-xl">Trainopedia isn't for everyone — and that's deliberate.</p>
+    </div>
+    <div class="mt-14 grid gap-5 md:grid-cols-3 md:gap-6">
+      <div class="reveal rv-zoom" style="--d:0ms"><div class="tilt spot group relative h-full rounded-3xl border-2 border-ink bg-ink p-7 shadow-[8px_8px_0_0_#06081a] transition-shadow duration-300 hover:shadow-[10px_10px_0_0_#c8ff3d] sm:p-8" data-tilt data-max="7"><div class="flex items-start justify-between"><span class="grid h-16 w-16 place-items-center rounded-2xl bg-white/10 text-4xl transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">🚀</span><span class="font-mono text-xs text-white/40">01</span></div><h3 class="mt-6 font-display text-2xl font-extrabold sm:text-[1.7rem]">The High Flyer</h3><p class="mt-2 text-[15px] italic text-white/60">Top of the class, bored by the ceiling.</p><p class="mt-6 border-t border-white/10 pt-5 font-display text-lg font-bold leading-snug text-lime">When school is too easy, we raise the ceiling.</p></div></div>
+      <div class="reveal rv-zoom" style="--d:100ms"><div class="tilt spot group relative h-full rounded-3xl border-2 border-ink bg-ink p-7 shadow-[8px_8px_0_0_#06081a] transition-shadow duration-300 hover:shadow-[10px_10px_0_0_#c8ff3d] sm:p-8" data-tilt data-max="7"><div class="flex items-start justify-between"><span class="grid h-16 w-16 place-items-center rounded-2xl bg-white/10 text-4xl transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">🧠</span><span class="font-mono text-xs text-white/40">02</span></div><h3 class="mt-6 font-display text-2xl font-extrabold sm:text-[1.7rem]">The Quiet Genius</h3><p class="mt-2 text-[15px] italic text-white/60">Bright, but never engaged by lectures and cramming.</p><p class="mt-6 border-t border-white/10 pt-5 font-display text-lg font-bold leading-snug text-lime">Some children don't learn by listening. They learn by doing.</p></div></div>
+      <div class="reveal rv-zoom" style="--d:200ms"><div class="tilt spot group relative h-full rounded-3xl border-2 border-ink bg-ink p-7 shadow-[8px_8px_0_0_#06081a] transition-shadow duration-300 hover:shadow-[10px_10px_0_0_#c8ff3d] sm:p-8" data-tilt data-max="7"><div class="flex items-start justify-between"><span class="grid h-16 w-16 place-items-center rounded-2xl bg-white/10 text-4xl transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">💎</span><span class="font-mono text-xs text-white/40">03</span></div><h3 class="mt-6 font-display text-2xl font-extrabold sm:text-[1.7rem]">The Undiscovered Talent</h3><p class="mt-2 text-[15px] italic text-white/60">Average grades, unclear direction, real potential.</p><p class="mt-6 border-t border-white/10 pt-5 font-display text-lg font-bold leading-snug text-lime">Grades measure memory. Missions reveal talent.</p></div></div>
+    </div>
+    <!-- Quiz -->
+    <div class="reveal mt-10 holo rounded-[2rem] p-[3px]">
+      <div class="relative overflow-hidden rounded-[calc(2rem-3px)] bg-ink p-6 sm:p-10">
+        <div class="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-violet/40 blur-3xl"></div>
+        <div class="relative grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
+          <div>
+            <span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-lime px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(-4deg)">⚡ 3 taps</span>
+            <h3 class="mt-5 font-display text-3xl font-extrabold leading-tight sm:text-4xl">Which one are you?</h3>
+            <p class="mt-3 text-white/70">3 taps. No wrong answers. (Parents: answer for your child — or hand them the phone.)</p>
+            <div id="quizDots" class="mt-6 flex items-center gap-2"></div>
+          </div>
+          <div id="quizArea" class="relative min-h-[300px]"></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal mx-auto mt-12 max-w-3xl text-center"><p class="text-lg leading-relaxed text-white/80 sm:text-xl">If you're looking for extra lessons to pass an exam, tutors have you covered. <span class="font-display font-extrabold text-white">If you're preparing your child to compete — and win — on the world stage, you're in the right place.</span></p></div>
+  </div>
+</section>
+<!-- ============ 4. SKILL TRACKS ============ -->
+<section id="tracks" class="relative scroll-mt-20 overflow-hidden bg-ink py-20 text-white sm:py-28">
+  <div class="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_left,black_10%,transparent_60%)]"></div>
+  <div id="trackGlow" class="pointer-events-none absolute -right-40 top-1/3 h-[560px] w-[560px] rounded-full blur-[160px] transition-colors duration-700"></div>
+  <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div class="reveal max-w-3xl">
+        <div class="inline-flex items-center gap-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-lime sm:text-xs"><span class="text-lime/70">03</span><span class="h-px w-6 bg-lime/60"></span><span>The Skill Tracks</span></div>
+        <h2 class="mt-4 font-display text-[clamp(2.1rem,5.4vw,3.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em] text-white">Mastering the Skills the Classroom Forgot</h2>
+        <p class="mt-5 text-lg leading-relaxed text-slate-300 sm:text-xl">We don't replace school. We upgrade it with the high-leverage competencies the future actually pays for.</p>
+      </div>
+      <div class="reveal font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400 lg:pb-3">▸ Select your track <span id="trackAuto" class="text-slate-600">· auto-cycling</span></div>
+    </div>
+    <div class="mt-12 grid gap-6 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-8">
+      <div id="trackSelector" class="reveal rv-left no-scrollbar -mx-5 flex snap-x gap-3 overflow-x-auto px-5 pb-3 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 lg:pb-0"></div>
+      <div id="trackDetail"></div>
+    </div>
+  </div>
+</section>
+<!-- ============ 5. HOW IT WORKS + MISSION ============ -->
+<section id="how" class="noise relative scroll-mt-20 overflow-hidden bg-lime py-20 text-ink sm:py-28">
+  <div class="bg-grid-dark pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_75%)]"></div>
+  <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+    <div class="reveal max-w-3xl">
+      <div class="inline-flex items-center gap-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-ink sm:text-xs"><span class="text-ink/60">04</span><span class="h-px w-6 bg-ink/50"></span><span>How It Works</span></div>
+      <h2 class="mt-4 font-display text-[clamp(2.1rem,5.4vw,3.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em] text-ink">How We Position Your Child for Success</h2>
+      <p class="mt-5 text-lg leading-relaxed text-ink/75 sm:text-xl">A simple, high-impact framework engineered to fit around a busy school schedule.</p>
+    </div>
+    <ol class="mt-14 grid gap-6 md:grid-cols-3">
+      <li class="reveal rv-zoom relative" style="--d:0ms"><div class="relative h-full overflow-hidden rounded-3xl border-2 border-ink bg-ink p-7 text-white shadow-[8px_8px_0_0_#6b3dff] sm:p-8"><span class="text-outline pointer-events-none absolute -right-2 -top-5 font-display text-[7rem] font-extrabold leading-none">01</span><span class="relative grid h-12 w-12 place-items-center rounded-2xl bg-lime font-display text-lg font-extrabold text-ink">01</span><h3 class="relative mt-6 font-display text-2xl font-extrabold leading-tight">Discover Their Natural Edge.</h3><p class="relative mt-3 text-[15px] leading-relaxed text-slate-300">We start with a structured assessment that maps your child's unique strengths, then place them in the specialized track where they'll grow fastest — matching what they love to what the market will pay for.</p></div><span class="absolute -right-5 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full border-2 border-ink bg-white text-ink md:grid">→</span></li>
+      <li class="reveal rv-zoom relative" style="--d:120ms"><div class="relative h-full overflow-hidden rounded-3xl border-2 border-ink bg-ink p-7 text-white shadow-[8px_8px_0_0_#6b3dff] sm:p-8"><span class="text-outline pointer-events-none absolute -right-2 -top-5 font-display text-[7rem] font-extrabold leading-none">02</span><span class="relative grid h-12 w-12 place-items-center rounded-2xl bg-lime font-display text-lg font-extrabold text-ink">02</span><h3 class="relative mt-6 font-display text-2xl font-extrabold leading-tight">Master Through Doing.</h3><p class="relative mt-3 text-[15px] leading-relaxed text-slate-300">Your child invests 3 to 5 hours a week in Practical Missions — real projects like writing a go-to-market strategy or cracking a logic system. No lectures to cram. No notes to memorize. Every completed mission is proof they've mastered the skill.</p></div><span class="absolute -right-5 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full border-2 border-ink bg-white text-ink md:grid">→</span><div class="pointer-events-none absolute -top-4 right-4 select-none"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-magenta px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(6deg)">⏱️ 3–5 hrs / week</span></div></li>
+      <li class="reveal rv-zoom relative" style="--d:240ms"><div class="relative h-full overflow-hidden rounded-3xl border-2 border-ink bg-ink p-7 text-white shadow-[8px_8px_0_0_#6b3dff] sm:p-8"><span class="text-outline pointer-events-none absolute -right-2 -top-5 font-display text-[7rem] font-extrabold leading-none">03</span><span class="relative grid h-12 w-12 place-items-center rounded-2xl bg-lime font-display text-lg font-extrabold text-ink">03</span><h3 class="relative mt-6 font-display text-2xl font-extrabold leading-tight">Verify the Progress.</h3><p class="relative mt-3 text-[15px] leading-relaxed text-slate-300">Every achievement is saved to your child's Digital Career Portfolio. And every month, you receive a Monthly Talent Audit showing exactly how their skills are growing against global standards — so you never have to wonder whether it's working.</p></div><div class="pointer-events-none absolute -bottom-4 left-4 select-none"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-cyan px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(-5deg)">📈 Monthly Talent Audit</span></div></li>
+    </ol>
+    <div class="reveal mt-16 relative overflow-hidden rounded-[2rem] border-2 border-ink bg-ink p-6 text-white shadow-[12px_12px_0_0_#ff3d9a] sm:p-10">
+      <div class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-violet/40 blur-3xl"></div>
+      <div class="relative grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
+        <div>
+          <span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-yellow px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(-3deg)">🎮 Try it — 30 seconds</span>
+          <h3 class="mt-5 font-display text-3xl font-extrabold leading-tight sm:text-4xl">Try a 30-second mission</h3>
+          <p class="mt-3 text-white/70">This is what a Practical Mission feels like — no lecture, just a real decision with real feedback. Go on.</p>
+          <dl class="mt-6 grid grid-cols-2 gap-3 font-mono text-[11px] uppercase tracking-widest">
+            <div class="rounded-xl border border-white/10 bg-white/[0.04] p-3"><dt class="text-white/40">Mission</dt><dd class="mt-1 text-white">M-01 · Pricing Strategy</dd></div>
+            <div class="rounded-xl border border-white/10 bg-white/[0.04] p-3"><dt class="text-white/40">Difficulty</dt><dd class="mt-1 text-yellow">★★☆</dd></div>
+            <div class="col-span-2 rounded-xl border border-white/10 bg-white/[0.04] p-3"><dt class="text-white/40">Track</dt><dd class="mt-1 font-sans text-sm font-semibold normal-case tracking-normal text-lime">Algorithmic Logic &amp; Game Theory</dd></div>
+          </dl>
+          <div class="mt-6 flex items-end justify-between rounded-2xl border border-lime/30 bg-lime/10 p-4"><div><p class="font-mono text-[10px] uppercase tracking-widest text-lime">XP earned</p><p id="missionXp" class="font-display text-4xl font-extrabold tabular-nums text-lime">0<span class="text-lg text-lime/60"> / 200</span></p></div><div id="missionDots" class="flex gap-1.5 pb-2"></div></div>
+        </div>
+        <div id="missionArea" class="relative min-h-[300px]"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============ 6. OUTCOMES (BADGES) ============ -->
+<section id="outcomes" class="relative scroll-mt-20 overflow-hidden bg-ink-900 py-20 text-white sm:py-28">
+  <div class="pointer-events-none absolute left-1/2 top-0 h-[520px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet/30 blur-[160px]"></div>
+  <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <div class="reveal max-w-3xl">
+        <div class="inline-flex items-center gap-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-lime sm:text-xs"><span class="text-lime/70">05</span><span class="h-px w-6 bg-lime/60"></span><span>The Outcomes</span></div>
+        <h2 class="mt-4 font-display text-[clamp(2.1rem,5.4vw,3.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em] text-white">By Graduation Day, Your Child Will Have:</h2>
+      </div>
+      <div class="reveal w-full max-w-sm rounded-2xl border border-white/10 bg-white/[0.04] p-4"><div class="flex items-center justify-between font-mono text-[11px] uppercase tracking-widest"><span class="text-slate-400">Graduation-day loadout</span><span id="badgeCount" class="text-lime">0/5 unlocked</span></div><div class="mt-2 h-2.5 overflow-hidden rounded-full bg-white/10"><div id="badgeBar" class="h-full w-0 rounded-full bg-[linear-gradient(90deg,#c8ff3d,#2ee6ff,#ff3d9a)] transition-[width] duration-700 ease-out"></div></div></div>
+    </div>
+    <div id="badgeGrid" class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+  </div>
+</section>
+<!-- ============ 7. SOCIAL PROOF ============ -->
+<section id="results" class="relative scroll-mt-20 overflow-hidden bg-ink py-20 text-white sm:py-28">
+  <div class="pointer-events-none absolute -left-40 top-1/2 h-[480px] w-[480px] -translate-y-1/2 rounded-full bg-magenta/20 blur-[150px]"></div>
+  <div class="pointer-events-none absolute -right-40 bottom-0 h-[420px] w-[420px] rounded-full bg-cyan/15 blur-[150px]"></div>
+  <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+    <div class="reveal mx-auto max-w-3xl text-center">
+      <div class="inline-flex items-center gap-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-lime sm:text-xs"><span class="text-lime/70">06</span><span class="h-px w-6 bg-lime/60"></span><span>Social Proof</span></div>
+      <h2 class="mt-4 font-display text-[clamp(2.1rem,5.4vw,3.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em] text-white">The Results Parents Report</h2>
+    </div>
+    <div id="statsWrap" class="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-6">
+      <div class="reveal text-center"><p class="font-display text-5xl font-extrabold leading-none tabular-nums sm:text-6xl lg:text-7xl"><span class="text-grad stat-num" data-to="1800">0</span><span class="text-lime">+</span></p><p class="mt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400">students trained</p></div>
+      <div class="reveal text-center" style="--d:100ms"><p class="font-display text-5xl font-extrabold leading-none tabular-nums sm:text-6xl lg:text-7xl"><span class="text-grad stat-num" data-to="36000">0</span><span class="text-lime">+</span></p><p class="mt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400">Practical Missions completed</p></div>
+      <div class="reveal text-center" style="--d:200ms"><p class="font-display text-5xl font-extrabold leading-none tabular-nums sm:text-6xl lg:text-7xl"><span class="text-grad stat-num" data-to="92">0</span><span class="text-lime">%</span></p><p class="mt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400">of parents renew each term</p></div>
+    </div>
+    <div class="mx-auto mt-16 max-w-3xl">
+      <div class="mb-6 flex items-center justify-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-500"><span class="h-px w-8 bg-white/10"></span> What they're saying <span class="h-px w-8 bg-white/10"></span></div>
+      <div class="space-y-6">
+        <div class="reveal rv-left flex items-end gap-3"><span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-violet to-magenta font-display text-sm font-extrabold text-white shadow-lg">FB</span><div class="max-w-[86%] sm:max-w-[80%]"><div class="rounded-3xl rounded-bl-md border border-white/10 bg-white/[0.06] px-5 py-4"><p class="font-display text-lg font-semibold leading-snug sm:text-xl">“I assumed it was another online class. Then my daughter showed me the strategy memo she'd written — and I realised I couldn't write one that clean.”</p></div><p class="mt-1.5 px-1 text-xs text-slate-500"><span class="font-bold text-slate-300">Mrs. Folasade Bakare</span> · Lagos · Parent <span class="ml-1 text-cyan">✓✓</span></p></div></div>
+        <div class="reveal rv-left flex items-end gap-3"><span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-cyan to-violet font-display text-sm font-extrabold text-white shadow-lg">TB</span><div class="max-w-[86%] sm:max-w-[80%]"><div class="rounded-3xl rounded-bl-md border border-white/10 bg-white/[0.06] px-5 py-4"><p class="font-display text-lg font-semibold leading-snug sm:text-xl">“The Monthly Talent Audit is what won me over. For the first time, I can actually see growth — not just fees leaving my account.”</p></div><p class="mt-1.5 px-1 text-xs text-slate-500"><span class="font-bold text-slate-300">Mr. Tamunoemi Briggs</span> · Port Harcourt · Parent <span class="ml-1 text-cyan">✓✓</span></p></div></div>
+        <div class="reveal rv-left flex items-end gap-3"><span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-orange to-magenta font-display text-sm font-extrabold text-white shadow-lg">HA</span><div class="max-w-[86%] sm:max-w-[80%]"><div class="rounded-3xl rounded-bl-md border border-white/10 bg-white/[0.06] px-5 py-4"><p class="font-display text-lg font-semibold leading-snug sm:text-xl">“My son used to just consume — games, videos. Now he builds. He talks about AI tools his teachers have never heard of.”</p></div><p class="mt-1.5 px-1 text-xs text-slate-500"><span class="font-bold text-slate-300">Mrs. Hauwa Abdullahi</span> · Abuja · Parent <span class="ml-1 text-cyan">✓✓</span></p></div></div>
+        <div class="reveal rv-right flex flex-row-reverse items-end gap-3"><span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gradient-to-br from-lime to-cyan font-display text-sm font-extrabold text-white shadow-lg">CN</span><div class="max-w-[86%] text-right sm:max-w-[80%]"><div class="rounded-3xl rounded-br-md bg-lime px-5 py-4 text-left text-ink shadow-[0_20px_50px_-20px_rgba(200,255,61,0.6)]"><p class="font-display text-lg font-semibold leading-snug sm:text-xl">“School asks me what I remember. Trainopedia asks me what I can do. It's a completely different feeling.”</p></div><p class="mt-1.5 px-1 text-xs text-slate-500"><span class="font-bold text-slate-300">Chidera N.</span> · Age 15 · SS1 · <span class="font-bold text-lime">Student</span></p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============ 8. WHY NOW ============ -->
+<section id="why-now" class="noise relative scroll-mt-20 overflow-hidden bg-[linear-gradient(135deg,#ff7a1a_0%,#ff3d9a_55%,#6b3dff_100%)] pt-20 text-white sm:pt-28">
+  <div class="bg-grid pointer-events-none absolute inset-0 opacity-60"></div>
+  <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+    <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+      <div>
+        <div class="reveal max-w-3xl">
+          <div class="inline-flex items-center gap-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-white sm:text-xs"><span class="text-white/70">07</span><span class="h-px w-6 bg-white/70"></span><span>Why Now</span></div>
+          <h2 class="mt-4 font-display text-[clamp(2.1rem,5.4vw,3.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em]">The 10-Year Headstart Is Shrinking</h2>
+        </div>
+        <div class="mt-8 space-y-5 text-lg leading-relaxed text-white/90">
+          <p class="reveal" style="--d:100ms">Every year, these skills migrate from “rare” to “required.” The children who start today will be the seasoned seniors while everyone else is still starting out.</p>
+          <p class="reveal" style="--d:180ms">AI has collapsed the distance between Lagos and London. Your child can one day work for a global company from their bedroom in Port Harcourt — but only if they build the skills that make distance irrelevant.</p>
+        </div>
+        <div id="windowCard" class="reveal mt-9 rounded-2xl border-2 border-ink bg-ink p-5 shadow-[8px_8px_0_0_#06081a]" style="--d:260ms">
+          <div class="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.2em]"><span class="text-lime">Headstart window</span><span id="windowState" class="text-white/50">open</span></div>
+          <div class="relative mt-3 h-3 overflow-hidden rounded-full bg-white/10"><div id="windowBar" class="h-full w-full rounded-full bg-[linear-gradient(90deg,#c8ff3d,#ffd60a,#ff7a1a)] transition-[width] duration-[2600ms] ease-out"></div></div>
+          <div class="mt-2 flex justify-between font-mono text-[10px] uppercase tracking-widest text-white/50"><span>2026 · today</span><span>2036</span></div>
+        </div>
+        <p class="reveal mt-10 font-display text-2xl font-extrabold leading-snug sm:text-3xl lg:text-4xl" style="--d:340ms">The question was never whether Nigerian children will compete globally. <span class="text-lime">It's whether yours will be ready when they do.</span></p>
+      </div>
+      <div class="reveal rv-zoom relative mx-auto w-full max-w-md pb-6 lg:max-w-none" style="--d:200ms">
+        <div class="tilt relative rotate-2 overflow-hidden rounded-[2rem] border-4 border-ink bg-ink shadow-[12px_12px_0_0_#06081a]" data-tilt data-max="5">
+          <div class="aspect-[4/5]"><img src="https://images.pexels.com/photos/4144174/pexels-photo-4144174.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800" alt="A smiling teenager working on a tablet at home" class="h-full w-full object-cover" width="800" height="1200" loading="lazy" /></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-transparent to-transparent"></div>
+          <div class="absolute inset-x-5 bottom-5 rounded-2xl border border-white/10 bg-ink/70 p-4 backdrop-blur"><p class="font-mono text-[10px] uppercase tracking-widest text-lime">The math</p><p class="mt-1 font-display text-lg font-bold leading-snug">Start at 13 → ten years of proof by 23. Everyone else is just starting.</p></div>
+        </div>
+        <div class="animate-float pointer-events-none absolute -left-4 top-6 select-none"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-lime px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(-8deg)">✅ Started at 13</span></div>
+        <div class="animate-float pointer-events-none absolute -right-3 top-1/3 select-none [animation-delay:1.5s]"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-yellow px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(6deg)">🏆 Seasoned by 23</span></div>
+        <div class="pointer-events-none absolute -bottom-1 left-8 select-none"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-cyan px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(-4deg)">🌍 Lagos ↔ London</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="relative mt-16 border-y-4 border-ink bg-ink py-3 text-lime"><div class="marquee font-display text-base font-extrabold uppercase tracking-tight sm:text-lg" style="--speed:24s" data-marquee='["Rare → Required","Lagos ↔ London","Start at 13","Build, don''t cram","Portfolio > report card","The window is closing"]'></div></div>
+</section>
+<!-- ============ 9. FAQ ============ -->
+<section id="faq" class="relative scroll-mt-20 overflow-hidden bg-ink-900 py-20 text-white sm:py-28">
+  <div class="pointer-events-none absolute -left-40 bottom-0 h-[480px] w-[480px] rounded-full bg-violet/25 blur-[150px]"></div>
+  <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+    <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+      <div>
+        <div class="reveal max-w-3xl">
+          <div class="inline-flex items-center gap-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-lime sm:text-xs"><span class="text-lime/70">08</span><span class="h-px w-6 bg-lime/60"></span><span>FAQ</span></div>
+          <h2 class="mt-4 font-display text-[clamp(2.1rem,5.4vw,3.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em] text-white">The Questions Smart Parents Ask</h2>
+        </div>
+        <div class="reveal mt-6"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-magenta px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(-3deg)">🙋 No dumb questions</span></div>
+        <p class="reveal mt-6 max-w-sm text-slate-400" style="--d:120ms">Still have a question we haven't answered? The free talent assessment is the fastest way to see if Trainopedia fits your family.</p>
+        <a href="#book" class="reveal group mt-5 inline-flex items-center gap-2 font-bold text-lime underline decoration-lime/40 decoration-2 underline-offset-4 transition-colors hover:text-white" style="--d:180ms">Book the free assessment <span class="transition-transform group-hover:translate-x-1">→</span></a>
+      </div>
+      <div id="faqList" class="divide-y divide-white/10 rounded-3xl border border-white/10 bg-white/[0.03] px-2 sm:px-4"></div>
+    </div>
+  </div>
+</section>
+<!-- ============ 10. FINAL CTA ============ -->
+<section id="book" class="noise relative scroll-mt-20 overflow-hidden bg-ink py-24 text-white sm:py-32">
+  <div class="pointer-events-none absolute inset-0 overflow-hidden">
+    <span class="blob blob-a left-[-10%] top-[-30%] h-[60vw] max-h-[720px] w-[60vw] max-w-[720px] bg-violet"></span>
+    <span class="blob blob-b right-[-15%] bottom-[-30%] h-[50vw] max-h-[640px] w-[50vw] max-w-[640px] bg-magenta opacity-40"></span>
+    <span class="blob blob-c left-[35%] top-[30%] h-[40vw] max-h-[520px] w-[40vw] max-w-[520px] bg-cyan opacity-25"></span>
+  </div>
+  <div class="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_bottom,black_20%,transparent_70%)]"></div>
+  <div class="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+    <div class="mx-auto max-w-4xl text-center">
+      <div class="reveal"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-lime px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(-3deg)">🎯 Free strengths assessment</span></div>
+      <h2 class="reveal mt-6 font-display text-[clamp(2.4rem,7vw,5.25rem)] font-extrabold leading-[0.98] tracking-[-0.035em]" style="--d:60ms">In 10 Years, They'll Either Be <span class="text-grad inline-block">Thanking You</span> — or Catching Up</h2>
+      <p class="reveal mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-slate-300 sm:text-xl" style="--d:140ms">Somewhere between today and graduation, your child's window for a genuine headstart will quietly close. Every term spent only on exams is a term someone else spent building. You've already given them school. Give them the edge on top of it.</p>
+    </div>
+    <div class="reveal rv-zoom relative mx-auto mt-12 max-w-2xl" style="--d:220ms">
+      <div class="animate-float pointer-events-none absolute -right-2 -top-5 z-10 select-none sm:-right-8"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-yellow px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(8deg)">✅ No commitment</span></div>
+      <div class="holo rounded-[2rem] p-[3px] shadow-[0_40px_120px_-40px_rgba(107,61,255,0.7)]">
+        <div class="relative overflow-hidden rounded-[calc(2rem-3px)] bg-ink p-6 sm:p-8">
+          <form id="bookForm" class="space-y-4">
+            <div class="grid gap-4 sm:grid-cols-2">
+              <label class="block"><span class="mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Parent's name</span><input name="parent" type="text" required placeholder="e.g. Mrs. Adeyemi" class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-[15px] text-white placeholder:text-slate-500 transition focus:border-lime focus:outline-none focus:ring-2 focus:ring-lime/40" /></label>
+              <label class="block"><span class="mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">WhatsApp number</span><input name="phone" type="tel" required placeholder="+234 ..." class="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-[15px] text-white placeholder:text-slate-500 transition focus:border-lime focus:outline-none focus:ring-2 focus:ring-lime/40" /></label>
+            </div>
+            <label class="relative block"><span class="mb-1.5 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">Child's class</span>
+              <select name="class" required class="w-full appearance-none rounded-xl border border-white/15 bg-ink px-4 py-3.5 pr-10 text-[15px] text-white transition focus:border-lime focus:outline-none focus:ring-2 focus:ring-lime/40">
+                <option value="" disabled selected>Select a class (JSS1–SS3)</option>
+                <option>JSS1</option><option>JSS2</option><option>JSS3</option><option>SS1</option><option>SS2</option><option>SS3</option>
+              </select>
+              <span class="pointer-events-none absolute bottom-4 right-4 text-slate-400">▾</span>
+            </label>
+            <button type="submit" class="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-lime px-6 py-4 text-base font-bold text-ink shadow-[0_14px_40px_-12px_rgba(200,255,61,.7)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-lime-300">Book My Child's Free Talent Assessment <span class="transition-transform group-hover:translate-x-1">→</span></button>
+            <p class="pt-1 text-center text-sm leading-relaxed text-slate-400">The first step is a free strengths assessment. Meet your child's natural edge before you commit to anything</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-white/10 bg-ink py-10 text-white">
+  <div class="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+    <div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+      <a href="#top" class="flex items-center gap-3"><span class="grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-white"><img src="https://segunfalade.github.io/assets/trainopedia.png" alt="" class="h-8 w-8 object-contain" width="32" height="32" loading="lazy" /></span><span><span class="block font-display text-lg font-extrabold leading-none tracking-tight">Trainopedia</span><span class="mt-1 block text-xs text-slate-400">Beyond the classroom. Built for JSS1–SS3.</span></span></a>
+      <nav class="flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-slate-300"><a href="#gap" class="hover:text-lime">The Gap</a><a href="#who" class="hover:text-lime">Who It's For</a><a href="#tracks" class="hover:text-lime">Tracks</a><a href="#how" class="hover:text-lime">How It Works</a><a href="#outcomes" class="hover:text-lime">Outcomes</a><a href="#faq" class="hover:text-lime">FAQ</a></nav>
+    </div>
+    <div class="mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between"><p>© <span id="year"></span> Trainopedia. All rights reserved.</p><p class="font-mono uppercase tracking-[0.18em]">For parents raising Nigeria's next top 1%</p></div>
+  </div>
+</footer>
+<!-- ============ Sticky mobile CTA ============ -->
+<div id="mobileCta" class="pointer-events-none fixed inset-x-3 bottom-3 z-40 translate-y-24 opacity-0 transition-all duration-300 lg:hidden">
+  <a href="#book" class="flex items-center justify-between rounded-2xl border-2 border-ink bg-lime px-5 py-3.5 text-ink shadow-[0_20px_50px_-15px_rgba(200,255,61,0.7)]"><span class="font-display text-[15px] font-extrabold">Book the free talent assessment</span><span class="rounded-full bg-ink px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-lime">Free →</span></a>
+</div>
+<script>
+(function () {
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hoverable = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  /* ---------- DATA ---------- */
+  var heroSkills = [
+    { name: "Algorithmic Logic", value: 82 }, { name: "AI Collaboration", value: 91 },
+    { name: "Strategic Persuasion", value: 64 }, { name: "Financial Data", value: 73 }
+  ];
+  var gapRows = [
+    { label: "Curriculum", s: ["Static", "built to pass exams that haven't changed in decades"], t: ["Dynamic Skill-Tracks", "real-time tasks in AI collaboration, digital assets, and logic"] },
+    { label: "Learning Model", s: ["Passive", "students listen, take notes, cram, forget"], t: ["Proof-of-Work", "students complete professional-grade tasks and build a real portfolio"] },
+    { label: "Ceiling", s: ["The local ceiling", "prepared for local competition and traditional roles"], t: ["Global readiness", "prepared for world-class universities and remote global roles"] },
+    { label: "Feedback", s: ["", "One report card per term"], t: ["Monthly Talent Audit", "progress measured against global standards"] },
+    { label: "Final Proof", s: ["", "A certificate of attendance"], t: ["", "A Digital Career Portfolio of real, demonstrable work"] }
+  ];
+  var heroBuild = ["an AI-assisted product page", "a one-page strategy memo", "a simulated crypto portfolio", "a pricing strategy for a startup", "a founder-style pitch deck", "a market analysis with real data"];
+  var quiz = {
+    questions: [
+      { q: "It's Saturday. School's done. What are you most likely doing?", options: [
+        { text: "Finishing next week's work already — I like being ahead", emoji: "📚", persona: 0 },
+        { text: "Deep in a rabbit hole about how something actually works", emoji: "🕳️", persona: 1 },
+        { text: "Honestly? Depends on the day", emoji: "🤷", persona: 2 } ] },
+      { q: "A teacher explains a topic you already get. You…", options: [
+        { text: "Zone out. I could teach this", emoji: "😮‍💨", persona: 0 },
+        { text: "Start wondering about the part they skipped", emoji: "🤔", persona: 1 },
+        { text: "Wait for the part that actually matters to me", emoji: "⏳", persona: 2 } ] },
+      { q: "Pick the mission you'd actually want to do:", options: [
+        { text: "Design a chess opening that beats a computer — then explain it", emoji: "♟️", persona: 0 },
+        { text: "Build an AI tool that does your boring digital chores", emoji: "🤖", persona: 1 },
+        { text: "Turn an idea into a brand and actually sell it", emoji: "🛍️", persona: 2 } ] }
+    ],
+    personas: [
+      { emoji: "🚀", title: "The High Flyer", tagline: "Top of the class, bored by the ceiling.", punch: "When school is too easy, we raise the ceiling.",
+        blurb: "You're not bored because you're lazy — you're bored because the ceiling is low. Trainopedia raises it: harder problems, real stakes, and a portfolio that proves you're more than “good at school.”", track: 0 },
+      { emoji: "🧠", title: "The Quiet Genius", tagline: "Bright, but never engaged by lectures and cramming.", punch: "Some children don't learn by listening. They learn by doing.",
+        blurb: "You learn by pulling things apart and building them back better — not by copying notes. Our missions are made for exactly that kind of brain.", track: 1 },
+      { emoji: "💎", title: "The Undiscovered Talent", tagline: "Average grades, unclear direction, real potential.", punch: "Grades measure memory. Missions reveal talent.",
+        blurb: "Grades measure memory. Missions reveal talent. The assessment finds the strength your report card has been hiding — then we build on it.", track: 2 }
+    ],
+    disclaimer: "A fun starting point, not a verdict — the free strengths assessment does the real mapping."
+  };
+  var tracks = [
+    { emoji: "⚡", title: "Algorithmic Logic & Game Theory", accent: "#c8ff3d", missions: "6+",
+      body: "Move beyond basic math. Your child learns to think in systems, patterns, and strategies — the invisible foundation of engineering, investing, and leadership.",
+      practice: "Deconstructing chess openings, negotiation scenarios, and pricing strategies.",
+      boss: "Design an opening that beats a 1200-rated engine — then explain why it works in one page.",
+      stats: [["Logic",95],["Tech",55],["Influence",60],["Money",70]] },
+    { emoji: "🌐", title: "The Digital Economy OS", accent: "#2ee6ff", missions: "7+",
+      body: "From blockchain fundamentals to advanced AI-prompting, we ensure your child is a builder of technology, not just a consumer of it.",
+      practice: "Shipping an AI-assisted project and managing a simulated digital-asset portfolio.",
+      boss: "Ship an AI-assisted product page, then run a simulated digital-asset portfolio for 30 days.",
+      stats: [["Logic",65],["Tech",95],["Influence",50],["Money",75]] },
+    { emoji: "🖋️", title: "Strategic Persuasion & Communication", accent: "#ff3d9a", missions: "6+",
+      body: "Rare knowledge is worthless if you can't sell it. We train students in high-level writing and presentation modeled after world-class executives.",
+      practice: "Writing a one-page strategy memo — then pitching it like a founder.",
+      boss: "Write a one-page strategy memo, then pitch it to a live panel like a founder raising money.",
+      stats: [["Logic",60],["Tech",45],["Influence",95],["Money",60]] },
+    { emoji: "📊", title: "Financial Intelligence & Data", accent: "#ffd60a", missions: "6+",
+      body: "Your child learns to read the language of the future: data. They execute real tasks in budgeting, market analysis, and digital asset management.",
+      practice: "Analyzing a market, building a budget, and defending an investment decision.",
+      boss: "Analyze a real market, build the budget, and defend your investment call under questioning.",
+      stats: [["Logic",75],["Tech",60],["Influence",55],["Money",95]] }
+  ];
+  var mission = {
+    questions: [
+      { prompt: "You're launching a past-questions app for SS3 students. Which pricing move wins?", options: [
+        { text: "₦500/month for everyone", xp: 40, feedback: "Simple — but it leaves money on the table with parents who'd happily pay more for exam-week features." },
+        { text: "Free basic tier + ₦1,500/month premium with exam-week features", xp: 100, best: true, feedback: "That's tiered pricing: capture the crowd for free, monetize the serious. Exactly how the best apps do it." },
+        { text: "₦5,000 one-time, forever", xp: 20, feedback: "A big upfront price scares off students who've never tried it. Great margin, terrible conversion." } ] },
+      { prompt: "Exam week hits and demand spikes. What's your move?", options: [
+        { text: "Double the price — they need it now", xp: 20, feedback: "Short-term cash, long-term trust damage. Game theory 101: repeat players remember how you treated them." },
+        { text: "Keep prices, launch a 7-day “exam sprint” bundle", xp: 100, best: true, feedback: "You expanded value instead of exploiting panic. More revenue and stronger retention. Founder-brain." },
+        { text: "Make everything free for the week", xp: 30, feedback: "Generous — but you've just trained users to expect free exactly when they value you most." } ] }
+    ],
+    complete: { title: "Mission complete", body: "That was one decision from one of 25+ missions. Now imagine three years of them — every one saved to a portfolio the world can see." }
+  };
+  var badges = [
+    { emoji: "📁", title: "Portfolio Builder", color: "#2ee6ff", desc: "A Digital Career Portfolio of 25+ real, professional-grade projects — proof of work, not just grades" },
+    { emoji: "🤖", title: "AI Fluent", color: "#b6a0ff", desc: "Fluent, hands-on command of AI tools most graduates won't touch until their first job" },
+    { emoji: "🌍", title: "Globally Verified", color: "#ffd60a", desc: "A verified talent profile benchmarked against global standards — a decisive edge in university admissions, scholarships, and remote-work applications" },
+    { emoji: "💸", title: "Money Smart", color: "#c8ff3d", desc: "Trained judgment in money, markets, and persuasion — the skills schools postpone until it's almost too late" },
+    { emoji: "🧭", title: "Clarity", color: "#ff3d9a", legendary: true, desc: "They'll choose their degree and career from evidence of their own strengths — not guesswork" }
+  ];
+  var faqs = [
+    { q: "Is this a replacement for school?", a: "No — and we're deliberate about that. School handles certification; we handle capability. Trainopedia is engineered to sit alongside school, not on top of it." },
+    { q: "How much time does it take?", a: "3–5 hours per week, fully flexible and built around the school calendar — including exam periods." },
+    { q: "Isn't this just more screen time?", a: "It's the opposite. Most screen time is consumption — scrolling and watching. Our missions are creation: writing, building, analyzing, presenting. Your child will spend fewer hours on a screen, and every hour will produce something." },
+    { q: "My child already gets excellent grades. Why do they need this?", a: "Grades are the local ceiling. A straight-A student with no portfolio is, to a global evaluator, identical to a thousand other straight-A students. We turn “brilliant on paper” into “proven in practice.”" },
+    { q: "My child isn't “technical.” Can they still succeed?", a: "Every track starts from zero — no coding required to begin. The assessment places them where their natural strengths already lie, whether that's logic, communication, or analysis." },
+    { q: "How do I know it's working?", a: "You'll receive a Monthly Talent Audit showing skill growth against global benchmarks — plus a portfolio you can open any day and see with your own eyes." },
+    { q: "What does it cost?", a: "Plans start from ₦60,000 per term — roughly ₦5,000 a week, less than typical extra-lesson fees, for skills no lesson teacher can offer. Every plan includes the Monthly Talent Audit and your child's Digital Career Portfolio. And the first step, the strengths assessment, is free." }
+  ];
+  /* ---------- Scroll reveal ---------- */
+  function initReveal() {
+    var els = $$(".reveal");
+    if (reduce || !("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("is-visible"); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("is-visible"); io.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    els.forEach(function (e) { io.observe(e); });
+  }
+  function onView(el, cb, threshold) {
+    if (!el) return;
+    if (reduce || !("IntersectionObserver" in window)) { cb(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { cb(); io.disconnect(); } });
+    }, { threshold: threshold || 0.3 });
+    io.observe(el);
+  }
+  /* ---------- Nav ---------- */
+  function initNav() {
+    var bar = $("#navbar"), prog = $("#progress"), btn = $("#menuBtn"), menu = $("#mobileMenu"), lines = $$(".mb-line"), cta = $("#mobileCta");
+    function scroll() {
+      var y = window.scrollY, doc = document.documentElement, max = doc.scrollHeight - window.innerHeight;
+      prog.style.width = (max > 0 ? Math.min(100, (y / max) * 100) : 0) + "%";
+      var open = btn.getAttribute("aria-expanded") === "true";
+      bar.className = "transition-colors duration-300" + (y > 12 || open ? " bg-ink/80 backdrop-blur-xl" : " bg-transparent");
+      var book = $("#book"); var near = book ? book.getBoundingClientRect().top < window.innerHeight * 0.85 : false;
+      cta.className = "fixed inset-x-3 bottom-3 z-40 transition-all duration-300 lg:hidden " + (y > 640 && !near ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-24 opacity-0");
+    }
+    function setMenu(open) {
+      btn.setAttribute("aria-expanded", open ? "true" : "false"); menu.setAttribute("aria-hidden", open ? "false" : "true");
+      document.body.style.overflow = open ? "hidden" : "";
+      menu.className = "fixed inset-x-0 bottom-0 top-[67px] z-40 flex flex-col overflow-y-auto bg-ink/95 px-5 pb-8 pt-4 backdrop-blur-xl transition-all duration-300 sm:top-[75px] lg:hidden " + (open ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-3 opacity-0");
+      lines[0].className = "mb-line absolute h-0.5 w-5 rounded bg-current transition-transform duration-300 " + (open ? "rotate-45" : "-translate-y-1.5");
+      lines[1].className = "mb-line absolute h-0.5 w-5 rounded bg-current transition-opacity duration-200 " + (open ? "opacity-0" : "");
+      lines[2].className = "mb-line absolute h-0.5 w-5 rounded bg-current transition-transform duration-300 " + (open ? "-rotate-45" : "translate-y-1.5");
+      scroll();
+    }
+    btn.addEventListener("click", function () { setMenu(btn.getAttribute("aria-expanded") !== "true"); });
+    $$(".mm-link").forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
+    window.addEventListener("scroll", scroll, { passive: true });
+    window.addEventListener("resize", scroll);
+    scroll();
+  }
+  /* ---------- Marquees ---------- */
+  function initMarquees() {
+    $$("[data-marquee]").forEach(function (m) {
+      var items; try { items = JSON.parse(m.getAttribute("data-marquee")); } catch (e) { items = []; }
+      var row = items.concat(items);
+      var track = document.createElement("div"); track.className = "marquee-track";
+      row.forEach(function (it) {
+        var s = document.createElement("span"); s.className = "inline-flex shrink-0 items-center";
+        s.innerHTML = '<span class="px-5">' + esc(it) + '</span><span class="opacity-40">✦</span>';
+        track.appendChild(s);
+      });
+      m.appendChild(track);
+    });
+  }
+  /* ---------- Tilt ---------- */
+  function initTilt() {
+    if (!hoverable || reduce) return;
+    $$("[data-tilt]").forEach(function (el) {
+      var max = parseFloat(el.getAttribute("data-max")) || 8;
+      el.addEventListener("pointermove", function (e) {
+        var r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        el.style.setProperty("--mx", (px * 100).toFixed(1) + "%"); el.style.setProperty("--my", (py * 100).toFixed(1) + "%");
+        el.style.setProperty("--ry", ((px - 0.5) * max * 2).toFixed(2) + "deg"); el.style.setProperty("--rx", ((0.5 - py) * max * 2).toFixed(2) + "deg");
+      });
+      el.addEventListener("pointerleave", function () { el.style.setProperty("--rx", "0deg"); el.style.setProperty("--ry", "0deg"); });
+    });
+  }
+  /* ---------- Typewriter ---------- */
+  function initTypewriter() {
+    var el = $("#typewriter"); if (!el) return;
+    if (reduce) { el.textContent = heroBuild[0]; return; }
+    var idx = 0, txt = "", del = false;
+    function tick() {
+      var w = heroBuild[idx % heroBuild.length]; var d;
+      if (!del && txt === w) { del = true; d = 1700; }
+      else if (del && txt === "") { del = false; idx++; d = 250; }
+      else { txt = del ? w.slice(0, txt.length - 1) : w.slice(0, txt.length + 1); el.textContent = txt; d = del ? 21 : 42; }
+      setTimeout(tick, d);
+    }
+    tick();
+  }
+  /* ---------- Count up ---------- */
+  function countUp(el, to, dur) {
+    if (reduce) { el.textContent = to.toLocaleString("en-US"); return; }
+    var start = performance.now();
+    function step(now) {
+      var p = Math.min(1, (now - start) / (dur || 1500)), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(to * e).toLocaleString("en-US");
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  /* ---------- Confetti ---------- */
+  function confetti(host, count) {
+    if (reduce) return;
+    var colors = ["#c8ff3d", "#2ee6ff", "#ff3d9a", "#ffd60a", "#ffffff", "#6b3dff"];
+    var wrap = document.createElement("div"); wrap.className = "confetti pointer-events-none absolute inset-0 z-10";
+    for (var i = 0; i < (count || 40); i++) {
+      var s = document.createElement("span"), x = (Math.random() - 0.5) * 420, y = (Math.random() - 0.7) * 380, r = (Math.random() - 0.5) * 900;
+      s.style.cssText = "--x:" + x + "px;--y:" + y + "px;--r:" + r + "deg;background:" + colors[i % colors.length] + ";width:" + (6 + Math.random() * 6) + "px;height:" + (8 + Math.random() * 10) + "px;animation-delay:" + (Math.random() * 0.18) + "s";
+      wrap.appendChild(s);
+    }
+    host.appendChild(wrap);
+    setTimeout(function () { wrap.remove(); }, 1500);
+  }
+  /* ---------- Hero skills ---------- */
+  function initHeroSkills() {
+    var ul = $("#heroSkills"); if (!ul) return;
+    ul.innerHTML = heroSkills.map(function (s) {
+      return '<li><div class="mb-1.5 flex items-center justify-between font-mono text-[11px] uppercase tracking-wider"><span class="text-slate-300">' + esc(s.name) + '</span><span class="font-bold text-white">' + s.value + '</span></div><div class="h-2 overflow-hidden rounded-full bg-white/10"><div class="bar h-full rounded-full bg-[linear-gradient(90deg,#6b3dff,#2ee6ff,#c8ff3d)]" style="--w:' + s.value + '%"></div></div></li>';
+    }).join("");
+    // trigger bars
+    var host = ul.closest(".rv-zoom") || ul;
+    onView(ul, function () { $$(".bar", ul).forEach(function (b) { b.style.width = b.style.getPropertyValue("--w"); }); }, 0.2);
+  }
+  /* ---------- Gap VS ---------- */
+  function initGap() {
+    var list = $("#gapRounds"), score = $("#gapScore"); if (!list) return;
+    list.innerHTML = gapRows.map(function (row, i) {
+      function cell(pair, tp) {
+        var lead = pair[0] ? '<strong class="font-bold ' + (tp ? "text-lime" : "text-slate-300") + '">' + esc(pair[0]) + '</strong><span class="opacity-50"> — </span>' : "";
+        var icon = tp ? '<span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-lime text-ink">✓</span>' : '<span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-white/10 text-slate-400">✕</span>';
+        var wrap = tp ? "tp-cell rounded-2xl border border-lime/40 bg-lime/[0.08] p-5 text-[15px] leading-relaxed text-white shadow-[0_0_60px_-20px_rgba(200,255,61,0.55)]" : "std-cell rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-[15px] leading-relaxed text-slate-400";
+        var head = '<p class="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] ' + (tp ? "text-lime" : "text-slate-500") + '">' + (tp ? "Trainopedia" : "Standard Education") + '</p>';
+        return '<div class="' + wrap + '">' + head + '<div class="flex gap-3">' + icon + "<p>" + lead + esc(pair[1]) + "</p></div></div>";
+      }
+      return '<li class="round" data-round="' + i + '"><div class="mb-2 flex items-center gap-3 px-1"><span class="font-mono text-[11px] uppercase tracking-[0.2em] text-slate-500">Round 0' + (i + 1) + '</span><span class="h-px flex-1 bg-white/10"></span><span class="font-display text-sm font-bold uppercase tracking-wide text-white/80">' + esc(row.label) + '</span></div><div class="grid gap-3 md:grid-cols-[1fr_56px_1fr]">' + cell(row.s, false) + '<div class="hidden items-center justify-center md:flex"><span class="font-display text-lg font-extrabold italic text-white/15">VS</span></div>' + cell(row.t, true) + "</div></li>";
+    }).join("");
+    var rounds = $$(".round", list), shown = 0;
+    onView($("#gapWrap"), function () {
+      if (reduce) { rounds.forEach(function (r) { r.classList.add("is-on"); }); score.textContent = rounds.length; return; }
+      (function next() {
+        if (shown >= rounds.length) {
+          var st = document.createElement("div");
+          st.className = "pointer-events-none absolute -right-1 -top-6 select-none animate-pop sm:-right-8";
+          st.innerHTML = '<span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-yellow px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(6deg)">🏆 Flawless</span>';
+          var sb = score.closest(".relative"); if (sb) sb.appendChild(st);
+          return;
         }
-
-        /* ---------- Build gap table (desktop) ---------- */
-        var tbody = document.getElementById("gap-table-body");
-        if (tbody) {
-          gapRows.forEach(function (row, i) {
-            var last = i === gapRows.length - 1;
-            var tr = document.createElement("tr");
-            tr.className = "border-t border-slate-200";
-            tr.innerHTML =
-              '<th scope="row" class="bg-cream/60 px-6 py-6 align-top font-display text-base font-bold text-ink">' + row.label + "</th>" +
-              '<td class="px-6 py-6 align-top text-[15px] leading-relaxed text-slate-600"><div class="flex gap-3"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-400">' + xSvg + "</span><span>" + cell(row.s, false) + "</span></div></td>" +
-              '<td class="px-6 py-6 align-top text-[15px] leading-relaxed text-white/85 bg-navy ' + (last ? "rounded-br-3xl" : "") + '"><div class="flex gap-3"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-lime text-ink">' + checkSvg + "</span><span>" + cell(row.t, true) + "</span></div></td>";
-            tbody.appendChild(tr);
-          });
-        }
-
-        /* ---------- Build gap cards (mobile) ---------- */
-        var gapMobile = document.getElementById("gap-mobile");
-        if (gapMobile) {
-          gapRows.forEach(function (row, i) {
-            var div = document.createElement("div");
-            div.className = "reveal overflow-hidden rounded-2xl border border-slate-200 shadow-sm";
-            div.style.setProperty("--d", i * 60 + "ms");
-            div.innerHTML =
-              '<div class="bg-cream px-5 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">' + row.label + "</div>" +
-              '<div class="px-5 py-4 text-[15px] leading-relaxed text-slate-600"><p class="mb-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">Standard Education</p><div class="flex gap-3"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-400">' + xSvg + "</span><span>" + cell(row.s, false) + "</span></div></div>" +
-              '<div class="bg-navy px-5 py-4 text-[15px] leading-relaxed text-white/85"><p class="mb-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-lime">Trainopedia</p><div class="flex gap-3"><span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-lime text-ink">' + checkSvg + "</span><span>" + cell(row.t, true) + "</span></div></div>";
-            gapMobile.appendChild(div);
-          });
-        }
-
-        /* ---------- Build FAQ ---------- */
-        var faqList = document.getElementById("faq-list");
-        if (faqList) {
-          faqItems.forEach(function (item, i) {
-            var open = i === 0;
-            var wrap = document.createElement("div");
-            wrap.className = "reveal";
-            wrap.style.setProperty("--d", i * 50 + "ms");
-            wrap.innerHTML =
-              '<h3><button type="button" aria-expanded="' + open + '" class="faq-btn flex w-full items-center justify-between gap-5 px-4 py-5 text-left sm:px-5 sm:py-6">' +
-                '<span class="faq-q font-display text-lg font-bold leading-snug transition-colors sm:text-xl ' + (open ? "text-navy" : "text-ink") + '">' + item.q + "</span>" +
-                '<span class="faq-icon grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-300 ' + (open ? "rotate-45 border-ink bg-ink text-lime" : "border-ink/15 text-ink") + '"><svg viewBox="0 0 20 20" fill="none" class="h-4 w-4"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span>' +
-              "</button></h3>" +
-              '<div class="acc-panel" data-open="' + open + '"><div><div class="px-4 pb-6 pr-14 text-[15px] leading-relaxed text-slate-600 sm:px-5 sm:text-base"><p>' + item.a + "</p></div></div></div>";
-            faqList.appendChild(wrap);
-          });
-
-          faqList.addEventListener("click", function (e) {
-            var btn = e.target.closest(".faq-btn");
-            if (!btn) return;
-            var panel = btn.parentElement.nextElementSibling;
-            var isOpen = panel.getAttribute("data-open") === "true";
-            // close all
-            faqList.querySelectorAll(".acc-panel").forEach(function (p) { p.setAttribute("data-open", "false"); });
-            faqList.querySelectorAll(".faq-btn").forEach(function (b) {
-              b.setAttribute("aria-expanded", "false");
-              b.querySelector(".faq-q").classList.remove("text-navy");
-              b.querySelector(".faq-q").classList.add("text-ink");
-              b.querySelector(".faq-icon").className = "faq-icon grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-300 border-ink/15 text-ink";
-            });
-            if (!isOpen) {
-              panel.setAttribute("data-open", "true");
-              btn.setAttribute("aria-expanded", "true");
-              btn.querySelector(".faq-q").classList.remove("text-ink");
-              btn.querySelector(".faq-q").classList.add("text-navy");
-              btn.querySelector(".faq-icon").className = "faq-icon grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-300 rotate-45 border-ink bg-ink text-lime";
-            }
-          });
-        }
-
-        /* ---------- Sticky header style ---------- */
-        var header = document.getElementById("site-header");
-        function onScroll() {
-          if (window.scrollY > 12) header.className = "fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-ink/85 backdrop-blur-md transition-colors duration-300";
-          else if (!menuOpen) header.className = "fixed inset-x-0 top-0 z-50 border-b border-transparent bg-transparent transition-colors duration-300";
-        }
-        window.addEventListener("scroll", onScroll, { passive: true });
-
-        /* ---------- Mobile menu ---------- */
-        var menuBtn = document.getElementById("menu-btn");
-        var menu = document.getElementById("mobile-menu");
-        var menuOpen = false;
-        function setMenu(open) {
-          menuOpen = open;
-          menuBtn.setAttribute("aria-expanded", open);
-          menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-          document.body.style.overflow = open ? "hidden" : "";
-          if (open) {
-            menu.className = "max-h-[80vh] overflow-y-auto opacity-100 transition-[max-height,opacity] duration-300 ease-out lg:hidden";
-            header.className = "fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-ink/85 backdrop-blur-md transition-colors duration-300";
-          } else {
-            menu.className = "max-h-0 overflow-hidden opacity-0 transition-[max-height,opacity] duration-300 ease-out lg:hidden";
-            onScroll();
-          }
-          menuBtn.querySelector(".bar-top").className = "bar-top absolute h-0.5 w-5 rounded bg-current transition-transform duration-300 " + (open ? "rotate-45" : "-translate-y-1.5");
-          menuBtn.querySelector(".bar-mid").className = "bar-mid absolute h-0.5 w-5 rounded bg-current transition-opacity duration-200 " + (open ? "opacity-0" : "");
-          menuBtn.querySelector(".bar-bot").className = "bar-bot absolute h-0.5 w-5 rounded bg-current transition-transform duration-300 " + (open ? "-rotate-45" : "translate-y-1.5");
-        }
-        menuBtn.addEventListener("click", function () { setMenu(!menuOpen); });
-        document.querySelectorAll(".menu-link").forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
-
-        /* ---------- Scroll reveal ---------- */
-        var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        var reveals = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
-        if (reduce || !("IntersectionObserver" in window)) {
-          reveals.forEach(function (el) { el.classList.add("is-visible"); });
-        } else {
-          var io = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-              if (entry.isIntersecting) { entry.target.classList.add("is-visible"); io.unobserve(entry.target); }
-            });
-          }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
-          reveals.forEach(function (el) { io.observe(el); });
-        }
-
-        /* ---------- Stat count-up ---------- */
-        function animateCount(el) {
-          var target = parseInt(el.getAttribute("data-target"), 10);
-          if (reduce) { el.textContent = target.toLocaleString("en-US"); return; }
-          var start = performance.now(), dur = 1500;
-          function tick(now) {
-            var p = Math.min(1, (now - start) / dur);
-            var eased = 1 - Math.pow(1 - p, 3);
-            el.textContent = Math.round(target * eased).toLocaleString("en-US");
-            if (p < 1) requestAnimationFrame(tick);
-          }
-          requestAnimationFrame(tick);
-        }
-        var statBar = document.getElementById("stat-bar");
-        if (statBar) {
-          if (reduce || !("IntersectionObserver" in window)) {
-            statBar.querySelectorAll(".count").forEach(animateCount);
-          } else {
-            var statIO = new IntersectionObserver(function (entries) {
-              entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                  entry.target.querySelectorAll(".count").forEach(animateCount);
-                  statIO.disconnect();
-                }
-              });
-            }, { threshold: 0.35 });
-            statIO.observe(statBar);
-          }
-        }
-
-        /* ---------- Booking form ---------- */
-        var form = document.getElementById("book-form");
-        if (form) {
-          form.addEventListener("submit", function (e) {
-            e.preventDefault();
-            form.classList.add("hidden");
-            document.getElementById("book-success").classList.remove("hidden");
-          });
-        }
-
-        /* ---------- Footer year ---------- */
-        document.getElementById("year").textContent = new Date().getFullYear();
+        rounds[shown].classList.add("is-on"); shown++; score.textContent = shown;
+        score.classList.remove("animate-pop"); void score.offsetWidth; score.classList.add("animate-pop");
+        setTimeout(next, 650);
       })();
-    </script>
-  </body>
+    }, 0.2);
+  }
+  /* ---------- Quiz ---------- */
+  function initQuiz() {
+    var area = $("#quizArea"), dotsEl = $("#quizDots"); if (!area) return;
+    var step = 0, answers = [];
+    function dots() {
+      var h = "";
+      for (var i = 0; i < quiz.questions.length; i++) {
+        var cls = i < step ? "w-8 bg-lime" : (i === step && step < quiz.questions.length ? "w-8 bg-white" : "w-2 bg-white/20");
+        h += '<span class="h-2 rounded-full transition-all duration-300 ' + cls + '"></span>';
+      }
+      h += '<span class="ml-2 font-mono text-[11px] uppercase tracking-widest text-white/50">' + (step >= quiz.questions.length ? "Result" : "Q" + (step + 1) + " / " + quiz.questions.length) + "</span>";
+      dotsEl.innerHTML = h;
+    }
+    function render() {
+      dots();
+      if (step < quiz.questions.length) {
+        var q = quiz.questions[step];
+        var opts = q.options.map(function (o, i) {
+          return '<button type="button" data-opt="' + i + '" data-persona="' + o.persona + '" class="qopt flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-left transition-all duration-200 hover:border-white/30 hover:bg-white/[0.08] active:scale-[0.99]"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 font-display text-sm font-extrabold text-white">' + "ABC"[i] + '</span><span class="flex-1 font-semibold leading-snug">' + esc(o.text) + '</span><span class="text-xl">' + o.emoji + "</span></button>";
+        }).join("");
+        area.innerHTML = '<div class="animate-in"><p class="font-display text-xl font-bold leading-snug sm:text-2xl">' + esc(q.q) + '</p><div class="mt-5 space-y-3">' + opts + "</div></div>";
+        $$(".qopt", area).forEach(function (b) {
+          b.addEventListener("click", function () {
+            if (b.dataset.done) return;
+            $$(".qopt", area).forEach(function (x) { x.dataset.done = "1"; });
+            b.className = "qopt flex w-full items-center gap-4 rounded-2xl border border-lime bg-lime px-4 py-4 text-left scale-[1.02]";
+            b.querySelector("span").className = "grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-ink font-display text-sm font-extrabold text-lime";
+            answers.push(parseInt(b.getAttribute("data-persona"), 10));
+            setTimeout(function () { step++; render(); }, 420);
+          });
+        });
+      } else {
+        var counts = [0, 0, 0]; answers.forEach(function (p) { counts[p]++; });
+        var best = answers[answers.length - 1]; counts.forEach(function (c, i) { if (c > counts[best]) best = i; });
+        var p = quiz.personas[best], tr = tracks[p.track];
+        area.innerHTML = '<div class="animate-in relative"><p class="font-mono text-[11px] uppercase tracking-[0.2em] text-lime">Your result</p><div class="mt-3 flex items-center gap-4"><span class="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-lime text-4xl animate-pop">' + p.emoji + '</span><div><h4 class="font-display text-3xl font-extrabold leading-none sm:text-4xl">' + esc(p.title) + '</h4><p class="mt-1.5 italic text-white/60">' + esc(p.tagline) + '</p></div></div><p class="mt-5 font-display text-xl font-bold text-lime">' + esc(p.punch) + '</p><p class="mt-3 text-white/75">' + esc(p.blurb) + '</p><div class="mt-5 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4"><span class="text-2xl">' + tr.emoji + '</span><div><p class="font-mono text-[10px] uppercase tracking-widest text-white/50">Likely starting track</p><p class="font-display font-bold">' + esc(tr.title) + '</p></div></div><p class="mt-3 text-xs text-white/50">' + esc(quiz.disclaimer) + '</p><div class="mt-6 flex flex-col gap-3 sm:flex-row"><a href="#book" class="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-6 py-3.5 text-[15px] font-bold text-ink transition-all hover:-translate-y-0.5 hover:bg-lime-300">Book my free assessment →</a><button type="button" id="quizReset" class="rounded-full border border-white/20 px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:border-lime hover:text-lime">Retake</button></div></div>';
+        confetti(area, 46);
+        $("#quizReset").addEventListener("click", function () { step = 0; answers = []; render(); });
+      }
+    }
+    render();
+  }
+  /* ---------- Skill tracks ---------- */
+  function initTracks() {
+    var sel = $("#trackSelector"), detail = $("#trackDetail"), glow = $("#trackGlow"), autoLabel = $("#trackAuto");
+    if (!sel) return;
+    var active = 0, touched = false, timer = null;
+    function renderSel() {
+      sel.innerHTML = tracks.map(function (t, i) {
+        var on = i === active;
+        var box = on ? "border-white/30 bg-white/[0.08] lg:translate-x-2" : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]";
+        var badge = on ? '<span class="shrink-0 rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest text-ink" style="background:' + t.accent + '">Selected</span>' : "";
+        var style = on ? 'style="box-shadow:0 0 0 1px ' + t.accent + ', 0 20px 60px -24px ' + t.accent + '"' : "";
+        return '<button type="button" data-i="' + i + '" ' + style + ' class="relative flex min-w-[260px] shrink-0 snap-start items-center gap-4 overflow-hidden rounded-2xl border p-4 text-left transition-all duration-300 lg:min-w-0 ' + box + '"><span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl text-2xl" style="background:' + t.accent + '22">' + t.emoji + '</span><span class="min-w-0 flex-1"><span class="block font-mono text-[10px] uppercase tracking-widest text-slate-400">Track 0' + (i + 1) + '</span><span class="block font-display text-[15px] font-bold leading-tight">' + esc(t.title) + '</span></span>' + badge + "</button>";
+      }).join("");
+      $$("button[data-i]", sel).forEach(function (b) { b.addEventListener("click", function () { active = parseInt(b.getAttribute("data-i"), 10); touched = true; if (autoLabel) autoLabel.style.display = "none"; if (timer) clearInterval(timer); render(); }); });
+    }
+    function render() {
+      var t = tracks[active];
+      glow.style.background = t.accent + "33";
+      renderSel();
+      var stats = t.stats.map(function (s) {
+        return '<li><div class="mb-1.5 flex justify-between font-mono text-[11px] uppercase tracking-widest"><span class="text-slate-300">' + esc(s[0]) + '</span><span style="color:' + t.accent + '">' + s[1] + '</span></div><div class="h-2 overflow-hidden rounded-full bg-white/10"><div class="grow h-full rounded-full" style="--w:' + s[1] + '%;width:' + s[1] + '%;background:linear-gradient(90deg,' + t.accent + '88,' + t.accent + ')"></div></div></li>';
+      }).join("");
+      detail.innerHTML = '<div class="animate-in relative overflow-hidden rounded-[2rem] border border-white/10 bg-ink-800 p-7 sm:p-10" style="box-shadow:0 50px 140px -50px ' + t.accent + '80"><div class="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full blur-3xl" style="background:' + t.accent + '40"></div><div class="relative"><div class="flex flex-wrap items-start gap-5"><span class="grid h-20 w-20 shrink-0 -rotate-6 place-items-center rounded-3xl text-5xl shadow-xl sm:h-24 sm:w-24 sm:text-6xl" style="background:linear-gradient(135deg,' + t.accent + ',' + t.accent + '66)">' + t.emoji + '</span><div class="min-w-0 flex-1"><p class="font-mono text-[11px] uppercase tracking-[0.2em]" style="color:' + t.accent + '">Track 0' + (active + 1) + ' · ' + t.missions + ' missions</p><h3 class="mt-1 font-display text-3xl font-extrabold leading-[1.02] sm:text-4xl lg:text-[2.75rem]">' + esc(t.title) + '</h3></div></div><p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">' + esc(t.body) + '</p><div class="mt-8 grid gap-6 md:grid-cols-[1.1fr_0.9fr]"><div class="rounded-2xl border p-5" style="border-color:' + t.accent + '55;background:' + t.accent + '0f"><p class="font-mono text-[10px] uppercase tracking-[0.2em]" style="color:' + t.accent + '">In practice</p><p class="mt-2 text-[15px] leading-relaxed text-white sm:text-base">' + esc(t.practice) + '</p><div class="mt-4 border-t border-white/10 pt-4"><p class="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">⚔️ Boss mission</p><p class="mt-1.5 text-sm leading-relaxed text-slate-200">' + esc(t.boss) + '</p></div></div><div class="rounded-2xl border border-white/10 bg-white/[0.03] p-5"><p class="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Skill build</p><ul class="mt-3 space-y-3">' + stats + '</ul></div></div></div></div>';
+    }
+    render();
+    if (!reduce) { timer = setInterval(function () { if (touched) return; active = (active + 1) % tracks.length; render(); }, 4500); }
+  }
+  /* ---------- Mission ---------- */
+  function initMission() {
+    var area = $("#missionArea"), xpEl = $("#missionXp"), dotsEl = $("#missionDots"); if (!area) return;
+    var maxXp = mission.questions.reduce(function (a, q) { return a + Math.max.apply(null, q.options.map(function (o) { return o.xp; })); }, 0);
+    var step = 0, xp = 0, choice = null;
+    function dots() {
+      dotsEl.innerHTML = mission.questions.map(function (_, i) {
+        var cls = i < step ? "bg-lime" : (i === step && step < mission.questions.length ? "bg-white" : "bg-white/20");
+        return '<span class="h-2.5 w-2.5 rounded-full transition-colors ' + cls + '"></span>';
+      }).join("");
+    }
+    function setXp() { xpEl.innerHTML = xp + '<span class="text-lg text-lime/60"> / ' + maxXp + "</span>"; xpEl.classList.remove("animate-pop"); void xpEl.offsetWidth; xpEl.classList.add("animate-pop"); }
+    function render() {
+      dots();
+      if (step < mission.questions.length) {
+        var q = mission.questions[step];
+        var opts = q.options.map(function (o, i) {
+          return '<button type="button" data-i="' + i + '" class="mopt flex w-full items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-left transition-all duration-200 hover:border-white/30 hover:bg-white/[0.08] active:scale-[0.99]"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 font-display text-sm font-extrabold text-white">' + "ABC"[i] + '</span><span class="flex-1 font-semibold leading-snug">' + esc(o.text) + '</span></button>';
+        }).join("");
+        area.innerHTML = '<div class="animate-in"><p class="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">Step ' + (step + 1) + ' of ' + mission.questions.length + '</p><p class="mt-2 font-display text-xl font-bold leading-snug sm:text-2xl">' + esc(q.prompt) + '</p><div class="mt-5 space-y-3">' + opts + '</div><div id="mfeedback"></div></div>';
+        $$(".mopt", area).forEach(function (b, bi) {
+          b.addEventListener("click", function () {
+            if (choice !== null) return; choice = bi; xp += q.options[bi].xp; setXp();
+            var chosen = q.options[bi];
+            $$(".mopt", area).forEach(function (x, xi) {
+              var o = q.options[xi]; x.disabled = true;
+              if (xi === bi && o.best) x.className = "mopt flex w-full items-start gap-4 rounded-2xl border border-lime bg-lime px-4 py-4 text-left text-ink";
+              else if (xi === bi) x.className = "mopt flex w-full items-start gap-4 rounded-2xl border border-yellow bg-yellow px-4 py-4 text-left text-ink";
+              else if (o.best) x.className = "mopt flex w-full items-start gap-4 rounded-2xl border border-lime/60 bg-lime/10 px-4 py-4 text-left";
+              else x.className = "mopt flex w-full items-start gap-4 rounded-2xl border border-white/5 px-4 py-4 text-left opacity-40";
+              x.innerHTML += '<span class="shrink-0 font-mono text-xs font-bold">+' + o.xp + ' XP</span>';
+            });
+            var isLast = step + 1 >= mission.questions.length;
+            $("#mfeedback").innerHTML = '<div class="animate-in mt-5 rounded-2xl border border-white/10 bg-white/[0.05] p-5"><p class="font-mono text-[10px] uppercase tracking-[0.2em] text-lime">' + (chosen.best ? "✔ Best move" : "△ Decent — here's the stronger move") + '</p><p class="mt-2 text-[15px] leading-relaxed text-white/85">' + esc(chosen.feedback) + '</p><button type="button" id="mNext" class="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-ink transition-colors hover:bg-lime">' + (isLast ? "Complete mission" : "Next step") + ' →</button></div>';
+            $("#mNext").addEventListener("click", function () { choice = null; step++; render(); });
+          });
+        });
+      } else {
+        area.innerHTML = '<div class="animate-in relative flex h-full flex-col justify-center"><p class="font-mono text-[11px] uppercase tracking-[0.2em] text-lime">M-01 · Complete</p><h4 class="text-grad mt-2 font-display text-4xl font-extrabold leading-none sm:text-5xl">' + esc(mission.complete.title) + '</h4><p class="mt-4 font-display text-2xl font-extrabold">+' + xp + ' XP <span class="text-white/50">· saved to portfolio</span></p><p class="mt-4 max-w-md text-white/75">' + esc(mission.complete.body) + '</p><div class="mt-6 flex flex-col gap-3 sm:flex-row"><a href="#book" class="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-6 py-3.5 text-[15px] font-bold text-ink transition-all hover:-translate-y-0.5 hover:bg-lime-300">Book my child\\'s free assessment →</a><button type="button" id="mAgain" class="rounded-full border border-white/20 px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:border-lime hover:text-lime">Play again</button></div></div>';
+        confetti(area, 48);
+        $("#mAgain").addEventListener("click", function () { step = 0; xp = 0; choice = null; setXp(); render(); });
+      }
+    }
+    render();
+  }
+  /* ---------- Badges ---------- */
+  function initBadges() {
+    var grid = $("#badgeGrid"), countEl = $("#badgeCount"), barEl = $("#badgeBar"); if (!grid) return;
+    function medal(b, on, big) {
+      var size = big ? "h-28 w-28 text-6xl" : "h-20 w-20 text-4xl";
+      var style = on ? 'style="background:radial-gradient(circle at 30% 30%,' + b.color + ',' + b.color + '55);box-shadow:0 20px 60px -20px ' + b.color + '"' : "";
+      var cls = on ? "animate-pop border-white/20" : "border-white/5 bg-white/5 grayscale";
+      return '<span class="grid shrink-0 place-items-center rounded-full border-4 transition-all duration-500 ' + size + " " + cls + '" ' + style + ">" + (on ? b.emoji : "🔒") + "</span>";
+    }
+    function status(b, on, cls) {
+      var txt = on ? (b.legendary ? "★ Legendary unlocked — and most importantly:" : "Unlocked") : "Locked";
+      return '<p class="font-mono text-[10px] uppercase tracking-[0.2em] ' + (cls || "") + '" style="color:' + (on ? b.color : "rgba(255,255,255,0.35)") + '">' + txt + "</p>";
+    }
+    function render(unlocked) {
+      grid.innerHTML = badges.map(function (b, i) {
+        var on = i < unlocked;
+        var base = "relative overflow-hidden rounded-3xl border p-6 transition-all duration-500 sm:p-7 " + (on ? "translate-y-0 border-white/15 bg-white/[0.05]" : "translate-y-2 border-white/5 bg-white/[0.02] opacity-50");
+        if (b.legendary) base += " sm:col-span-2 lg:col-span-3" + (on ? " holo-ring" : "");
+        var inner = b.legendary
+          ? '<div class="flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-8">' + medal(b, on, true) + '<div>' + status(b, on) + '<h3 class="mt-1 font-display text-3xl font-extrabold sm:text-4xl">' + esc(b.title) + '</h3><p class="mt-2 max-w-2xl text-lg leading-relaxed text-slate-300">' + esc(b.desc) + '</p></div></div>'
+          : medal(b, on) + status(b, on, "mt-5") + '<h3 class="mt-1 font-display text-xl font-extrabold sm:text-2xl">' + esc(b.title) + '</h3><p class="mt-2 text-[15px] leading-relaxed text-slate-300">' + esc(b.desc) + '</p>';
+        return '<div class="' + base + '">' + inner + (on ? '<span class="shine"></span>' : "") + "</div>";
+      }).join("");
+      countEl.textContent = unlocked + "/" + badges.length + " unlocked";
+      barEl.style.width = Math.round((unlocked / badges.length) * 100) + "%";
+    }
+    render(0);
+    onView(grid, function () {
+      if (reduce) { render(badges.length); return; }
+      var n = 0;
+      (function next() { n++; render(n); if (n < badges.length) setTimeout(next, 700); })();
+    }, 0.15);
+  }
+  /* ---------- Stats ---------- */
+  function initStats() {
+    onView($("#statsWrap"), function () {
+      $$(".stat-num").forEach(function (el) { countUp(el, parseInt(el.getAttribute("data-to"), 10), 1600); });
+    }, 0.3);
+  }
+  /* ---------- Why Now window ---------- */
+  function initWindow() {
+    var bar = $("#windowBar"), st = $("#windowState");
+    onView($("#windowCard"), function () { bar.style.width = "34%"; if (st) st.textContent = "closing…"; }, 0.5);
+  }
+  /* ---------- FAQ ---------- */
+  function initFaq() {
+    var list = $("#faqList"); if (!list) return;
+    list.innerHTML = faqs.map(function (f, i) {
+      var open = i === 0;
+      return '<div><h3><button type="button" data-i="' + i + '" aria-expanded="' + open + '" class="faq-btn flex w-full items-center gap-4 px-4 py-5 text-left sm:px-5 sm:py-6"><span class="font-mono text-xs text-slate-500">0' + (i + 1) + '</span><span class="faq-q flex-1 font-display text-lg font-bold leading-snug transition-colors sm:text-xl ' + (open ? "text-lime" : "text-white") + '">' + esc(f.q) + '</span><span class="faq-ic grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-300 ' + (open ? "rotate-45 border-lime bg-lime text-ink" : "border-white/15 text-white") + '">+</span></button></h3><div class="acc-panel" data-open="' + open + '"><div><p class="px-4 pb-6 pl-11 pr-14 text-[15px] leading-relaxed text-slate-300 sm:px-5 sm:pl-12 sm:text-base">' + esc(f.a) + '</p></div></div></div>';
+    }).join("");
+    $$(".faq-btn", list).forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var open = btn.getAttribute("aria-expanded") === "true";
+        // close all
+        $$(".faq-btn", list).forEach(function (b) {
+          b.setAttribute("aria-expanded", "false");
+          b.parentElement.nextElementSibling.setAttribute("data-open", "false");
+          $(".faq-q", b).className = "faq-q flex-1 font-display text-lg font-bold leading-snug transition-colors sm:text-xl text-white";
+          $(".faq-ic", b).className = "faq-ic grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-300 border-white/15 text-white";
+        });
+        if (!open) {
+          btn.setAttribute("aria-expanded", "true");
+          btn.parentElement.nextElementSibling.setAttribute("data-open", "true");
+          $(".faq-q", btn).className = "faq-q flex-1 font-display text-lg font-bold leading-snug transition-colors sm:text-xl text-lime";
+          $(".faq-ic", btn).className = "faq-ic grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-300 rotate-45 border-lime bg-lime text-ink";
+        }
+      });
+    });
+  }
+  /* ---------- Form ---------- */
+  function initForm() {
+    var form = $("#bookForm"); if (!form) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var host = form.parentElement;
+      host.innerHTML = '<div class="relative py-6 text-center"><span class="mx-auto grid h-16 w-16 animate-pop place-items-center rounded-full bg-lime text-3xl text-ink">✓</span><h3 class="mt-5 font-display text-3xl font-extrabold">Request received. 🎉</h3><p class="mt-2 text-slate-300">We\\'ll be in touch to schedule your child\\'s free talent assessment.</p><p class="mt-4 text-xs text-slate-500">(Preview mode — connect this form to your CRM, email, or WhatsApp before launch.)</p></div>';
+      confetti(host, 56);
+    });
+  }
+  /* ---------- Init ---------- */
+  document.addEventListener("DOMContentLoaded", function () {
+    $("#year").textContent = new Date().getFullYear();
+    initReveal(); initNav(); initMarquees(); initTilt(); initTypewriter();
+    initHeroSkills(); initGap(); initQuiz(); initTracks(); initMission();
+    initBadges(); initStats(); initWindow(); initFaq(); initForm();
+  });
+})();
+</script>
+</body>
 </html>

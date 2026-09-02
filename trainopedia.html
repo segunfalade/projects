@@ -7,9 +7,11 @@
 <meta name="description" content="Trainopedia moves your child beyond the classroom — mastering the rare digital skills and real-world execution that turn a high schooler into high-value talent before they graduate. Built for JSS1–SS3 students." />
 <link rel="icon" type="image/png" href="https://segunfalade.github.io/assets/trainopedia.png" />
 <title>Trainopedia — Set Your Child 10 Years Ahead of Their Peers</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400..800&display=swap" rel="stylesheet" />
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -30,11 +32,13 @@
     },
   };
 </script>
+
 <style>
   :root { color-scheme: dark; }
   body { background: #06081a; color: #fff; font-family: "Manrope", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   h1,h2,h3,h4 { font-family: "Bricolage Grotesque", "Manrope", sans-serif; letter-spacing: -0.02em; }
   ::selection { background: #c8ff3d; color: #06081a; }
+
   /* Keyframes */
   @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
@@ -51,60 +55,75 @@
   @keyframes auroraC { to { transform: translate(10%,-14%) scale(1.12); } }
   @keyframes shine { from{transform:translateX(-150%) skewX(-20deg)} to{transform:translateX(250%) skewX(-20deg)} }
   @keyframes ping { 75%,100%{transform:scale(2);opacity:0} }
+
   .animate-float { animation: float 6s ease-in-out infinite; }
   .animate-blink { animation: blink 1s steps(2,start) infinite; }
   .animate-pop { animation: pop .6s cubic-bezier(.2,1.4,.3,1) both; }
   .animate-in { animation: animin .5s cubic-bezier(.2,.8,.2,1) both; }
   .animate-scroll-hint { animation: scrollhint 1.6s ease-in-out infinite; }
   .animate-ping-slow { animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
+
   /* Reveal */
   .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d,0ms); }
   .reveal.rv-zoom { transform: scale(.92) translateY(10px); }
   .reveal.rv-left { transform: translateX(-28px); }
   .reveal.rv-right { transform: translateX(28px); }
   .reveal.is-visible { opacity: 1; transform: none; }
+
   /* Bars */
   .bar { width: 0; transition: width 1.4s cubic-bezier(.2,.8,.2,1) .35s; }
   .is-visible .bar { width: var(--w); }
   .grow { animation: grow 1s cubic-bezier(.2,.8,.2,1) .15s both; }
+
   /* Text FX */
   .text-grad { background-image: linear-gradient(90deg,#c8ff3d,#2ee6ff 30%,#ff3d9a 60%,#c8ff3d); background-size:300% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent; animation: gradientx 7s linear infinite; }
   .text-outline { -webkit-text-stroke: 2px rgba(255,255,255,.28); color: transparent; -webkit-text-fill-color: transparent; }
+
   /* Holographic border */
   .holo { position: relative; background-image: linear-gradient(120deg,#c8ff3d,#2ee6ff,#6b3dff,#ff3d9a,#c8ff3d); background-size:300% 300%; animation: gradientx 8s linear infinite; }
   .holo-ring { border-color: transparent; background-image: linear-gradient(#10163d,#10163d), linear-gradient(120deg,#c8ff3d,#2ee6ff,#6b3dff,#ff3d9a,#c8ff3d); background-origin: border-box; background-clip: padding-box, border-box; }
+
   /* Tilt + spotlight */
   .tilt { transform: perspective(1000px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)); transition: transform .18s ease-out; transform-style: preserve-3d; }
   .spot { position: relative; }
   .spot::after { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; background: radial-gradient(360px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.16), transparent 60%); opacity:0; transition:opacity .3s; }
   .spot:hover::after { opacity: 1; }
+
   /* Marquee */
   .marquee { overflow: hidden; white-space: nowrap; }
   .marquee-track { display: flex; width: max-content; animation: marquee var(--speed,30s) linear infinite; }
   .marquee:hover .marquee-track { animation-play-state: paused; }
+
   /* Backgrounds */
   .bg-grid { background-image: linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 48px 48px; }
   .bg-grid-dark { background-image: linear-gradient(to right, rgba(6,8,26,.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(6,8,26,.09) 1px, transparent 1px); background-size: 48px 48px; }
   .noise::before { content:""; position:absolute; inset:0; pointer-events:none; z-index:0; opacity:.07; mix-blend-mode:overlay; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); }
+
   .blob { position:absolute; border-radius:9999px; filter: blur(90px); opacity:.55; will-change: transform; }
   .blob-a { animation: auroraA 16s ease-in-out infinite alternate; }
   .blob-b { animation: auroraB 20s ease-in-out infinite alternate; }
   .blob-c { animation: auroraC 18s ease-in-out infinite alternate; }
+
   .confetti span { position:absolute; left:50%; top:50%; border-radius:2px; animation: confetti 1.1s cubic-bezier(.1,.8,.3,1) forwards; }
+
   .shine { position:absolute; inset:0; overflow:hidden; border-radius:inherit; pointer-events:none; }
   .shine::after { content:""; position:absolute; top:-20%; bottom:-20%; width:40%; background: linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent); animation: shine 1.2s ease-out .2s both; }
+
   /* Accordion */
   .acc-panel { display:grid; grid-template-rows:0fr; transition: grid-template-rows .35s cubic-bezier(.2,.7,.2,1); }
   .acc-panel[data-open="true"] { grid-template-rows:1fr; }
   .acc-panel > div { overflow:hidden; }
+
   /* VS rounds */
   .round { opacity:.28; transform:translateY(10px); transition:opacity .5s, transform .5s; }
   .round .std-cell { transform:translateX(-16px); opacity:0; transition:transform .5s .1s, opacity .5s .1s; }
   .round .tp-cell { transform:translateX(16px); opacity:0; transition:transform .5s .25s, opacity .5s .25s; }
   .round.is-on { opacity:1; transform:none; }
   .round.is-on .std-cell, .round.is-on .tp-cell { transform:none; opacity:1; }
+
   .no-scrollbar { scrollbar-width:none; }
   .no-scrollbar::-webkit-scrollbar { display:none; }
+
   @media (prefers-reduced-motion: reduce) {
     .reveal { opacity:1; transform:none; transition:none; }
     .bar,.grow { width: var(--w); animation:none; }
@@ -114,7 +133,9 @@
   }
 </style>
 </head>
+
 <body class="min-h-screen bg-ink">
+
 <!-- ============ NAV ============ -->
 <header class="fixed inset-x-0 top-0 z-50">
   <div id="navbar" class="transition-colors duration-300">
@@ -144,6 +165,7 @@
     </div>
     <div class="h-[3px] w-full bg-white/[0.06]"><div id="progress" class="h-full w-0 bg-[linear-gradient(90deg,#c8ff3d,#2ee6ff,#ff3d9a)] transition-[width] duration-150 ease-out"></div></div>
   </div>
+
   <!-- Mobile menu -->
   <div id="mobileMenu" aria-hidden="true" class="pointer-events-none fixed inset-x-0 bottom-0 top-[67px] z-40 flex -translate-y-3 flex-col overflow-y-auto bg-ink/95 px-5 pb-8 pt-4 opacity-0 backdrop-blur-xl transition-all duration-300 sm:top-[75px] lg:hidden">
     <nav class="flex flex-col divide-y divide-white/10" aria-label="Mobile">
@@ -160,7 +182,9 @@
     </div>
   </div>
 </header>
+
 <main>
+
 <!-- ============ 1. HERO ============ -->
 <section id="top" class="noise relative overflow-hidden bg-ink text-white">
   <div class="pointer-events-none absolute inset-0 overflow-hidden">
@@ -169,6 +193,7 @@
     <span class="blob blob-c bottom-[-28%] left-[22%] h-[52vw] max-h-[680px] w-[52vw] max-w-[680px] bg-cyan opacity-30"></span>
   </div>
   <div class="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]"></div>
+
   <div class="relative mx-auto w-full max-w-7xl px-5 pb-20 pt-28 sm:px-8 sm:pt-36 lg:px-10 lg:pb-28 lg:pt-40">
     <div class="grid items-center gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
       <div class="max-w-2xl">
@@ -192,6 +217,7 @@
           <li class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-300"><span class="text-lime">✓</span> No tech background needed</li>
         </ul>
       </div>
+
       <!-- Visual -->
       <div class="reveal rv-zoom relative mx-auto w-full max-w-[420px] pb-28 pt-8 sm:max-w-[460px] lg:max-w-[520px] lg:justify-self-end" style="--d:200ms">
         <div class="tilt holo rounded-[2.25rem] p-[3px]" data-tilt data-max="6">
@@ -201,11 +227,13 @@
             <div class="absolute inset-x-4 bottom-4 rounded-2xl border border-white/10 bg-ink/70 px-4 py-3 font-mono text-[12px] text-slate-200 backdrop-blur sm:text-[13px]"><span class="text-lime">now_building:</span> <span id="typewriter"></span><span class="animate-blink text-lime">▍</span></div>
           </div>
         </div>
+
         <!-- Stickers -->
         <div class="animate-float pointer-events-none absolute -left-3 top-3 select-none sm:-left-8"><span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-ink bg-magenta px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-[4px_4px_0_0_#06081a] sm:text-sm" style="transform:rotate(-8deg)">🚫 No lectures</span></div>
         <div class="animate-float pointer-events-none absolute -right-2 top-20 select-none [animation-delay:1.2s] sm:-right-8"><span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-ink bg-lime px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a] sm:text-sm" style="transform:rotate(7deg)">📁 Proof &gt; grades</span></div>
         <div class="animate-float pointer-events-none absolute -right-3 top-1/2 select-none [animation-delay:2.1s] sm:-right-10"><span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-ink bg-cyan px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a] sm:text-sm" style="transform:rotate(-5deg)">⏱️ 3–5 hrs / wk</span></div>
         <div class="animate-float pointer-events-none absolute -left-2 top-[38%] select-none [animation-delay:0.6s] sm:-left-8"><span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-ink bg-yellow px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a] sm:text-sm" style="transform:rotate(5deg)">🌍 Global-ready</span></div>
+
         <!-- HUD -->
         <div class="absolute -bottom-4 left-0 w-[88%] max-w-[22rem] rounded-3xl border border-white/10 bg-ink-800/90 p-5 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] backdrop-blur-xl sm:-left-8 sm:p-6">
           <div class="flex items-start justify-between gap-4">
@@ -222,8 +250,10 @@
       </div>
     </div>
   </div>
+
   <div class="relative py-6"><div class="-mx-4 -rotate-1 border-y-4 border-ink bg-lime py-3 text-ink sm:-mx-6"><div class="marquee font-display text-base font-extrabold uppercase tracking-tight sm:text-lg" style="--speed:26s" data-marquee='["AI Collaboration ⚡","Game Theory ♟️","Digital Assets 🌐","Strategy Memos 🖋️","Market Analysis 📊","Founder Pitches 🎤","Logic Systems 🧩","Proof of Work 📁"]'></div></div></div>
 </section>
+
 <!-- ============ 2. THE GAP (VS) ============ -->
 <section id="gap" class="relative scroll-mt-20 overflow-hidden bg-ink-900 py-20 text-white sm:py-28">
   <div class="pointer-events-none absolute right-[-20%] top-[-10%] h-[560px] w-[560px] rounded-full bg-violet/30 blur-[150px]"></div>
@@ -239,6 +269,7 @@
         <p class="mt-5 text-lg leading-relaxed text-slate-300">The universities and remote employers your child will one day compete for aren't comparing them to their classmates. They're comparing them to ambitious teenagers in Bangalore, Jakarta, and Delaware — children who started building real skills at 13.</p>
       </div>
     </div>
+
     <div id="gapWrap" class="mt-14">
       <div class="relative z-10 mx-auto flex max-w-3xl items-center justify-between gap-3 rounded-full border border-white/10 bg-ink/80 px-4 py-3 backdrop-blur sm:px-6">
         <div class="flex items-center gap-3"><span class="font-display text-3xl font-extrabold tabular-nums text-slate-500 sm:text-4xl">0</span><span class="font-mono text-[11px] uppercase tracking-widest text-slate-400"><span class="hidden sm:inline">Standard Education</span><span class="sm:hidden">School</span></span></div>
@@ -247,9 +278,11 @@
       </div>
       <ol id="gapRounds" class="mt-8 space-y-4"></ol>
     </div>
+
     <div class="reveal mx-auto mt-16 max-w-3xl text-center"><p class="font-display text-2xl font-bold leading-snug sm:text-3xl lg:text-4xl">A report card tells people your child attended school. A portfolio tells the world what they can do. <span class="text-grad">That's the gap we close.</span></p></div>
   </div>
 </section>
+
 <!-- ============ 3. WHO IT'S FOR + QUIZ ============ -->
 <section id="who" class="noise relative scroll-mt-20 overflow-hidden bg-violet py-20 text-white sm:py-28">
   <div class="bg-grid pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]"></div>
@@ -261,11 +294,13 @@
       <h2 class="mt-4 font-display text-[clamp(2.1rem,5.4vw,3.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em]">Built for a Certain Kind of Family</h2>
       <p class="mt-5 text-lg leading-relaxed text-white/80 sm:text-xl">Trainopedia isn't for everyone — and that's deliberate.</p>
     </div>
+
     <div class="mt-14 grid gap-5 md:grid-cols-3 md:gap-6">
       <div class="reveal rv-zoom" style="--d:0ms"><div class="tilt spot group relative h-full rounded-3xl border-2 border-ink bg-ink p-7 shadow-[8px_8px_0_0_#06081a] transition-shadow duration-300 hover:shadow-[10px_10px_0_0_#c8ff3d] sm:p-8" data-tilt data-max="7"><div class="flex items-start justify-between"><span class="grid h-16 w-16 place-items-center rounded-2xl bg-white/10 text-4xl transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">🚀</span><span class="font-mono text-xs text-white/40">01</span></div><h3 class="mt-6 font-display text-2xl font-extrabold sm:text-[1.7rem]">The High Flyer</h3><p class="mt-2 text-[15px] italic text-white/60">Top of the class, bored by the ceiling.</p><p class="mt-6 border-t border-white/10 pt-5 font-display text-lg font-bold leading-snug text-lime">When school is too easy, we raise the ceiling.</p></div></div>
       <div class="reveal rv-zoom" style="--d:100ms"><div class="tilt spot group relative h-full rounded-3xl border-2 border-ink bg-ink p-7 shadow-[8px_8px_0_0_#06081a] transition-shadow duration-300 hover:shadow-[10px_10px_0_0_#c8ff3d] sm:p-8" data-tilt data-max="7"><div class="flex items-start justify-between"><span class="grid h-16 w-16 place-items-center rounded-2xl bg-white/10 text-4xl transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">🧠</span><span class="font-mono text-xs text-white/40">02</span></div><h3 class="mt-6 font-display text-2xl font-extrabold sm:text-[1.7rem]">The Quiet Genius</h3><p class="mt-2 text-[15px] italic text-white/60">Bright, but never engaged by lectures and cramming.</p><p class="mt-6 border-t border-white/10 pt-5 font-display text-lg font-bold leading-snug text-lime">Some children don't learn by listening. They learn by doing.</p></div></div>
       <div class="reveal rv-zoom" style="--d:200ms"><div class="tilt spot group relative h-full rounded-3xl border-2 border-ink bg-ink p-7 shadow-[8px_8px_0_0_#06081a] transition-shadow duration-300 hover:shadow-[10px_10px_0_0_#c8ff3d] sm:p-8" data-tilt data-max="7"><div class="flex items-start justify-between"><span class="grid h-16 w-16 place-items-center rounded-2xl bg-white/10 text-4xl transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">💎</span><span class="font-mono text-xs text-white/40">03</span></div><h3 class="mt-6 font-display text-2xl font-extrabold sm:text-[1.7rem]">The Undiscovered Talent</h3><p class="mt-2 text-[15px] italic text-white/60">Average grades, unclear direction, real potential.</p><p class="mt-6 border-t border-white/10 pt-5 font-display text-lg font-bold leading-snug text-lime">Grades measure memory. Missions reveal talent.</p></div></div>
     </div>
+
     <!-- Quiz -->
     <div class="reveal mt-10 holo rounded-[2rem] p-[3px]">
       <div class="relative overflow-hidden rounded-[calc(2rem-3px)] bg-ink p-6 sm:p-10">
@@ -281,9 +316,11 @@
         </div>
       </div>
     </div>
+
     <div class="reveal mx-auto mt-12 max-w-3xl text-center"><p class="text-lg leading-relaxed text-white/80 sm:text-xl">If you're looking for extra lessons to pass an exam, tutors have you covered. <span class="font-display font-extrabold text-white">If you're preparing your child to compete — and win — on the world stage, you're in the right place.</span></p></div>
   </div>
 </section>
+
 <!-- ============ 4. SKILL TRACKS ============ -->
 <section id="tracks" class="relative scroll-mt-20 overflow-hidden bg-ink py-20 text-white sm:py-28">
   <div class="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_left,black_10%,transparent_60%)]"></div>
@@ -303,6 +340,7 @@
     </div>
   </div>
 </section>
+
 <!-- ============ 5. HOW IT WORKS + MISSION ============ -->
 <section id="how" class="noise relative scroll-mt-20 overflow-hidden bg-lime py-20 text-ink sm:py-28">
   <div class="bg-grid-dark pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_75%)]"></div>
@@ -312,11 +350,13 @@
       <h2 class="mt-4 font-display text-[clamp(2.1rem,5.4vw,3.75rem)] font-extrabold leading-[1.0] tracking-[-0.03em] text-ink">How We Position Your Child for Success</h2>
       <p class="mt-5 text-lg leading-relaxed text-ink/75 sm:text-xl">A simple, high-impact framework engineered to fit around a busy school schedule.</p>
     </div>
+
     <ol class="mt-14 grid gap-6 md:grid-cols-3">
       <li class="reveal rv-zoom relative" style="--d:0ms"><div class="relative h-full overflow-hidden rounded-3xl border-2 border-ink bg-ink p-7 text-white shadow-[8px_8px_0_0_#6b3dff] sm:p-8"><span class="text-outline pointer-events-none absolute -right-2 -top-5 font-display text-[7rem] font-extrabold leading-none">01</span><span class="relative grid h-12 w-12 place-items-center rounded-2xl bg-lime font-display text-lg font-extrabold text-ink">01</span><h3 class="relative mt-6 font-display text-2xl font-extrabold leading-tight">Discover Their Natural Edge.</h3><p class="relative mt-3 text-[15px] leading-relaxed text-slate-300">We start with a structured assessment that maps your child's unique strengths, then place them in the specialized track where they'll grow fastest — matching what they love to what the market will pay for.</p></div><span class="absolute -right-5 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full border-2 border-ink bg-white text-ink md:grid">→</span></li>
       <li class="reveal rv-zoom relative" style="--d:120ms"><div class="relative h-full overflow-hidden rounded-3xl border-2 border-ink bg-ink p-7 text-white shadow-[8px_8px_0_0_#6b3dff] sm:p-8"><span class="text-outline pointer-events-none absolute -right-2 -top-5 font-display text-[7rem] font-extrabold leading-none">02</span><span class="relative grid h-12 w-12 place-items-center rounded-2xl bg-lime font-display text-lg font-extrabold text-ink">02</span><h3 class="relative mt-6 font-display text-2xl font-extrabold leading-tight">Master Through Doing.</h3><p class="relative mt-3 text-[15px] leading-relaxed text-slate-300">Your child invests 3 to 5 hours a week in Practical Missions — real projects like writing a go-to-market strategy or cracking a logic system. No lectures to cram. No notes to memorize. Every completed mission is proof they've mastered the skill.</p></div><span class="absolute -right-5 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 place-items-center rounded-full border-2 border-ink bg-white text-ink md:grid">→</span><div class="pointer-events-none absolute -top-4 right-4 select-none"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-magenta px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(6deg)">⏱️ 3–5 hrs / week</span></div></li>
       <li class="reveal rv-zoom relative" style="--d:240ms"><div class="relative h-full overflow-hidden rounded-3xl border-2 border-ink bg-ink p-7 text-white shadow-[8px_8px_0_0_#6b3dff] sm:p-8"><span class="text-outline pointer-events-none absolute -right-2 -top-5 font-display text-[7rem] font-extrabold leading-none">03</span><span class="relative grid h-12 w-12 place-items-center rounded-2xl bg-lime font-display text-lg font-extrabold text-ink">03</span><h3 class="relative mt-6 font-display text-2xl font-extrabold leading-tight">Verify the Progress.</h3><p class="relative mt-3 text-[15px] leading-relaxed text-slate-300">Every achievement is saved to your child's Digital Career Portfolio. And every month, you receive a Monthly Talent Audit showing exactly how their skills are growing against global standards — so you never have to wonder whether it's working.</p></div><div class="pointer-events-none absolute -bottom-4 left-4 select-none"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-cyan px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(-5deg)">📈 Monthly Talent Audit</span></div></li>
     </ol>
+
     <div class="reveal mt-16 relative overflow-hidden rounded-[2rem] border-2 border-ink bg-ink p-6 text-white shadow-[12px_12px_0_0_#ff3d9a] sm:p-10">
       <div class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-violet/40 blur-3xl"></div>
       <div class="relative grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
@@ -336,6 +376,7 @@
     </div>
   </div>
 </section>
+
 <!-- ============ 6. OUTCOMES (BADGES) ============ -->
 <section id="outcomes" class="relative scroll-mt-20 overflow-hidden bg-ink-900 py-20 text-white sm:py-28">
   <div class="pointer-events-none absolute left-1/2 top-0 h-[520px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet/30 blur-[160px]"></div>
@@ -350,6 +391,7 @@
     <div id="badgeGrid" class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
   </div>
 </section>
+
 <!-- ============ 7. SOCIAL PROOF ============ -->
 <section id="results" class="relative scroll-mt-20 overflow-hidden bg-ink py-20 text-white sm:py-28">
   <div class="pointer-events-none absolute -left-40 top-1/2 h-[480px] w-[480px] -translate-y-1/2 rounded-full bg-magenta/20 blur-[150px]"></div>
@@ -364,6 +406,7 @@
       <div class="reveal text-center" style="--d:100ms"><p class="font-display text-5xl font-extrabold leading-none tabular-nums sm:text-6xl lg:text-7xl"><span class="text-grad stat-num" data-to="36000">0</span><span class="text-lime">+</span></p><p class="mt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400">Practical Missions completed</p></div>
       <div class="reveal text-center" style="--d:200ms"><p class="font-display text-5xl font-extrabold leading-none tabular-nums sm:text-6xl lg:text-7xl"><span class="text-grad stat-num" data-to="92">0</span><span class="text-lime">%</span></p><p class="mt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400">of parents renew each term</p></div>
     </div>
+
     <div class="mx-auto mt-16 max-w-3xl">
       <div class="mb-6 flex items-center justify-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-500"><span class="h-px w-8 bg-white/10"></span> What they're saying <span class="h-px w-8 bg-white/10"></span></div>
       <div class="space-y-6">
@@ -375,6 +418,7 @@
     </div>
   </div>
 </section>
+
 <!-- ============ 8. WHY NOW ============ -->
 <section id="why-now" class="noise relative scroll-mt-20 overflow-hidden bg-[linear-gradient(135deg,#ff7a1a_0%,#ff3d9a_55%,#6b3dff_100%)] pt-20 text-white sm:pt-28">
   <div class="bg-grid pointer-events-none absolute inset-0 opacity-60"></div>
@@ -396,6 +440,7 @@
         </div>
         <p class="reveal mt-10 font-display text-2xl font-extrabold leading-snug sm:text-3xl lg:text-4xl" style="--d:340ms">The question was never whether Nigerian children will compete globally. <span class="text-lime">It's whether yours will be ready when they do.</span></p>
       </div>
+
       <div class="reveal rv-zoom relative mx-auto w-full max-w-md pb-6 lg:max-w-none" style="--d:200ms">
         <div class="tilt relative rotate-2 overflow-hidden rounded-[2rem] border-4 border-ink bg-ink shadow-[12px_12px_0_0_#06081a]" data-tilt data-max="5">
           <div class="aspect-[4/5]"><img src="https://images.pexels.com/photos/4144174/pexels-photo-4144174.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800" alt="A smiling teenager working on a tablet at home" class="h-full w-full object-cover" width="800" height="1200" loading="lazy" /></div>
@@ -408,8 +453,9 @@
       </div>
     </div>
   </div>
-  <div class="relative mt-16 border-y-4 border-ink bg-ink py-3 text-lime"><div class="marquee font-display text-base font-extrabold uppercase tracking-tight sm:text-lg" style="--speed:24s" data-marquee='["Rare → Required","Lagos ↔ London","Start at 13","Build, don''t cram","Portfolio > report card","The window is closing"]'></div></div>
+  <div class="relative mt-16 border-y-4 border-ink bg-ink py-3 text-lime"><div class="marquee font-display text-base font-extrabold uppercase tracking-tight sm:text-lg" style="--speed:24s" data-marquee='["Rare → Required","Lagos ↔ London","Start at 13","Build, don&#39;t cram","Portfolio > report card","The window is closing"]'></div></div>
 </section>
+
 <!-- ============ 9. FAQ ============ -->
 <section id="faq" class="relative scroll-mt-20 overflow-hidden bg-ink-900 py-20 text-white sm:py-28">
   <div class="pointer-events-none absolute -left-40 bottom-0 h-[480px] w-[480px] rounded-full bg-violet/25 blur-[150px]"></div>
@@ -428,6 +474,7 @@
     </div>
   </div>
 </section>
+
 <!-- ============ 10. FINAL CTA ============ -->
 <section id="book" class="noise relative scroll-mt-20 overflow-hidden bg-ink py-24 text-white sm:py-32">
   <div class="pointer-events-none absolute inset-0 overflow-hidden">
@@ -442,6 +489,7 @@
       <h2 class="reveal mt-6 font-display text-[clamp(2.4rem,7vw,5.25rem)] font-extrabold leading-[0.98] tracking-[-0.035em]" style="--d:60ms">In 10 Years, They'll Either Be <span class="text-grad inline-block">Thanking You</span> — or Catching Up</h2>
       <p class="reveal mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-slate-300 sm:text-xl" style="--d:140ms">Somewhere between today and graduation, your child's window for a genuine headstart will quietly close. Every term spent only on exams is a term someone else spent building. You've already given them school. Give them the edge on top of it.</p>
     </div>
+
     <div class="reveal rv-zoom relative mx-auto mt-12 max-w-2xl" style="--d:220ms">
       <div class="animate-float pointer-events-none absolute -right-2 -top-5 z-10 select-none sm:-right-8"><span class="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-yellow px-3.5 py-1.5 font-display text-xs font-extrabold uppercase tracking-wide text-ink shadow-[4px_4px_0_0_#06081a]" style="transform:rotate(8deg)">✅ No commitment</span></div>
       <div class="holo rounded-[2rem] p-[3px] shadow-[0_40px_120px_-40px_rgba(107,61,255,0.7)]">
@@ -467,6 +515,7 @@
   </div>
 </section>
 </main>
+
 <!-- ============ FOOTER ============ -->
 <footer class="border-t border-white/10 bg-ink py-10 text-white">
   <div class="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
@@ -477,10 +526,12 @@
     <div class="mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between"><p>© <span id="year"></span> Trainopedia. All rights reserved.</p><p class="font-mono uppercase tracking-[0.18em]">For parents raising Nigeria's next top 1%</p></div>
   </div>
 </footer>
+
 <!-- ============ Sticky mobile CTA ============ -->
 <div id="mobileCta" class="pointer-events-none fixed inset-x-3 bottom-3 z-40 translate-y-24 opacity-0 transition-all duration-300 lg:hidden">
   <a href="#book" class="flex items-center justify-between rounded-2xl border-2 border-ink bg-lime px-5 py-3.5 text-ink shadow-[0_20px_50px_-15px_rgba(200,255,61,0.7)]"><span class="font-display text-[15px] font-extrabold">Book the free talent assessment</span><span class="rounded-full bg-ink px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-lime">Free →</span></a>
 </div>
+
 <script>
 (function () {
   "use strict";
@@ -489,6 +540,7 @@
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+
   /* ---------- DATA ---------- */
   var heroSkills = [
     { name: "Algorithmic Logic", value: 82 }, { name: "AI Collaboration", value: 91 },
@@ -578,6 +630,7 @@
     { q: "How do I know it's working?", a: "You'll receive a Monthly Talent Audit showing skill growth against global benchmarks — plus a portfolio you can open any day and see with your own eyes." },
     { q: "What does it cost?", a: "Plans start from ₦60,000 per term — roughly ₦5,000 a week, less than typical extra-lesson fees, for skills no lesson teacher can offer. Every plan includes the Monthly Talent Audit and your child's Digital Career Portfolio. And the first step, the strengths assessment, is free." }
   ];
+
   /* ---------- Scroll reveal ---------- */
   function initReveal() {
     var els = $$(".reveal");
@@ -595,6 +648,7 @@
     }, { threshold: threshold || 0.3 });
     io.observe(el);
   }
+
   /* ---------- Nav ---------- */
   function initNav() {
     var bar = $("#navbar"), prog = $("#progress"), btn = $("#menuBtn"), menu = $("#mobileMenu"), lines = $$(".mb-line"), cta = $("#mobileCta");
@@ -621,6 +675,7 @@
     window.addEventListener("resize", scroll);
     scroll();
   }
+
   /* ---------- Marquees ---------- */
   function initMarquees() {
     $$("[data-marquee]").forEach(function (m) {
@@ -635,6 +690,7 @@
       m.appendChild(track);
     });
   }
+
   /* ---------- Tilt ---------- */
   function initTilt() {
     if (!hoverable || reduce) return;
@@ -648,6 +704,7 @@
       el.addEventListener("pointerleave", function () { el.style.setProperty("--rx", "0deg"); el.style.setProperty("--ry", "0deg"); });
     });
   }
+
   /* ---------- Typewriter ---------- */
   function initTypewriter() {
     var el = $("#typewriter"); if (!el) return;
@@ -662,6 +719,7 @@
     }
     tick();
   }
+
   /* ---------- Count up ---------- */
   function countUp(el, to, dur) {
     if (reduce) { el.textContent = to.toLocaleString("en-US"); return; }
@@ -673,6 +731,7 @@
     }
     requestAnimationFrame(step);
   }
+
   /* ---------- Confetti ---------- */
   function confetti(host, count) {
     if (reduce) return;
@@ -686,6 +745,7 @@
     host.appendChild(wrap);
     setTimeout(function () { wrap.remove(); }, 1500);
   }
+
   /* ---------- Hero skills ---------- */
   function initHeroSkills() {
     var ul = $("#heroSkills"); if (!ul) return;
@@ -696,6 +756,7 @@
     var host = ul.closest(".rv-zoom") || ul;
     onView(ul, function () { $$(".bar", ul).forEach(function (b) { b.style.width = b.style.getPropertyValue("--w"); }); }, 0.2);
   }
+
   /* ---------- Gap VS ---------- */
   function initGap() {
     var list = $("#gapRounds"), score = $("#gapScore"); if (!list) return;
@@ -726,6 +787,7 @@
       })();
     }, 0.2);
   }
+
   /* ---------- Quiz ---------- */
   function initQuiz() {
     var area = $("#quizArea"), dotsEl = $("#quizDots"); if (!area) return;
@@ -768,6 +830,7 @@
     }
     render();
   }
+
   /* ---------- Skill tracks ---------- */
   function initTracks() {
     var sel = $("#trackSelector"), detail = $("#trackDetail"), glow = $("#trackGlow"), autoLabel = $("#trackAuto");
@@ -795,6 +858,7 @@
     render();
     if (!reduce) { timer = setInterval(function () { if (touched) return; active = (active + 1) % tracks.length; render(); }, 4500); }
   }
+
   /* ---------- Mission ---------- */
   function initMission() {
     var area = $("#missionArea"), xpEl = $("#missionXp"), dotsEl = $("#missionDots"); if (!area) return;
@@ -833,13 +897,14 @@
           });
         });
       } else {
-        area.innerHTML = '<div class="animate-in relative flex h-full flex-col justify-center"><p class="font-mono text-[11px] uppercase tracking-[0.2em] text-lime">M-01 · Complete</p><h4 class="text-grad mt-2 font-display text-4xl font-extrabold leading-none sm:text-5xl">' + esc(mission.complete.title) + '</h4><p class="mt-4 font-display text-2xl font-extrabold">+' + xp + ' XP <span class="text-white/50">· saved to portfolio</span></p><p class="mt-4 max-w-md text-white/75">' + esc(mission.complete.body) + '</p><div class="mt-6 flex flex-col gap-3 sm:flex-row"><a href="#book" class="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-6 py-3.5 text-[15px] font-bold text-ink transition-all hover:-translate-y-0.5 hover:bg-lime-300">Book my child\\'s free assessment →</a><button type="button" id="mAgain" class="rounded-full border border-white/20 px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:border-lime hover:text-lime">Play again</button></div></div>';
+        area.innerHTML = '<div class="animate-in relative flex h-full flex-col justify-center"><p class="font-mono text-[11px] uppercase tracking-[0.2em] text-lime">M-01 · Complete</p><h4 class="text-grad mt-2 font-display text-4xl font-extrabold leading-none sm:text-5xl">' + esc(mission.complete.title) + '</h4><p class="mt-4 font-display text-2xl font-extrabold">+' + xp + ' XP <span class="text-white/50">· saved to portfolio</span></p><p class="mt-4 max-w-md text-white/75">' + esc(mission.complete.body) + '</p><div class="mt-6 flex flex-col gap-3 sm:flex-row"><a href="#book" class="inline-flex items-center justify-center gap-2 rounded-full bg-lime px-6 py-3.5 text-[15px] font-bold text-ink transition-all hover:-translate-y-0.5 hover:bg-lime-300">Book the free assessment →</a><button type="button" id="mAgain" class="rounded-full border border-white/20 px-6 py-3.5 text-[15px] font-bold text-white transition-colors hover:border-lime hover:text-lime">Play again</button></div></div>';
         confetti(area, 48);
         $("#mAgain").addEventListener("click", function () { step = 0; xp = 0; choice = null; setXp(); render(); });
       }
     }
     render();
   }
+
   /* ---------- Badges ---------- */
   function initBadges() {
     var grid = $("#badgeGrid"), countEl = $("#badgeCount"), barEl = $("#badgeBar"); if (!grid) return;
@@ -873,17 +938,20 @@
       (function next() { n++; render(n); if (n < badges.length) setTimeout(next, 700); })();
     }, 0.15);
   }
+
   /* ---------- Stats ---------- */
   function initStats() {
     onView($("#statsWrap"), function () {
       $$(".stat-num").forEach(function (el) { countUp(el, parseInt(el.getAttribute("data-to"), 10), 1600); });
     }, 0.3);
   }
+
   /* ---------- Why Now window ---------- */
   function initWindow() {
     var bar = $("#windowBar"), st = $("#windowState");
     onView($("#windowCard"), function () { bar.style.width = "34%"; if (st) st.textContent = "closing…"; }, 0.5);
   }
+
   /* ---------- FAQ ---------- */
   function initFaq() {
     var list = $("#faqList"); if (!list) return;
@@ -910,16 +978,18 @@
       });
     });
   }
+
   /* ---------- Form ---------- */
   function initForm() {
     var form = $("#bookForm"); if (!form) return;
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var host = form.parentElement;
-      host.innerHTML = '<div class="relative py-6 text-center"><span class="mx-auto grid h-16 w-16 animate-pop place-items-center rounded-full bg-lime text-3xl text-ink">✓</span><h3 class="mt-5 font-display text-3xl font-extrabold">Request received. 🎉</h3><p class="mt-2 text-slate-300">We\\'ll be in touch to schedule your child\\'s free talent assessment.</p><p class="mt-4 text-xs text-slate-500">(Preview mode — connect this form to your CRM, email, or WhatsApp before launch.)</p></div>';
+      host.innerHTML = '<div class="relative py-6 text-center"><span class="mx-auto grid h-16 w-16 animate-pop place-items-center rounded-full bg-lime text-3xl text-ink">✓</span><h3 class="mt-5 font-display text-3xl font-extrabold">Request received. 🎉</h3><p class="mt-2 text-slate-300">We will be in touch to schedule your child\'s free talent assessment.</p><p class="mt-4 text-xs text-slate-500">(Preview mode — connect this form to your CRM, email, or WhatsApp before launch.)</p></div>';
       confetti(host, 56);
     });
   }
+
   /* ---------- Init ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     $("#year").textContent = new Date().getFullYear();

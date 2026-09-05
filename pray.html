@@ -1,419 +1,992 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hour of Prayer</title>
-  <style>
-    /* ---- CSS Variables & Root ---- */
-    :root {
-      --bg: #0a0e17;
-      --bg-secondary: #111827;
-      --fg: #f0f4f8;
-      --muted: #667085;
-      --accent: #f59e0b;
-      --accent-dim: rgba(245, 158, 11, 0.15);
-      --card: rgba(17, 24, 39, 0.8);
-      --danger: #ef4444;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Midnight Prayer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
-    html, body {
-      height: 100%;
-      overflow-x: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      line-height: 1.5;
-    }
+  :root {
+    --bg-deep: #0a0a14;
+    --bg-card: #12121f;
+    --bg-card-hover: #1a1a2e;
+    --gold: #d4a843;
+    --gold-light: #f0d078;
+    --gold-dim: #8a6d2b;
+    --purple: #6c5ce7;
+    --purple-dim: #3d2f8a;
+    --text: #e8e4f0;
+    --text-dim: #7a7590;
+    --text-muted: #4a4560;
+    --success: #4ecdc4;
+    --danger: #e74c6f;
+    --radius: 16px;
+  }
 
-    /* ---- Viewport ---- */
-    @-ms-viewport { width: device-width; }
-    @viewport { width: device-width, initial-scale=1.0; }
+  html { font-size: 16px; }
 
-    /* ---- Container ---- */
-    .container {
-      max-width: 380px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+  }
 
-    /* ---- Header ---- */
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 50% 20%, rgba(108,92,231,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(212,168,67,0.05) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-    h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.5rem;
-    }
+  .container {
+    width: 100%;
+    max-width: 480px;
+    padding: 20px 16px 40px;
+    position: relative;
+    z-index: 1;
+  }
 
-    .subtitle {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    padding: 24px 0 8px;
+  }
 
-    /* ---- Streak ---- */
-    .streak {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-    }
+  .header-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+    display: block;
+    filter: drop-shadow(0 0 12px rgba(212,168,67,0.4));
+  }
 
-    .streak-value {
-      color: var(--accent);
-      font-weight: 600;
-    }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 2rem;
+    letter-spacing: 0.08em;
+    color: var(--gold-light);
+    text-shadow: 0 0 30px rgba(212,168,67,0.2);
+  }
 
-    /* ---- Sections ---- */
-    .section {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      backdrop-filter: blur(10px);
-    }
+  .header p {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-top: 4px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
 
-    .section.hidden { display: none; }
+  /* ── Timer Section ── */
+  .timer-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 28px 0 20px;
+  }
 
-    /* ---- Countdown to Midnight ---- */
-    #countdownDisplay {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--accent);
-    }
+  .timer-ring-container {
+    position: relative;
+    width: 260px;
+    height: 260px;
+  }
 
-    #countdownDisplay span {
-      min-width: 50px;
-      text-align: center;
-    }
+  .timer-ring-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
 
-    .countdown-note {
-      margin-top: 0.5rem;
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-align: center;
-    }
+  .timer-ring-bg {
+    fill: none;
+    stroke: var(--bg-card);
+    stroke-width: 6;
+  }
 
-    /* ---- Timer Display ---- */
-    #timerDisplay {
-      font-size: 4rem;
-      font-weight: 900;
-      letter-spacing: 0.05em;
-      margin: 1rem 0;
-      color: var(--fg);
-    }
+  .timer-ring-progress {
+    fill: none;
+    stroke: url(#goldGradient);
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+    filter: drop-shadow(0 0 8px rgba(212,168,67,0.3));
+  }
 
-    #timerDisplay .divider {
-      opacity: 0.5;
-    }
+  .timer-ring-glow {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 12;
+    stroke-linecap: round;
+    opacity: 0.1;
+    transition: stroke-dashoffset 1s linear;
+  }
 
-    /* ---- Buttons ---- */
-    .btn {
-      width: 100%;
-      padding: 1rem 1.25rem;
-      margin: 0.5rem 0;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      background: var(--accent);
-      color: var(--bg);
-    }
+  .timer-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
 
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35); }
-    .btn:active { transform: translateY(0); }
-    .btn:focus { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .timer-time {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.6rem;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    line-height: 1;
+  }
 
-    .btn-secondary {
-      background: var(--bg-secondary);
-      color: var(--fg);
-      border: 1px solid var(--muted);
-    }
+  .timer-time.running {
+    color: var(--gold-light);
+    text-shadow: 0 0 20px rgba(212,168,67,0.3);
+  }
 
-    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .timer-time.finished {
+    color: var(--success);
+    text-shadow: 0 0 20px rgba(78,205,196,0.4);
+    animation: pulse-text 1.5s ease-in-out infinite;
+  }
 
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
+  @keyframes pulse-text {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
 
-    /* ---- Alarm Overlay ---- */
-    #alarmOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 14, 23, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease;
-    }
+  .timer-label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-top: 8px;
+  }
 
-    #alarmOverlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
+  /* ── Controls ── */
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
 
-    .alarm-card {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 2rem 2.5rem;
-      text-align: center;
-      box-shadow: 0 0 40px rgba(0,0,0,0.4);
-      animation: popIn 0.45 cubic-bezier(0.16,1,0.3,1);
-      max-width: 90%;
-      width: 90%;
-    }
+  .btn {
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 14px 32px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
 
-    @keyframes popIn {
-      from { transform: scale(0.8) translateY(20px); opacity: 0; }
-      to { transform: scale(1) translateY(0); opacity: 1; }
-    }
+  .btn:active { transform: scale(0.96); }
 
-    .alarm-card h2 {
-      font-size: 1.5rem;
-      margin-bottom: 0.75rem;
-      color: var(--accent);
-    }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+    color: #0a0a14;
+    box-shadow: 0 4px 24px rgba(212,168,67,0.25);
+  }
 
-    .alarm-card p {
-      font-size: 1rem;
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-    }
+  .btn-primary:hover {
+    box-shadow: 0 6px 32px rgba(212,168,67,0.4);
+    transform: translateY(-1px);
+  }
 
-    .alarm-card .btn {
-      width: auto;
-      padding: 0.85rem 1.5rem;
-      margin: 0.25rem;
-    }
+  .btn-primary:active { transform: scale(0.96) translateY(0); }
 
-    /* ---- Responsive ---- */
-    @media (max-width: 480px) {
-      .container { padding: 1.5rem 1rem; }
-      h1 { font-size: 1.6rem; }
-      #timerDisplay { font-size: 3.5rem; }
-      .btn { padding: 0.9rem 1rem; font-size: 0.95rem; }
-      .alarm-card { padding: 1.5rem 1.75rem; }
-    }
-  </style>
+  .btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-dim);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-card-hover);
+    color: var(--text);
+  }
+
+  .btn-danger {
+    background: rgba(231,76,111,0.1);
+    color: var(--danger);
+    border: 1px solid rgba(231,76,111,0.15);
+  }
+
+  .btn-danger:hover {
+    background: rgba(231,76,111,0.2);
+  }
+
+  .btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  /* ── Stats Row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 28px 0 20px;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: var(--radius);
+    padding: 16px 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    border-color: rgba(212,168,67,0.15);
+    background: var(--bg-card-hover);
+  }
+
+  .stat-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--gold-light);
+    line-height: 1.1;
+  }
+
+  .stat-value.streak-fire { color: #ff6b35; }
+  .stat-value.best { color: var(--purple); }
+
+  .stat-label {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-top: 4px;
+  }
+
+  /* ── Calendar ── */
+  .calendar-section {
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    margin-top: 4px;
+  }
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .calendar-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .calendar-nav {
+    display: flex;
+    gap: 4px;
+  }
+
+  .calendar-nav button {
+    background: rgba(255,255,255,0.04);
+    border: none;
+    color: var(--text-dim);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .calendar-nav button:hover {
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+  }
+
+  .calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 6px;
+  }
+
+  .calendar-weekdays span {
+    text-align: center;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 0;
+  }
+
+  .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    border-radius: 10px;
+    color: var(--text-dim);
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .cal-day.empty { pointer-events: none; }
+
+  .cal-day.today {
+    color: var(--gold-light);
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1.5px var(--gold-dim);
+  }
+
+  .cal-day.completed {
+    background: linear-gradient(135deg, rgba(212,168,67,0.2), rgba(212,168,67,0.08));
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+
+  .cal-day.completed::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  .cal-day.completed.today {
+    background: linear-gradient(135deg, rgba(212,168,67,0.3), rgba(212,168,67,0.12));
+    box-shadow: inset 0 0 0 1.5px var(--gold), 0 0 12px rgba(212,168,67,0.15);
+  }
+
+  .cal-day.future {
+    color: var(--text-muted);
+    opacity: 0.4;
+  }
+
+  /* ── Completion Overlay ── */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,20,0.92);
+    backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .overlay-content {
+    text-align: center;
+    padding: 40px 30px;
+    transform: scale(0.9);
+    transition: transform 0.5s ease;
+  }
+
+  .overlay.active .overlay-content {
+    transform: scale(1);
+  }
+
+  .overlay-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .overlay h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+
+  .overlay p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  /* ── Motivational Quote ── */
+  .quote-section {
+    text-align: center;
+    margin-top: 24px;
+    padding: 0 10px;
+  }
+
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  .quote-ref {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--bg-card);
+    border: 1px solid rgba(212,168,67,0.2);
+    color: var(--text);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    z-index: 200;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 380px) {
+    .timer-ring-container { width: 220px; height: 220px; }
+    .timer-time { font-size: 3rem; }
+    .header h1 { font-size: 1.7rem; }
+    .btn { padding: 12px 24px; font-size: 0.78rem; }
+    .stat-value { font-size: 1.6rem; }
+  }
+
+  @media (min-width: 481px) {
+    .container { padding: 30px 24px 50px; }
+    .timer-ring-container { width: 280px; height: 280px; }
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+
+  /* ── Animations ── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-in {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .delay-1 { animation-delay: 0.1s; opacity: 0; }
+  .delay-2 { animation-delay: 0.2s; opacity: 0; }
+  .delay-3 { animation-delay: 0.3s; opacity: 0; }
+  .delay-4 { animation-delay: 0.4s; opacity: 0; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Hour of Prayer</h1>
-      <p class="subtitle">A focused 1-hour habit, daily at 12 AM</p>
-    </header>
 
-    <!-- Streak Display -->
-    <div class="streak">
-      Streak: <span class="streak-value" id="streakCount">0</span> days
-    </div>
-
-    <!-- Countdown to Midnight Section -->
-    <section id="countdownSection" class="section">
-      <p>Time until prayer starts:</p>
-      <div id="countdownDisplay">
-        <span id="days">00</span>:<span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
-      </div>
-      <p class="countdown-note">Auto-starts 1-hour timer at 12 AM local time</p>
-    </section>
-
-    <!-- 1-Hour Timer Section -->
-    <section id="timerSection" class="section hidden">
-      <p>Prayer Timer</p>
-      <div id="timerDisplay">60:00</div>
-      <div class="buttons">
-        <button class="btn" id="startBtn">Start</button>
-        <button class="btn btn-secondary" id="stopBtn">Stop</button>
-        <button class="btn btn-danger" id="resetBtn">Reset</button>
-      </div>
-    </section>
-
-    <!-- Alarm Overlay -->
-    <div id="alarmOverlay">
-      <div class="alarm-card">
-        <h2>Time's Up!</h2>
-        <p>Your 1-hour prayer session has ended.</p>
-        <button class="btn" id="acknowledgeBtn">Session Complete</button>
-        <button class="btn btn-secondary" id="resetFromAlarm">Start New Session</button>
-      </div>
-    </div>
-
-    <script>
-      // ---- Initialization ----
-      const SESSION_DURATION = 3600; // 1 hour in seconds
-      const COUNTDOWN_SECTION = document.getElementById('countdownSection');
-      const TIMER_SECTION = document.getElementById('timerSection');
-      const TIMER_DISPLAY = document.getElementById('timerDisplay');
-      const STREAK_COUNT = document.getElementById('streakCount');
-      const ALARM_OVERLAY = document.getElementById('alarmOverlay');
-
-      // ---- Streak State from LocalStorage ----
-      let streak = parseInt(localStorage.getItem('prayerStreak') || '0');
-      let lastSessionDate = localStorage.getItem('lastPrayerDate');
-      let timerInterval = null;
-      let remainingSeconds = SESSION_DURATION;
-
-      // ---- Format seconds to MM:SS ----
-      function formatTime(seconds) {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      }
-
-      // ---- Update Streak Logic ----
-      function updateStreak() {
-        const today = new Date().toISOString().split('T')[0];
-
-        if (lastSessionDate === null) {
-          streak = 1;
-        } else if (lastSessionDate === today) {
-          // Already prayed today, do nothing
-          return;
-        } else {
-          const diffDays = Math.floor((new Date() - new Date(lastSessionDate)) / 86400000);
-          if (diffDays === 1) {
-            streak += 1;
-          } else if (diffDays > 1) {
-            // Gap exceeded, streak resets to 1 (user is recommitting)
-            streak = 1;
-          }
-          // If diffDays <= 0 (shouldn't happen normally), keep current streak
-        }
-
-        STREAK_COUNT.textContent = streak;
-        localStorage.setItem('prayerStreak', streak.toString());
-        localStorage.setItem('lastPrayerDate', today);
-      }
-
-      // ---- Update Timer Display ----
-      function updateTimerDisplay() {
-        TIMER_DISPLAY.textContent = formatTime(remainingSeconds);
-      }
-
-      // ---- Start Timer ----
-      function startTimer() {
-        if (timerInterval) return; // already running
-        timerInterval = setInterval(() => {
-          remainingSeconds--;
-          updateTimerDisplay();
-
-          if (remainingSeconds <= 0) {
-            endSession();
-          }
-        }, 1000);
-      }
-
-      // ---- Stop Timer ----
-      function stopTimer() {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
-
-      // ---- Reset Timer ----
-      function resetTimer() {
-        stopTimer();
-        remainingSeconds = SESSION_DURATION;
-        updateTimerDisplay();
-      }
-
-      // ---- End Session (Alarm) ----
-      function endSession() {
-        stopTimer();
-        timerInterval = null;
-        remainingSeconds = SESSION_DURATION; // reset for next time
-        updateTimerDisplay();
-
-        // Update streak if this is a new day
-        updateStreak();
-
-        // Show alarm overlay
-        ALARM_OVERLAY.classList.add('active');
-      }
-
-      // ---- Acknowledge Alarm ----
-      document.getElementById('acknowledgeBtn').addEventListener('click', () => {
-        ALARM_OVERLAY.classList.remove('active');
-        // Automatically start a new session after acknowledgment
-        startTimer();
-      });
-
-      document.getElementById('resetFromAlarm').addEventListener('click', () => {
-        ALARM_OVERLAY.classList.remove('active');
-        resetTimer();
-        startTimer();
-      });
-
-      // ---- Button Events ----
-      document.getElementById('startBtn').addEventListener('click', startTimer);
-      document.getElementById('stopBtn').addEventListener('click', stopTimer);
-      document.getElementById('resetBtn').addEventListener('click', resetTimer);
-
-      // ---- Countdown to Midnight Logic ----
-      function getTimeToMidnight() {
-        const now = new Date();
-        const nextMidnight = new Date();
-        nextMidnight.setHours(24, 0, 0, 0);
-        nextMidnight.setDate(nextMidnight.getDate() + 1); // tomorrow's midnight
-        return nextMidnight - now; // milliseconds
-      }
-
-      function updateCountdown() {
-        const msToMidnight = getTimeToMidnight();
-        const totalSeconds = Math.floor(msToMidnight / 1000);
-
-        if (totalSeconds <= 0) {
-          // It's 12 AM or past - start the timer immediately
-          COUNTDOWN_SECTION.classList.add('hidden');
-          TIMER_SECTION.classList.remove('hidden');
-          resetTimer();
-          startTimer(); // auto-start at midnight
-          return;
-        }
-
-        // Convert to HH:MM:SS
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-
-        document.getElementById('days').textContent = '00';
-        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-      }
-
-      // ---- Initialize on Load ----
-      document.addEventListener('DOMContentLoaded', () => {
-        // Initialize streak display
-        updateStreak();
-
-        // Initial countdown update
-        updateCountdown();
-
-        // Update countdown every second
-        setInterval(updateCountdown, 1000);
-
-        // Initial timer display
-        updateTimerDisplay();
-      });
-    </script>
+<div class="container">
+  <!-- Header -->
+  <div class="header animate-in">
+    <span class="header-icon">🕊️</span>
+    <h1>Midnight Prayer</h1>
+    <p>One Hour · Every Night</p>
   </div>
+
+  <!-- Timer -->
+  <div class="timer-section animate-in delay-1">
+    <div class="timer-ring-container">
+      <svg class="timer-ring-svg" viewBox="0 0 260 260">
+        <defs>
+          <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f0d078"/>
+            <stop offset="50%" stop-color="#d4a843"/>
+            <stop offset="100%" stop-color="#8a6d2b"/>
+          </linearGradient>
+        </defs>
+        <circle class="timer-ring-bg" cx="130" cy="130" r="118"/>
+        <circle class="timer-ring-glow" cx="130" cy="130" r="118"
+          stroke-dasharray="741.416" stroke-dashoffset="0" id="ringGlow"/>
+        <circle class="timer-ring-progress" cx="130" cy="130" r="118"
+          stroke-dasharray="741.416" stroke-dashoffset="0" id="ringProgress"/>
+      </svg>
+      <div class="timer-display">
+        <div class="timer-time" id="timerDisplay">60:00</div>
+        <div class="timer-label" id="timerLabel">ready to begin</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="btnStart" onclick="startTimer()">Begin Prayer</button>
+      <button class="btn btn-secondary" id="btnPause" onclick="pauseTimer()" disabled>Pause</button>
+      <button class="btn btn-danger" id="btnReset" onclick="resetTimer()" disabled>Reset</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row animate-in delay-2">
+    <div class="stat-card">
+      <div class="stat-value streak-fire" id="currentStreak">0</div>
+      <div class="stat-label">🔥 Streak</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value best" id="bestStreak">0</div>
+      <div class="stat-label">⭐ Best</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="totalSessions">0</div>
+      <div class="stat-label">📿 Total</div>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="calendar-section animate-in delay-3">
+    <div class="calendar-header">
+      <span class="calendar-title" id="calendarTitle">June 2025</span>
+      <div class="calendar-nav">
+        <button onclick="changeMonth(-1)">‹</button>
+        <button onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="calendar-weekdays">
+      <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+      <span>Thu</span><span>Fri</span><span>Sat</span>
+    </div>
+    <div class="calendar-days" id="calendarDays"></div>
+  </div>
+
+  <!-- Quote -->
+  <div class="quote-section animate-in delay-4">
+    <div class="quote-text" id="quoteText">"At midnight I rise to give you thanks."</div>
+    <div class="quote-ref" id="quoteRef">— Psalm 119:62</div>
+  </div>
+</div>
+
+<!-- Completion Overlay -->
+<div class="overlay" id="completionOverlay">
+  <div class="overlay-content">
+    <span class="overlay-icon">✨</span>
+    <h2>Prayer Complete</h2>
+    <p>You have faithfully kept your hour of prayer.<br>May your devotion be richly blessed.</p>
+    <button class="btn btn-primary" onclick="dismissOverlay()">Amen</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── State ──
+  const TOTAL_SECONDS = 3600;
+  const CIRCUMFERENCE = 2 * Math.PI * 118; // ~741.416
+  let remainingSeconds = TOTAL_SECONDS;
+  let timerInterval = null;
+  let isRunning = false;
+  let isPaused = false;
+  let isFinished = false;
+  let calendarDate = new Date();
+
+  // ── DOM ──
+  const timerDisplay = document.getElementById('timerDisplay');
+  const timerLabel = document.getElementById('timerLabel');
+  const ringProgress = document.getElementById('ringProgress');
+  const ringGlow = document.getElementById('ringGlow');
+  const btnStart = document.getElementById('btnStart');
+  const btnPause = document.getElementById('btnPause');
+  const btnReset = document.getElementById('btnReset');
+  const overlay = document.getElementById('completionOverlay');
+
+  // ── Quotes ──
+  const quotes = [
+    { text: '"At midnight I rise to give you thanks."', ref: '— Psalm 119:62' },
+    { text: '"Be still, and know that I am God."', ref: '— Psalm 46:10' },
+    { text: '"The Lord is near to all who call on him."', ref: '— Psalm 145:18' },
+    { text: '"Pray without ceasing."', ref: '— 1 Thessalonians 5:17' },
+    { text: '"Draw near to God, and he will draw near to you."', ref: '— James 4:8' },
+    { text: '"The effective prayer of a righteous person can accomplish much."', ref: '— James 5:16' },
+    { text: '"In the morning, Lord, you hear my voice."', ref: '— Psalm 5:3' },
+    { text: '"My soul yearns for you in the night."', ref: '— Isaiah 26:9' },
+  ];
+
+  function setRandomQuote() {
+    const q = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('quoteText').textContent = q.text;
+    document.getElementById('quoteRef').textContent = q.ref;
+  }
+  setRandomQuote();
+
+  // ── Timer Functions ──
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  }
+
+  function updateRing() {
+    const progress = remainingSeconds / TOTAL_SECONDS;
+    const offset = CIRCUMFERENCE * (1 - progress);
+    ringProgress.style.strokeDashoffset = offset;
+    ringGlow.style.strokeDashoffset = offset;
+  }
+
+  function updateDisplay() {
+    timerDisplay.textContent = formatTime(remainingSeconds);
+    updateRing();
+  }
+
+  function startTimer() {
+    if (isFinished) return;
+
+    if (isPaused) {
+      isPaused = false;
+      btnStart.textContent = 'Begin Prayer';
+      btnPause.textContent = 'Pause';
+      btnPause.disabled = false;
+      timerLabel.textContent = 'praying...';
+      timerDisplay.className = 'timer-time running';
+      timerInterval = setInterval(tick, 1000);
+      return;
+    }
+
+    if (isRunning) return;
+
+    isRunning = true;
+    isPaused = false;
+    btnStart.disabled = true;
+    btnPause.disabled = false;
+    btnReset.disabled = false;
+    timerLabel.textContent = 'praying...';
+    timerDisplay.className = 'timer-time running';
+
+    timerInterval = setInterval(tick, 1000);
+  }
+
+  function tick() {
+    remainingSeconds--;
+    updateDisplay();
+
+    if (remainingSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      isRunning = false;
+      isFinished = true;
+      timerDisplay.className = 'timer-time finished';
+      timerLabel.textContent = 'amen 🙏';
+      btnStart.disabled = true;
+      btnPause.disabled = true;
+      btnReset.disabled = false;
+      btnStart.textContent = 'Completed';
+
+      recordCompletion();
+      playAlarm();
+      showOverlay();
+    }
+  }
+
+  function pauseTimer() {
+    if (!isRunning || isFinished) return;
+    clearInterval(timerInterval);
+    timerInterval = null;
+    isRunning = false;
+    isPaused = true;
+    btnStart.disabled = false;
+    btnStart.textContent = 'Resume';
+    btnPause.disabled = true;
+    timerLabel.textContent = 'paused';
+    timerDisplay.className = 'timer-time';
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    isRunning = false;
+    isPaused = false;
+    isFinished = false;
+    remainingSeconds = TOTAL_SECONDS;
+    updateDisplay();
+    btnStart.disabled = false;
+    btnStart.textContent = 'Begin Prayer';
+    btnPause.disabled = true;
+    btnPause.textContent = 'Pause';
+    btnReset.disabled = true;
+    timerLabel.textContent = 'ready to begin';
+    timerDisplay.className = 'timer-time';
+  }
+
+  // ── Alarm (Web Audio API) ──
+  function playAlarm() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+      function playChime(time, freq, duration) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.25, time + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+        osc2.type = 'sine';
+        osc2.frequency.value = freq * 2.01;
+        gain2.gain.setValueAtTime(0, time);
+        gain2.gain.linearRampToValueAtTime(0.08, time + 0.05);
+        gain2.gain.exponentialRampToValueAtTime(0.001, time + duration * 0.7);
+
+        osc.connect(gain).connect(ctx.destination);
+        osc2.connect(gain2).connect(ctx.destination);
+        osc.start(time);
+        osc.stop(time + duration);
+        osc2.start(time);
+        osc2.stop(time + duration);
+      }
+
+      const now = ctx.currentTime;
+      // Gentle bell sequence
+      const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25, 523.25, 783.99, 1046.50];
+      notes.forEach((freq, i) => {
+        playChime(now + i * 0.6, freq, 1.8);
+      });
+
+      // Second round
+      setTimeout(() => {
+        try {
+          const ctx2 = new (window.AudioContext || window.webkitAudioContext)();
+          const now2 = ctx2.currentTime;
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+            const osc = ctx2.createOscillator();
+            const gain = ctx2.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0, now2 + i * 0.8);
+            gain.gain.linearRampToValueAtTime(0.2, now2 + i * 0.8 + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now2 + i * 0.8 + 2.5);
+            osc.connect(gain).connect(ctx2.destination);
+            osc.start(now2 + i * 0.8);
+            osc.stop(now2 + i * 0.8 + 2.5);
+          });
+        } catch(e) {}
+      }, 6000);
+
+    } catch(e) {
+      console.log('Audio not supported');
+    }
+
+    // Also try notification
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('🕊️ Prayer Complete', { body: 'Your hour of prayer is finished. Amen.' });
+    }
+  }
+
+  // Request notification permission
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+
+  // ── Overlay ──
+  function showOverlay() {
+    overlay.classList.add('active');
+  }
+
+  function dismissOverlay() {
+    overlay.classList.remove('active');
+  }
+
+  // ── Streak & Storage ──
+  function getStorageKey() { return 'midnightPrayerData'; }
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(getStorageKey());
+      if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return { completedDates: [], bestStreak: 0 };
+  }
+
+  function saveData(data) {
+    localStorage.setItem(getStorageKey(), JSON.stringify(data));
+  }
+
+  function getTodayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function recordCompletion() {
+    const data = loadData();
+    const today = getTodayStr();
+    if (!data.completedDates.includes(today)) {
+      data.completedDates.push(today);
+    }
+    const streak = calculateStreak(data.completedDates);
+    if (streak > data.bestStreak) data.bestStreak = streak;
+    saveData(data);
+    updateStats();
+    renderCalendar();
+    showToast('🔥 Prayer recorded! Streak: ' + streak);
+  }
+
+  function calculateStreak(dates) {
+    if (!dates.length) return 0;
+    const sorted = [...dates].sort().reverse();
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    let streak = 0;
+    let checkDate = new Date(today);
+
+    // Check if today is completed; if not, start from yesterday
+    const todayStr = getTodayStr();
+    if (!sorted.includes(todayStr)) {
+      checkDate.setDate(checkDate.getDate() - 1);
+    }
+
+    for (let i = 0; i < 365; i++) {
+      const ds = `${checkDate.getFullYear()}-${String(checkDate.getMonth()+1).padStart(2,'0')}-${String(checkDate.getDate()).padStart(2,'0')}`;
+      if (sorted.includes(ds)) {
+        streak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  function updateStats() {
+    const data = loadData();
+    const streak = calculateStreak(data.completedDates);
+    document.getElementById('currentStreak').textContent = streak;
+    document.getElementById('bestStreak').textContent = data.bestStreak;
+    document.getElementById('totalSessions').textContent = data.completedDates.length;
+  }
+
+  // ── Calendar ──
+  function renderCalendar() {
+    const year = calendarDate.getFullYear();
+    const month = calendarDate.getMonth();
+    const months = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+
+    document.getElementById('calendarTitle').textContent = `${months[month]} ${year}`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+    const data = loadData();
+
+    let html = '';
+
+    for (let i = 0; i < firstDay; i++) {
+      html += '<div class="cal-day empty"></div>';
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const isToday = (d === today.getDate() && month === today.getMonth() && year === today.getFullYear());
+      const isCompleted = data.completedDates.includes(dateStr);
+      const isFuture = new Date(year, month, d) > today && !isToday;
+
+      let cls = 'cal-day';
+      if (isToday) cls += ' today';
+      if (isCompleted) cls += ' completed';
+      if (isFuture && !isCompleted) cls += ' future';
+
+      html += `<div class="${cls}">${d}</div>`;
+    }
+
+    document.getElementById('calendarDays').innerHTML = html;
+  }
+
+  function changeMonth(dir) {
+    calendarDate.setMonth(calendarDate.getMonth() + dir);
+    renderCalendar();
+  }
+
+  // ── Toast ──
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  // ── Init ──
+  updateDisplay();
+  updateStats();
+  renderCalendar();
+
+  // Keep screen awake during prayer if supported
+  let wakeLock = null;
+  async function requestWakeLock() {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLock = await navigator.wakeLock.request('screen');
+      }
+    } catch(e) {}
+  }
+
+  const origStart = startTimer;
+  startTimer = function() {
+    requestWakeLock();
+    origStart();
+  };
+</script>
 </body>
 </html>

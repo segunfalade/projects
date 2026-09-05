@@ -1,626 +1,976 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<meta name="theme-color" content="#f4f3ee">
-<title>clearer. — 60-Day Communication Plan</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1c1917" />
+<title>Speak in 60 — 60-Day Communication Training Plan</title>
+<meta name="description" content="Interactive 60-day small talk + public speaking training tracker for an introverted freelancer. Saves in your browser; download/upload progress anytime." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>" />
 <style>
-  /* Pure standalone — zero external dependencies */
-  :root {
-    --bg: #f6f5ef; --paper: #fffefa; --ink: #233628; --ink2: #2d3a2d;
-    --text: #2a3a2a; --muted: #56644e; --faint: #889372;
-    --border: #ddd9ca; --coral: #a65a3f; --coral-soft: #f4e7dc;
-    --sage: #6e7f60; --sage-soft: #e6ebe0;
-    --serif: Georgia, "Times New Roman", serif;
-    --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
-    font-family: var(--sans); font-size: 15.5px; line-height: 1.75; letter-spacing: .01em;
-    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-  }
-  ::selection { background: #ead5c9; color: var(--ink); }
-  img { max-width: 100%; height: auto; display: block; }
-  a { color: var(--coral); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(166,90,63,.35); }
-  a:hover { text-decoration-color: var(--coral); }
-  button, input, textarea, select { font: inherit; color: inherit; }
-  button { cursor: pointer; border: none; background: none; }
-  button:disabled { cursor: not-allowed; opacity: .55; }
-  input:focus, textarea:focus, select:focus { outline: 2px solid rgba(166,90,63,.25); outline-offset: 2px; border-color: #b88872; }
-  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 400; line-height: 1.22; color: var(--ink); letter-spacing: -0.03em; margin: 0 0 .6em; }
-  h1 { font-size: clamp(32px, 5vw, 44px); }
-  h2 { font-size: clamp(24px, 3.4vw, 30px); }
-  h3 { font-size: clamp(18px, 2vw, 21px); }
-  p { margin: 0 0 1em; color: var(--text); }
-  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
-  .skip { position: absolute; left: -9999px; }
-  .skip:focus { position: static; left: auto; margin: 6px; padding: 8px 14px; background: var(--ink); color: #fff; border-radius: 6px; z-index: 100; }
-  /* Layout */
-  .shell { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
-  @media (min-width: 900px) { .shell { padding: 0 36px 80px; } }
-  /* Header */
-  header.site-header { padding: 28px 0 6px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--border); margin-bottom: 28px; flex-wrap: wrap; }
-  .brand { display: flex; align-items: center; gap: 10px; font-size: 26px; font-weight: 650; letter-spacing: -2px; color: var(--ink); text-decoration: none; }
-  .brand span { color: var(--coral); }
-  .nav { display: flex; gap: 10px; flex-wrap: wrap; }
-  .nav a { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 12.5px; color: var(--muted); text-decoration: none; transition: .15s; background: var(--paper); }
-  .nav a:hover, .nav a.active { border-color: #bfa27b; color: var(--ink); background: #f6f4ec; }
-  .badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; letter-spacing: .3px; }
-  /* Sections */
-  section { margin-bottom: 52px; }
-  .lead { font-size: 17.5px; line-height: 1.65; color: var(--ink2); font-family: var(--serif); font-style: italic; }
-  .meta { font-size: 11.5px; color: var(--faint); letter-spacing: .3px; }
-  /* Hero */
-  .hero { display: grid; grid-template-columns: 1fr; gap: 22px; background: linear-gradient(165deg, #f3f2e7 0%, #edece3 60%, #ebe8d8 100%); border: 1px solid var(--border); border-radius: 14px; padding: 30px 28px 28px; }
-  @media (min-width: 780px) { .hero { grid-template-columns: 1.1fr .8fr; align-items: center; padding: 38px 36px 32px; } }
-  .hero h1 { margin-bottom: 12px; }
-  .hero p.lead { margin-bottom: 16px; }
-  .cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 18px; border-radius: 7px; font-size: 13.5px; font-weight: 550; border: 1px solid var(--coral); background: var(--coral); color: #fff; text-decoration: none; transition: .15s; line-height: 1.3; }
-  .btn:hover { background: #915037; border-color: #915037; }
-  .btn-soft { background: var(--paper); color: var(--ink); border-color: var(--border); }
-  .btn-soft:hover { background: #f3f1e8; border-color: #c4bfa5; }
-  /* Cards */
-  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-  .card { background: var(--paper); border: 1px solid var(--border); border-radius: 10px; padding: 22px 22px 22px; transition: box-shadow .18s, transform .18s; }
-  .card:hover { box-shadow: 0 10px 30px rgba(46,58,42,.06); transform: translateY(-2px); }
-  .card h3 { font-size: 17px; margin-bottom: 6px; }
-  .card .label { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--faint); font-weight: 600; margin-bottom: 8px; }
-  .card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
-  .tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 500; letter-spacing: .2px; }
-  .tag-coral { background: var(--coral-soft); color: #7a3e27; }
-  .tag-sage { background: var(--sage-soft); color: #3a4d2e; }
-  /* Table */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  thead th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: .9px; color: var(--faint); font-weight: 600; padding: 12px 10px; border-bottom: 2px solid var(--border); background: #f9f8f0; }
-  tbody td { padding: 12px 10px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
-  tbody tr:hover { background: #f9f8f4; }
-  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; letter-spacing: .02em; }
-  /* Forms */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 14px; }
-  @media (max-width: 720px) { .form-grid { grid-template-columns: 1fr; } }
-  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-  .field label { font-size: 12px; font-weight: 600; color: var(--ink2); }
-  .field input, .field textarea, .field select { width: 100%; padding: 10px 12px; border: 1px solid #ddd9ca; border-radius: 6px; background: #fffefa; font-size: 14px; color: var(--ink); }
-  .field textarea { min-height: 90px; resize: vertical; font-family: inherit; }
-  .btn-block { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 7px; background: var(--coral); color: #fff; border: 1px solid var(--coral); font-weight: 550; font-size: 13px; text-decoration: none; transition: .15s; }
-  .btn-block:hover { background: #915037; border-color: #915037; }
-  .btn-soft { background: var(--paper); color: var(--ink); border: 1px solid #ddd9ca; }
-  .btn-soft:hover { background: #f3f1e8; border-color: #c4bfa5; }
-  /* Log list */
-  .log-box { background: var(--paper); border: 1px solid var(--border); border-radius: 10px; padding: 22px; }
-  .log-list { display: flex; flex-direction: column; gap: 10px; }
-  .log-item { display: grid; grid-template-columns: 82px 1fr 90px; gap: 10px; align-items: start; padding: 14px 12px; border-bottom: 1px solid #ece7d2; font-size: 13.5px; }
-  .log-item .date { font-size: 11px; color: var(--faint); font-weight: 500; }
-  .log-item .body { color: var(--text); line-height: 1.55; }
-  .log-item .body strong { color: var(--ink); }
-  .log-item .meta { font-size: 12px; color: var(--faint); text-align: right; }
-  @media (max-width: 720px) { .log-item { grid-template-columns: 1fr; } .log-item .meta { text-align: left; } }
-  /* Details / scripts */
-  details { background: var(--paper); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; }
-  summary { font-weight: 600; color: var(--ink); cursor: pointer; list-style: none; }
-  summary::-webkit-details-marker { display: none; }
-  details>div { padding-top: 12px; font-size: 13.5px; color: var(--text); line-height: 1.7; }
-  /* Stats */
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
-  .stat { background: var(--paper); border: 1px solid var(--border); border-radius: 10px; padding: 20px 18px; }
-  .stat .numb { font-family: var(--serif); font-size: 28px; color: var(--coral); line-height: 1; }
-  .stat .label { font-size: 11.5px; color: var(--faint); margin-top: 4px; }
-  /* Save banner */
-  .save-banner { position: sticky; top: 0; z-index: 30; background: rgba(249,248,245,.95); backdrop-filter: saturate(120%) blur(10px); border-bottom: 1px solid var(--border); padding: 10px 24px; font-size: 13px; color: var(--ink2); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  @media (min-width: 900px) { .save-banner { padding: 10px 36px; } }
-  .save-banner .btn { padding: 6px 12px; font-size: 12px; }
-  /* Day cards */
-  .days { display: flex; flex-direction: column; gap: 12px; }
-  .day-row { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: start; padding: 16px 14px; background: var(--paper); border: 1px solid var(--border); border-radius: 10px; transition: .15s; }
-  .day-row:hover { border-color: #cfcab8; }
-  .day-num { font-family: var(--serif); font-size: 22px; color: var(--coral); line-height: 1; padding-top: 2px; }
-  .day-body h4 { font-family: var(--serif); font-size: 17px; margin-bottom: 4px; color: var(--ink); }
-  .day-body .meta { font-size: 13px; color: var(--faint); margin-bottom: 6px; }
-  .day-body .desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
-  .day-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-  .badge { display: inline-block; padding: 3px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; letter-spacing: .2px; }
-  .badge-check { background: var(--sage-soft); color: #3a4d2e; }
-  .badge-social { background: #f6ecd8; color: #7a4f2e; }
-  .badge-talk { background: #e6dfe5; color: #5c3d58; }
-  .badge-review { background: #e3e7db; color: #3c4f2e; }
-  .badge-milestone { background: var(--coral-soft); color: #7a3e27; }
-  /* Back to top */
-  .back-top { position: fixed; bottom: 22px; right: 22px; background: var(--ink); color: #fff; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 6px 20px rgba(35,54,40,.18); font-weight: 700; z-index: 20; font-size: 18px; }
-  @media (max-width: 480px) { .back-top { bottom: 14px; right: 14px; width: 36px; height: 36px; font-size: 16px; } }
-  /* Footer */
-  footer { margin-top: 40px; padding: 28px 0 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; color: var(--faint); font-size: 13px; }
-  footer a { font-size: 13px; }
-  /* Mobile nav adjustments */
-  @media (max-width: 720px) {
-    .hero { padding: 26px 20px 24px; }
-    .nav a { padding: 6px 9px; font-size: 11px; }
-    .site-header { padding: 22px 0 4px; }
-    .day-row { grid-template-columns: 48px 1fr auto; gap: 9px; padding: 14px 12px; }
-    .table-wrap { font-size: 12.5px; }
-    .stats { grid-template-columns: 1fr 1fr; }
-    .form-grid { grid-template-columns: 1fr; }
-  }
+:root{
+  --paper:#f7f4ee;--ink:#1c1917;--muted:#78716c;--faint:#a8a29e;--line:#e7e5e4;--line2:#f5f5f4;--card:#fff;
+  --moss:#2f7f72;--moss-d:#23665c;--moss-l:#eef6f4;--moss-m:#d6eae5;--moss-t:#7dbcaf;
+  --amber:#d97706;--amber-l:#fef3c7;--red:#dc2626;--red-l:#fee2e2;--blue:#0284c7;--blue-l:#e0f2fe;--violet:#7c3aed;--violet-l:#ede9fe;--green:#059669;--green-l:#d1fae5;--rose:#e11d48;--rose-l:#ffe4e6;
+  --r:14px;--r-sm:10px;--sh:0 1px 2px rgba(28,25,23,.05);
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif;--serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:15px;line-height:1.5;min-height:100dvh}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,.disp{font-family:var(--serif);letter-spacing:-.01em;font-weight:600;line-height:1.15}
+a{color:var(--moss-d)}
+code{background:var(--line2);padding:1px 5px;border-radius:5px;font-size:.85em}
+.hide{display:none!important}
+
+/* ---------- shell ---------- */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));background:rgba(247,244,238,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-weight:600;font-size:17px}
+.brand .logo{width:32px;height:32px;border-radius:9px;background:var(--moss-d);color:#fff;display:grid;place-items:center;font-size:16px}
+.daypill{background:var(--ink);color:#fff;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:600;white-space:nowrap}
+.shell{display:flex;min-height:100dvh}
+.side{display:none}
+main{flex:1;min-width:0;padding:16px 14px calc(84px + env(safe-area-inset-bottom));max-width:1120px;margin:0 auto;width:100%}
+.bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(6,1fr);background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.bottomnav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 7px;font-size:10px;font-weight:500;color:var(--muted)}
+.bottomnav button .ic{font-size:18px;line-height:1}
+.bottomnav button.on{color:var(--moss-d)}
+@media(min-width:960px){
+  .topbar,.bottomnav{display:none}
+  .side{display:flex;flex-direction:column;width:250px;flex-shrink:0;position:sticky;top:0;height:100dvh;background:rgba(255,255,255,.7);border-right:1px solid var(--line);padding:22px 12px 12px}
+  .side .brand{padding:0 8px 18px;font-size:19px}.side .brand .logo{width:38px;height:38px;border-radius:11px;font-size:19px}
+  .side nav{display:flex;flex-direction:column;gap:2px;flex:1}
+  .side nav button{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;font-size:14px;font-weight:500;color:var(--muted);text-align:left}
+  .side nav button:hover{background:var(--line2);color:var(--ink)}
+  .side nav button.on{background:var(--moss-l);color:var(--moss-d)}
+  .side .progbox{background:var(--ink);color:#fff;border-radius:16px;padding:14px;font-size:11px;color:#a8a29e}
+  .side .progbox b{display:block;color:#fff;font-family:var(--serif);font-size:24px;font-weight:600}
+  main{padding:28px 32px 48px}
+}
+.progbox .bar{background:#44403c;margin:8px 0 6px}.progbox .bar i{background:var(--moss-t)}
+
+/* ---------- primitives ---------- */
+.page{display:flex;flex-direction:column;gap:16px;animation:fade .25s ease-out}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--moss)}
+.h1{font-size:clamp(24px,5vw,32px);margin-top:3px}
+.sub{color:var(--muted);font-size:14px;margin-top:3px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line2);flex-wrap:wrap}
+.card-h h3{font-size:17px}.card-h .sub{margin:0;font-size:13px}
+.card-b{padding:14px 16px}
+.card-b.tight{padding:8px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.g4{grid-template-columns:repeat(2,1fr)}
+@media(min-width:720px){.g4{grid-template-columns:repeat(4,1fr)}}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.between{justify-content:space-between}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:11px;font-weight:600;font-size:14px;padding:0 14px;height:40px;transition:.15s;white-space:nowrap}
+.btn.p{background:var(--moss-d);color:#fff}.btn.p:hover{background:#1d524a}
+.btn.s{background:var(--line2);color:var(--ink)}.btn.s:hover{background:var(--line)}
+.btn.o{border:1px solid #d6d3d1;background:#fff}.btn.o:hover{background:var(--line2)}
+.btn.g{color:var(--muted)}.btn.g:hover{background:var(--line2);color:var(--ink)}
+.btn.d{background:var(--red);color:#fff}
+.btn.w{background:#fff;color:var(--ink)}.btn.wt{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.btn.sm{height:32px;font-size:12px;padding:0 10px;border-radius:9px}.btn.lg{height:48px;font-size:15px;padding:0 20px}
+.btn.full{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 8px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:var(--line2);color:#57534e;white-space:nowrap}
+.badge.moss{background:var(--moss-m);color:var(--moss-d)}.badge.amber{background:var(--amber-l);color:#92400e}.badge.red{background:var(--red-l);color:#b91c1c}.badge.blue{background:var(--blue-l);color:#075985}.badge.violet{background:var(--violet-l);color:#5b21b6}.badge.green{background:var(--green-l);color:#065f46}
+.lbl{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+.lbl small{font-weight:400;text-transform:none;letter-spacing:0;color:var(--faint)}
+.in,select.in,textarea.in{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:15px;background:#fff;min-height:40px}
+.in:focus{outline:none;border-color:var(--moss-t);box-shadow:0 0 0 3px var(--moss-m)}
+textarea.in{min-height:72px;resize:vertical}
+.in.xs{min-height:34px;padding:5px 9px;font-size:13px}
+.field{display:flex;flex-direction:column}
+.bar{height:8px;background:var(--line2);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--moss);border-radius:999px;transition:width .4s}
+.bar.amber i{background:var(--amber)}.bar.stone i{background:#a8a29e}.bar.thin{height:5px}
+.tabs{display:flex;gap:4px;overflow-x:auto;background:var(--line2);padding:4px;border-radius:12px;scrollbar-width:none;max-width:100%}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:7px 11px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted)}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:var(--sh)}
+.tabs button .n{background:var(--line);border-radius:999px;font-size:10px;padding:1px 6px}
+.tabs button.on .n{background:var(--moss-m);color:var(--moss-d)}
+.empty{border:1px dashed #d6d3d1;background:#fafaf9;border-radius:12px;padding:20px;text-align:center;color:var(--muted);font-size:14px}
+.stat{padding:14px}
+.stat .k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.stat .v{font-family:var(--serif);font-size:28px;font-weight:600;margin-top:2px}
+.stat .s{font-size:11px;color:var(--muted);margin-top:2px}
+.stat.good .v{color:#047857}
+.chk{display:inline-flex;align-items:center;gap:8px;font-size:14px;cursor:pointer}
+.chk input{width:18px;height:18px;accent-color:var(--moss-d)}
+input[type=range]{accent-color:var(--moss);width:100%}
+.scores{display:flex;flex-wrap:wrap;gap:4px}
+.scores button{min-width:30px;height:30px;padding:0 6px;border-radius:7px;background:var(--line2);font-size:12px;font-weight:700;color:#57534e}
+.scores button.on{background:var(--moss-d);color:#fff}
+.ring{position:relative;display:inline-grid;place-items:center}
+.ring svg{transform:rotate(-90deg)}
+.ring span{position:absolute;font-weight:700}
+.notice{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid;text-align:left;width:100%}
+.notice .ico{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.notice b{display:block;font-size:14px}.notice small{font-size:12px;opacity:.8}
+.notice.amber{background:var(--amber-l);border-color:#fde68a;color:#78350f}.notice.amber .ico{background:var(--amber);color:#fff}
+.notice.stone{background:#fff;border-color:var(--line)}.notice.stone .ico{background:var(--ink);color:#fff}
+.notice.ok{background:var(--green-l);border-color:#a7f3d0;color:#065f46}.notice.err{background:var(--red-l);border-color:#fecaca;color:#991b1b}
+
+/* tasks */
+.task{display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:10px}
+.task:hover{background:#fafaf9}
+.task.done{opacity:.6}
+.task .box{margin-top:3px;width:20px;height:20px;flex-shrink:0;border:2px solid #d6d3d1;border-radius:6px;display:grid;place-items:center;background:#fff;font-size:12px;color:#fff}
+.task.done .box{background:var(--moss-d);border-color:var(--moss-d)}
+.task .kind{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;flex-shrink:0;margin-top:1px}
+.task p{font-size:14px;line-height:1.45}
+.task.done p{text-decoration:line-through;text-decoration-color:#a8a29e}
+.task .meta{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-top:3px}
+.task .meta button{color:var(--moss);font-weight:700;text-transform:none;letter-spacing:0;font-size:11.5px}
+.task .meta button:hover{text-decoration:underline}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-radius:22px;background:var(--ink);color:#fff;padding:22px 20px}
+.hero::before{content:"";position:absolute;right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;background:rgba(47,127,114,.35);filter:blur(50px)}
+.hero .eyebrow{color:var(--moss-t)}
+.hero h1{font-size:clamp(26px,6vw,38px);margin-top:6px}
+.hero h1 em{color:var(--moss-t);font-style:normal}
+.hero .theme{color:#d6d3d1;font-size:14px;margin-top:10px;max-width:560px}
+.hero .date{color:#a8a29e;font-size:13px;margin-top:2px}
+.hero .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;position:relative}
+.hero .prog{display:flex;align-items:center;gap:14px;margin-top:16px;font-size:13px;color:#a8a29e}
+.hero .prog b{color:#fff;font-weight:600;display:block}
+@media(min-width:720px){.hero{padding:28px 30px}.hero-top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}.hero .prog{margin-top:0}}
+
+/* week chips */
+.weeks{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}.weeks::-webkit-scrollbar{display:none}
+.weeks button{flex-shrink:0;min-width:112px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:14px;padding:9px 11px}
+.weeks button small{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+.weeks button b{display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.weeks button .bar{margin-top:7px;height:4px}
+.weeks button.on{background:var(--ink);color:#fff;border-color:var(--ink)}.weeks button.on small{color:var(--moss-t)}.weeks button.on .bar{background:rgba(255,255,255,.2)}
+.weekhead{background:linear-gradient(135deg,var(--moss-l),#fff);padding:18px 16px}
+.weekmeta{display:grid;gap:12px;padding:14px 16px;border-top:1px solid var(--line2);font-size:13px}
+@media(min-width:720px){.weekmeta{grid-template-columns:repeat(3,1fr)}}
+.weekmeta .k{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+.daycard{display:flex;flex-direction:column}
+.daycard.today{box-shadow:0 0 0 2px var(--moss),0 0 0 4px var(--paper)}
+.daycard.focus{box-shadow:0 0 0 2px var(--amber),0 0 0 4px var(--paper)}
+.daycard.complete{background:#f4faf8}
+.daynum{width:36px;height:36px;border-radius:11px;background:var(--line2);display:grid;place-items:center;font-family:var(--serif);font-size:17px;font-weight:600;flex-shrink:0}
+.daynum.done{background:var(--moss-d);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 8px}
+.chips span{font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px}
+.chips .soc{background:var(--blue-l);color:#075985}.chips .rec{background:var(--rose-l);color:#9f1239}
+.notebox{border-top:1px solid var(--line2);padding:8px 12px}
+.notebox textarea{font-size:13px;min-height:56px}
+
+/* tables → cards on mobile */
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:left;padding:8px 10px;background:#fafaf9;font-weight:700}
+.tbl td{padding:9px 10px;border-top:1px solid var(--line2);vertical-align:middle}
+.tbl .act{white-space:nowrap;text-align:right}
+.tbl .act button{padding:5px;border-radius:6px;color:var(--faint);font-size:14px}.tbl .act button:hover{background:var(--line2);color:var(--ink)}
+.tblwrap{overflow-x:auto}
+@media(max-width:700px){
+  .tbl.resp thead{display:none}
+  .tbl.resp,.tbl.resp tbody,.tbl.resp tr,.tbl.resp td{display:block;width:100%}
+  .tbl.resp tr{border-top:1px solid var(--line);padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+  .tbl.resp td{border:0;padding:2px 0;font-size:13px}
+  .tbl.resp td::before{content:attr(data-l);display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+  .tbl.resp td.wide{grid-column:1/-1}
+  .tbl.resp td.act{grid-column:1/-1;text-align:right;padding-top:6px}
+  .tbl.resp td.act::before{display:none}
+}
+
+/* modal */
+#modal{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;background:rgba(28,25,23,.45);backdrop-filter:blur(3px)}
+#modal.open{display:flex}
+.dlg{background:#fff;width:100%;max-width:640px;max-height:92dvh;overflow-y:auto;border-radius:20px 20px 0 0;animation:up .25s ease-out}
+@keyframes up{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+@media(min-width:640px){#modal{align-items:center;padding:20px}.dlg{border-radius:20px}}
+.dlg-h{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(6px);display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line2);z-index:1}
+.dlg-h h3{font-size:18px}
+.dlg-b{padding:18px;display:grid;gap:14px;grid-template-columns:1fr 1fr}
+.dlg-b .full{grid-column:1/-1}
+.dlg-f{display:flex;justify-content:flex-end;gap:8px;padding:0 18px 18px}
+.counter{grid-column:1/-1;background:#fff1f2;border:1px solid #fecdd3;border-radius:16px;padding:14px;text-align:center}
+.counter .k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#be123c}
+.counter .btns{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:10px}
+.counter .big{width:92px;height:92px;border-radius:50%;background:var(--rose);color:#fff;font-size:34px;font-weight:700;box-shadow:0 8px 20px rgba(225,29,72,.3)}
+.counter .big:active{transform:scale(.95)}
+.counter .pm{width:46px;height:46px;border-radius:50%;background:#fff;color:#be123c;border:1px solid #fecdd3;font-size:20px}
+.counter .foot{display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:#be123c}
+
+/* impromptu */
+.imp{text-align:center;padding:28px 18px;border-radius:var(--r) var(--r) 0 0;transition:.3s}
+.imp.speak{background:var(--ink);color:#fff}.imp.prep{background:var(--amber-l)}.imp.done{background:var(--moss-l)}
+.imp h2{font-size:clamp(20px,5vw,28px);margin:14px auto;max-width:520px;min-height:2.4em}
+.imp .time{font-family:var(--serif);font-size:clamp(48px,14vw,68px);font-weight:600;font-variant-numeric:tabular-nums}
+.imp.speak .time.low{color:#f87171}
+.imp .bar{max-width:360px;margin:8px auto 0}.imp.speak .bar{background:rgba(255,255,255,.2)}
+.imp .rec{position:absolute;top:14px;right:14px;width:12px;height:12px;border-radius:50%;background:var(--red);animation:pulse 1.5s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(220,38,38,.5)}100%{box-shadow:0 0 0 14px rgba(220,38,38,0)}}
+.topics li{display:flex;gap:10px;padding:9px 16px;border-top:1px solid var(--line2);font-size:14px;align-items:flex-start}
+.topics li.used{color:var(--faint)}.topics li.cur{background:var(--amber-l);font-weight:600}
+.topics li .n{color:var(--faint);font-size:12px;width:18px;flex-shrink:0;margin-top:2px}
+.topics li button{margin-left:auto;color:var(--moss);font-size:12px;font-weight:700}
+.quote{border-left:4px solid var(--moss-t);background:#fafaf9;padding:10px 14px;border-radius:10px;font-size:14px;line-height:1.55}
+.ol{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.ol li{display:flex;gap:10px}
+.ol li .n{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--line2);font-size:11px;font-weight:700;display:grid;place-items:center}
+.ul{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.ul li{display:flex;gap:10px}.ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--moss);flex-shrink:0;margin-top:8px}
+.kit label{display:flex;gap:12px;padding:10px 16px;border-top:1px solid var(--line2);cursor:pointer;align-items:flex-start}
+.kit label input{margin-top:3px;width:17px;height:17px;accent-color:var(--moss-d)}
+.kit label.done .t{text-decoration:line-through;color:var(--faint)}
+.kit .t{font-size:14px;font-weight:500}.kit .u{font-size:12px;color:var(--muted)}
+.kit .c{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
+.rules{display:grid}
+@media(min-width:720px){.rules{grid-template-columns:repeat(3,1fr)}}
+.rules div{padding:16px;border-top:1px solid var(--line2)}
+.rules .n{font-family:var(--serif);font-size:28px;color:var(--moss);font-weight:600}
+.gate li{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.gate li .d{font-size:12px;color:var(--muted)}
+.gate li .st{flex-shrink:0;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;color:#fff;margin-top:2px}
+.st.ok{background:var(--green)}.st.no{background:#f87171}.st.na{background:#d6d3d1}
+.tally{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:520px){.tally{grid-template-columns:repeat(3,1fr)}}
+.tally div{background:#fafaf9;border-radius:10px;padding:8px 10px}
+.tally .k{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+.tally .v{font-family:var(--serif);font-size:20px;font-weight:600}
+.rub{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--line2)}
+.rub .nm{font-size:14px;font-weight:500;display:flex;gap:8px;align-items:center}
+.rub .nm .i{color:var(--faint);width:18px}
+.delta{border-radius:999px;font-size:10px;font-weight:800;padding:1px 6px}
+.delta.up{background:var(--green-l);color:#065f46}.delta.dn{background:var(--red-l);color:#991b1b}.delta.eq{background:var(--line2);color:var(--muted)}
+.traj td,.traj th{text-align:center;padding:6px 4px;font-size:12px}
+.traj td:first-child,.traj th:first-child{text-align:left}
+.cell{display:inline-grid;place-items:center;width:34px;height:26px;border-radius:6px;font-size:12px;font-weight:700;background:#fafaf9;color:#d6d3d1}
+.cell.lo{background:var(--amber-l);color:#92400e}.cell.mid{background:var(--moss-m);color:var(--moss-d)}.cell.hi{background:var(--green-l);color:#065f46}
+.conf{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:10px 16px;border-top:1px solid var(--line2)}
+.conf .nm{flex:1 1 220px;font-size:14px;font-weight:500}
+.conf .sel{display:flex;gap:8px}
+.conf .sel label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--faint);display:flex;flex-direction:column;gap:2px}
+.conf select{min-width:64px;min-height:34px;font-size:13px;padding:4px 6px}
+.wklist{display:flex;gap:6px;overflow-x:auto;padding:8px;scrollbar-width:none}
+.wklist button{flex-shrink:0;border-radius:10px;padding:8px 12px;font-size:13px;text-align:left;background:#fff;border:1px solid var(--line)}
+.wklist button small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:700}
+.wklist button.on{background:var(--ink);color:#fff;border-color:var(--ink)}.wklist button.on small{color:var(--moss-t)}
+@media(min-width:960px){.wklist{flex-direction:column;overflow:visible}.wklist button{display:flex;justify-content:space-between;align-items:center}}
+.drop{border:2px dashed var(--line);border-radius:14px;padding:16px;text-align:center;font-size:13px;color:var(--muted);margin:0 16px 16px}
+.drop.over{border-color:var(--moss-t);background:var(--moss-l)}
+.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line2);font-size:14px}
+.kv:last-child{border:0}.kv span:first-child{color:var(--muted)}
+pre{font-size:12px;line-height:1.6;white-space:pre;overflow-x:auto;padding:14px 16px;color:#44403c}
+.fb{border:1px solid var(--line2);border-radius:12px;padding:12px;font-size:13px}
+.fb dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin-top:6px;font-size:12px}
+.fb dt{color:var(--faint);font-weight:700}
+.listener{display:grid;gap:8px;grid-template-columns:1fr 1fr;border:1px solid var(--line2);border-radius:12px;padding:10px;align-items:end}
+.listener .full{grid-column:1/-1}
+@media(min-width:900px){.listener{grid-template-columns:1.4fr auto 1fr 1fr auto auto}.listener .full{grid-column:auto}}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:var(--muted);margin-top:4px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+@media print{.topbar,.bottomnav,.side,.hero .actions{display:none!important}main{padding:0}.card{break-inside:avoid;box-shadow:none}}
 </style>
 </head>
 <body>
-<a href="#main" class="skip">Skip to content</a>
-<div class="save-banner" role="region" aria-label="Save and import">
-  <div><strong style="color:var(--ink)">clearer.</strong> <span id="statusText">Progress saves automatically to this browser.</span></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;">
-    <button onclick="downloadProgress()" class="btn btn-soft">Download progress (JSON)</button>
-    <button onclick="document.getElementById('importFile').click()" class="btn btn-soft">Import progress</button>
-    <input type="file" id="importFile" accept=".json,application/json" style="display:none" onchange="importProgress(this)">
-  </div>
-</div>
-<header class="shell site-header" role="banner">
-  <a href="#" class="brand" aria-label="Clearer home">clearer<span>.</span></a>
-  <nav class="nav" aria-label="Main sections">
-    <a href="#start" class="active">Overview</a>
-    <a href="#plan">Plan</a>
-    <a href="#studio">Studio</a>
-    <a href="#logs">Logs</a>
-    <a href="#progress">Progress</a>
-    <a href="#reviews">Reviews</a>
-    <a href="#toolkit">Toolkit</a>
-  </nav>
+
+<header class="topbar">
+  <button class="brand" data-act="nav" data-to="dashboard"><span class="logo">🎙️</span>Speak in 60</button>
+  <span class="daypill" id="pill-m">Day —</span>
 </header>
-<main id="main" class="shell" role="main">
-<!-- OVERVIEW -->
-<section id="start" aria-label="Overview">
-  <h1>A little braver, every day.</h1>
-  <p class="lead">Small talk, public speaking, and a calmer voice — designed for an introverted freelancer over 60 quiet days.</p>
-  <div class="hero" role="region" aria-label="Program overview">
-    <div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
-        <span class="badge">60 DAYS</span>
-        <span class="badge" style="background:#e6ebe0;color:#3a4d2e;">INTROVERT-CALIBRATED</span>
-      </div>
-      <p style="font-size:14.5px;color:var(--text-muted);line-height:1.75;">Start: <strong style="color:var(--ink)">Monday, 7 September 2026</strong> → Finish: <strong style="color:var(--ink)">Thursday, 5 November 2026 (Day 60)</strong>. Total active time: about <strong style="color:var(--ink)">3–4 hours/week</strong>.</p>
-      <div class="cta-row">
-        <a href="#plan" class="btn">Start with Day 1</a>
-        <a href="#studio" class="btn btn-soft">Practice studio</a>
-      </div>
+
+<div class="shell">
+  <aside class="side">
+    <button class="brand" data-act="nav" data-to="dashboard"><span class="logo">🎙️</span><span>Speak in 60<br><small style="font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Comm. training plan</small></span></button>
+    <nav id="sidenav"></nav>
+    <div class="progbox">
+      <div class="row between"><span style="font-weight:700;letter-spacing:.1em;text-transform:uppercase">Program</span><b id="pill-d">—</b></div>
+      <div class="bar thin"><i id="prog-bar" style="width:0%"></i></div>
+      <span id="prog-txt"></span><br><span id="save-txt">💾 Autosaves in browser</span>
     </div>
-    <div style="font-family:var(--serif);font-size:17px;color:var(--ink2);line-height:1.55;">
-      <p class="quote">“You learn to be before you learn to perform.”</p>
-      <p style="font-size:13px;color:var(--faint);margin-top:12px;">Body, breath, voice, then first contact. No paid apps. No clubs. Just your phone, four books, one podcast, and 2–5 trusted listeners.</p>
-    </div>
-  </div>
-  <h2 style="margin-top:36px;">Your time budget (introvert-calibrated)</h2>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>When</th><th>What</th><th>Minutes</th></tr></thead>
-      <tbody>
-        <tr><td>Weekday mornings / commutes</td><td>1 podcast episode (passive)</td><td>~15–25</td></tr>
-        <tr><td>Weekdays, any time</td><td>1 focused practice block</td><td>25</td></tr>
-        <tr><td>Saturday</td><td>Optional light practice or rest</td><td>0–15</td></tr>
-        <tr><td>Sunday evening</td><td>Weekly Evaluation (non-negotiable)</td><td>20</td></tr>
-        <tr><td>Per week</td><td>2–4 scheduled Social Reps</td><td>5–30 each</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <h2 style="margin-top:40px;">The three rules</h2>
-  <div class="grid-3">
-    <article class="card"><div class="label">SOCIAL REPS ARE MEETINGS</div><h3>Put them in your calendar</h3><p>Like a client call. They don't count if they're ad-hoc and unlogged.</p></article>
-    <article class="card"><div class="label">RECORD EVERYTHING</div><h3>Voice memos + camera</h3><p>If it isn't recorded, it didn't happen — for evaluation purposes. Log the count.</p></article>
-    <article class="card"><div class="label">THE SUNDAY REVIEW IS THE PROGRAM</div><h3>Never skip it</h3><p>You can miss a drill; you don't miss the review. That's what makes it training.</p></article>
-  </div>
-  <h2 style="margin-top:40px;">Your toolkit (≈ $50–70 total for 60 days)</h2>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Item</th><th>Where used</th><th>Cost</th></tr></thead>
-      <tbody>
-        <tr><td>Phone (voice memos + camera)</td><td>Every recording rep</td><td>You have it</td></tr>
-        <tr><td>Think Fast, Talk Smart (Stanford GSB podcast)</td><td>Every week, 1–2 episodes</td><td>Free</td></tr>
-        <tr><td>"How to Talk to Anyone" — Leil Lowndes</td><td>Weeks 1–2</td><td>~$10–15</td></tr>
-        <tr><td>"The Fine Art of Small Talk" — Debra Fine</td><td>Weeks 3–4</td><td>~$10–15</td></tr>
-        <tr><td>"Think Faster, Talk Smarter" — Matt Abrahams</td><td>Weeks 5–6</td><td>~$12–16</td></tr>
-        <tr><td>"The Charisma Myth" — Olivia Fox Cabane</td><td>Weeks 7–8</td><td>~$12–16</td></tr>
-        <tr><td>Trusted listeners (2–5 people)</td><td>Weeks 6 &amp; 8 milestone talks</td><td>Coffee, maybe</td></tr>
-        <tr><td>"Quiet" — Susan Cain</td><td>Optional reframe read, any week</td><td>~$10 (skip if tight)</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <h2 style="margin-top:36px;">Day 1 checklist (before starting)</h2>
-  <ul style="font-size:15px;line-height:1.7;color:var(--text);">
-    <li>Books ordered / borrowed.</li>
-    <li>Podcast subscribed (<a href="#">Think Fast, Talk Smart — Stanford GSB</a>).</li>
-    <li>Phone recorder tested (record 10 seconds, play back, count a filler).</li>
-  </ul>
-</section>
-<!-- THE 60 DAYS -->
-<section id="plan" aria-label="60-Day Plan">
-  <h2>The 60 days</h2>
-  <p>Seven weeks of practice, one rest/review week, then three final assessment days. Each day has a focused block, a recording or conversation task, and a note to yourself.</p>
-  <div style="margin:16px 0;"><strong>Week themes (corrected dates)</strong></div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Week</th><th>Dates</th><th>Theme</th><th>Reading</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td>7–13 Sep</td><td>Foundation: presence, basics</td><td>Lowndes — Tricks 1–7</td></tr>
-        <tr><td>2</td><td>14–20 Sep</td><td>Small-talk engine</td><td>Lowndes — Tricks 8–14; recruit listeners</td></tr>
-        <tr><td>3</td><td>21–27 Sep</td><td>Active listening &amp; flow</td><td>Fine — start Chapter 1</td></tr>
-        <tr><td>4</td><td>28 Sep – 4 Oct</td><td>Exits, first coffee chat</td><td>Fine — finish</td></tr>
-        <tr><td>5</td><td>5–11 Oct</td><td>Client calls; first camera talk</td><td>Abrahams — start</td></tr>
-        <tr><td>6</td><td>12–18 Oct</td><td>First live talk (Milestone #1)</td><td>Abrahams — continue; Day 30 = Tue 6 Oct</td></tr>
-        <tr><td>7</td><td>19–25 Oct</td><td>Stress test (2×5 challenge)</td><td>Charisma Myth — start</td></tr>
-        <tr><td>8</td><td>26 Oct – 1 Nov</td><td>Integration; Milestone #2</td><td>Charisma Myth — finish</td></tr>
-        <tr><td>9 (final)</td><td>2–5 Nov</td><td>Finish: recordings, assessments</td><td>Revisit what helped you</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <h2 style="margin-top:36px;">Day-by-day plan (click to check)</h2>
-  <p style="font-size:12.5px;color:var(--faint);">Click each checkbox. All data stays in this browser.</p>
-  <div class="days" id="dayList"></div>
-</section>
-<!-- STUDIO -->
-<section id="studio" aria-label="Practice Studio">
-  <h2>Practice Studio</h2>
-  <p class="lead">A small room for your voice. No perfect takes. Just a timer, a random topic, and a recording.</p>
-  <div class="grid-3" style="margin-bottom:24px;">
-    <article class="card"><div class="label">FOCUS TIMER</div><h3>Work in a block</h3><p>Use the 25-minute block, 90-second impromptu, or 60-second pitch.</p></article>
-    <article class="card"><div class="label">IMPROMPTU</div><h3>Draw a random topic</h3><p>Five seconds to prepare. Ninety seconds to speak. Finish the thought.</p></article>
-    <article class="card"><div class="label">RECORDING</div><h3>Record, count, then fix</h3><p>Use your microphone or load a phone recording. Count fillers.</p></article>
-  </div>
-  <div style="background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:24px 22px;">
-    <h3 style="font-size:16px;margin-bottom:10px;">Focus timer</h3>
-    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-      <button class="btn" onclick="startTimer(1500)">Start 25 min block</button>
-      <button class="btn btn-soft" onclick="startTimer(90)">90 sec impromptu</button>
-      <button class="btn btn-soft" onclick="startTimer(60)">60 sec pitch</button>
-      <button class="btn btn-soft" onclick="stopTimer()">Stop / reset</button>
-    </div>
-    <div id="timerDisplay" style="font-family:var(--serif);font-size:36px;color:var(--coral);margin-top:14px;letter-spacing:-2px;">00:00</div>
-    <p style="font-size:13px;color:var(--muted);margin-top:8px;">Your timer runs in this page.</p>
-  </div>
-  <h3 style="margin-top:28px;">Impromptu topic bank</h3>
-  <p>Draw randomly. Give yourself five seconds, then speak for 90 seconds.</p>
-  <div id="topicBox" style="background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:22px 24px;margin:12px 0;font-family:var(--serif);font-size:19px;color:var(--ink);line-height:1.45;min-height:90px;"></div>
-  <button class="btn" onclick="drawTopic()">Draw a new topic</button>
-  <h3 style="margin-top:28px;">Quick recording log</h3>
-  <div class="form-grid" style="margin-top:10px;">
-    <div class="field"><label>Scenario</label><select id="recScenario"><option>60-second intro</option><option>60-second pitch</option><option>3-minute talk</option><option>Impromptu</option><option>Milestone talk 1</option><option>Milestone talk 2</option></select></div>
-    <div class="field"><label>Duration (sec)</label><input type="number" id="recDur" value="90" min="1"></div>
-    <div class="field"><label>Filler count</label><input type="number" id="recFill" value="0" min="0"></div>
-    <div class="field" style="grid-column:1/-1"><label>One fix for next time</label><textarea id="recFix" rows="2" placeholder="Pause instead of 'um'"></textarea></div>
-  </div>
-  <button class="btn" onclick="saveRecording()">Save recording log</button>
-</section>
-<!-- LOGS -->
-<section id="logs" aria-label="Logbook">
-  <h2>My Logbook</h2>
-  <p>Real conversations, recordings, listener feedback, and outreach — saved to this browser.</p>
-  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
-    <button class="btn btn-soft" onclick="showLog('social')">Social reps</button>
-    <button class="btn btn-soft" onclick="showLog('recordings')">Recordings</button>
-    <button class="btn btn-soft" onclick="showLog('feedback')">Listener feedback</button>
-    <button class="btn btn-soft" onclick="showLog('outreach')">Outreach</button>
-  </div>
-  <div id="socialLogs"></div>
-  <div id="recordingLogs" style="display:none;"></div>
-  <div id="feedbackLogs" style="display:none;"></div>
-  <div id="outreachLogs" style="display:none;"></div>
-  <h3 style="margin-top:30px;">Add a social rep</h3>
-  <form class="form-grid" onsubmit="event.preventDefault(); addSocial();" style="margin-top:10px;">
-    <div class="field"><label>Date</label><input type="date" id="newSocialDate" required></div>
-    <div class="field"><label>Type</label><select id="newSocialType"><option>Stranger</option><option>Peer</option><option>Client</option><option>Coffee chat</option><option>Event</option><option>Live talk</option><option>Written note</option></select></div>
-    <div class="field"><label>Minutes</label><input type="number" id="newSocialMin" value="5" min="0.5" step="0.5"></div>
-    <div class="field"><label>Questions asked</label><input type="number" id="newSocialQ" value="2" min="0"></div>
-    <div class="field" style="grid-column:1/-1"><label>Note</label><textarea id="newSocialNote" rows="2"></textarea></div>
-    <div style="grid-column:1/-1"><button class="btn" type="submit">Add entry</button></div>
-  </form>
-</section>
-<!-- PROGRESS -->
-<section id="progress" aria-label="My Progress">
-  <h2>My Progress</h2>
-  <p>Checkpoints update from your logs and ratings. Be honest — the deltas matter.</p>
-  <div class="stats" style="margin-top:14px;">
-    <div class="stat"><div class="numb" id="statReps">0</div><div class="label">Social reps (goal 24)</div></div>
-    <div class="stat"><div class="numb" id="statRecordings">0</div><div class="label">Recordings (goal 18+)</div></div>
-    <div class="stat"><div class="numb" id="statCheck">0 / 60</div><div class="label">Days completed</div></div>
-    <div class="stat"><div class="numb" id="statFiller">0</div><div class="label">Avg fillers / min (last 3)</div></div>
-  </div>
-  <h3>Instrument A — 8-Situation Confidence Scale</h3>
-  <p>Rate 1 (avoid) to 10 (calm). Total max = 80.</p>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>#</th><th>Situation</th><th>Day 1</th><th>Day 30</th><th>Day 60</th></tr></thead>
-      <tbody id="confBody"></tbody>
-    </table>
-  </div>
-  <h3>Instrument B — 10-Skill Rubric (1–5)</h3>
-  <p>1 = freeze / avoid · 3 = doable · 5 = automatic.</p>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>#</th><th>Skill</th><th>Day 1</th><th>Day 14</th><th>Day 30</th><th>Day 45</th><th>Day 60</th></tr></thead>
-      <tbody id="rubricBody"></tbody>
-    </table>
-  </div>
-  <h3>Checkpoint gates (calculated from your data)</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Checkpoint</th><th>Pass criteria</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr><td>Day 14 (Sun 20 Sep)</td><td>≥4 reps · pitch fillers ≤ baseline −1 · FORD 12 · Skills 1,2,4 +0.5</td><td><span id="gate14">—</span></td></tr>
-        <tr><td>Day 30 (Tue 6 Oct)</td><td>≥10 reps · talk tighter · Skills 1,2,4 ≥3 · total +6</td><td><span id="gate30">—</span></td></tr>
-        <tr><td>Day 45 (Wed 21 Oct)</td><td>≥18 reps · Talk #1 + feedback · 2 referrals · Skills 5,6,9 ≥3</td><td><span id="gate45">—</span></td></tr>
-        <tr><td>Day 60 (Thu 5 Nov)</td><td>≥24 reps · 2 talks · 3 referrals + 2 follow-ups · all ≥3 / 4 at 4+</td><td><span id="gate60">—</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-<!-- REVIEWS -->
-<section id="reviews" aria-label="Weekly Reviews">
-  <h2>Weekly Reviews</h2>
-  <p>Every Sunday (20 min, non-negotiable): reflect, rate, plan next week.</p>
-  <div class="form-grid" style="margin-top:16px;">
-    <div class="field"><label>Week</label><select id="reviewWeek" onchange="renderReview()"><option value="1">Week 1 — Foundation</option><option value="2">Week 2 — Small talk</option><option value="3">Week 3 — Listening</option><option value="4">Week 4 — Client voice</option><option value="5">Week 5 — In the room</option><option value="6">Week 6 — Live audience</option><option value="7">Week 7 — Stress test</option><option value="8">Week 8 — Integration</option></select></div>
-    <div class="field"><label>Rate week (1–10)</label><input type="range" id="reviewRate" min="1" max="10" value="6" oninput="document.getElementById('reviewRateLabel').textContent=this.value"><span id="reviewRateLabel" style="font-size:12px;color:var(--coral);font-weight:600;">6</span></div>
-    <div class="field"><label>Best moment</label><textarea id="reviewBest" rows="2"></textarea></div>
-    <div class="field"><label>Hardest moment</label><textarea id="reviewHardest" rows="2"></textarea></div>
-    <div class="field"><label>Keep / Drop</label><textarea id="reviewKeep" rows="2"></textarea></div>
-  </div>
-  <button class="btn" onclick="saveReview()">Save review</button>
-  <div id="reviewDone" style="margin-top:12px;font-size:13px;color:var(--sage);font-weight:500;"></div>
-</section>
-<!-- TOOLKIT -->
-<section id="toolkit" aria-label="Toolkit">
-  <h2>Toolkit & Scripts</h2>
-  <p>Borrow the words. Adapt them. All resources listed below.</p>
-  <h3>Books</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Book</th><th>Author</th><th>Weeks</th><th>Approx.</th></tr></thead>
-      <tbody>
-        <tr><td>How to Talk to Anyone</td><td>Leil Lowndes</td><td>1–2 (Tricks 1–14)</td><td>$10–15</td></tr>
-        <tr><td>The Fine Art of Small Talk</td><td>Debra Fine</td><td>3–4</td><td>$10–15</td></tr>
-        <tr><td>Think Faster, Talk Smarter</td><td>Matt Abrahams</td><td>5–6</td><td>$12–16</td></tr>
-        <tr><td>The Charisma Myth</td><td>Olivia Fox Cabane</td><td>7–8 (10-min presence)</td><td>$12–16</td></tr>
-        <tr><td>Quiet</td><td>Susan Cain</td><td>Optional</td><td>~$10</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <h3>Podcast</h3>
-  <p><strong>Think Fast, Talk Smart</strong> — Stanford GSB (Matt Abrahams). Free. One to two episodes per week, passively during commutes.</p>
-  <h3>Scripts (adapt, don't recite)</h3>
-  <details><summary>60-second pitch</summary><div>Who you help → what you do → one proof point → what makes it different → soft close. Close: "I'd love to hear more about what you're working on."</div></details>
-  <details><summary>Discovery call (10 min)</summary><div>Thank + agenda → listen (HEAR) → 2 clarifying questions → 90-sec approach → confirm next step + date → close warm.</div></details>
-  <details><summary>Referral email</summary><div>"Hi [Name] — you've been one of my favorite projects. If anyone in your network is struggling with [problem], would you be open to introducing me? No pressure either way. Thanks again for [specific thing] on [project]. — [You]"</div></details>
-  <details><summary>48-hour follow-up</summary><div>"Great catching up on [day]. Really enjoyed [specific thing]. As promised, here's [resource/intro/thing]. Let's keep in touch — I'll check back in a few weeks."</div></details>
-  <details><summary>5 small-talk openers</summary><div>"How did you end up at [event]?" / "Is this your first time here?" / Comment true + question / "I'm [name] — [line]. What do you do?" / Queue: observation + "Are you a regular?"</div></details>
-  <details><summary>3 exit lines</summary><div>"I'm going to say hello to [person] — great talking, [name]." / "I should get going, but I really enjoyed this. Let's keep in touch — [handle]." / "I have a hard stop — thank you for [specific thing]."</div></details>
-  <h3>FORD bank (fill 12 questions)</h3>
-  <p><strong>F:</strong> Where from? Grow up around? Take after who? <strong>O:</strong> Most interesting now? What got you in? Typical day? <strong>R:</strong> Weekend routine? Hobbies / reading / travel? <strong>D:</strong> Project most excited? Two-year vision? Dream if unlimited budget/time? <strong>Bridge:</strong> After any answer, ask: "What's the most rewarding part of that?"</p>
-  <h3>Listener ask (recruit by Day 20)</h3>
-  <p>"I'm doing 60 days to get better at talking. I need 2 × 30 min in October — I'll talk, you'll answer 5 questions. Can you do that?"</p>
-  <h3>Feedback form (Milestone #1 & #2)</h3>
-  <p>Give each trusted listener this 5-question form (~3 min): 1) Main point in your words? 2) What held attention? 3) Where did mind wander? 4) Pace /5, Clarity /5? 5) One improvement for next talk?</p>
-  <h3>Social battery management</h3>
-  <ul style="font-size:15px;line-height:1.75;color:var(--text);">
-    <li>Cap: max 3 in-person reps/week; no two same day (unless full event).</li>
-    <li>After in-person rep: 20 min recharge.</li>
-    <li>Written note = half a rep — top up low-battery weeks.</li>
-    <li>If anxiety &gt;7/10, shrink to half length instead of skipping.</li>
-  </ul>
-</section>
-<!-- BASELINE / FINAL -->
-<section aria-label="Baseline and Final">
-  <h2>Baseline (Day 1) and Final (Day 60)</h2>
-  <p>Record the same three prompts. Compare honestly.</p>
-  <div class="stats" style="margin-top:14px;">
-    <div class="stat"><div class="numb">3</div><div class="label">Recordings (intro / talk / pitch)</div></div>
-    <div class="stat"><div class="numb">2</div><div class="label">Live milestone talks with feedback</div></div>
-    <div class="stat"><div class="numb">8</div><div class="label">Confidence situations (1→10)</div></div>
-  </div>
-  <p><strong>Day 1 (60 min):</strong> Record 60-sec intro + 3-min talk → listen back, tally fillers, log → fill Confidence Scale + Rubric. Save references: <code>20260907-intro60</code> / <code>20260907-talk3</code>.</p>
-  <p><strong>Day 60 (45 min):</strong> Re-record same three → retake assessments → tally season (reps, fillers, referrals, talks) → write Next-90-Day plan → rate gap: small / medium / large (need ≥ medium).</p>
-</section>
-<footer role="contentinfo">
-  <div><strong style="color:var(--ink)">clearer.</strong> A 60-day communication plan for introverted freelancers. <a href="#start">Back to top ↑</a></div>
-  <div>Single standalone file. Saves to this browser only.</div>
-</footer>
-<a href="#start" class="back-top" aria-label="Back to top">↑</a>
+  </aside>
+  <main id="app"></main>
+</div>
+
+<nav class="bottomnav" id="bottomnav"></nav>
+<div id="modal"><div class="dlg" id="dlg"></div></div>
+
 <script>
-/* ========== DATA ========== */
-const DAYS = [
-  {n:1,t:"Start where you are.",d:"Baseline day: 60-sec intro + 3-min talk + assessments.",m:60,k:"checkpoint",labels:['Record intro','Record 3-min talk','Listen & count','Baseline assessments']},
-  {n:2,t:"Presence before performance.",d:"Body, breath, voice, first contact. Read Lowndes Trick 1.",m:25,k:"practice",labels:['Stand & breathe','Read trick 1','Mirror practice']},
-  {n:3,t:"One fewer filler.",d:"Repeat intro. Target: 1 fewer filler than baseline.",m:25,k:"practice",labels:['Record intro','Count fillers','Choose fix']},
-  {n:4,t:"A warmer work voice.",d:"Revisit a recent client email. Write the reply you wish you sent.",m:25,k:"practice",labels:['Pick email','Write reply','Archive reference']},
-  {n:5,t:"Finish, not flawless.",d:"Impromptu: draw topic, 5-sec prep, 90 sec. Don't restart.",m:25,k:"practice",labels:['Draw topic','Record 90 sec','Finish thought']},
-  {n:6,t:"Your first small hello.",d:"1-2 min stranger rep. Use Lowndes. Exit cleanly. Recharge 20 min after.",m:15,k:"social",labels:['Stranger rep','Log exchange','Recharge']},
-  {n:7,t:"Notice the small wins.",d:"Weekly Review #1 + schedule Week 2 reps.",m:20,k:"review",labels:['Complete review','Schedule Week 2']},
-  {n:8,t:"Make your work make sense.",d:"Record 60-sec pitch. Build FORD bank (12 Q). Recruit listeners.",m:25,k:"practice",labels:['Record pitch','Build FORD','Recruit listeners']},
-  {n:9,t:"Give a good story a shape.",d:"Record best-project story (3 beats). Read Lowndes 8-14.",m:25,k:"practice",labels:['Record story','Find turn','Read trick']},
-  {n:10,t:"Let questions do the work.",d:"3-5 min stranger talk: first 2 min only FORD questions.",m:25,k:"social",labels:['Stranger talk','FORD first 2 min','Log it']},
-  {n:11,t:"A beginning, and easy ending.",d:"90-sec impromptu + drill 3 exit lines. Practice one aloud.",m:25,k:"practice",labels:['Impromptu 90s','Drill exits','Log recording']},
-  {n:12,t:"Leave room to recharge.",d:"Light rest / optional note = half a written rep.",m:15,k:"rest",labels:['Rest','Optional note']},
-  {n:13,t:"Your first checkpoint.",d:"Review #2 + Day 14 checkpoint (re-rate, count, score gate).",m:45,k:"checkpoint",labels:['Weekly review','Day 14 gate']},
-  {n:14,t:"Start with your point.",d:"Record 2-min talk: open with point, close with same.",m:25,k:"practice",labels:['Record 2-min','Check clarity','Log']},
-  {n:15,t:"Make someone feel heard.",d:"HEAR in real call. Reflect back: \"So what you're saying is...\"",m:25,k:"practice",labels:['HEAR practice','Reflect back','Log']},
-  {n:16,t:"Setup. Turn. Lesson.",d:"3-beat story (work). Read Fine chapter.",m:25,k:"practice",labels:['Record 3-beat','Find turn','Read Fine']},
-  {n:17,t:"Give the conversation space.",d:"5-min stranger: you speak ≤40%. Note energy shift.",m:25,k:"social",labels:['Stranger talk','≤40% talk','Recharge 20m']},
-  {n:18,t:"A story, then short version.",d:"90-sec impromptu + 30-sec elevator. Log both.",m:25,k:"practice",labels:['Impromptu','Elevator','Compare']},
-  {n:19,t:"A little input. A little quiet.",d:"Listen to podcast. Confirm listener dates by Day 20.",m:15,k:"rest",labels:['Podcast','Confirm listeners','Optional']},
-  {n:20,t:"What changed when you listened?",d:"Weekly Review #3. Schedule Week 4 coffee chat.",m:20,k:"review",labels:['Review #3','Schedule coffee']},
-  {n:21,t:"Open the call with clarity.",d:"Record discovery-opener. Read Abrahams / Fine.",m:25,k:"practice",labels:['Record opener','Review flow','Log']},
-  {n:22,t:"Coffee Chat #1.",d:"25-30 min with friend/peer. Use FORD. Recharge after.",m:30,k:"social",labels:['Coffee chat','Log','Recharge']},
-  {n:23,t:"Let result finish story.",d:"3-min client story (problem → action → result).",m:25,k:"practice",labels:['Record story','Check result','Read Fine']},
-  {n:24,t:"Write like a thoughtful professional.",d:"Rewrite 2 emails + draft referral ask (don't send yet).",m:25,k:"practice",labels:['Rewrite emails','Draft referral']},
-  {n:25,t:"A clear no can be kind.",d:"90-sec impromptu + 2 \"no\" scripts (scope / project). Record one.",m:25,k:"practice",labels:['Impromptu','Drill no','Log']},
-  {n:26,t:"Rest without earning it.",d:"Light rest. No catch-up pile.",m:15,k:"rest",labels:['Rest','Optional podcast']},
-  {n:27,t:"Four weeks of showing up.",d:"Review #4 + note exits, chat, client voice.",m:20,k:"review",labels:['Review #4','Note improvements']},
-  {n:28,t:"Walk through your work.",d:"Record 3-min presentation. Confirm listener dates.",m:25,k:"practice",labels:['Rehearse','Confirm dates','Log']},
-  {n:29,t:"Meet your halfway self (Day 30).",d:"Repeat Day 1 recordings. Re-rate. Answer 5 midpoint Qs.",m:45,k:"checkpoint",labels:['Repeat recordings','Re-rate','Answer Qs']},
-  {n:30,t:"Make a professional connection.",d:"Coffee Chat #2 + send Referral Email #1.",m:30,k:"social",labels:['Coffee #2','Send ref 1','Log']},
-  {n:31,t:"Trust a simple structure.",d:"90-sec impromptu with PREP. Read Abrahams.",m:25,k:"practice",labels:['Impromptu PREP','Log','Read']},
-  {n:32,t:"Let yourself be seen.",d:"Record 3-min video (phone camera). Watch with pen. Log body / gaze / energy.",m:25,k:"practice",labels:['Video talk','Watch once','Log 3']},
-  {n:33,t:"Keep today light.",d:"Read Abrahams. Rest battery.",m:15,k:"rest",labels:['Abrahams','Rest']},
-  {n:34,t:"What did camera teach you?",d:"Review #5 + video notes + schedule Week 6.",m:20,k:"review",labels:['Review #5','Video notes','Plan 6']},
-  {n:35,t:"Turn near-disaster into story.",d:"Outline 5-7 min talk. Rehearsal #1 (record + count).",m:25,k:"practice",labels:['Outline','Rehearsal 1','Log']},
-  {n:36,t:"Find steadier second take.",d:"Rehearsal #2 + 3-min stranger talk.",m:25,k:"practice",labels:['Rehearsal 2','Stranger talk','Log']},
-  {n:37,t:"Rehearse the real thing.",d:"Final delivery (standing, full voice). Then stop rehearsing.",m:25,k:"practice",labels:['Final delivery','Count fillers','Stop']},
-  {n:38,t:"A thoughtful ask, then pause.",d:"Send Referral Email #2 + prepare forms.",m:25,k:"practice",labels:['Send ref 2','Prepare forms','Log']},
-  {n:39,t:"Your voice. A real audience.",d:"Milestone Talk #1 (5-7 min). Record video. Collect 5-Q feedback. Recharge 20 min.",m:30,k:"milestone",labels:['Live talk 1','Record','Feedback','Recharge']},
-  {n:40,t:"Keep three things. Fix two.",d:"Process feedback: 3 keep / 2 fix. Battery day — nothing else.",m:15,k:"rest",labels:['Feedback review','Keep 3 / fix 2','Rest']},
-  {n:41,t:"You spoke. They listened.",d:"Review #6 — include feedback verbatim.",m:20,k:"review",labels:['Review #6','Feedback verbatim']},
-  {n:42,t:"Presence, then pitch.",d:"Charisma presence drill (10 min) + pitch + log.",m:25,k:"practice",labels:['Drill','Pitch','Log']},
-  {n:43,t:"Two conversations. One outing.",d:"2×5 min challenge (or 2×3 if anxiety >7). Log both + recharge.",m:25,k:"social",labels:['2 strangers','Log both','Recharge']},
-  {n:44,t:"Check evidence again (Day 45).",d:"Day 45 checkpoint: ≥18 reps, Talk #1 + feedback, 2 referrals, Skills 5/6/9 ≥3.",m:30,k:"checkpoint",labels:['Checkpoint 45','Check gates']},
-  {n:45,t:"Choose a stretch that fits.",d:"Coffee Chat #3 or meetup (10-20 people). Log + recharge.",m:30,k:"social",labels:['Coffee / meetup','Log','Recharge']},
-  {n:46,t:"Find your footing twice.",d:"Back-to-back impromptus (90s, 5-sec prep). Log both. Presence drill.",m:25,k:"practice",labels:['2 impromptus','Log both','Drill']},
-  {n:47,t:"A quieter kind of practice.",d:"Presence drill + optional note (half rep).",m:15,k:"rest",labels:['Drill','Optional note']},
-  {n:48,t:"How did the stretch feel?",d:"Review #7 — speed, energy, 2 conversations. Plan Week 8.",m:20,k:"review",labels:['Review #7','Plan week 8']},
-  {n:49,t:"Your clearest minute.",d:"Final 60-sec pitch (≤3 fillers). Log + finish Charisma.",m:25,k:"practice",labels:['Pitch','Log','Finish book']},
-  {n:50,t:"Bring to the room.",d:"Milestone Talk #2 (5 min, 2-5 listeners / small event, 5-min slot). Collect feedback.",m:30,k:"milestone",labels:['Live talk 2','Record','Feedback','Recharge']},
-  {n:51,t:"Skills meet real life.",d:"Event or 2×5 min conversations. Written networking can top up.",m:25,k:"social",labels:['Event / chats','Log','Recharge']},
-  {n:52,t:"Follow through, thoughtfully.",d:"Referral Email #3 + 2 follow-ups (specific detail + keep promises).",m:25,k:"practice",labels:['Ref 3','2 follow-ups','Log']},
-  {n:53,t:"Three thoughts. Three clean finishes.",d:"3 random 60-sec topics. Compare with Week 1. Log change.",m:25,k:"practice",labels:['3 impromptus','Compare Week 1','Log']},
-  {n:54,t:"Let the work settle.",d:"Rest / optional light rep. No catch-up.",m:15,k:"rest",labels:['Rest','Optional']},
-  {n:55,t:"Your eighth Sunday reset.",d:"Review #8 + prepare final recording (same setting as Day 1).",m:20,k:"review",labels:['Review #8','Prepare Day 57-60']},
-  {n:56,t:"Record your after.",d:"Final recording day: 60-sec intro + same 3-min talk + 60-sec pitch. Save 20261102-*.",m:30,k:"practice",labels:['Record final trio','Same setting','Log']},
-  {n:57,t:"Take stock of the season.",d:"Day 60 assessments. Tally season: reps, best/worst, filler trend, referrals, talks.",m:30,k:"checkpoint",labels:['Assessments','Tally season','Log']},
-  {n:58,t:"Choose your next chapter.",d:"Answer 8 final questions + Next-90-Day plan (habits, 2 weakest skills, cadence).",m:30,k:"practice",labels:['8 questions','Next 90 days','Plan']},
-  {n:59,t:"A little braver. A lot more you.",d:"Listen Day 1 vs Day 60. Rate gap: small / medium / large (need ≥ medium). Celebrate.",m:45,k:"milestone",labels:['Listen comparison','Rate gap','Celebrate']},
+/* =========================================================
+   DATA — the 60-day plan
+   Task kinds: rec soc read write imp eval rest mile chk cam admin drill
+   Task tuple: [kind, text, link?]
+   ========================================================= */
+const KIND = {
+  rec:  ['Recording rep','🎙️','#ffe4e6'], soc:['Social rep','👥','#e0f2fe'], read:['Reading','📖','#fef3c7'],
+  write:['Writing','✍️','#ede9fe'], imp:['Impromptu','⚡','#ffedd5'], eval:['Evaluation','📋','#d6eae5'],
+  rest: ['Rest','☕','#f5f5f4'], mile:['Milestone','🏆','#fef9c3'], chk:['Checkpoint','🚩','#fee2e2'],
+  cam:  ['On camera','📹','#fae8ff'], admin:['Admin','📅','#f5f5f4'], drill:['Drill','🏋️','#ccfbf1']
+};
+const FLAG = { baseline:['Baseline','violet'], checkpoint:['Checkpoint','red'], milestone:['Milestone talk','amber'], review:['Sunday review','moss'], camera:['On camera','blue'], final:['Final block','green'] };
+
+const RAW_PLAN = [
+ {n:1,title:'Foundation',theme:'You learn to be before you learn to perform. Body, breath, voice, first contact.',books:'Lowndes — one trick per weekday (Tricks 1–7).',podcast:'“Hacking Your Speaking Anxiety” + the body-language Quick Think episode.',reps:'2 social reps (1 low-stakes stranger, 1 familiar).',
+  days:[
+   {d:1,title:'BASELINE DAY',min:60,flag:'baseline',tasks:[
+     ['rec','Record ① a 60-sec self-intro, no notes, as you\'d actually do it. Save as 20260907-intro60.','logs/recordings'],
+     ['rec','Record ② a 3-min talk: “Why I do my freelance work” (5 min prep). Save as 20260907-talk3.','logs/recordings'],
+     ['eval','Play both back, tally fillers, log them in the Recording Log. This is your “before”.','logs/recordings'],
+     ['eval','Fill the Confidence Scale (Day 1 column).','evaluate/confidence'],
+     ['eval','Fill the full 10-Skill Rubric (Day 1 column).','evaluate/rubric']]},
+   {d:2,tasks:[['drill','Warm-up: 5 min standing, slow breathing, shoulders down, one intentional hand gesture while saying a sentence aloud.'],['read','Read Lowndes Trick 1, drill it 5 min in front of a mirror.']]},
+   {d:3,tasks:[['rec','Recording rep: 60-sec self-intro again. Play back, count fillers. Target: 1 fewer than baseline.','logs/recordings']]},
+   {d:4,tasks:[['write','Client comms: pick one recent client email. Write the reply you should have sent, using one Lowndes technique (shorter, warmer, more specific). Don\'t send — archive as reference.']]},
+   {d:5,tasks:[['imp','Impromptu: pick a topic from the topic bank, 5-second prep, record 90 seconds. Don\'t edit; just finish.','toolkit/topics']]},
+   {d:6,tasks:[['soc','Social Rep #1 (stranger): 1–2 minutes with a shopkeeper, barista, or market vendor. One genuine exchange using one Lowndes technique. Exit cleanly. Recharge 20 min after. Log it.','logs/social'],['rest','Rest otherwise.']]},
+   {d:7,flag:'review',tasks:[['eval','Weekly Evaluation #1 (Sunday Review).','evaluate/reviews'],['admin','Confirm Week 2\'s reps in your calendar.']]}],
+  weekTasks:[['soc','Social Rep #2 (familiar), any weekday: 5-min chat with a friend or family member where you deliberately ask a follow-up question on every answer. Log it.','logs/social']]},
+ {n:2,title:'The small-talk engine',theme:'Small talk as a system, not a personality trait.',books:'Lowndes Tricks 8–14.',podcast:'“Question Everything: Why Curiosity Is Communication\'s Secret Weapon.”',reps:'3 recording reps (Mon, Wed, Fri). 2–3 social reps, one of them a 3+ min stranger.',
+  days:[
+   {d:8,tasks:[['rec','Recording rep: 60-sec service pitch — your freelance offering to a stranger who doesn\'t know your field. (New type: pitch60.)','logs/recordings']]},
+   {d:9,tasks:[['write','Build your FORD bank: 12 questions (3 each for Family, Occupation, Recreation, Dreams). Your ammunition for the next 45 days.','toolkit/ford'],['admin','Recruit your trusted listeners — ask 2–3 people for two 30-min slots in October (use the listener ask script).','toolkit/listeners']]},
+   {d:10,tasks:[['rec','Recording rep: 2-min talk — “the best project I\'ve worked on this year” using Situation → Story → Details.','logs/recordings']]},
+   {d:11,tasks:[['soc','Social Rep #3 (stranger): 3–5 min small talk (cafe queue, event, errand, neighborhood). Rule: first 2 minutes you only ask FORD questions. Log it.','logs/social']]},
+   {d:12,tasks:[['imp','Impromptu 90-sec.','toolkit/topics'],['drill','Drill 3 exit lines until one feels natural.','toolkit/scripts']]},
+   {d:13,tasks:[['rest','Optional: podcast + one 0.5 written rep (personalized note to an old contact). Rest if flat.','logs/social']]},
+   {d:14,title:'DAY 14 CHECKPOINT',flag:'checkpoint',tasks:[['eval','Weekly Evaluation #2.','evaluate/reviews'],['chk','Day 14 Checkpoint: re-rate rubric (Day 14 column), compare pitch fillers vs baseline, count reps, score the gate.','evaluate/checkpoints']]}]},
+ {n:3,title:'Active listening & flow',theme:'The listener\'s edge. Introverts win conversations by making the other person feel heard.',books:'Start Debra Fine — 1 chapter/day.',podcast:'The HEAR model episode (with Julia Minson — Hear, Empathize, Acknowledge, Respond).',reps:'3 recording reps. 3 social reps.',
+  days:[
+   {d:15,tasks:[['rec','Recording rep: 2-min talk on any topic. Apply: open with the point, close with the point.','logs/recordings']]},
+   {d:16,tasks:[['drill','HEAR drill: in any real call or conversation today, practice not interrupting, then one sentence that reflects back what you heard (“So what you\'re saying is…?”). Note it in your log.','logs/social']]},
+   {d:17,tasks:[['rec','Recording rep: 3-beat story — a work story with Setup → Turn → Lesson. Your storytelling foundation.','logs/recordings']]},
+   {d:18,tasks:[['soc','Social Rep #4 (stranger): 5 min. Listener challenge: you speak ≤40% of the time. Log how the other person\'s energy shifted.','logs/social']]},
+   {d:19,tasks:[['imp','Impromptu 90-sec.','toolkit/topics'],['rec','Record a 30-sec elevator summary of your service (who you help, what you do, one proof point).','logs/recordings']]},
+   {d:20,tasks:[['read','Fine, next chapter.'],['rest','Optional 0.5 written rep.','logs/social']]},
+   {d:21,flag:'review',tasks:[['eval','Weekly Evaluation #3.','evaluate/reviews']]}]},
+ {n:4,title:'Exits, first coffee chat, client voice',theme:'Finishing conversations and sounding like a professional on calls.',books:'Finish Fine.',podcast:'“Feelings First: How emotion shapes our communication.”',reps:'3 recording reps. 3 social reps, including Coffee Chat #1.',
+  days:[
+   {d:22,tasks:[['rec','Recording rep: discovery-call opener — introduce yourself and frame a 10-minute call (agenda + what you\'ll ask). Record it like a live call.','logs/recordings']]},
+   {d:23,title:'COFFEE CHAT #1',tasks:[['soc','Coffee Chat #1: 25–30 min, friend or peer, at a place you know well. Use your FORD bank. Recharge after. Log it — your first “professional-grade” rep.','logs/social']]},
+   {d:24,tasks:[['rec','Recording rep: 3-min talk — “a problem I solved for a client” (problem → what I did → result).','logs/recordings']]},
+   {d:25,tasks:[['write','Client comms: rewrite two recent client emails with this week\'s techniques.'],['write','Draft (don\'t send) a referral ask to a past good client. Sending happens Week 5.','toolkit/scripts']]},
+   {d:26,tasks:[['imp','Impromptu 90-sec.','toolkit/topics'],['rec','Drill two “no” scripts: declining a project, declining a scope creep. Record one.','logs/recordings']]},
+   {d:27,tasks:[['rest','Rest. Optional podcast.']]},
+   {d:28,flag:'review',tasks:[['eval','Weekly Evaluation #4.','evaluate/reviews']]}]},
+ {n:5,title:'Client calls & the live-audience muscle',theme:'Your work voice + the bridge from “recording” to “room.”',books:'Start Abrahams — one section/day.',podcast:'“Simple Is a Superpower” (Carmine Gallo) + “The Art of Negotiation.”',reps:'3 recording reps. 2 social reps + one first-time-on-camera talk.',action:'Confirm your listener dates (both slots booked, calendar invites sent).',
+  days:[
+   {d:29,title:'DAY 30 MIDPOINT EVALUATION',min:45,flag:'checkpoint',tasks:[
+     ['rec','Re-record the same 3-minute talk and 60-sec intro as Day 1; listen to old/new back-to-back.','logs/recordings'],
+     ['eval','Re-take the Confidence Scale (Day 30 column) and re-rate the rubric (Day 30 column).','evaluate/confidence'],
+     ['eval','Answer the 5 Day-30 self-assessment questions, then decide: keep / drop / add one element for the second half. Score the gate.','evaluate/checkpoints'],
+     ['rec','Recording rep: 3-min client presentation rehearsal — walk a mock client through one piece of your work.','logs/recordings']]},
+   {d:30,tasks:[['rec','Recording rep: 90-sec — “defend your rate” to a skeptical client. Use one Abrahams structure (PREP: Point, Reason, Example, Point).','logs/recordings']]},
+   {d:31,tasks:[['soc','Social Rep #5: Coffee Chat #2 — someone in your field or an adjacent one. 25 min.','logs/social'],['write','Send Referral Email #1 (drafted Week 4). Sending one email is a rep. Log both.','evaluate/checkpoints']]},
+   {d:32,tasks:[['imp','Impromptu 90-sec.','toolkit/topics'],['read','Abrahams section.']]},
+   {d:33,title:'FIRST TIME ON CAMERA',flag:'camera',tasks:[['cam','Record a 3-min talk to your phone — stand, full voice, hands visible. Then watch it. Write 3 notes: what your body did, where you looked, one moment of energy. Save as 20261009-talk5-video.','logs/recordings']]},
+   {d:34,tasks:[['read','Abrahams. Light.']]},
+   {d:35,flag:'review',tasks:[['eval','Weekly Evaluation #5 — include your first-camera notes.','evaluate/reviews']]}],
+  weekTasks:[['admin','Confirm your listener dates — both slots booked, calendar invites sent.','toolkit/listeners']]},
+ {n:6,title:'First live talk',theme:'The milestone. Your first real audience.',books:'Abrahams continued.',podcast:'“Under Pressure” + “Get Hired: How the Right Communication Can Advance Your Career.”',reps:'3–4 recording reps (talk rehearsals). 3 social reps, including Milestone Talk #1. Referral Email #2 sent.',
+  days:[
+   {d:36,tasks:[['write','Write your 5–7 min talk: a client story — “The day a project nearly broke, and what I did.” Structure: hook (the near-disaster) → what you did → lesson → close.'],['rec','Rehearsal #1 (record + count).','logs/recordings']]},
+   {d:37,tasks:[['rec','Rehearsal #2 (record + count).','logs/recordings'],['soc','Social Rep #6 (any 3-min small talk).','logs/social']]},
+   {d:38,tasks:[['rec','Final rehearsal: one realistic delivery at home — mirror, patient friend, or your pet — full standing, full voice, phone on record. Review the recording with your pen.','logs/recordings']]},
+   {d:39,tasks:[['write','Send Referral Email #2.','evaluate/checkpoints'],['read','Abrahams section.']]},
+   {d:40,title:'MILESTONE TALK #1',flag:'milestone',tasks:[['mile','Milestone Talk #1 — live, 5–7 min, to 1–5 trusted listeners, on video. Before: read your outline once, then stop rehearsing.','toolkit/listeners'],['eval','After: collect the feedback forms, 20-min recharge, log the talk as a full social rep (type: live talk). Treat the day as half-day social.','toolkit/listeners']]},
+   {d:41,tasks:[['eval','Process the feedback: 3 things to keep, 2 to fix. 10-min journal. Battery day — nothing else social.','toolkit/listeners'],['rest','Recharge.']]},
+   {d:42,flag:'review',tasks:[['eval','Weekly Evaluation #6 — include the listener feedback verbatim.','evaluate/reviews']]}]},
+ {n:7,title:'Stress test',theme:'Speed, energy, and two conversations in one outing.',books:'Start The Charisma Myth — 1 chapter/day plus its 10-minute presence drill daily.',podcast:'“How We Gain — or Give Away — Authority While Speaking.”',reps:'3 recording reps. 3 social reps.',
+  days:[
+   {d:43,tasks:[['drill','Charisma Myth presence drill (10 min).'],['rec','Recording rep: 60-sec pitch.','logs/recordings']]},
+   {d:44,tasks:[['soc','Social Rep #7 — the “2×5” challenge: one outing, 5-min small talk with two different strangers. The plan\'s hardest rep; shrink to 2×3 if anxiety is 7+.','logs/social']]},
+   {d:45,title:'DAY 45 CHECKPOINT',min:30,flag:'checkpoint',tasks:[['chk','Re-rate the rubric (Day 45 column), tally reps (target ≥18), confirm 2 referral emails sent, review Talk #1 feedback against your 2 “fix” items. Score the gate.','evaluate/checkpoints']]},
+   {d:46,tasks:[['soc','Social Rep #8: Coffee Chat #3 — OR a small meetup (10–20 people). Pick whichever matches your battery. If meetup: request one introduction from a regular beforehand.','logs/social']]},
+   {d:47,tasks:[['imp','Double impromptu: two random topics back-to-back, 90 sec each, recorded. The second is always worse — the goal is finishing.','toolkit/topics']]},
+   {d:48,tasks:[['drill','Presence drill.'],['rest','Optional 0.5 written rep.','logs/social']]},
+   {d:49,flag:'review',tasks:[['eval','Weekly Evaluation #7.','evaluate/reviews']]}]},
+ {n:8,title:'Integration',theme:'Everything at once, smoothly.',books:'Finish The Charisma Myth.',podcast:'“Building Strong Relationships” + the Super Communicator episode (with Charles Duhigg).',reps:'3 recording reps. 3 social reps, including Milestone Talk #2. Referral Email #3 + 2 follow-up notes sent.',
+  days:[
+   {d:50,tasks:[['rec','Recording rep: final pitch polish — 60-sec service pitch. Target: ≤3 fillers.','logs/recordings']]},
+   {d:51,title:'MILESTONE TALK #2',flag:'milestone',tasks:[['rec','Rehearsal for Talk #2.','logs/recordings'],['mile','Milestone Talk #2 (5 min) — live, to 2–5 listeners (or a small event). Topic: “A communication lesson I learned in the last 40 days.” Collect feedback forms. Log as a live talk rep.','toolkit/listeners']]},
+   {d:52,tasks:[['soc','Social Rep #9: an event, or two 5-min conversations. (Battery day if Talk #2 landed today — schedule where it fits.)','logs/social']]},
+   {d:53,tasks:[['write','Send Referral Email #3.','evaluate/checkpoints'],['write','Send two 48-hour follow-up notes to conversations from earlier weeks.','toolkit/scripts']]},
+   {d:54,tasks:[['imp','Final impromptu set: 3 × 60-sec random topics, recorded. Compare with Week 1\'s impromptu.','toolkit/topics']]},
+   {d:55,tasks:[['rest','Optional: one rep. Rest otherwise.']]},
+   {d:56,flag:'review',tasks:[['eval','Weekly Evaluation #8.','evaluate/reviews'],['admin','Prep Day-60 recording day (pick a quiet room, same spot as Day 1 if possible).']]}]},
+ {n:9,title:'Final Evaluation Block',theme:'Days 57–60. Measure the delta, write the next plan, graduate.',books:'—',podcast:'—',reps:'Re-record the trinity, re-take both instruments, score the Day-60 gate.',
+  days:[
+   {d:57,title:'RE-RECORD THE TRINITY',flag:'final',tasks:[['rec','Re-record the 60-sec intro. Same setting as baseline. Save as 20261102-intro60.','logs/recordings'],['rec','Re-record the same 3-min talk from Day 1 (same topic, same structure). Save as 20261102-talk3.','logs/recordings'],['rec','Re-record the 60-sec pitch. Save as 20261102-pitch60.','logs/recordings']]},
+   {d:58,flag:'final',tasks:[['eval','Re-take the Confidence Scale (Day 60 column) + full 10-Skill Rubric (Day 60 column).','evaluate/confidence'],['eval','Tally the season: total reps, best/worst rep, filler-word trend line, emails sent, both live talks + their feedback.','evaluate/checkpoints']]},
+   {d:59,flag:'final',tasks:[['eval','Final self-assessment (8 questions).','evaluate/assessments'],['write','Write your Next-90-Days Plan: what you\'ll keep (habits), what you\'ll attack next (your two weakest skills), your ongoing cadence.','evaluate/assessments']]},
+   {d:60,title:'GRADUATION',flag:'final',tasks:[['mile','Listen to Day 1 vs Day 60 recordings end to end, and watch Talk #1 vs Talk #2. Write the delta: small / medium / large.','evaluate/checkpoints'],['chk','Score the Day-60 gate.','evaluate/checkpoints'],['rest','Celebrate something — you did 24+ real conversations and 2 live talks in 60 days.'],['write','Optional: thank-you notes to your listeners + follow-up to your 3 referral contacts.']]}]}
 ];
-const CONF_SITUATIONS = ['2-minute small talk with a stranger','5-minute small talk at a networking event','First call with a new client','3-minute prepared talk to a small group','Impromptu opinion asked in a group meeting','Negotiating your own rate','Presenting 5–10 min of your work to a client','Speaking up in a group of 8+ people'];
+// Assign stable sequential task ids (t1..tN) — compatible with earlier backups
+let _tc=0; const PLAN = RAW_PLAN.map(w=>({...w,
+  days:w.days.map(d=>({...d,tasks:d.tasks.map(t=>({id:'t'+(++_tc),kind:t[0],text:t[1],link:t[2]}))})),
+  weekTasks:(w.weekTasks||[]).map(t=>({id:'t'+(++_tc),kind:t[0],text:t[1],link:t[2]}))
+}));
+const ALL_DAYS = PLAN.flatMap(w=>w.days);
+const ALL_TASKS = PLAN.flatMap(w=>[...w.days.flatMap(d=>d.tasks),...w.weekTasks]);
+const weekForDay = d => PLAN.find(w=>w.days.some(x=>x.d===d)) || PLAN[PLAN.length-1];
+const weekTaskList = w => [...w.days.flatMap(d=>d.tasks),...w.weekTasks];
+
+/* ---------- Reference content ---------- */
+const CONF = ['2-minute small talk with a stranger','5-minute small talk at a networking event','First call with a new client','3-minute prepared talk to a small group','Impromptu opinion asked in a group meeting','Negotiating your own rate','Presenting 5–10 min of your work to a client','Speaking up in a group of 8+ people'];
 const SKILLS = ['Opening conversations (clean, unhurried)','Keeping them going (questions & follow-ups)','Active listening (the other person feels heard)','Exits (ending without awkwardness)','Filler-word control (um/uh/you know)','Structure (organized talk, clear point)','Storytelling (talk that carries a story)','Voice energy & presence','Impromptu composure','Professional client communication'];
-const TOPICS = [
-  'The most underrated skill for freelancers','A mistake a client made that taught you more than any success','Why you chose freelance work over a job','Something you would do differently in your first client project','The best piece of advice you ever got (and the worst)','How you stay organized without anyone watching','A tool or habit that changed your work','The difference between a good brief and a great one','Your first freelance client — what happened?','What "professional" actually means to you','A time you had to say no and how you handled it','Lagos as a place to do business — one strength, one friction','The hardest conversation you have ever had with a client','What you would tell a beginner in your field','A project you are proud of that nobody sees','How you handle scope creep','Your best "bad day to good deliverable" story','One thing you charge for that clients don’t expect','The best 15 minutes of your week (work-wise) and why','If you were starting your freelance business again Monday, your first three actions'
+const ANCHORS = ['1 = avoid it or freeze','2 = only with heavy prep, still rough','3 = doable with prep, mostly fine','4 = do it spontaneously, mostly smooth','5 = automatic; can do it while thinking about other things'];
+const CCOLS=['d1','d30','d60'], RCOLS=['d1','d14','d30','d45','d60'], COLL={d1:'Day 1',d14:'Day 14',d30:'Day 30',d45:'Day 45',d60:'Day 60'};
+const TOPICS = ['The most underrated skill for freelancers','A mistake a client made that taught you more than any success','Why you chose freelance work over a job','Something you\'d do differently in your first client project','The best piece of advice you ever got (and the worst)','How you stay organized without anyone watching','A tool or habit that changed your work','The difference between a good brief and a great one','Your first freelance client — what happened?','What “professional” actually means to you','A time you had to say no and how you handled it','Lagos as a place to do business — one strength, one friction','The hardest conversation you\'ve ever had with a client','What you\'d tell a beginner in your field','A project you\'re proud of that nobody sees','How you handle scope creep','Your best “bad day → good deliverable” story','One thing you charge for that clients don\'t expect','The best 15 minutes of your week (work-wise) and why','If you were starting your freelance business again Monday, your first three actions'];
+const FORD = {F:{label:'Family / Background',seeds:['Where are you from originally?','What did you grow up around?','Who in your family do you take after?']},O:{label:'Occupation',seeds:['What\'s the most interesting thing about your work right now?','What got you into this field?','What\'s a typical day actually like?','What\'s the most rewarding part?']},R:{label:'Recreation',seeds:['What do you do when you have a full weekend?','Any hobbies you\'ve been into lately?','What are you reading / listening to / watching these days?','Travel — where\'s your favorite place you\'ve been?']},D:{label:'Dreams / Goals',seeds:['What\'s the project you\'re most excited about coming up?','Where do you want this business (life) in two years?','If budget and time were no object, what would you work on?']}};
+const SCRIPTS = [
+ {id:'pitch',t:'60-second pitch structure',k:'structure',b:'One sentence on who you help → what you do for them → one proof point (client/result/number) → what makes your approach different → soft close (“I\'d love to hear more about what you\'re working on.”).'},
+ {id:'disc',t:'Discovery call flow (10 min)',k:'structure',b:'Thank + frame agenda → “Walk me through what you\'re trying to solve” (listen, HEAR) → 2 clarifying questions → “Here\'s how I\'d typically approach that…” (90 sec, structured) → confirm next step + date → close warm.'},
+ {id:'ref',t:'Referral email (send, don\'t overthink)',k:'script',b:'Hi [Name] — you\'ve been one of my favorite projects to work with, and I wanted to ask you something. If anyone in your network is struggling with [problem you solve], would you be open to introducing me? No pressure either way — and thanks again for the [specific thing] on [project]. — [You]'},
+ {id:'fu',t:'48-hour follow-up note',k:'script',b:'Great catching up on [day]. Really enjoyed the bit about [specific thing they said]. As promised, here\'s [resource/intro/thing you offered]. Let\'s keep in touch — I\'ll check back in a few weeks.'},
+ {id:'ask',t:'Listener ask (recruiting your trusted audience)',k:'script',b:'I\'m doing a 60-day training to get better at talking — small talk and live speaking. Part of the program is delivering two 5-minute talks to a small, friendly audience. Would you be up for sitting in for one (30 min, includes coffee/chat after)? You\'d only need to answer 5 quick questions afterward. No pressure to be a “critic.”'},
+ {id:'open',t:'5 small-talk openers (situation-based, not greeting-based)',k:'list',items:['“How did you end up at [event]?”','“Is this your first time here, or a regular?”','Comment on something true in the room (the food, the line, the weather) + a question.','“I\'m [name], by the way — [one line about what you do]. What do you do?”','At a queue/wait: light observation + “Are you a regular here?”']},
+ {id:'exit',t:'3 exit lines',k:'list',items:['“I\'m going to go say hello to [person/serve the next thing] — it was great talking with you, [name].”','“I should get going, but I really enjoyed this. Let\'s keep in touch — [LinkedIn/handle].”','“I\'ve got a hard stop coming up — this was a great conversation. Thank you for [specific thing].”']}
 ];
-/* ========== STATE ========== */
-let state = JSON.parse(localStorage.getItem('clearer-progress-v1') || '{}');
-function initState() {
-  if (!state || typeof state !== 'object') state = {};
-  state.completed = state.completed || {};
-  state.notes = state.notes || {};
-  state.reps = state.reps || [];
-  state.recordings = state.recordings || [];
-  state.feedback = state.feedback || [];
-  state.reviews = state.reviews || {};
-  state.assessments = state.assessments || { 1: { conf: Array(8).fill(0), rubric: Array(10).fill(0) } };
-  state.ford = state.ford || Array(12).fill('');
-  return state;
+const KIT = [['phone','Phone (voice memos + camera)','Every recording rep','You have it'],['podcast','Think Fast, Talk Smart (Stanford GSB podcast)','Every week, 1–2 episodes','Free'],['lowndes','“How to Talk to Anyone” — Leil Lowndes','Weeks 1–2 (one trick/day)','~$10–15'],['fine','“The Fine Art of Small Talk” — Debra Fine','Weeks 3–4 (~1 chapter/day)','~$10–15'],['abrahams','“Think Faster, Talk Smarter” — Matt Abrahams','Weeks 5–6','~$12–16'],['cabane','“The Charisma Myth” — Olivia Fox Cabane','Weeks 7–8 (chapters + 10-min presence drills)','~$12–16'],['listeners','Trusted listeners (2–5 people)','Weeks 6 & 8 milestone talks','Coffee, maybe'],['quiet','“Quiet” — Susan Cain (optional)','Optional reframe read, any week','~$10 (skip if tight)']];
+const D1CHK = [['c-books','Books ordered'],['c-podcast','Podcast subscribed'],['c-recorder','Phone recorder tested (record 10 seconds, play it back, you can count a filler in it)'],['c-folder','Folder created: ~/comm-training/ with recordings/, logs/, evaluations/, feedback/']];
+const TIME = [['Weekday mornings (or commutes)','1 podcast episode (passive)','~15–25'],['Weekdays, any time','1 focused practice block','25'],['Saturday','Optional light practice or rest','0–15'],['Sunday evening','Weekly Evaluation (non-negotiable)','20'],['Per week','2–4 scheduled Social Reps (real conversations)','5–30 each']];
+const RULES = [['Social reps are meetings.','Put them in your calendar like a client call. They don\'t count if they\'re ad-hoc and unlogged.'],['Record everything.','Phone voice memos (audio) or the camera app (video for talks). If it isn\'t recorded, it didn\'t happen — for evaluation purposes.'],['The Sunday Review is the program.','You can miss a drill; you don\'t miss the review. It\'s what makes this training instead of drifting.']];
+const RECPROTO = ['Record the rep (voice memo for pitches/impromptus; camera for talks).','Play it back once, pen in hand. Count every “um / uh / you know / basically / like.” That number is your headline metric.','Write one thing to fix next time in your Recording Log.','Be honest. The plan runs on the deltas between recordings, not the absolute numbers.','(Optional bonus: count words ÷ minutes for rough pace — target 120–150 words/min. Skip if it feels like homework.)'];
+const AUDPROTO = ['Recruit by Day 20 (Week 2): ask 2–3 people to be “listeners” — two 30-minute slots over the next 60 days, nothing more. Say it plainly.','The talk is 5–7 minutes, live, on video (your phone on a shelf). Bring the same prep a real client presentation would get.','Each listener fills a 5-question feedback form during or right after. It takes them 3 minutes; it gives you more signal than a month of guessing.','The audience ladder: Talk #1 (Week 6) can be 1–2 listeners. Talk #2 (Week 8) should be 2–5, or a small meetup/event (10–25 people) with the escape hatch of a 5-minute slot, not 20.'];
+const BATTERY = ['Cap: max 3 in-person social reps per week, no two on the same day unless it\'s a full event day. (A milestone talk = a full social day; schedule nothing else that day.)','After any in-person rep: 20 minutes of recharge (walk, music, quiet) scheduled before your next task.','Written networking (a personalized DM, LinkedIn note, community post) counts as half a rep — use it to top up weeks when your battery is low.','If pre-rep anxiety is above 7/10, shrink the rep to half its planned length instead of skipping it.','Your written strengths are part of the program, not a consolation prize: clear emails, async feedback, and documented follow-ups are where freelancers win deals.'];
+const RESET = 'Missed 3+ practice days in a week → no catch-up pile. Do that week\'s 3 most important reps on Sat/Sun. In the Sunday Review, write one line on why it slipped (battery, schedule, mood) and drop next week\'s rep cap by one. Never skip the Sunday Review — that\'s the engine.';
+const MAINT = ['Phone recordings: 2×/week (same scenarios: pitch, impromptu).','One live talk per month — to friends, a small group, a meetup, or a client where it fits.','Coffee chats: 2/month. Referral ask: 1/month to a happy client.','Sunday 15-min review: forever. It\'s cheap; it compounds.'];
+const D30Q = ['Which of the 10 rubric skills improved most? Least?','What\'s one conversation I\'d have avoided a month ago that I did this week?','What do I still physically feel when I open my mouth to speak? Where in my body?','Which 2 weeks\' exercises should become permanent habits?','What would make Weeks 5–8 harder in a good way?'];
+const D60Q = ['Day 1 vs Day 60 recordings — name 3 specific, audible differences.','Which skill is now your strength (not just improved — actually good)?','Which 2 skills are still weakest? What will you do about them in the next 90 days?','What did you learn about your own social battery (timing, limits, recharging)?','Which one rep from the 60 days surprised you most?','Would you recommend this exact plan to another introverted freelancer? What would you change?','What\'s your speaking goal for 12 months from now?','One sentence to your Day-1 self.'];
+const FBQ = ['What was the one main point of the talk, in your words?','What held your attention most? (a moment, a story, a line)','Where did your mind start to wander, if anywhere?','One thing the speaker could do to make the next talk even better?'];
+const REPTYPES = ['stranger','peer','client','family','coffee chat','event','live talk','written (½)'];
+const SCEN = ['intro60','talk3','pitch60','impromptu','talk5 (video)','story','elevator30','discovery-opener','rehearsal','client-presentation','defend-rate','no-script','other'];
+
+/* =========================================================
+   STATE (localStorage)
+   ========================================================= */
+const KEY='comm-training-60', DEFAULT_START='2026-09-07';
+const blankEmail=()=>({sent:false,date:'',to:''});
+const emptyReview=()=>({repsDone:'',repsPlanned:'',recDone:'',recPlanned:'',reading:false,best:'',worst:'',rating:0,reason:'',keep:'',drop:'',scheduled:false,slipped:'',completedAt:''});
+function initial(){return{version:1,startDate:DEFAULT_START,todayOverride:'',taskDone:{},dayNotes:{},socialReps:[],recordings:[],
+ confidence:{d1:Array(8).fill(null),d30:Array(8).fill(null),d60:Array(8).fill(null)},
+ rubric:{d1:Array(10).fill(null),d14:Array(10).fill(null),d30:Array(10).fill(null),d45:Array(10).fill(null),d60:Array(10).fill(null)},
+ weeklyReviews:{},d30Answers:Array(5).fill(''),d60Answers:Array(8).fill(''),next90:{keep:'',attack:'',cadence:''},
+ ford:{F:['','',''],O:['','',''],R:['','',''],D:['','','']},listeners:[],feedback:[],toolkitChecked:{},
+ referrals:[blankEmail(),blankEmail(),blankEmail()],followups:[blankEmail(),blankEmail()],
+ checkpoint:{d30TalkTighter:false,d60Delta:'',notes:{},verdict:{}},talkNotes:{talk1Keep:'',talk1Fix:'',talk2Notes:'',cameraNotes:''},lastSaved:''}}
+function merge(base,inc){const o={...base};for(const k in inc){if(inc[k]&&typeof inc[k]==='object'&&!Array.isArray(inc[k])&&base[k]&&typeof base[k]==='object'&&!Array.isArray(base[k]))o[k]={...base[k],...inc[k]};else if(inc[k]!==undefined)o[k]=inc[k];}return o}
+function load(){try{const raw=localStorage.getItem(KEY);if(!raw)return initial();const p=JSON.parse(raw);return merge(initial(),p.state||p.data||p)}catch(e){return initial()}}
+let S=load();
+function save(){S.lastSaved=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}updateChrome()}
+function setPath(path,val){const ks=path.split('.');let o=S;for(let i=0;i<ks.length-1;i++){if(o[ks[i]]==null)o[ks[i]]=isNaN(ks[i+1])?{}:[];o=o[ks[i]]}o[ks[ks.length-1]]=val}
+function getPath(path){return path.split('.').reduce((o,k)=>o==null?undefined:o[k],S)}
+const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+
+/* =========================================================
+   UTILS
+   ========================================================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const parseISO=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const toISO=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const addDays=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r};
+const dateForDay=n=>addDays(parseISO(S.startDate),n-1);
+const isoForDay=n=>toISO(dateForDay(n));
+const todayISO=()=>S.todayOverride||toISO(new Date());
+const dayForDate=iso=>Math.round((parseISO(iso)-parseISO(S.startDate))/864e5)+1;
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],WDL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const medLabel=d=>`${WD[d.getDay()]}, ${d.getDate()} ${MO[d.getMonth()]}`;
+const longLabel=d=>`${WDL[d.getDay()]}, ${d.getDate()} ${MO[d.getMonth()]} ${d.getFullYear()}`;
+const rangeLabel=(a,b)=>a.getMonth()===b.getMonth()?`${a.getDate()}–${b.getDate()} ${MO[a.getMonth()]}`:`${a.getDate()} ${MO[a.getMonth()]} – ${b.getDate()} ${MO[b.getMonth()]}`;
+const fmtISO=iso=>iso?medLabel(parseISO(iso)):'';
+const curDay=()=>dayForDate(todayISO());
+const dayLabel=()=>{const d=curDay();return d<1?'T−'+(1-d):d>60?'Done':'Day '+d};
+
+/* =========================================================
+   DERIVED STATS & GATES
+   ========================================================= */
+const repW=t=>t.startsWith('written')?0.5:1;
+function repStats(){const r=S.socialReps;const by=t=>r.filter(x=>x.type===t).length;return{total:r.reduce((a,x)=>a+repW(x.type),0),count:r.length,stranger:by('stranger'),coffee:by('coffee chat'),liveTalks:by('live talk'),events:by('event'),avgRating:r.length?r.reduce((a,x)=>a+x.rating,0)/r.length:0,cleanExit:r.length?r.filter(x=>x.cleanExit).length/r.length:0}}
+function recStats(){const sorted=[...S.recordings].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);const sc=n=>sorted.filter(r=>r.scenario===n);const fpm=r=>r&&r.duration>0?r.fillers/r.duration*60:null;const withDur=sorted.filter(r=>r.duration>0);
+ return{sorted,count:sorted.length,baselineIntro:sc('intro60')[0],latestIntro:sc('intro60').slice(-1)[0],baselineTalk:sc('talk3')[0],latestTalk:sc('talk3').slice(-1)[0],firstPitch:sc('pitch60')[0],latestPitch:sc('pitch60').slice(-1)[0],fpm,avgFpm:withDur.length?withDur.reduce((a,r)=>a+fpm(r),0)/withDur.length:0}}
+const sum=a=>a.reduce((x,v)=>x+(v??0),0), filled=a=>a.every(v=>v!=null);
+const f_=v=>v==null?'—':String(v);
+function computeGates(){
+ const reps=repStats(),rec=recStats();const ford=Object.values(S.ford).flat().filter(q=>q.trim()).length;const refs=S.referrals.filter(e=>e.sent).length,fus=S.followups.filter(e=>e.sent).length;const fb1=S.feedback.filter(f=>f.talk==1).length,fb2=S.feedback.filter(f=>f.talk==2).length;
+ const up=(col,i,min)=>{const a=S.rubric.d1[i],b=S.rubric[col][i];return a==null||b==null?null:b-a>=min};
+ const atLeast=(col,i,v)=>{const b=S.rubric[col][i];return b==null?null:b>=v};
+ const all=arr=>arr.every(v=>v===true)?true:arr.some(v=>v===null)?null:false;
+ const r60=S.rubric.d60;
+ const mk=(id,day,title,criteria)=>{const passed=criteria.filter(c=>c.pass===true).length;return{id,day,title,criteria,passed,total:criteria.length,allPass:passed===criteria.length}};
+ return[
+  mk('d14',14,'Day 14 gate',[
+   {label:'≥4 social reps logged',pass:reps.total>=4,detail:`${reps.total} logged`},
+   {label:'Pitch fillers ≤ baseline −1',pass:rec.latestPitch&&rec.baselineIntro?rec.latestPitch.fillers<=rec.baselineIntro.fillers-1:null,detail:`latest pitch ${f_(rec.latestPitch?.fillers)} vs baseline intro ${f_(rec.baselineIntro?.fillers)}`},
+   {label:'FORD bank complete (12 questions)',pass:ford>=12,detail:`${ford}/12 written`},
+   {label:'Skills 1, 2, 4 each up ≥0.5 from Day 1',pass:all([0,1,3].map(i=>up('d14',i,.5))),detail:[0,1,3].map(i=>`S${i+1}: ${f_(S.rubric.d1[i])}→${f_(S.rubric.d14[i])}`).join(' · ')}]),
+  mk('d30',30,'Day 30 gate',[
+   {label:'≥10 reps total',pass:reps.total>=10,detail:`${reps.total} logged`},
+   {label:'≥4 stranger reps',pass:reps.stranger>=4,detail:`${reps.stranger} stranger`},
+   {label:'≥1 coffee chat',pass:reps.coffee>=1,detail:`${reps.coffee} coffee chat(s)`},
+   {label:'Day-30 3-min talk audibly tighter than Day 1 (you judge)',pass:S.checkpoint.d30TalkTighter?true:(rec.latestTalk&&rec.baselineTalk&&rec.latestTalk!==rec.baselineTalk?false:null),detail:`talk3 fillers ${f_(rec.baselineTalk?.fillers)} → ${f_(rec.latestTalk?.fillers)} · tick the box when you've listened back`},
+   {label:'Skills 1, 2, 4 all ≥3',pass:all([0,1,3].map(i=>atLeast('d30',i,3))),detail:[0,1,3].map(i=>`S${i+1}: ${f_(S.rubric.d30[i])}`).join(' · ')},
+   {label:'Confidence total up ≥6 points',pass:filled(S.confidence.d1)&&filled(S.confidence.d30)?sum(S.confidence.d30)-sum(S.confidence.d1)>=6:null,detail:`${sum(S.confidence.d1)} → ${sum(S.confidence.d30)} (Δ ${sum(S.confidence.d30)-sum(S.confidence.d1)})`}]),
+  mk('d45',45,'Day 45 gate',[
+   {label:'≥18 reps total',pass:reps.total>=18,detail:`${reps.total} logged`},
+   {label:'Milestone Talk #1 delivered (logged as live talk)',pass:reps.liveTalks>=1,detail:`${reps.liveTalks} live talk(s)`},
+   {label:'Talk #1 feedback collected',pass:fb1>=1,detail:`${fb1} form(s)`},
+   {label:'2 referral emails sent',pass:refs>=2,detail:`${refs}/3 sent`},
+   {label:'Skills 5, 6, 9 each ≥3',pass:all([4,5,8].map(i=>atLeast('d45',i,3))),detail:[4,5,8].map(i=>`S${i+1}: ${f_(S.rubric.d45[i])}`).join(' · ')}]),
+  mk('d60',60,'Day 60 gate',[
+   {label:'≥24 reps total',pass:reps.total>=24,detail:`${reps.total} logged`},
+   {label:'2 milestone talks delivered',pass:reps.liveTalks>=2,detail:`${reps.liveTalks} live talk(s) · feedback T1 ${fb1}, T2 ${fb2}`},
+   {label:'3 referral emails + 2 follow-ups sent',pass:refs>=3&&fus>=2,detail:`${refs}/3 referrals · ${fus}/2 follow-ups`},
+   {label:'No skill below 3',pass:filled(r60)?r60.every(v=>v>=3):null,detail:filled(r60)?`lowest: ${Math.min(...r60)}`:'rubric Day 60 incomplete'},
+   {label:'At least 4 skills at 4+',pass:filled(r60)?r60.filter(v=>v>=4).length>=4:null,detail:filled(r60)?`${r60.filter(v=>v>=4).length} skills at 4+`:'rubric Day 60 incomplete'},
+   {label:'Final 3-min talk clearly stronger than baseline (≥ medium)',pass:S.checkpoint.d60Delta?S.checkpoint.d60Delta!=='small':null,detail:S.checkpoint.d60Delta?`you rated the gap: ${S.checkpoint.d60Delta}`:'rate the gap below'}])
+ ]}
+
+/* =========================================================
+   UI HELPERS
+   ========================================================= */
+const badge=(t,tone='')=>`<span class="badge ${tone}">${t}</span>`;
+const bar=(v,m,cls='')=>`<div class="bar ${cls}"><i style="width:${m>0?Math.min(100,v/m*100):0}%"></i></div>`;
+function ring(v,size=64,stroke=6,inner=''){const r=(size-stroke)/2,c=2*Math.PI*r,p=Math.max(0,Math.min(1,v));return`<div class="ring" style="width:${size}px;height:${size}px"><svg width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#e7e5e4" stroke-width="${stroke}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#2f7f72" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p)}"/></svg><span>${inner}</span></div>`}
+const card=(h,b,cls='')=>`<div class="card ${cls}">${h}${b}</div>`;
+const ch=(title,sub='',right='')=>`<div class="card-h"><div><h3>${title}</h3>${sub?`<p class="sub">${sub}</p>`:''}</div>${right?`<div class="row">${right}</div>`:''}</div>`;
+const tabs=(list,cur,prefix)=>`<div class="tabs">${list.map(t=>`<button class="${t.id===cur?'on':''}" data-act="nav" data-to="${prefix}/${t.id}">${t.ic||''} ${t.label}${t.n!==undefined?`<span class="n">${t.n}</span>`:''}</button>`).join('')}</div>`;
+function taskRow(t){const done=!!S.taskDone[t.id];const k=KIND[t.kind];return`<div class="task ${done?'done':''}"><button class="box" data-act="toggle-task" data-id="${t.id}" aria-label="toggle">${done?'✓':''}</button><span class="kind" style="background:${k[2]}">${k[1]}</span><div style="min-width:0;flex:1"><p>${esc(t.text)}</p><div class="meta"><span>${k[0]}</span>${t.link?`<button data-act="nav" data-to="${t.link}">Open ↗</button>`:''}</div></div></div>`}
+const field=(label,inner,hint='',cls='')=>`<div class="field ${cls}"><label class="lbl">${label}${hint?` <small>${hint}</small>`:''}</label>${inner}</div>`;
+const inp=(bind,val,attrs='')=>`<input class="in" data-bind="${bind}" value="${esc(val)}" ${attrs}>`;
+const ta=(bind,val,attrs='')=>`<textarea class="in" data-bind="${bind}" ${attrs}>${esc(val)}</textarea>`;
+const scores=(bind,val,min,max,step,rerender=true)=>{let o='';for(let v=min;v<=max+1e-9;v+=step){const x=Math.round(v*2)/2;o+=`<button class="${val===x?'on':''}" data-act="score" data-bind="${bind}" data-v="${x}" data-rr="${rerender?1:0}">${x}</button>`}return`<div class="scores">${o}</div>`};
+const chk=(bind,val,label,rr=0)=>`<label class="chk"><input type="checkbox" data-bind="${bind}" data-type="bool" data-rr="${rr}" ${val?'checked':''}> ${label}</label>`;
+const wkLabel=w=>w.n>8?'Final':'Week '+w.n;
+
+function fillerChart(recs,height=160){
+ const pts=[...recs].filter(r=>r.duration>0).sort((a,b)=>a.date<b.date?-1:1).map((r,i)=>({i,r,v:r.fillers/r.duration*60}));
+ if(pts.length<2)return`<div class="empty">Log at least two recordings to see your trend.</div>`;
+ const W=600,H=height,pl=32,pb=22,pt=10,n=pts.length;const maxV=Math.max(1,...pts.map(p=>p.v))*1.15;
+ const x=i=>pl+i/(n-1)*(W-pl-8),y=v=>pt+(1-v/maxV)*(H-pt-pb);
+ const mx=pts.reduce((a,p)=>a+p.i,0)/n,my=pts.reduce((a,p)=>a+p.v,0)/n;const den=pts.reduce((a,p)=>a+(p.i-mx)**2,0)||1;const sl=pts.reduce((a,p)=>a+(p.i-mx)*(p.v-my),0)/den,b=my-sl*mx;
+ const col={intro60:'#e11d48',talk3:'#7c3aed',pitch60:'#0284c7',impromptu:'#ea580c','talk5 (video)':'#c026d3'};
+ const ticks=[0,maxV/2,maxV].map(v=>Math.round(v*10)/10);
+ return`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${height}px;display:block">${ticks.map(t=>`<line x1="${pl}" x2="${W-8}" y1="${y(t)}" y2="${y(t)}" stroke="#e7e5e4" stroke-dasharray="3 3"/><text x="${pl-6}" y="${y(t)+3}" font-size="10" text-anchor="end" fill="#a8a29e">${t}</text>`).join('')}
+ <line x1="${x(0)}" y1="${y(Math.max(0,b))}" x2="${x(n-1)}" y2="${y(Math.max(0,sl*(n-1)+b))}" stroke="#2f7f72" stroke-width="1.5" stroke-dasharray="6 4" opacity=".6"/>
+ <path d="${pts.map((p,i)=>`${i?'L':'M'}${x(p.i)},${y(p.v)}`).join(' ')}" fill="none" stroke="#1c1917" stroke-width="1.5" opacity=".35"/>
+ ${pts.map(p=>`<circle cx="${x(p.i)}" cy="${y(p.v)}" r="5" fill="${col[p.r.scenario]||'#78716c'}" stroke="#fff" stroke-width="1.5"><title>${esc(fmtISO(p.r.date))} · ${esc(p.r.scenario)} · ${p.r.fillers} fillers in ${p.r.duration}s</title></circle>`).join('')}
+ <text x="${x(0)}" y="${H-6}" font-size="10" fill="#a8a29e">${fmtISO(pts[0].r.date)}</text><text x="${x(n-1)}" y="${H-6}" font-size="10" fill="#a8a29e" text-anchor="end">${fmtISO(pts[n-1].r.date)}</text></svg>
+ <div class="legend">${Object.entries(col).map(([k,c])=>`<span><i style="background:${c}"></i>${k}</span>`).join('')}<span><i style="background:#78716c"></i>other</span><span style="margin-left:auto">trend ${sl<-.01?'↓ improving':sl>.01?'↑ rising':'flat'}</span></div>`}
+
+/* =========================================================
+   ROUTER
+   ========================================================= */
+const NAVS=[['dashboard','Today','🏠'],['plan','Plan','📅'],['logs','Logs','📓','social'],['evaluate','Evaluate','📈','checkpoints'],['toolkit','Toolkit','🧰','topics'],['data','Backup','💾']];
+let R={page:'dashboard',tab:'',focusDay:null};
+function parseHash(){const h=location.hash.replace(/^#\/?/,'');const[p,t]=h.split('/');R.page=NAVS.some(n=>n[0]===p)?p:'dashboard';R.tab=t||''}
+function go(to,focusDay=null){
+ if(to.startsWith('rubcol/')){rubCol=to.split('/')[1];render();return}   // rubric column tabs (no route change)
+ const[p,t='']=to.split('/');R.focusDay=focusDay;location.hash=`/${p}${t?'/'+t:''}`;R.page=p;R.tab=t;render();window.scrollTo({top:0,behavior:'smooth'})}
+window.addEventListener('hashchange',()=>{parseHash();render()});
+
+function updateChrome(){
+ const done=Object.keys(S.taskDone).length,pct=Math.round(done/ALL_TASKS.length*100);
+ $('#pill-m').textContent=dayLabel();$('#pill-d').textContent=dayLabel();
+ $('#prog-bar').style.width=pct+'%';$('#prog-txt').textContent=`${done}/${ALL_TASKS.length} tasks · ${pct}%`;
+ $('#save-txt').textContent=S.lastSaved?`💾 Saved ${new Date(S.lastSaved).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`:'💾 Autosaves in browser';
+ const nav=NAVS.map(n=>`<button class="${R.page===n[0]?'on':''}" data-act="nav" data-to="${n[0]}${n[3]?'/'+n[3]:''}"><span class="ic">${n[2]}</span>${n[1]}</button>`).join('');
+ $('#sidenav').innerHTML=nav;$('#bottomnav').innerHTML=nav;
 }
-state = initState();
-function save() {
-  try { localStorage.setItem('clearer-progress-v1', JSON.stringify(state)); document.getElementById('statusText').textContent = 'Progress saved to this browser.'; }
-  catch (e) { document.getElementById('statusText').textContent = 'Browser save unavailable — download a backup before closing.'; }
+
+/* =========================================================
+   PAGES
+   ========================================================= */
+function render(){
+ updateChrome();
+ const pages={dashboard:pgDashboard,plan:pgPlan,logs:pgLogs,evaluate:pgEvaluate,toolkit:pgToolkit,data:pgData};
+ if(!(R.page==='toolkit'&&(R.tab===''||R.tab==='topics'))&&IMP.timer){impStop();IMP.pausedFrom=IMP.phase;IMP.phase='idle'}
+ $('#app').innerHTML=`<div class="page">${pages[R.page]()}</div>`;
+ if(R.page==='plan'&&R.focusDay){const el=document.getElementById('day-'+R.focusDay);if(el)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),80)}
 }
-/* ========== RENDER ========== */
-function renderDays() {
-  const list = document.getElementById('dayList');
-  list.innerHTML = DAYS.map(d => {
-    const done = !!state.completed['d'+d.n];
-    const tags = [];
-    if (d.k==='checkpoint') tags.push('<span class="badge badge-check">Checkpoint</span>');
-    if (d.k==='milestone') tags.push('<span class="badge badge-milestone">Milestone</span>');
-    if (d.k==='social') tags.push('<span class="badge badge-social">Social</span>');
-    if (d.k==='review') tags.push('<span class="badge badge-review">Review</span>');
-    if (d.k==='rest') tags.push('<span class="badge badge-check">Rest</span>');
-    return `<article class="day-row" aria-label="Day ${d.n}: ${d.t}">
-      <label style="display:flex;align-items:center;cursor:pointer;" title="Mark complete">
-        <input type="checkbox" ${done?'checked':''} onchange="toggleDay(${d.n},this.checked)" aria-label="Day ${d.n} complete">
-      </label>
-      <div class="day-body"><div style="font-family:var(--serif);font-size:15px;color:var(--ink);margin-bottom:2px;">Day ${d.n} <span style="font-size:11px;color:var(--faint);font-family:var(--sans);font-weight:400;">— ${d.m} min</span></div><h4 style="font-size:16px;margin:0 0 4px;">${d.t}</h4><p class="desc">${d.d}</p><div class="day-tags">${tags.join('')}<span style="font-size:10px;color:var(--faint);">${d.labels.join(' · ')}</span></div></div>
-      <div style="min-width:54px;font-size:11px;color:var(--faint);text-align:right;"><strong style="font-size:18px;color:var(--coral);font-family:var(--serif);display:block;line-height:1;">${d.n}</strong><span style="font-size:9px;">Day ${d.n}</span></div>
-    </article>`;
-  }).join('');
-}
-function toggleDay(n, checked) { state.completed['d'+n] = checked; save(); renderDays(); updateStats(); }
-/* ========== STUDIO ========== */
-let timerInterval = null, timerLeft = 0, timerLabel = '';
-function startTimer(sec) { clearInterval(timerInterval); timerLeft = sec; timerLabel = sec === 1500 ? 'Working focus' : sec === 90 ? 'Impromptu' : 'Pitch'; updateTimer(); timerInterval = setInterval(() => { timerLeft--; if (timerLeft <= 0) { clearInterval(timerInterval); timerLeft = 0; timerLabel = 'Done'; updateTimer(); } else updateTimer(); }, 1000); save(); }
-function stopTimer() { clearInterval(timerInterval); timerLeft = 0; timerLabel = ''; updateTimer(); }
-function updateTimer() { const m = String(Math.floor(timerLeft/60)).padStart(2,'0'); const s = String(timerLeft%60).padStart(2,'0'); document.getElementById('timerDisplay').textContent = m+':'+s + (timerLabel ? '  · '+timerLabel : ''); }
-let topicIndex = Math.floor(Math.random()*TOPICS.length);
-function drawTopic() { topicIndex = (topicIndex + 1 + Math.floor(Math.random()*(TOPICS.length-1))) % TOPICS.length; document.getElementById('topicBox').textContent = TOPICS[topicIndex]; save(); }
-function saveRecording() { const s = document.getElementById('recScenario').value; const d = parseInt(document.getElementById('recDur').value)||90; const f = parseInt(document.getElementById('recFill').value)||0; const fix = document.getElementById('recFix').value.trim(); state.recordings.push({id: Date.now(), date: new Date().toISOString().slice(0,10), scenario:s, duration:d, fillers:f, fix:fix, medium:'Audio', filename:'', words:0}); save(); renderRecordings(); updateStats(); document.getElementById('recFix').value=''; alert('Recording logged. Your next take has a direction.'); }
-/* ========== LOGS ========== */
-function renderSocials() {
-  const box = document.getElementById('socialLogs');
-  if (!state.reps.length) { box.innerHTML = '<p style="color:var(--faint);font-size:14px;">No entries yet. Add one below.</p>'; return; }
-  box.innerHTML = '<h3>Conversation log</h3><div class="log-list">' + state.reps.slice().reverse().map(r => `<div class="log-item"><div class="date">${r.date||'-'} ${r.time||''}</div><div class="body"><strong>${r.type}</strong> · ${r.duration} min · ${r.questions} questions · exit: ${r.cleanExit?'Yes':'No'} · energy: ${r.energyBefore}→${r.energyAfter} · rating ${r.rating}/5<br><span style="font-size:12.5px;color:var(--text-muted);">${r.note||'No note'}</span></div><div class="meta">${r.status||'completed'}</div></div>`).join('') + '</div>';
-}
-function renderRecordings() {
-  const box = document.getElementById('recordingLogs');
-  if (!state.recordings.length) { box.innerHTML = '<p style="color:var(--faint);font-size:14px;">No recordings yet. Use the studio to log one.</p>'; return; }
-  box.innerHTML = '<h3>Recording log</h3><div class="log-list">' + state.recordings.slice().reverse().map(r => `<div class="log-item"><div class="date">${r.date||'-'}</div><div class="body"><strong>${r.scenario}</strong> · ${r.duration}s · <strong>${r.fillers}</strong> fillers · fix: ${r.fix||'-'}</div><div class="mono">per min: ${r.duration>0? (r.fillers/r.duration*60).toFixed(1) : '-'}</div></div>`).join('') + '</div>';
-}
-function renderFeedback() {
-  const box = document.getElementById('feedbackLogs');
-  if (!state.feedback.length) { box.innerHTML = '<p style="color:var(--faint);font-size:14px;">No listener feedback yet. After Milestone Talk #1 / #2, use the form.</p>'; return; }
-  box.innerHTML = '<h3>Listener feedback</h3><div class="log-list">' + state.feedback.map(f => `<div class="log-item"><div class="date">Talk #${f.talk} · ${f.date}</div><div class="body"><strong>${f.listener}</strong> · pace ${f.pace}/5 · clarity ${f.clarity}/5<br><span style="font-size:12.5px;color:var(--text-muted);">Point: ${f.mainPoint||'-'} · Improvement: ${f.improvement||'-'}</span></div></div>`).join('') + '</div>';
-}
-function renderOutreach() {
-  const box = document.getElementById('outreachLogs');
-  if (!state.outreach.length) { box.innerHTML = '<p style="color:var(--faint);font-size:14px;">No outreach yet. Log referral emails and follow-ups here.</p>'; return; }
-  box.innerHTML = '<h3>Outreach log</h3><div class="log-list">' + state.outreach.map(o => `<div class="log-item"><div class="date">${o.date||'-'}</div><div class="body"><strong>${o.type}</strong> to ${o.recipient||'-'} · ${o.sent?'Sent':'Draft'}<br><span style="font-size:12.5px;color:var(--text-muted);">${o.note||'-'}</span></div></div>`).join('') + '</div>';
-}
-function showLog(kind) { ['social','recordings','feedback','outreach'].forEach(k => document.getElementById(k==='social'?'socialLogs':k==='recordings'?'recordingLogs':k==='feedback'?'feedbackLogs':'outreachLogs').style.display = (kind===k)?'block':'none'); }
-function addSocial() {
-  const d = document.getElementById('newSocialDate').value; const t = document.getElementById('newSocialType').value; const min = parseFloat(document.getElementById('newSocialMin').value)||0;
-  if (!d) return alert('Choose a date');
-  state.reps.push({id: Date.now(), date: d, time: '12:00', type: t, duration: min, questions: parseInt(document.getElementById('newSocialQ').value)||0, cleanExit: true, energyBefore: 5, energyAfter: 6, rating: 3, note: document.getElementById('newSocialNote').value.trim(), scheduled: true, inPerson: t!=='Written note', status: 'completed', milestone: 'none', audience: 0, recordingFile: ''});
-  save(); document.getElementById('newSocialNote').value=''; renderSocials(); updateStats(); showLog('social');
-}
-/* ========== REVIEWS ========== */
-function renderReview() {
-  const w = parseInt(document.getElementById('reviewWeek').value); const done = state.reviews['w'+w];
-  document.getElementById('reviewBest').value = done ? done.best : ''; document.getElementById('reviewHardest').value = done ? done.hardest : '';
-  document.getElementById('reviewRate').value = done ? (done.rating||6) : 6; document.getElementById('reviewRateLabel').textContent = done ? (done.rating||6) : 6;
-  document.getElementById('reviewKeep').value = done ? done.keep : ''; document.getElementById('reviewDone').textContent = done ? '✓ Review saved for Week '+w : '';
-}
-function saveReview() {
-  const w = parseInt(document.getElementById('reviewWeek').value);
-  state.reviews['w'+w] = { best: document.getElementById('reviewBest').value, hardest: document.getElementById('reviewHardest').value, rating: parseInt(document.getElementById('reviewRate').value), reason: '', keep: document.getElementById('reviewKeep').value, drop: '', reading: true, scheduled: true, plannedReps: 3, plannedRecordings: 3, missedDays: 0, slipped: '', complete: true };
-  save(); renderReview(); updateStats(); document.getElementById('reviewDone').textContent = '✓ Week '+w+' review saved';
-}
-/* ========== CONFIDENCE & RUBRIC ========== */
-function renderConf() {
-  const items = [];
-  for (let i=0;i<8;i++) {
-    const d = (state.assessments && state.assessments['30'] && state.assessments['30'].conf ? state.assessments['30'].conf[i] : 0) || (state.assessments && state.assessments['1'] && state.assessments['1'].conf ? state.assessments['1'].conf[i] : 0);
-    items.push(`<tr><td>${i+1}</td><td>${CONF_SITUATIONS[i]}</td><td><input type="number" min="1" max="10" value="${d||''}" style="width:60px;padding:4px;" onchange="updateConf(${i},this.value)"></td><td>—</td><td>—</td></tr>`);
-  }
-  document.getElementById('confBody').innerHTML = items.join('');
-}
-function updateConf(i,v) { if(!state.assessments) state.assessments={}; if(!state.assessments['30']) state.assessments['30']={conf:Array(8).fill(0),rubric:Array(10).fill(0)}; state.assessments['30'].conf[i]=parseInt(v)||0; save(); updateStats(); }
-function renderRubric() {
-  const items=[];
-  for(let i=0;i<10;i++){ const v=(state.assessments&&state.assessments['30']&&state.assessments['30'].rubric?state.assessments['30'].rubric[i]:0)||0; items.push(`<tr><td>${i+1}</td><td>${SKILLS[i]}</td><td><input type="number" min="1" max="5" step="0.5" value="${v||''}" style="width:60px;padding:4px;" onchange="updateRub(${i},this.value)"></td><td>—</td><td>—</td><td>—</td><td>—</td></tr>`); }
-  document.getElementById('rubricBody').innerHTML = items.join('');
-}
-function updateRub(i,v){ if(!state.assessments) state.assessments={}; if(!state.assessments['30']) state.assessments['30']={conf:Array(8).fill(0),rubric:Array(10).fill(0)}; state.assessments['30'].rubric[i]=parseFloat(v)||0; save(); updateStats(); }
-/* ========== STATS & GATES ========== */
-function updateStats() {
-  const reps = state.reps.length + state.outreach.filter(o=>o.sent).length; document.getElementById('statReps').textContent = reps;
-  document.getElementById('statRecordings').textContent = state.recordings.length;
-  const done = Object.keys(state.completed).length; document.getElementById('statCheck').textContent = done + ' / 60';
-  const recent = state.recordings.slice(-3); const avg = recent.length ? (recent.reduce((s,r)=>s+r.fillers,0)/recent.reduce((s,r)=>s+r.duration,0)*60).toFixed(1) : '0';
-  document.getElementById('statFiller').textContent = avg;
-  document.getElementById('gate14').textContent = (reps>=4 && state.ford.filter(x=>x.trim()).length>=12) ? '✓ Likely pass' : '—';
-  document.getElementById('gate30').textContent = (reps>=10) ? '✓ Likely pass' : '—';
-  document.getElementById('gate45').textContent = (reps>=18 && state.feedback.length>=1) ? '✓ Likely pass' : '—';
-  document.getElementById('gate60').textContent = (reps>=24 && state.feedback.length>=2) ? '✓ Likely pass' : '—';
-}
-/* ========== IMPORT / EXPORT ========== */
-function downloadProgress() { const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='clearer-progress.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
-function importProgress(input) { const f = input.files[0]; if(!f) return; const r = new FileReader(); r.onload = e => { try { const d = JSON.parse(e.target.result); if(!d||!d.format) return alert('Invalid file. Use a file exported from this page.'); Object.assign(state, d); save(); renderAll(); alert('Progress loaded from '+f.name+'. Your previous browser save was replaced.'); } catch { alert('Could not read file.'); } }; r.readAsText(f); input.value=''; }
-function renderAll() { renderDays(); renderSocials(); renderRecordings(); renderFeedback(); updateStats(); renderConf(); renderRubric(); renderReview(); drawTopic(); updateTimer(); }
-/* ========== INIT ========== */
-document.addEventListener('DOMContentLoaded', () => {
-  renderDays(); drawTopic(); renderSocials(); renderRecordings(); renderFeedback(); renderConf(); renderRubric(); renderReview(); updateStats();
-  document.getElementById('newSocialDate').value = new Date().toISOString().slice(0,10);
-  document.getElementById('reviewWeek').value = '1';
-  const hash = window.location.hash.replace('#','');
-  if(hash) { const el = document.getElementById(hash); if(el) setTimeout(()=>el.scrollIntoView({behavior:'smooth', block:'start'}), 60); }
-});
+
+/* ---------- Dashboard ---------- */
+function pgDashboard(){
+ const raw=curDay(),status=raw<1?'before':raw>60?'after':'active',fd=Math.min(60,Math.max(1,raw));
+ const day=ALL_DAYS.find(d=>d.d===fd),week=weekForDay(fd),date=dateForDay(fd);
+ const reps=repStats(),rec=recStats(),gates=computeGates(),next=gates.find(g=>g.day>=fd)||gates[3];
+ const done=Object.keys(S.taskDone).length,reviews=Object.values(S.weeklyReviews).filter(r=>r.completedAt).length;
+ const ws=isoForDay(week.days[0].d),we=isoForDay(week.days[week.days.length-1].d);
+ const wreps=S.socialReps.filter(r=>r.date>=ws&&r.date<=we),inPerson=wreps.filter(r=>!r.type.startsWith('written')).length,wtot=wreps.reduce((a,r)=>a+repW(r.type),0);
+ const dd=day.tasks.filter(t=>S.taskDone[t.id]).length;const isSun=date.getDay()===0,revDone=!!(S.weeklyReviews[week.n]||{}).completedAt;
+ const missed=ALL_DAYS.filter(d=>d.d<fd&&d.tasks.some(t=>!S.taskDone[t.id]));
+ return`
+ <section class="hero"><div class="hero-top"><div>
+   <p class="eyebrow">${status==='before'?`Program starts in ${1-raw} day${1-raw===1?'':'s'}`:status==='after'?'Program complete':`${wkLabel(week)} · ${esc(week.title)}`}</p>
+   <h1>${status==='active'?`Day ${fd}`:status==='before'?'Day 1 is coming':'You did it.'}${day.title&&status==='active'?` <em>— ${esc(day.title)}</em>`:''}</h1>
+   <p class="date">${longLabel(date)}</p><p class="theme">${esc(week.theme)}</p></div>
+  <div class="prog">${ring(done/ALL_TASKS.length,80,7,`<span style="font-family:var(--serif);font-size:19px;color:#fff">${Math.round(done/ALL_TASKS.length*100)}%</span>`)}<div>Tasks completed<b>${done} / ${ALL_TASKS.length}</b><span style="display:block;margin-top:8px">Days elapsed</span><b>${status==='before'?0:Math.min(60,raw)} / 60</b></div></div></div>
+  <div class="actions"><button class="btn w" data-act="rep-new">👥 Log social rep</button><button class="btn wt" data-act="rec-new">🎙️ Log recording</button><button class="btn wt" data-act="nav" data-to="toolkit/topics">⚡ Impromptu timer</button></div></section>
+ ${(isSun&&!revDone&&status==='active')||(missed.length&&status==='active')?`<div class="grid g2">
+   ${isSun&&!revDone&&status==='active'?`<button class="notice amber" data-act="nav" data-to="evaluate/reviews"><span class="ico">📅</span><span style="flex:1"><b>It's Sunday — the review is the program.</b><small>Weekly Evaluation #${week.n} isn't done yet. 20 minutes, non-negotiable.</small></span>›</button>`:''}
+   ${missed.length&&status==='active'?`<button class="notice stone" data-act="nav" data-to="plan" data-day="${missed[missed.length-1].d}"><span class="ico">✨</span><span style="flex:1"><b>${missed.length} earlier day${missed.length===1?'':'s'} with open tasks</b><small>No catch-up pile. Do the 3 most important reps; note why it slipped in your Sunday Review.</small></span>›</button>`:''}</div>`:''}
+ <div class="grid" style="grid-template-columns:1fr">
+  ${card(ch(status==='before'?'Day 1 preview — Baseline Day':status==='after'?'Day 60 — Graduation':"Today's practice block",`${day.min||25}-minute block`,`${badge(`${dd}/${day.tasks.length} done`,dd===day.tasks.length?'green':'')}<button class="btn g sm" data-act="nav" data-to="plan" data-day="${fd}">Open in plan →</button>`),
+   `<div class="card-b tight">${day.tasks.map(taskRow).join('')}${week.weekTasks.length?`<div style="border-top:1px dashed var(--line);margin-top:8px;padding-top:8px"><p class="lbl" style="padding:0 8px">Also this week (any day)</p>${week.weekTasks.map(taskRow).join('')}</div>`:''}</div>
+    <div class="weekmeta" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));background:#fafaf9;border-radius:0 0 var(--r) var(--r)"><div><span class="k">📖 Reading this week</span><p>${esc(week.books)}</p></div><div><span class="k">🎧 Podcast this week</span><p>${esc(week.podcast)}</p></div></div>`)}
+  <div class="grid g2">
+   ${card(ch('Next checkpoint',`${next.title} · Day ${next.day}`,'🚩'),`<div class="card-b"><div class="row" style="gap:14px">${ring(next.passed/next.total,56,6,`<span style="font-size:12px">${next.passed}/${next.total}</span>`)}<div style="font-size:14px"><b>${next.allPass?'All criteria met':`${next.total-next.passed} criteria open`}</b><br><span class="sub">${next.day-fd>0?`${next.day-fd} days to go`:'Due now'}</span></div></div>
+    <ul class="gate" style="list-style:none;margin:12px 0;display:flex;flex-direction:column;gap:6px">${next.criteria.map(c=>`<li style="font-size:13px"><span class="st ${c.pass===true?'ok':c.pass===false?'no':'na'}" style="width:14px;height:14px"></span>${esc(c.label)}</li>`).join('')}</ul>
+    <button class="btn s sm full" data-act="nav" data-to="evaluate/checkpoints">View all gates</button></div>`)}
+   ${card(ch('Social battery',"This week's in-person cap: 3",inPerson>=3?'🪫':'🔋'),`<div class="card-b"><div class="row" style="gap:6px;flex-wrap:nowrap">${[0,1,2].map(i=>`<div style="flex:1;height:12px;border-radius:999px;background:${i<inPerson?(inPerson>=3?'var(--red)':'var(--moss)'):'var(--line2)'}"></div>`).join('')}</div><p class="sub" style="font-size:12px;margin-top:8px">${inPerson} in-person rep${inPerson===1?'':'s'} this week · ${wtot} weighted total. ${inPerson>=3?'Cap reached — written reps only.':'20 min recharge after each.'}</p></div>`)}
+  </div></div>
+ <div class="grid g4">
+  <div class="card stat"><div class="k">Social reps</div><div class="v">${reps.total}</div>${bar(reps.total,24)}<div class="s">target 24 · ${reps.stranger} stranger · ${reps.coffee} coffee</div></div>
+  <div class="card stat"><div class="k">Recordings</div><div class="v">${rec.count}</div><div class="s">${rec.baselineIntro?`baseline intro: ${rec.baselineIntro.fillers} fillers`:'no baseline yet'}${rec.latestIntro&&rec.latestIntro!==rec.baselineIntro?` → latest ${rec.latestIntro.fillers}`:''}</div></div>
+  <div class="card stat"><div class="k">Live talks</div><div class="v">${reps.liveTalks}/2</div><div class="s">${S.feedback.length} feedback forms · ${S.listeners.filter(l=>l.confirmed).length} listeners confirmed</div></div>
+  <div class="card stat"><div class="k">Sunday reviews</div><div class="v">${reviews}/8</div>${bar(reviews,8,'amber')}<div class="s">${S.referrals.filter(e=>e.sent).length}/3 referral emails sent</div></div>
+ </div>
+ <div class="grid g2">
+  ${card(ch('Filler-word trend','Fillers per minute, every recording. Down and to the right is the goal.',`<button class="btn g sm" data-act="nav" data-to="logs/recordings">Recording log</button>`),`<div class="card-b">${fillerChart(S.recordings)}</div>`)}
+  ${card(ch('Week map','Tap a week to open it'),`<div class="card-b" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${PLAN.map(w=>{const tl=weekTaskList(w),dn=tl.filter(t=>S.taskDone[t.id]).length;const cur=w.n===week.n&&status==='active';return`<button data-act="nav" data-to="plan" data-day="${w.days[0].d}" style="border:1px solid ${cur?'var(--moss-t)':'var(--line)'};background:${cur?'var(--moss-l)':'#fff'};border-radius:12px;padding:10px;text-align:left;min-width:0"><small style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)">${wkLabel(w)}</small><b style="display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(w.title)}</b>${bar(dn,tl.length,'thin '+(dn===tl.length?'':'stone'))}</button>`}).join('')}</div>`)}
+ </div>
+ ${!S.socialReps.length&&!S.recordings.length?`<div class="empty">Nothing logged yet. Start with the <button style="color:var(--moss-d);font-weight:700;text-decoration:underline" data-act="nav" data-to="toolkit/guide">How to use this plan</button> guide, then tick off the Day 1 checklist in the Toolkit.</div>`:''}`}
+
+/* ---------- Plan ---------- */
+let planWeek=null;
+function pgPlan(){
+ const td=curDay();
+ if(R.focusDay)planWeek=weekForDay(R.focusDay).n;
+ if(!planWeek)planWeek=weekForDay(Math.min(60,Math.max(1,td))).n;
+ const w=PLAN.find(x=>x.n===planWeek),tl=weekTaskList(w),wd=tl.filter(t=>S.taskDone[t.id]).length;
+ const first=dateForDay(w.days[0].d),last=dateForDay(w.days[w.days.length-1].d);
+ return`
+ <div><p class="eyebrow">The 60 days</p><h1 class="h1">Your plan, day by day</h1><p class="sub">Tick tasks as you go. Everything autosaves. Tap “Open” on a task to jump to the right tool.</p></div>
+ <div class="weeks">${PLAN.map(x=>{const t=weekTaskList(x),d=t.filter(q=>S.taskDone[q.id]).length;const cur=td>=x.days[0].d&&td<=x.days[x.days.length-1].d;return`<button class="${x.n===planWeek?'on':''}" data-act="plan-week" data-w="${x.n}"><small>${wkLabel(x)}${cur?' · now':''}</small><b>${esc(x.title)}</b>${bar(d,t.length)}</button>`}).join('')}</div>
+ <div class="card" style="overflow:hidden"><div class="weekhead"><div class="row between">
+   <div><p class="eyebrow">${w.n>8?'Final evaluation block':'Week '+w.n} · ${rangeLabel(first,last)} · Days ${w.days[0].d}–${w.days[w.days.length-1].d}</p><h2 style="font-size:22px;margin-top:4px">${esc(w.title)}</h2><p class="sub" style="font-style:italic">${esc(w.theme)}</p></div>
+   <div class="row" style="flex-wrap:nowrap"><button class="btn o sm" data-act="plan-week" data-w="${planWeek-1}" ${planWeek===1?'disabled':''}>‹</button><span style="font-size:12px;color:var(--muted)">${wd}/${tl.length} tasks</span><button class="btn o sm" data-act="plan-week" data-w="${planWeek+1}" ${planWeek===PLAN.length?'disabled':''}>›</button></div></div>
+   <div style="margin-top:14px">${bar(wd,tl.length)}</div></div>
+  <div class="weekmeta"><div><span class="k">📖 Books</span><p>${esc(w.books)}</p></div><div><span class="k">🎧 Podcast</span><p>${esc(w.podcast)}</p></div><div><span class="k">👥 Reps this week</span><p>${esc(w.reps)}</p>${w.action?`<p style="color:#92400e;font-weight:600;font-size:12px;margin-top:4px">Action: ${esc(w.action)}</p>`:''}</div></div>
+  ${w.weekTasks.length?`<div style="border-top:1px dashed var(--line);padding:8px 8px"><p class="lbl" style="padding:4px 8px 0">Also this week — any day</p>${w.weekTasks.map(taskRow).join('')}</div>`:''}</div>
+ <div class="grid g2">${w.days.map(d=>dayCard(d,td)).join('')}</div>`}
+function dayCard(d,td){
+ const date=dateForDay(d.d),iso=isoForDay(d.d),done=d.tasks.filter(t=>S.taskDone[t.id]).length,complete=done===d.tasks.length;
+ const reps=S.socialReps.filter(r=>r.date===iso),recs=S.recordings.filter(r=>r.date===iso);const fl=d.flag?FLAG[d.flag]:null;const note=S.dayNotes[d.d]||'';
+ return`<div class="card daycard ${d.d===td?'today':''} ${R.focusDay===d.d&&d.d!==td?'focus':''} ${complete?'complete':''}" id="day-${d.d}">
+  <div class="row between" style="padding:14px 14px 0;align-items:flex-start;flex-wrap:nowrap"><div class="row" style="flex-wrap:nowrap;align-items:flex-start"><span class="daynum ${complete?'done':''}">${complete?'✓':d.d}</span><div><b style="font-size:14px">${medLabel(date)}</b> <span style="color:var(--faint);font-size:13px">· Day ${d.d}</span><div class="row" style="gap:4px;margin-top:2px">${d.d===td?badge('Today','moss'):''}${fl?badge(fl[0],fl[1]):''}${d.min?badge(d.min+' min'):''}${!complete&&td>d.d?badge('open','amber'):''}</div></div></div><span style="font-size:12px;color:var(--faint);white-space:nowrap">${done}/${d.tasks.length}</span></div>
+  ${d.title?`<p class="disp" style="padding:8px 14px 0;font-size:16px">${esc(d.title)}</p>`:''}
+  <div class="card-b tight" style="flex:1">${d.tasks.map(taskRow).join('')}</div>
+  ${reps.length||recs.length?`<div class="chips">${reps.map(r=>`<span class="soc" data-act="nav" data-to="logs/social" style="cursor:pointer">👥 ${esc(r.type)} · ${r.duration}m · ★${r.rating}</span>`).join('')}${recs.map(r=>`<span class="rec" data-act="nav" data-to="logs/recordings" style="cursor:pointer">🎙️ ${esc(r.scenario)} · ${r.fillers} fillers</span>`).join('')}</div>`:''}
+  <div class="notebox">${note||R.openNote===d.d?ta('dayNotes.'+d.d,note,'placeholder="Notes for this day — how it felt, what you noticed…"'):`<button style="font-size:12px;font-weight:600;color:var(--muted)" data-act="open-note" data-d="${d.d}">🗒️ Add a note</button>`}</div></div>`}
+
+/* ---------- Logs ---------- */
+function pgLogs(){
+ const tab=R.tab==='recordings'?'recordings':'social';
+ return`<div class="row between" style="align-items:flex-end"><div><p class="eyebrow">Instruments C & D</p><h1 class="h1">Logs</h1><p class="sub">If it isn't logged, it didn't happen — for evaluation purposes.</p></div>
+ ${tabs([{id:'social',label:'Social reps',ic:'👥',n:S.socialReps.length},{id:'recordings',label:'Recordings',ic:'🎙️',n:S.recordings.length}],tab,'logs')}</div>${tab==='social'?socialLog():recordingLog()}`}
+let logFilter={social:'all',rec:'all'};
+function socialLog(){
+ const st=repStats();const rows=(logFilter.social==='all'?S.socialReps:S.socialReps.filter(r=>r.type===logFilter.social)).slice().sort((a,b)=>a.date<b.date?1:-1);
+ const tone=t=>t==='live talk'?'amber':t==='stranger'?'blue':t.startsWith('written')?'':'moss';
+ return`<div class="grid g4">
+  <div class="card stat"><div class="k">Weighted total</div><div class="v">${st.total}</div><div class="s">target 24</div></div>
+  <div class="card stat"><div class="k">Stranger reps</div><div class="v">${st.stranger}</div><div class="s">target ≥4 by Day 30</div></div>
+  <div class="card stat"><div class="k">Coffee chats</div><div class="v">${st.coffee}</div><div class="s">${st.liveTalks} live talks</div></div>
+  <div class="card stat"><div class="k">Clean exits</div><div class="v">${Math.round(st.cleanExit*100)}%</div><div class="s">avg rating ${st.avgRating.toFixed(1)}</div></div></div>
+ ${card(ch('Social Rep Log','One line per real conversation. Written reps count ½.',`<select class="in xs" style="width:auto" data-act-change="filter-social">${['all',...REPTYPES].map(t=>`<option value="${t}" ${logFilter.social===t?'selected':''}>${t==='all'?'All types':t}</option>`).join('')}</select><button class="btn p sm" data-act="rep-new">＋ Log rep</button>`),
+  rows.length?`<div class="tblwrap"><table class="tbl resp"><thead><tr><th>Date</th><th>Type</th><th>Dur.</th><th>Qs</th><th>Exit</th><th>Energy</th><th>Rating</th><th>Note</th><th></th></tr></thead><tbody>
+   ${rows.map(r=>`<tr><td data-l="Date">${fmtISO(r.date)}${r.day>=1&&r.day<=60?` <small style="color:var(--faint)">D${r.day}</small>`:''}</td><td data-l="Type">${badge(esc(r.type),tone(r.type))}</td><td data-l="Duration">${r.duration}m</td><td data-l="Questions">${r.questions}</td><td data-l="Clean exit">${r.cleanExit?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--red)">✗</span>'}</td><td data-l="Energy">${r.energyPre}→<span style="color:${r.energyPost<r.energyPre?'#b45309':'#047857'}">${r.energyPost}</span></td><td data-l="Rating">★ ${r.rating}</td><td data-l="Note" class="wide" style="color:var(--muted)">${esc(r.note)}</td><td class="act"><button data-act="rep-edit" data-id="${r.id}">✏️</button><button data-act="rep-del" data-id="${r.id}">🗑️</button></td></tr>`).join('')}</tbody></table></div>`
+  :`<div class="card-b"><div class="empty">No social reps logged${logFilter.social!=='all'?' for this type':''} yet. Your first one is a 1–2 minute exchange with a barista or shopkeeper.</div></div>`)}`}
+function recordingLog(){
+ const st=recStats();const list=logFilter.rec==='all'?S.recordings:S.recordings.filter(r=>r.scenario===logFilter.rec);const rows=list.slice().sort((a,b)=>a.date<b.date?1:-1);
+ const dl=(a,b)=>a&&b&&a!==b?b.fillers-a.fillers:null,fd=d=>d===null?'—':d>0?'+'+d:String(d);
+ const dI=dl(st.baselineIntro,st.latestIntro),dT=dl(st.baselineTalk,st.latestTalk),dP=dl(st.firstPitch,st.latestPitch);
+ return`<div class="grid g4">
+  <div class="card stat"><div class="k">Recordings</div><div class="v">${st.count}</div><div class="s">${st.avgFpm?st.avgFpm.toFixed(1):'—'} avg fillers/min</div></div>
+  <div class="card stat ${dI!==null&&dI<0?'good':''}"><div class="k">intro60 Δ</div><div class="v">${fd(dI)}</div><div class="s">${st.baselineIntro?`baseline ${st.baselineIntro.fillers} → ${st.latestIntro.fillers}`:'no baseline'}</div></div>
+  <div class="card stat ${dT!==null&&dT<0?'good':''}"><div class="k">talk3 Δ</div><div class="v">${fd(dT)}</div><div class="s">${st.baselineTalk?`baseline ${st.baselineTalk.fillers} → ${st.latestTalk.fillers}`:'no baseline'}</div></div>
+  <div class="card stat ${dP!==null&&dP<0?'good':''}"><div class="k">pitch60 Δ</div><div class="v">${fd(dP)}</div><div class="s">${st.firstPitch?`first ${st.firstPitch.fillers} → ${st.latestPitch.fillers} · target ≤3`:'none yet'}</div></div></div>
+ ${card(ch('Filler-word trend','Your headline metric. Fillers per minute across every recording.'),`<div class="card-b">${fillerChart(list,190)}</div>`)}
+ ${card(ch('Recording Log','Date · scenario · duration · filler count · one fix.',`<select class="in xs" style="width:auto" data-act-change="filter-rec">${['all',...SCEN].map(t=>`<option value="${t}" ${logFilter.rec===t?'selected':''}>${t==='all'?'All scenarios':t}</option>`).join('')}</select><button class="btn p sm" data-act="rec-new">＋ Log recording</button>`),
+  rows.length?`<div class="tblwrap"><table class="tbl resp"><thead><tr><th>Date</th><th>Scenario</th><th>Duration</th><th>Fillers</th><th>/min</th><th>Pace</th><th>One fix</th><th></th></tr></thead><tbody>
+   ${rows.map(r=>{const f=st.fpm(r),wpm=r.words&&r.duration>0?Math.round(r.words/r.duration*60):null;return`<tr><td data-l="Date">${fmtISO(r.date)}${r.day>=1&&r.day<=60?` <small style="color:var(--faint)">D${r.day}</small>`:''}</td><td data-l="Scenario">${badge(esc(r.scenario),'red')}</td><td data-l="Duration">${r.duration}s</td><td data-l="Fillers"><b>${r.fillers}</b></td><td data-l="Per min">${f===null?'—':f.toFixed(1)}</td><td data-l="Pace">${wpm?`<span style="color:${wpm>=120&&wpm<=150?'#047857':'#b45309'}">${wpm} wpm</span>`:'—'}</td><td data-l="One fix" class="wide" style="color:var(--muted)">${esc(r.fix)}</td><td class="act"><button data-act="rec-edit" data-id="${r.id}">✏️</button><button data-act="rec-del" data-id="${r.id}">🗑️</button></td></tr>`}).join('')}</tbody></table></div>`
+  :`<div class="card-b"><div class="empty">No recordings yet. Day 1 is your baseline: a 60-sec intro and a 3-min talk. Tally the fillers with the tap counter.</div></div>`)}`}
+
+/* ---------- Evaluate ---------- */
+function pgEvaluate(){
+ const valid=['checkpoints','confidence','rubric','reviews','assessments'];const tab=valid.includes(R.tab)?R.tab:'checkpoints';
+ return`<div class="row between" style="align-items:flex-end"><div><p class="eyebrow">The evaluation system</p><h1 class="h1">Evaluate</h1><p class="sub">Be honest. A 3 you didn't earn costs more than a 2 you reported — the whole plan runs on the deltas.</p></div>
+ ${tabs([{id:'checkpoints',label:'Checkpoints',ic:'🚩'},{id:'confidence',label:'Confidence',ic:'🎚️'},{id:'rubric',label:'Rubric',ic:'📋'},{id:'reviews',label:'Sunday reviews',ic:'📅'},{id:'assessments',label:'Self-assessments',ic:'💬'}],tab,'evaluate')}</div>
+ ${{checkpoints:evCheckpoints,confidence:evConfidence,rubric:evRubric,reviews:evReviews,assessments:evAssess}[tab]()}`}
+function evCheckpoints(){
+ const gates=computeGates(),td=curDay(),reps=repStats(),rec=recStats();
+ const emailRow=(kind,i,e,label,when)=>`<div class="row" style="border:1px solid var(--line2);border-radius:12px;padding:10px"><button data-act="email-toggle" data-k="${kind}" data-i="${i}" style="width:28px;height:28px;border-radius:8px;border:2px solid ${e.sent?'var(--violet)':'#d6d3d1'};background:${e.sent?'var(--violet)':'#fff'};color:#fff;font-size:14px">${e.sent?'✓':''}</button><b style="font-size:14px">${label}</b><span style="font-size:12px;color:var(--faint)">${when}</span><input class="in xs" style="flex:1 1 120px" placeholder="To whom?" data-bind="${kind}.${i}.to" value="${esc(e.to)}"><input type="date" class="in xs" style="flex:0 1 150px" data-bind="${kind}.${i}.date" value="${e.date}"></div>`;
+ return`<div class="grid g2">${gates.map(g=>{const due=td>=g.day;return`<div class="card" ${g.allPass?'style="border-color:#a7f3d0;background:#f0fdf9"':''}>
+  ${ch(`${g.title} ${g.allPass?badge('Passed','green'):due?badge('Due','amber'):badge('Upcoming')}`,`${medLabel(dateForDay(g.day))} · ${g.passed}/${g.total} criteria`)}
+  <div class="card-b">${bar(g.passed,g.total,g.allPass?'':'amber')}<ul class="gate" style="list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:10px">${g.criteria.map(c=>`<li><span class="st ${c.pass===true?'ok':c.pass===false?'no':'na'}">${c.pass===true?'✓':c.pass===false?'✕':''}</span><div><div>${esc(c.label)}</div><div class="d">${esc(c.detail)}</div></div></li>`).join('')}</ul>
+  ${g.id==='d30'?`<div style="background:#fafaf9;border-radius:12px;padding:10px;margin-top:14px">${chk('checkpoint.d30TalkTighter',S.checkpoint.d30TalkTighter,'I listened to Day 1 and Day 30 talk3 back-to-back — the Day 30 one is audibly tighter.',1)}</div>`:''}
+  ${g.id==='d60'?`<div style="background:#fafaf9;border-radius:12px;padding:10px;margin-top:14px">${field('Rate the Day 1 → Day 60 gap',`<select class="in" data-bind="checkpoint.d60Delta" data-rr="1"><option value="">Not yet rated</option>${['small','medium','large'].map(v=>`<option ${S.checkpoint.d60Delta===v?'selected':''}>${v}</option>`).join('')}</select>`)}</div>`:''}
+  <div style="margin-top:14px">${field(g.id==='d30'?'Verdict: keep / drop / add one element':'Checkpoint notes',ta('checkpoint.notes.'+g.id,S.checkpoint.notes[g.id]||'',`placeholder="${g.id==='d30'?'Keep: … · Drop: … · Add: …':'Verdict, what slipped, what surprised you…'}"`),`evaluations/${g.id==='d60'?'day60-final':'day'+g.day}.md`)}</div></div></div>`}).join('')}</div>
+ <div class="grid g2">
+  ${card(ch('Referral emails & follow-ups','Sending one email is a rep. Tick when sent.','✉️'),`<div class="card-b" style="display:flex;flex-direction:column;gap:8px">${S.referrals.map((e,i)=>emailRow('referrals',i,e,`Referral Email #${i+1}`,['Week 5','Week 6','Week 8'][i])).join('')}${S.followups.map((e,i)=>emailRow('followups',i,e,`48-hour follow-up #${i+1}`,'Week 8')).join('')}</div>`)}
+  ${card(ch('Season tally','Auto-computed from your logs'),`<div class="card-b tally">${[['Weighted reps',reps.total],['Raw conversations',reps.count],['Stranger',reps.stranger],['Coffee chats',reps.coffee],['Live talks',reps.liveTalks],['Events',reps.events],['Recordings',rec.count],['Avg fillers/min',rec.avgFpm?rec.avgFpm.toFixed(1):'—'],['Feedback forms',S.feedback.length],['Emails sent',S.referrals.filter(e=>e.sent).length+S.followups.filter(e=>e.sent).length],['Best rep',S.socialReps.length?Math.max(...S.socialReps.map(r=>r.rating))+'/5':'—'],['Worst rep',S.socialReps.length?Math.min(...S.socialReps.map(r=>r.rating))+'/5':'—']].map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div><div class="card-b" style="border-top:1px solid var(--line2)"><span class="lbl">Reset protocol</span><p style="font-size:13px;color:var(--muted)">${RESET}</p></div>`)}</div>`}
+function evConfidence(){
+ const c=S.confidence;const sel=(col,i)=>`<label>${COLL[col]}<select class="in" data-bind="confidence.${col}.${i}" data-type="numnull" data-rr="1"><option value="">—</option>${[1,2,3,4,5,6,7,8,9,10].map(v=>`<option ${c[col][i]===v?'selected':''}>${v}</option>`).join('')}</select></label>`;
+ const tot=col=>filled(c[col])?sum(c[col]):`<span style="color:var(--faint)">${sum(c[col])}*</span>`;
+ return card(ch('Instrument A — 8-Situation Confidence Scale','Rate 1 (would avoid at all costs) to 10 (calm and natural) at Days 1, 30 and 60.'),
+  `${CONF.map((s,i)=>`<div class="conf"><span class="nm"><span style="color:var(--faint);margin-right:8px">${i+1}</span>${s}</span><div class="sel">${CCOLS.map(col=>sel(col,i)).join('')}</div></div>`).join('')}
+   <div class="conf" style="background:#fafaf9;font-weight:600"><span class="nm">Total (max 80)</span><div class="sel" style="gap:16px">${CCOLS.map(col=>`<label>${COLL[col]}<span class="disp" style="font-size:20px">${tot(col)}</span></label>`).join('')}</div></div>
+   <div class="card-b row" style="font-size:12px;color:var(--muted)"><span>* partial — some rows not rated</span>${filled(c.d1)&&filled(c.d30)?`<b style="color:${sum(c.d30)-sum(c.d1)>=6?'#047857':'#b45309'}">Day 1 → 30: ${sum(c.d30)-sum(c.d1)>=0?'+':''}${sum(c.d30)-sum(c.d1)} (gate ≥ +6)</b>`:''}${filled(c.d1)&&filled(c.d60)?`<b style="color:#047857">Day 1 → 60: ${sum(c.d60)-sum(c.d1)>=0?'+':''}${sum(c.d60)-sum(c.d1)}</b>`:''}</div>`)}
+let rubCol='d1';
+function evRubric(){
+ const r=S.rubric;const cls=v=>v==null?'':v>=4?'hi':v>=3?'mid':'lo';
+ return`${card(ch('Instrument B — 10-Skill Rubric','Self-rate 1–5 (half points allowed) at each checkpoint.',tabs(RCOLS.map(c=>({id:c,label:COLL[c],n:r[c].filter(v=>v!=null).length})),rubCol,'rubcol')),
+  `<div class="row" style="padding:8px 16px;background:#fafaf9;font-size:11px;color:var(--muted);gap:4px 14px">${ANCHORS.map(a=>`<span>${a}</span>`).join('')}</div>
+   ${SKILLS.map((s,i)=>{const b=r.d1[i],cur=r[rubCol][i];const d=b!=null&&cur!=null&&rubCol!=='d1'?cur-b:null;return`<div class="rub"><span class="nm"><span class="i">${i+1}</span>${s}${d!==null?`<span class="delta ${d>0?'up':d<0?'dn':'eq'}">${d>0?'+':''}${d}</span>`:''}</span>${scores(`rubric.${rubCol}.${i}`,cur,1,5,.5,true)}</div>`}).join('')}`)}
+ ${card(ch('Skill trajectory','All checkpoints side by side'),`<div class="tblwrap"><table class="tbl traj"><thead><tr><th>Skill</th>${RCOLS.map(c=>`<th>${COLL[c]}</th>`).join('')}</tr></thead><tbody>${SKILLS.map((s,i)=>`<tr><td><span style="color:var(--faint)">${i+1}.</span> ${s.split(' (')[0]}</td>${RCOLS.map(c=>`<td><span class="cell ${cls(r[c][i])}">${r[c][i]??'—'}</span></td>`).join('')}</tr>`).join('')}<tr style="background:#fafaf9;font-weight:700"><td>Average</td>${RCOLS.map(c=>{const v=r[c].filter(x=>x!=null);return`<td>${v.length?(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1):'—'}</td>`}).join('')}</tr></tbody></table></div>`)}`}
+let revWeek=null;
+function evReviews(){
+ const td=curDay();if(!revWeek)revWeek=Math.min(8,Math.max(1,Math.ceil(td/7)));
+ if(!S.weeklyReviews[revWeek])S.weeklyReviews[revWeek]=emptyReview();
+ const r=S.weeklyReviews[revWeek],w=PLAN.find(p=>p.n===revWeek),sun=w.days[w.days.length-1].d,ws=isoForDay(w.days[0].d),we=isoForDay(sun);
+ const reps=S.socialReps.filter(x=>x.date>=ws&&x.date<=we).length,recs=S.recordings.filter(x=>x.date>=ws&&x.date<=we).length;const b=`weeklyReviews.${revWeek}.`;
+ return`<div class="grid" style="grid-template-columns:1fr">
+ <div style="display:grid;gap:14px;grid-template-columns:1fr" class="revgrid">
+ ${card(ch('Weeks','20 min every Sunday. The engine.'),`<div class="wklist">${PLAN.filter(p=>p.n<=8).map(p=>{const rv=S.weeklyReviews[p.n];return`<button class="${p.n===revWeek?'on':''}" data-act="rev-week" data-w="${p.n}"><span><small>Week ${p.n}</small>${esc(p.title)}</span> <span>${rv&&rv.completedAt?'✅':rv&&rv.rating?'🟡':'○'}</span></button>`}).join('')}</div>`)}
+ ${card(ch(`Weekly Evaluation #${revWeek}`,`${medLabel(dateForDay(sun))} · logged this week: ${reps} social · ${recs} recordings`,r.completedAt?badge('Completed','green'):`<button class="btn p sm" data-act="rev-complete">Mark complete</button>`),
+  `<div class="card-b grid g2">
+   <div class="grid" style="grid-template-columns:1fr 1fr;gap:8px">${field('Reps done',inp(b+'repsDone',r.repsDone,`placeholder="${reps}"`))}${field('planned',inp(b+'repsPlanned',r.repsPlanned,'placeholder="3"'))}</div>
+   <div class="grid" style="grid-template-columns:1fr 1fr;gap:8px">${field('Recording reps',inp(b+'recDone',r.recDone,`placeholder="${recs}"`))}${field('planned',inp(b+'recPlanned',r.recPlanned,'placeholder="3"'))}</div>
+   ${field('Best moment (1 line)',inp(b+'best',r.best),'','g-full')}${field('Worst moment (1 line)',inp(b+'worst',r.worst),'','g-full')}
+   ${field('Rate the week',scores(b+'rating',r.rating||null,1,10,1,true),r.rating?r.rating+'/10':'')}${field('One reason',inp(b+'reason',r.reason))}
+   ${field('Keep',ta(b+'keep',r.keep))}${field('Drop',ta(b+'drop',r.drop))}
+   ${field('If it slipped — why? (battery, schedule, mood)',inp(b+'slipped',r.slipped,'placeholder="One line. Then drop next week\'s rep cap by one."'),'','g-full')}
+   <div class="g-full" style="display:flex;flex-direction:column;gap:8px">${chk(b+'reading',r.reading,'Reading done this week')}${chk(b+'scheduled',r.scheduled,"Next week's reps scheduled in calendar (they're meetings)")}</div>
+   ${r.completedAt?`<p class="g-full" style="font-size:12px;color:var(--faint)">Completed ${new Date(r.completedAt).toLocaleString()} · <button style="text-decoration:underline" data-act="rev-reopen">reopen</button></p>`:''}</div>`)}
+ </div></div><style>@media(min-width:960px){.revgrid{grid-template-columns:280px 1fr!important}}.g-full{grid-column:1/-1}</style>`}
+function evAssess(){
+ const a30=S.d30Answers.filter(a=>a.trim()).length,a60=S.d60Answers.filter(a=>a.trim()).length;
+ return`${card(ch('Day-30 self-assessment','5 questions, honest answers. First task of Week 5.',badge(`${a30}/5`,a30===5?'green':'')),`<div class="card-b" style="display:flex;flex-direction:column;gap:14px">${D30Q.map((q,i)=>field(`${i+1}. ${q}`,ta('d30Answers.'+i,S.d30Answers[i]))).join('')}</div>`)}
+ ${card(ch('Day-60 final self-assessment','8 questions. Day 59.',badge(`${a60}/8`,a60===8?'green':'')),`<div class="card-b" style="display:flex;flex-direction:column;gap:14px">${D60Q.map((q,i)=>field(`${i+1}. ${q}`,ta('d60Answers.'+i,S.d60Answers[i]))).join('')}</div>`)}
+ ${card(ch('Next-90-Days Plan',"What you'll keep, what you'll attack next, your ongoing cadence."),`<div class="card-b grid g3">${field('Keep (habits)',ta('next90.keep',S.next90.keep,'style="min-height:110px"'))}${field('Attack next (two weakest skills)',ta('next90.attack',S.next90.attack,'style="min-height:110px"'))}${field('Ongoing cadence',ta('next90.cadence',S.next90.cadence,'style="min-height:110px" placeholder="Recordings 2×/week · 1 live talk/month · 2 coffee chats/month · 1 referral ask/month · Sunday 15-min review, forever."'))}</div>`)}`}
+
+/* ---------- Toolkit ---------- */
+function pgToolkit(){
+ const valid=['topics','ford','scripts','listeners','kit','guide'];const tab=valid.includes(R.tab)?R.tab:'topics';
+ return`<div class="row between" style="align-items:flex-end"><div><p class="eyebrow">Appendices A–D + Section 0</p><h1 class="h1">Toolkit</h1><p class="sub">Your phone, four books, one podcast, and 2–5 trusted listeners. That's the entire toolkit.</p></div>
+ ${tabs([{id:'topics',label:'Impromptu',ic:'⚡'},{id:'ford',label:'FORD bank',ic:'❓'},{id:'scripts',label:'Scripts',ic:'📜'},{id:'listeners',label:'Listeners',ic:'👥'},{id:'kit',label:'Kit',ic:'📦'},{id:'guide',label:'Guide',ic:'📘'}],tab,'toolkit')}</div>
+ ${{topics:tkImpromptu,ford:tkFord,scripts:tkScripts,listeners:tkListeners,kit:tkKit,guide:tkGuide}[tab]()}`}
+/* impromptu timer */
+const IMP={topic:null,phase:'idle',sec:0,len:90,used:[],pausedFrom:'prep',timer:null};
+function impStop(){if(IMP.timer){clearInterval(IMP.timer);IMP.timer=null}}
+function impTick(){IMP.sec=Math.max(0,IMP.sec-1);if(IMP.sec===0){if(IMP.phase==='prep'){IMP.phase='speak';IMP.sec=IMP.len}else{IMP.phase='done';impStop()}render();return}
+ const t=$('#imp-time'),b=$('#imp-bar');if(t){t.textContent=fmtT(IMP.sec);t.classList.toggle('low',IMP.phase==='speak'&&IMP.sec<=10)}if(b)b.style.width=(impPct()*100)+'%'}
+function impStart(){impStop();IMP.timer=setInterval(impTick,1000)}
+const fmtT=s=>`${Math.floor(s/60)}:${pad(s%60)}`;
+const impPct=()=>IMP.phase==='speak'?1-IMP.sec/IMP.len:IMP.phase==='prep'?1-IMP.sec/5:IMP.phase==='done'?1:0;
+function impPick(t){if(!t){const pool=TOPICS.filter(x=>!IMP.used.includes(x));const src=pool.length?pool:TOPICS;t=src[Math.floor(Math.random()*src.length)];if(!pool.length)IMP.used=[]}IMP.topic=t;if(!IMP.used.includes(t))IMP.used.push(t);IMP.phase='prep';IMP.sec=5;impStart();render()}
+function tkImpromptu(){
+ const p=IMP.phase;
+ return`<div class="grid g2" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))">
+ <div class="card"><div class="imp ${p}" style="position:relative">
+  <p class="eyebrow" style="color:${p==='speak'?'var(--moss-t)':'var(--faint)'}">${p==='idle'&&!IMP.topic?"Appendix A — pick randomly, don't cherry-pick":p==='idle'?'Paused':p==='prep'?'5 seconds to think':p==='speak'?'Speaking — hit record on your phone':"Finished. Don't edit; log it."}</p>
+  <h2>${IMP.topic?esc(IMP.topic):'Your topic will appear here'}</h2>
+  <div class="time ${p==='speak'&&IMP.sec<=10?'low':''}" id="imp-time">${p==='idle'&&!IMP.topic?'--':fmtT(IMP.sec)}</div>
+  <div class="bar"><i id="imp-bar" style="width:${impPct()*100}%;background:${p==='prep'?'var(--amber)':'var(--moss-t)'}"></i></div>
+  <div class="row" style="justify-content:center;margin-top:20px">
+   ${p==='idle'?`<button class="btn p lg" data-act="imp-pick">🔀 ${IMP.topic?'New topic':'Random topic'}</button>${IMP.topic?`<button class="btn s lg" data-act="imp-resume">▶ Resume</button>`:''}`:''}
+   ${p==='prep'||p==='speak'?`<button class="btn ${p==='speak'?'wt':'s'} lg" data-act="imp-pause">⏸ Pause</button>`:''}
+   ${p==='done'?`<button class="btn p lg" data-act="rec-new" data-scen="impromptu">🎙️ Log this recording</button><button class="btn s lg" data-act="imp-pick">🔀 Another (double impromptu)</button>`:''}
+   ${IMP.topic?`<button class="btn ${p==='speak'?'wt':'g'} lg" data-act="imp-reset">↺</button>`:''}</div>
+  ${p==='speak'?'<span class="rec"></span>':''}</div>
+  <div class="row between" style="padding:10px 16px;border-top:1px solid var(--line2);font-size:13px"><span style="color:var(--muted)">Length:</span><div class="row" style="gap:4px">${[60,90,120].map(l=>`<button class="btn ${IMP.len===l?'p':'s'} sm" data-act="imp-len" data-l="${l}">${l}s</button>`).join('')}</div><span style="font-size:12px;color:var(--faint);margin-left:auto">${IMP.used.length}/${TOPICS.length} used this session</span></div></div>
+ ${card(ch('Topic bank','20 topics. The second one is always worse — the goal is finishing.'),`<ol class="topics" style="list-style:none;max-height:520px;overflow-y:auto">${TOPICS.map((t,i)=>`<li class="${IMP.used.includes(t)?'used':''} ${IMP.topic===t?'cur':''}"><span class="n">${i+1}</span><span>${esc(t)}</span><button data-act="imp-use" data-i="${i}">use</button></li>`).join('')}</ol>`)}</div>`}
+function tkFord(){
+ const tot=Object.values(S.ford).flat().filter(q=>q.trim()).length;
+ return`<div class="card card-b"><div class="row between"><div><h2 style="font-size:20px">Appendix B — FORD question bank</h2><p class="sub">Write 12 questions in your own words — 3 each. Build it on Day 9; it's your ammunition for the next 45 days.</p></div>${badge(`${tot}/12`,tot>=12?'green':'amber')}</div>
+  <div style="background:var(--moss-l);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:12px;color:#133631"><b>Rule:</b> after each answer, take one follow-up from Lowndes' “bridge” move — <em>“What's the most rewarding part of that?”</em> — instead of jumping to your own story.</div></div>
+ <div class="grid g2">${['F','O','R','D'].map(k=>card(ch(`<span style="display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--ink);color:#fff;margin-right:8px;font-size:15px">${k}</span>${FORD[k].label}`),
+  `<div class="card-b" style="display:flex;flex-direction:column;gap:10px">${[0,1,2].map(i=>`<div class="row" style="flex-wrap:nowrap"><span style="color:var(--faint);font-size:12px;width:14px">${i+1}</span>${inp(`ford.${k}.${i}`,S.ford[k][i],`placeholder="${esc(FORD[k].seeds[i]||'Your question…')}"`)}</div>`).join('')}
+   <details style="font-size:12px;color:var(--muted)"><summary style="cursor:pointer;font-weight:600">Seed questions</summary><div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">${FORD[k].seeds.map(sd=>`<div class="row between" style="flex-wrap:nowrap"><span>${esc(sd)}</span><button style="color:var(--moss);font-weight:700;flex-shrink:0" data-act="ford-seed" data-k="${k}" data-q="${esc(sd)}">use</button></div>`).join('')}</div></details></div>`)).join('')}</div>`}
+function tkScripts(){return`<div class="grid g2">${SCRIPTS.map(s=>card(ch(s.t,'',`<button class="btn g sm" data-act="copy" data-text="${esc(s.b||(s.items||[]).join('\n'))}">📋 Copy</button>`),
+ `<div class="card-b">${s.k==='script'?`<blockquote class="quote">${esc(s.b)}</blockquote>`:s.k==='structure'?`<p style="font-size:14px;line-height:1.6">${esc(s.b)}</p>`:`<ol class="ol">${s.items.map((it,i)=>`<li><span class="n">${i+1}</span><span>${esc(it)}</span></li>`).join('')}</ol>`}</div><p style="border-top:1px solid var(--line2);padding:8px 16px;font-size:11px;color:var(--faint)">Adapt, don't recite.</p>`)).join('')}</div>`}
+function tkListeners(){
+ const conf=S.listeners.filter(l=>l.confirmed).length;
+ return`${card(ch('Trusted listeners','2–5 people you already trust. Recruit by Day 20; confirm both slots in Week 5.',`${badge(conf+' confirmed',conf>=2?'green':'amber')}<button class="btn p sm" data-act="listener-add">＋ Add</button>`),
+  `<div class="card-b" style="display:flex;flex-direction:column;gap:10px">${S.listeners.length?S.listeners.map((l,i)=>`<div class="listener">${inp(`listeners.${i}.name`,l.name,'placeholder="Name"')}${chk(`listeners.${i}.asked`,l.asked,'Asked')}${field('Talk #1 slot',`<input type="datetime-local" class="in xs" data-bind="listeners.${i}.slot1" value="${l.slot1}">`)}${field('Talk #2 slot',`<input type="datetime-local" class="in xs" data-bind="listeners.${i}.slot2" value="${l.slot2}">`)}${chk(`listeners.${i}.confirmed`,l.confirmed,'Confirmed',1)}<button class="btn g sm" data-act="listener-del" data-id="${l.id}">🗑️</button></div>`).join(''):`<div class="empty">No listeners yet. Use the “Listener ask” script and add 2–3 people.</div>`}
+   <div class="grid g2" style="gap:8px;font-size:12px;color:var(--muted)">${AUDPROTO.map(p=>`<p style="background:#fafaf9;border-radius:10px;padding:8px 12px">${p}</p>`).join('')}</div></div>`)}
+ <div class="grid g2">${[1,2].map(t=>{const forms=S.feedback.filter(f=>f.talk==t);return card(ch(`Milestone Talk #${t} — feedback`,t===1?'Week 6 · 5–7 min · “The day a project nearly broke”':'Week 8 · 5 min · “A communication lesson from the last 40 days”',`<button class="btn s sm" data-act="fb-new" data-t="${t}">＋ Add form</button>`),
+  `<div class="card-b" style="display:flex;flex-direction:column;gap:10px">${forms.length?forms.map(f=>`<div class="fb"><div class="row between"><b>${esc(f.listener)||'Anonymous listener'}</b><span class="row" style="gap:4px">${badge('pace '+f.pace+'/5','blue')}${badge('point '+f.clarity+'/5','moss')}<button data-act="fb-del" data-id="${f.id}">🗑️</button></span></div><dl>${[['Main point',f.q1],['Held attention',f.q2],['Mind wandered',f.q3],['Do better',f.q5]].filter(x=>x[1]).map(x=>`<dt>${x[0]}</dt><dd>${esc(x[1])}</dd>`).join('')}</dl></div>`).join('')+`<p style="font-size:12px;color:var(--muted)">Avg pace ${(forms.reduce((a,f)=>a+f.pace,0)/forms.length).toFixed(1)} · avg clarity ${(forms.reduce((a,f)=>a+f.clarity,0)/forms.length).toFixed(1)}</p>`:`<div class="empty">No feedback forms yet. Each listener fills 5 questions — 3 minutes.</div>`}
+   ${t===1?`<div class="grid g2" style="gap:10px">${field('3 things to keep',ta('talkNotes.talk1Keep',S.talkNotes.talk1Keep))}${field('2 things to fix',ta('talkNotes.talk1Fix',S.talkNotes.talk1Fix))}</div>`:field('Talk #2 notes — vs. Talk #1',ta('talkNotes.talk2Notes',S.talkNotes.talk2Notes))}</div>`)}).join('')}</div>
+ ${card(ch('First-time-on-camera notes (Day 33)','What your body did · where you looked · one moment of energy'),`<div class="card-b">${ta('talkNotes.cameraNotes',S.talkNotes.cameraNotes)}</div>`)}`}
+function tkKit(){
+ const c=S.toolkitChecked,kd=KIT.filter(k=>c[k[0]]).length,dd=D1CHK.filter(k=>c[k[0]]).length;
+ return`<div class="grid g2" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))">
+ ${card(ch('Your toolkit','≈ $50–70 total for 60 days. No paid apps, no clubs.',badge(`${kd}/${KIT.length}`,kd===KIT.length?'green':'')),`<div class="kit">${KIT.map(k=>`<label class="${c[k[0]]?'done':''}"><input type="checkbox" data-act-change="kit" data-id="${k[0]}" ${c[k[0]]?'checked':''}><span><span class="t">${k[1]}</span><br><span class="u">${k[2]}</span></span><span class="c">${k[3]}</span></label>`).join('')}</div>`)}
+ <div style="display:flex;flex-direction:column;gap:14px">
+ ${card(ch('Day 1 checklist','Before starting',badge(`${dd}/${D1CHK.length}`,dd===D1CHK.length?'green':'amber')),`<div class="kit">${D1CHK.map(k=>`<label class="${c[k[0]]?'done':''}"><input type="checkbox" data-act-change="kit" data-id="${k[0]}" ${c[k[0]]?'checked':''}><span class="t">${k[1]}</span></label>`).join('')}</div>`)}
+ ${card(ch('Folder structure','Keep everything in one place'),`<pre>~/comm-training/
+  recordings/   YYYYMMDD-intro60, -talk3, -pitch60,
+                -impromptu, -talk5
+  logs/         social-reps.md, recording-log.md,
+                weekly-reviews.md
+  evaluations/  day1-baseline.md, day14.md, day30.md,
+                day45.md, day60-final.md
+  feedback/     listener forms from milestone talks</pre><p style="border-top:1px solid var(--line2);padding:10px 16px;font-size:12px;color:var(--muted)">This page is your logs/ + evaluations/ folder. Download a backup from “Backup” and drop the JSON in there too.</p>`)}</div></div>`}
+function tkGuide(){
+ return`<div class="card" style="overflow:hidden"><div style="background:var(--ink);color:#fff;padding:22px 20px"><p class="eyebrow" style="color:var(--moss-t)">60-Day Communication Training Plan</p><h2 style="font-size:22px;margin-top:4px">Small Talk + Public Speaking, designed for an introverted freelancer</h2><p style="color:#d6d3d1;font-size:14px;margin-top:8px">Start: Monday, 7 September 2026 → Finish: Thursday, 5 November 2026 (Day 60). Total active time: roughly 3–4 hours/week. Consistency beats intensity.</p></div>
+  <div class="rules">${RULES.map((r,i)=>`<div><div class="n">${i+1}</div><b>${r[0]}</b><p style="font-size:14px;color:var(--muted);margin-top:4px">${r[1]}</p></div>`).join('')}</div></div>
+ <div class="grid g2">
+ ${card(ch('Your time budget','Introvert-calibrated'),`<table class="tbl"><tbody>${TIME.map(t=>`<tr><td><b>${t[0]}</b></td><td style="color:var(--muted)">${t[1]}</td><td style="text-align:right;white-space:nowrap">${t[2]}</td></tr>`).join('')}</tbody></table>`)}
+ ${card(ch('The recording protocol','Replaces any app — 5 minutes per rep'),`<ol class="ol card-b">${RECPROTO.map((p,i)=>`<li><span class="n" style="background:var(--rose-l);color:#9f1239">${i+1}</span><span>${p}</span></li>`).join('')}</ol>`)}
+ ${card(ch('Social battery management','Read once, follow always'),`<ul class="ul card-b">${BATTERY.map(p=>`<li>${p}</li>`).join('')}</ul>`)}
+ ${card(ch('The trusted audience protocol','Replaces any club'),`<ul class="ul card-b">${AUDPROTO.map(p=>`<li>${p}</li>`).join('')}</ul>`)}
+ ${card(ch('Reset protocol','If you fall behind'),`<p class="card-b" style="font-size:14px;line-height:1.6">${RESET}</p>`)}
+ ${card(ch('After Day 60','Minimum viable maintenance'),`<ul class="ul card-b">${MAINT.map(p=>`<li>${p}</li>`).join('')}</ul>`)}
+ ${card(ch('The evaluation system','Four instruments, four gates'),`<div class="card-b" style="font-size:14px;line-height:1.6"><p><b>A</b> — 8-Situation Confidence Scale (Days 1, 30, 60). <b>B</b> — 10-Skill Rubric (Days 1, 14, 30, 45, 60). <b>C</b> — Social Rep Log. <b>D</b> — Recording Log (filler count is the headline number).</p><p style="margin-top:8px;color:var(--muted)">Checkpoint gates on Day 14, 30, 45 and 60 are scored automatically from your logs on the <button style="color:var(--moss-d);font-weight:700;text-decoration:underline" data-act="nav" data-to="evaluate/checkpoints">Checkpoints</button> page.</p></div>`)}</div>`}
+
+/* ---------- Backup ---------- */
+let dataMsg=null;
+function pgData(){
+ const bytes=new Blob([JSON.stringify(S)]).size;const done=Object.keys(S.taskDone).length;
+ return`<div><p class="eyebrow">Your data, your device</p><h1 class="h1">Save & Backup</h1><p class="sub">Everything autosaves to this browser. Download a backup regularly and upload it on any other device to continue.</p></div>
+ ${dataMsg?`<div class="notice ${dataMsg.kind}"><span>${dataMsg.kind==='ok'?'✅':'⚠️'}</span><span style="font-size:14px">${esc(dataMsg.text)}</span></div>`:''}
+ <div class="grid g2" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))">
+ ${card(ch('Browser save','Automatic, on every change','🛡️'),`<div class="card-b"><div class="kv"><span>Status</span>${badge('Autosave on','green')}</div><div class="kv"><span>Last saved</span><b>${S.lastSaved?new Date(S.lastSaved).toLocaleString():'—'}</b></div><div class="kv"><span>Tasks done</span><b>${done} / ${ALL_TASKS.length}</b></div><div class="kv"><span>Social reps</span><b>${S.socialReps.length}</b></div><div class="kv"><span>Recordings</span><b>${S.recordings.length}</b></div><div class="kv"><span>Reviews</span><b>${Object.values(S.weeklyReviews).filter(r=>r.completedAt).length}</b></div><div class="kv"><span>Size</span><b>${(bytes/1024).toFixed(1)} KB</b></div><p style="font-size:12px;color:var(--muted);margin-top:10px">Stored under <code>localStorage["comm-training-60"]</code>. Clearing site data or private browsing will lose it — hence backups.</p></div>`)}
+ ${card(ch('Download & upload progress','Move between devices or keep a safety copy'),`<div class="card-b grid g2" style="gap:10px">
+   <div style="border:1px solid var(--line);border-radius:14px;padding:14px"><div style="font-size:22px">⬇️</div><b>Download backup (.json)</b><p style="font-size:12px;color:var(--muted);margin:4px 0 10px">Complete snapshot: tasks, logs, evaluations, listeners, notes. Re-upload here to restore.</p><button class="btn p full" data-act="export-json">Download JSON</button></div>
+   <div style="border:1px solid var(--line);border-radius:14px;padding:14px"><div style="font-size:22px">⬆️</div><b>Upload backup</b><p style="font-size:12px;color:var(--muted);margin:4px 0 10px">Restores a previously downloaded JSON file. Replaces what's in this browser (you'll confirm first).</p><input type="file" id="file-in" accept="application/json,.json" style="display:none"><button class="btn o full" data-act="import-pick">Choose file…</button></div>
+   <div style="border:1px solid var(--line);border-radius:14px;padding:14px;grid-column:1/-1" class="row between"><div style="flex:1 1 220px"><b>📄 Export logs as Markdown (.md)</b><p style="font-size:12px;color:var(--muted);margin-top:4px">Human-readable social reps, recording log, rubric, reviews and assessments — matching the plan's logs/ and evaluations/ format.</p></div><button class="btn s" data-act="export-md">Export Markdown</button></div></div>
+   <div class="drop" id="drop">…or drag & drop a backup .json file here</div>`)}
+ ${card(ch('Program dates','Shift the calendar if you start on a different Monday','📆'),`<div class="card-b grid g2" style="gap:10px">${field('Start date (Day 1)',`<input type="date" class="in" data-bind="startDate" data-rr="1" value="${S.startDate}">`,S.startDate!==DEFAULT_START?'custom':'default')}${field('Simulate “today”',`<input type="date" class="in" data-bind="todayOverride" data-rr="1" value="${S.todayOverride}">`,'for planning / testing')}
+   <p style="grid-column:1/-1;font-size:12px;color:var(--muted)">Day 1 = ${fmtISO(S.startDate)}. Day 60 ends 59 days later. ${S.startDate!==DEFAULT_START?`<button style="color:var(--moss-d);font-weight:700;text-decoration:underline" data-act="reset-start">Reset to 7 Sep 2026</button>`:''} ${S.todayOverride?`· Simulating ${fmtISO(S.todayOverride)}. <button style="color:var(--moss-d);font-weight:700;text-decoration:underline" data-act="clear-today">Use real date</button>`:''}</p></div>`)}
+ ${card(ch('Danger zone','Irreversible','🗑️'),`<div class="card-b"><p style="font-size:14px;color:var(--muted)">Wipe all progress from this browser and start from Day 1. Download a backup first.</p><button class="btn d" style="margin-top:10px" data-act="reset-all">Reset everything</button></div>`,'')}</div>`}
+
+function toMarkdown(){
+ const L=[];const s=S;
+ L.push('# 60-Day Communication Training — progress export','',`Exported: ${new Date().toLocaleString()} · Start date: ${s.startDate}`,'');
+ L.push('## Social Rep Log','','| Date | Type | Duration | Qs asked | Clean exit? | Energy pre→post | Self-rating | Note |','|---|---|---|---|---|---|---|---|');
+ [...s.socialReps].sort((a,b)=>a.date<b.date?-1:1).forEach(r=>L.push(`| ${r.date} | ${r.type} | ${r.duration}m | ${r.questions} | ${r.cleanExit?'Y':'N'} | ${r.energyPre}→${r.energyPost} | ${r.rating} | ${(r.note||'').replace(/\|/g,'/')} |`));
+ L.push('','## Recording Log','','| Date | Scenario | Duration | Filler count | One fix |','|---|---|---|---|---|');
+ [...s.recordings].sort((a,b)=>a.date<b.date?-1:1).forEach(r=>L.push(`| ${r.date} | ${r.scenario} | ${r.duration}s | ${r.fillers} | ${(r.fix||'').replace(/\|/g,'/')} |`));
+ L.push('','## Confidence Scale','','| # | Situation | Day 1 | Day 30 | Day 60 |','|---|---|---|---|---|');
+ CONF.forEach((c,i)=>L.push(`| ${i+1} | ${c} | ${s.confidence.d1[i]??''} | ${s.confidence.d30[i]??''} | ${s.confidence.d60[i]??''} |`));
+ L.push('','## 10-Skill Rubric','',`| # | Skill | ${RCOLS.map(c=>COLL[c]).join(' | ')} |`,'|---|---|---|---|---|---|---|');
+ SKILLS.forEach((k,i)=>L.push(`| ${i+1} | ${k} | ${RCOLS.map(c=>s.rubric[c][i]??'').join(' | ')} |`));
+ L.push('','## Weekly Reviews','');
+ Object.entries(s.weeklyReviews).forEach(([w,r])=>L.push(`### Week ${w}${r.completedAt?' ✓':''}`,'',`- Reps done vs planned: ${r.repsDone}/${r.repsPlanned} · Recording reps: ${r.recDone}/${r.recPlanned} · Reading done? ${r.reading?'Y':'N'}`,`- Best moment: ${r.best}`,`- Worst moment: ${r.worst}`,`- Rate the week: ${r.rating}/10 — ${r.reason}`,`- Keep: ${r.keep}`,`- Drop: ${r.drop}`,`- Slipped because: ${r.slipped}`,`- Next week scheduled? ${r.scheduled?'Y':'N'}`,''));
+ L.push('## Day-30 self-assessment','');s.d30Answers.forEach((a,i)=>L.push(`${i+1}. ${D30Q[i]}\n   ${a}`));
+ L.push('','## Day-60 self-assessment','');s.d60Answers.forEach((a,i)=>L.push(`${i+1}. ${D60Q[i]}\n   ${a}`));
+ L.push('','## Next 90 days','',`- Keep: ${s.next90.keep}`,`- Attack: ${s.next90.attack}`,`- Cadence: ${s.next90.cadence}`,'');
+ L.push('## Listener feedback','');s.feedback.forEach(f=>L.push(`- Talk #${f.talk} — ${f.listener}: main point “${f.q1}” · attention “${f.q2}” · wandered “${f.q3}” · pace ${f.pace}/5 · point ${f.clarity}/5 · better: “${f.q5}”`));
+ L.push('','## Day notes','');Object.entries(s.dayNotes).filter(([,n])=>n&&n.trim()).forEach(([d,n])=>L.push(`- Day ${d}: ${n}`));
+ return L.join('\n')}
+function download(name,content,type='application/json'){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),500)}
+async function importFile(file){try{const p=JSON.parse(await file.text());const d=p.data&&typeof p.data==='object'?p.data:p.state&&typeof p.state==='object'?p.state:p;
+ if(!d||typeof d!=='object'||!('taskDone'in d||'socialReps'in d||'recordings'in d))throw new Error("This doesn't look like a Speak in 60 backup file.");
+ const sm=`${Object.keys(d.taskDone||{}).length} tasks, ${(d.socialReps||[]).length} reps, ${(d.recordings||[]).length} recordings`;
+ if(!confirm(`Replace your current progress with this backup?\n\nBackup contains: ${sm}.\n\nThis cannot be undone (download a backup of the current state first if unsure).`))return;
+ S=merge(initial(),d);save();dataMsg={kind:'ok',text:`Progress restored — ${sm}.`}}catch(e){dataMsg={kind:'err',text:e.message||'Could not read that file.'}}render()}
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+function openModal(title,body,footer){$('#dlg').innerHTML=`<div class="dlg-h"><h3>${title}</h3><button class="btn g sm" data-act="modal-close">✕</button></div><div class="dlg-b">${body}</div><div class="dlg-f">${footer}</div>`;$('#modal').classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(){$('#modal').classList.remove('open');document.body.style.overflow=''}
+const sel=(name,opts,val)=>`<select class="in" name="${name}">${opts.map(o=>`<option ${o===val?'selected':''}>${o}</option>`).join('')}</select>`;
+function repModal(r){
+ const f=r||{date:todayISO(),type:'stranger',duration:3,questions:3,cleanExit:true,energyPre:5,energyPost:5,rating:3,note:''};
+ openModal(r?'Edit social rep':'Log a social rep',`<form id="mform" style="display:contents">
+  ${field('Date',`<input type="date" class="in" name="date" value="${f.date}">`)}${field('Type',sel('type',REPTYPES,f.type))}
+  ${field('Duration',`<input type="number" min="0" class="in" name="duration" value="${f.duration}">`,'minutes')}${field('Questions asked',`<input type="number" min="0" class="in" name="questions" value="${f.questions}">`)}
+  ${field('Energy before',`<input type="range" min="1" max="10" name="energyPre" value="${f.energyPre}" oninput="this.closest('.field').querySelector('small').textContent=this.value+'/10'">`,f.energyPre+'/10')}${field('Energy after',`<input type="range" min="1" max="10" name="energyPost" value="${f.energyPost}" oninput="this.closest('.field').querySelector('small').textContent=this.value+'/10'">`,f.energyPost+'/10')}
+  ${field('Self-rating',`<div class="scores" style="gap:6px">${[1,2,3,4,5].map(n=>`<button type="button" class="${f.rating===n?'on':''}" style="width:38px;height:38px;font-size:14px" data-act="pick-rating" data-v="${n}">${n}</button>`).join('')}<input type="hidden" name="rating" value="${f.rating}"></div>`)}
+  ${field('Clean exit?',`<label class="chk" style="margin-top:8px"><input type="checkbox" name="cleanExit" ${f.cleanExit?'checked':''}> Ended without awkwardness</label>`)}
+  ${field('One note',`<textarea class="in" name="note" placeholder="What happened, what shifted, what to try next time…">${esc(f.note)}</textarea>`,'','full')}
+  <input type="hidden" name="id" value="${r?r.id:''}"></form>`,`<button class="btn g" data-act="modal-close">Cancel</button><button class="btn p" data-act="rep-save">${r?'Save changes':'Log rep'}</button>`)}
+function recModal(r,scen){
+ const f=r||{date:todayISO(),scenario:scen||'pitch60',duration:scen==='impromptu'?IMP.len:60,fillers:0,fix:'',words:''};
+ openModal(r?'Edit recording':'Log a recording',`<form id="mform" style="display:contents">
+  ${field('Date',`<input type="date" class="in" name="date" value="${f.date}">`)}${field('Scenario',sel('scenario',SCEN,f.scenario))}
+  ${field('Duration',`<input type="number" min="0" class="in" name="duration" value="${f.duration}" oninput="fillerFoot()">`,'seconds')}${field('Words (optional)',`<input type="number" min="0" class="in" name="words" value="${f.words??''}" oninput="fillerFoot()">`,'target 120–150 wpm')}
+  <div class="counter"><div class="k">Filler tally — tap while you listen back</div><div style="font-size:12px;color:#be123c;opacity:.8">Count every “um / uh / you know / basically / like.”</div>
+   <div class="btns"><button type="button" class="pm" data-act="fill" data-d="-1">−</button><button type="button" class="big" data-act="fill" data-d="1" id="fill-n">${f.fillers}</button><button type="button" class="pm" data-act="fill" data-d="1">＋</button></div>
+   <div class="foot"><span id="fill-foot"></span><button type="button" data-act="fill" data-d="0" style="text-decoration:underline">reset</button></div><input type="hidden" name="fillers" value="${f.fillers}"></div>
+  ${field('One thing to fix next time',`<textarea class="in" name="fix" placeholder="e.g. Stop saying 'basically' when I start a new point. Pause instead.">${esc(f.fix)}</textarea>`,'','full')}
+  <input type="hidden" name="id" value="${r?r.id:''}"></form>`,`<button class="btn g" data-act="modal-close">Cancel</button><button class="btn p" data-act="rec-save">${r?'Save changes':'Log recording'}</button>`);fillerFoot()}
+function fillerFoot(){const fm=$('#mform');if(!fm)return;const d=+fm.duration.value||0,n=+fm.fillers.value||0,w=+fm.words.value||0;const el=$('#fill-foot');if(el)el.textContent=`${d>0?(n/d*60).toFixed(1):'—'} fillers / min${w&&d?` · ${Math.round(w/d*60)} wpm`:''}`}
+function fbModal(talk){
+ openModal(`Listener feedback — Talk #${talk}`,`<form id="mform" style="display:contents">
+  ${field('Listener',S.listeners.length?`<select class="in" name="listener"><option value="">Choose…</option>${S.listeners.map(l=>`<option>${esc(l.name||'(unnamed)')}</option>`).join('')}<option>Other</option></select>`:`<input class="in" name="listener" placeholder="Name">`,'','full')}
+  ${FBQ.slice(0,3).map((q,i)=>field(`${i+1}. ${q}`,`<textarea class="in" name="q${i+1}" style="min-height:56px"></textarea>`,'','full')).join('')}
+  ${field('4a. Pace clarity (out of 5)',`<select class="in" name="pace">${[1,2,3,4,5].map(v=>`<option ${v===3?'selected':''}>${v}</option>`).join('')}</select>`)}${field('4b. Point clarity (out of 5)',`<select class="in" name="clarity">${[1,2,3,4,5].map(v=>`<option ${v===3?'selected':''}>${v}</option>`).join('')}</select>`)}
+  ${field(`5. ${FBQ[3]}`,`<textarea class="in" name="q5" style="min-height:56px"></textarea>`,'','full')}<input type="hidden" name="talk" value="${talk}"></form>`,`<button class="btn g" data-act="modal-close">Cancel</button><button class="btn p" data-act="fb-save">Save feedback</button>`)}
+const formData=()=>Object.fromEntries(new FormData($('#mform')).entries());
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+const ACT={
+ nav:el=>go(el.dataset.to,el.dataset.day?+el.dataset.day:null),
+ 'toggle-task':el=>{const id=el.dataset.id;if(S.taskDone[id])delete S.taskDone[id];else S.taskDone[id]=new Date().toISOString();save();render()},
+ 'plan-week':el=>{planWeek=Math.min(PLAN.length,Math.max(1,+el.dataset.w));R.focusDay=null;render()},
+ 'open-note':el=>{R.openNote=+el.dataset.d;render();const t=document.querySelector(`#day-${el.dataset.d} textarea`);if(t)t.focus()},
+ 'rep-new':()=>repModal(null),'rep-edit':el=>repModal(S.socialReps.find(r=>r.id===el.dataset.id)),
+ 'rep-del':el=>{if(confirm('Delete this rep?')){S.socialReps=S.socialReps.filter(r=>r.id!==el.dataset.id);save();render()}},
+ 'pick-rating':el=>{el.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===el));el.parentElement.querySelector('input').value=el.dataset.v},
+ 'rep-save':()=>{const d=formData();d.date=d.date||todayISO();const rep={id:d.id||uid(),date:d.date,type:d.type,duration:+d.duration||0,questions:+d.questions||0,cleanExit:!!d.cleanExit,energyPre:+d.energyPre,energyPost:+d.energyPost,rating:+d.rating||3,note:d.note||'',day:dayForDate(d.date)};
+   const i=S.socialReps.findIndex(r=>r.id===rep.id);if(i>=0)S.socialReps[i]=rep;else S.socialReps.unshift(rep);save();closeModal();render()},
+ 'rec-new':el=>recModal(null,el.dataset.scen),'rec-edit':el=>recModal(S.recordings.find(r=>r.id===el.dataset.id)),
+ 'rec-del':el=>{if(confirm('Delete this recording entry?')){S.recordings=S.recordings.filter(r=>r.id!==el.dataset.id);save();render()}},
+ fill:el=>{const fm=$('#mform');const d=+el.dataset.d;let n=+fm.fillers.value||0;n=d===0?0:Math.max(0,n+d);fm.fillers.value=n;$('#fill-n').textContent=n;fillerFoot()},
+ 'rec-save':()=>{const d=formData();d.date=d.date||todayISO();const rec={id:d.id||uid(),date:d.date,scenario:d.scenario,duration:+d.duration||0,fillers:+d.fillers||0,fix:d.fix||'',words:d.words===''?undefined:+d.words,day:dayForDate(d.date)};
+   const i=S.recordings.findIndex(r=>r.id===rec.id);if(i>=0)S.recordings[i]=rec;else S.recordings.unshift(rec);save();closeModal();render()},
+ 'modal-close':()=>closeModal(),
+ score:el=>{const cur=getPath(el.dataset.bind);const v=+el.dataset.v;setPath(el.dataset.bind,cur===v?null:v);save();if(el.dataset.rr==='1')render()},
+ 'email-toggle':el=>{const e=S[el.dataset.k][+el.dataset.i];e.sent=!e.sent;e.date=e.sent?todayISO():'';save();render()},
+ 'rev-week':el=>{revWeek=+el.dataset.w;render()},
+ 'rev-complete':()=>{S.weeklyReviews[revWeek].completedAt=new Date().toISOString();save();render()},
+ 'rev-reopen':()=>{S.weeklyReviews[revWeek].completedAt='';save();render()},
+ 'imp-pick':()=>impPick(),'imp-use':el=>impPick(TOPICS[+el.dataset.i]),
+ 'imp-pause':()=>{impStop();IMP.pausedFrom=IMP.phase;IMP.phase='idle';render()},
+ 'imp-resume':()=>{if(IMP.sec>0)IMP.phase=IMP.pausedFrom;else{IMP.phase='prep';IMP.sec=5}impStart();render()},
+ 'imp-reset':()=>{impStop();IMP.phase='idle';IMP.sec=0;IMP.topic=null;render()},
+ 'imp-len':el=>{IMP.len=+el.dataset.l;render()},
+ 'ford-seed':el=>{const k=el.dataset.k;const i=S.ford[k].findIndex(q=>!q.trim());if(i>=0){S.ford[k][i]=el.dataset.q;save();render()}},
+ copy:el=>{navigator.clipboard&&navigator.clipboard.writeText(el.dataset.text);el.textContent='✓ Copied';setTimeout(()=>el.textContent='📋 Copy',1500)},
+ 'listener-add':()=>{S.listeners.push({id:uid(),name:'',asked:false,slot1:'',slot2:'',confirmed:false,note:''});save();render()},
+ 'listener-del':el=>{S.listeners=S.listeners.filter(l=>l.id!==el.dataset.id);save();render()},
+ 'fb-new':el=>fbModal(+el.dataset.t),
+ 'fb-save':()=>{const d=formData();S.feedback.push({id:uid(),talk:+d.talk,listener:d.listener||'',q1:d.q1||'',q2:d.q2||'',q3:d.q3||'',pace:+d.pace,clarity:+d.clarity,q5:d.q5||''});save();closeModal();render()},
+ 'fb-del':el=>{S.feedback=S.feedback.filter(f=>f.id!==el.dataset.id);save();render()},
+ 'export-json':()=>{download(`comm-training-backup-${todayISO().replace(/-/g,'')}.json`,JSON.stringify({app:'comm-training-60',exportedAt:new Date().toISOString(),data:S},null,2));dataMsg={kind:'ok',text:'Backup downloaded. Keep it in ~/comm-training/.'};render()},
+ 'export-md':()=>{download(`comm-training-logs-${todayISO().replace(/-/g,'')}.md`,toMarkdown(),'text/markdown');dataMsg={kind:'ok',text:'Markdown export downloaded.'};render()},
+ 'import-pick':()=>$('#file-in').click(),
+ 'reset-start':()=>{S.startDate=DEFAULT_START;save();render()},'clear-today':()=>{S.todayOverride='';save();render()},
+ 'reset-all':()=>{if(confirm('Delete ALL progress in this browser? This cannot be undone.')&&confirm('Really? Last chance.')){S=initial();save();dataMsg={kind:'ok',text:'Progress reset.'};render()}}
+};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;const fn=ACT[el.dataset.act];if(fn){e.preventDefault();fn(el,e)}});
+document.addEventListener('submit',e=>e.preventDefault()); // Enter inside modal forms must never reload the page
+document.addEventListener('click',e=>{if(e.target===$('#modal'))closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+// two-way binding: text-ish inputs save on input (no re-render); checkboxes/selects/dates save on change
+document.addEventListener('input',e=>{const el=e.target;if(!el.dataset||!el.dataset.bind)return;if(el.type==='checkbox'||el.tagName==='SELECT'||el.type==='date'||el.type==='datetime-local')return;setPath(el.dataset.bind,el.value);save()});
+document.addEventListener('change',e=>{const el=e.target;
+ if(el.dataset&&el.dataset.actChange){const a=el.dataset.actChange;if(a==='filter-social')logFilter.social=el.value;if(a==='filter-rec')logFilter.rec=el.value;if(a==='kit'){S.toolkitChecked[el.dataset.id]=el.checked;save()}render();return}
+ if(!el.dataset||!el.dataset.bind)return;
+ let v=el.type==='checkbox'?el.checked:el.value;if(el.dataset.type==='numnull')v=v===''?null:+v;if(el.dataset.type==='num')v=+v;
+ if(el.dataset.bind==='startDate'&&!v)return; // never allow a blank start date
+ setPath(el.dataset.bind,v);save();if(el.dataset.rr==='1')render()});
+document.addEventListener('change',e=>{if(e.target.id==='file-in'&&e.target.files[0])importFile(e.target.files[0])});
+document.addEventListener('dragover',e=>{const d=$('#drop');if(d){e.preventDefault();d.classList.add('over')}});
+document.addEventListener('dragleave',e=>{const d=$('#drop');if(d)d.classList.remove('over')});
+document.addEventListener('drop',e=>{const d=$('#drop');if(!d)return;e.preventDefault();d.classList.remove('over');const f=e.dataTransfer.files[0];if(f)importFile(f)});
+
+
+/* ---------- boot ---------- */
+parseHash();render();
 </script>
 </body>
 </html>

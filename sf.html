@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Copywriting Business OS — a standalone operating system for a freelance copywriting practice. One HTML file, no server, no account.">
+<title>Copywriting Business OS — Command Center</title>
+<style>
+:root{
+  --paper:#f4f1ea; --paper2:#eae5da; --ink:#1b1a17; --ink2:#5a554a;
+  --rule:#c8c0af; --stamp:#b23a2b; --stamp-d:#7c2519; --stamp-l:#e8c9c1;
+  --taupe:#6f6757; --inkblue:#2c4a63;
+  --disp:Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-font-smoothing:antialiased}
+body{margin:0;font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:14px;line-height:1.55;font-variant-numeric:tabular-nums}
+::selection{background:var(--stamp-l)}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit}
+:focus-visible{outline:2px solid var(--stamp);outline-offset:2px}
+::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--paper2)}
+::-webkit-scrollbar-thumb{background:var(--rule);border:3px solid var(--paper2)}
+.lbl{font-family:var(--mono);text-transform:uppercase;letter-spacing:.16em;font-size:10.5px;line-height:1.2}
+.mono{font-family:var(--mono)}
+/* layout */
+#side{position:fixed;top:0;left:0;width:252px;height:100vh;background:var(--paper2);border-right:1px solid rgba(27,26,23,.25);display:flex;flex-direction:column;z-index:50}
+#brand{padding:22px 20px 18px;border-bottom:1px solid rgba(27,26,23,.2);display:flex;gap:10px;align-items:center}
+#brand .t1{font-family:var(--disp);font-size:15px}
+#brand .t2{font-family:var(--mono);text-transform:uppercase;letter-spacing:.22em;font-size:9px;color:var(--stamp);margin-top:3px}
+#nav{flex:1;overflow-y:auto;padding:8px 0}
+#nav button{display:flex;gap:12px;align-items:baseline;width:100%;text-align:left;background:none;border:none;border-left:2px solid transparent;padding:10px 12px 10px 20px;color:var(--ink2)}
+#nav button:hover{color:var(--ink);background:rgba(244,241,234,.6)}
+#nav button.on{border-left-color:var(--stamp);background:var(--paper);color:var(--ink)}
+#nav .n{font-family:var(--mono);font-size:10px;color:var(--taupe)}
+#nav button.on .n{color:var(--stamp)}
+#nav .l{font-family:var(--mono);text-transform:uppercase;letter-spacing:.11em;font-size:11px}
+#sidefoot{padding:14px 20px;border-top:1px solid rgba(27,26,23,.2);display:flex;flex-direction:column;gap:10px}
+#main{margin-left:252px}
+#wrap{max-width:1180px;margin:0 auto;padding:0 48px 100px}
+#topbar{display:none}
+/* cover */
+#cover{margin:0 -48px;padding:40px 48px 36px;border-bottom:1px solid rgba(27,26,23,.25);position:relative;overflow:hidden;
+  background:
+    radial-gradient(1200px 300px at 20% 0%,rgba(255,255,255,.55),transparent 60%),
+    repeating-linear-gradient(0deg,transparent 0 27px,rgba(27,26,23,.045) 27px 28px),
+    linear-gradient(115deg,var(--paper) 55%,var(--paper2));
+}
+#cover h1{font-family:var(--disp);font-weight:600;letter-spacing:-.026em;line-height:1.02;font-size:clamp(2rem,4.6vw,3.4rem);margin:26px 0 0;max-width:22ch}
+#cover .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;max-width:900px;margin-top:30px}
+#cover .col{border-top:1px solid rgba(27,26,23,.3);padding-top:10px}
+#cover .col p{margin:8px 0 0;font-size:13.5px;line-height:1.55}
+#seal{position:absolute;right:22px;top:118px;width:118px;height:118px;border:2px solid rgba(178,58,43,.7);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transform:rotate(-4deg);pointer-events:none}
+/* bands */
+.band{border-bottom:1px solid rgba(27,26,23,.25);padding:32px 0 16px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
+.band h2{font-family:var(--disp);font-size:clamp(1.9rem,3.4vw,2.9rem);line-height:1.02;letter-spacing:-.02em;margin:0;flex:1;min-width:220px}
+.band .num{font-family:var(--mono);color:var(--stamp);font-size:13px}
+.band p.desc{width:100%;margin:8px 0 0;color:var(--ink2);font-size:14.5px;line-height:1.6;max-width:62ch}
+.subband{display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(27,26,23,.2);padding-bottom:6px;margin:32px 0 12px}
+.subband .ruleline{flex:1;height:1px;background:var(--rule)}
+.grid2{display:grid;grid-template-columns:1fr 260px;gap:48px}
+@media(max-width:1000px){.grid2{grid-template-columns:1fr}#cover .cols{grid-template-columns:1fr}aside.margin{border-left:none!important;padding-left:0!important}}
+aside.margin{border-left:1px solid rgba(27,26,23,.2);padding-left:32px}
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:11px;padding:10px 14px;border:1px solid rgba(27,26,23,.35);background:transparent;color:var(--ink);transition:all .15s}
+.btn:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.btn.ink{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.ink:hover{background:var(--stamp);border-color:var(--stamp)}
+.btn.stamp{background:var(--stamp);color:var(--paper);border-color:var(--stamp)}
+.btn.stamp:hover{background:var(--stamp-d);border-color:var(--stamp-d)}
+.btn.sm{font-size:10px;padding:6px 10px}
+.btn.quiet{border:none;color:var(--ink2);padding:6px 8px}
+.btn.quiet:hover{background:none;color:var(--stamp)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+/* stamps */
+.stamp{display:inline-flex;align-items:center;border:1px solid rgba(27,26,23,.4);padding:3px 6px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.13em;font-size:10px;line-height:1;white-space:nowrap;color:var(--ink)}
+.stamp.red{border-color:var(--stamp);color:var(--stamp)}
+.stamp.blue{border-color:var(--inkblue);color:var(--inkblue)}
+.stamp.taupe{border-color:rgba(111,103,87,.6);color:var(--taupe)}
+.chip{font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-size:10px;padding:4px 8px;border:1px solid rgba(27,26,23,.2);background:none;color:var(--ink2)}
+.chip:hover{border-color:rgba(27,26,23,.6);color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* rows / ledger */
+.row{border-bottom:1px solid rgba(200,192,175,.7);padding:10px 4px;display:block;width:100%;text-align:left;background:none;border-left:none;border-right:none;border-top:none}
+button.row:hover{background:rgba(234,229,218,.5)}
+.empty{border:1px dashed rgba(27,26,23,.25);padding:34px 24px;text-align:center;margin:12px 0}
+.empty h4{font-family:var(--disp);font-size:1.15rem;margin:12px 0 6px}
+.empty p{color:var(--ink2);font-size:13px;max-width:46ch;margin:0 auto;line-height:1.6}
+/* forms */
+.fld{display:block;margin:0}
+.fld .lbl{color:var(--taupe)}
+.fld .hint{font-size:11px;color:var(--taupe);margin:4px 0 0;line-height:1.5}
+.in{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(27,26,23,.3);padding:6px 2px;font-size:14px;color:var(--ink)}
+.in:focus{outline:none;border-bottom-color:var(--stamp)}
+textarea.in{line-height:1.6;resize:vertical}
+select.in{cursor:pointer}
+.searchbox{display:flex;align-items:center;gap:8px;border:1px solid rgba(27,26,23,.25);padding:8px 10px;flex:1;min-width:220px;background:transparent}
+.searchbox input{flex:1;border:none;background:none;outline:none;font-size:13px;color:var(--ink)}
+/* modal */
+#scrim{position:fixed;inset:0;background:rgba(27,26,23,.45);z-index:90;display:none}
+#modal{position:fixed;z-index:95;top:0;left:0;right:0;bottom:0;display:none;overflow-y:auto;padding:32px 16px}
+#modal.open{display:block}#scrim.open{display:block}
+#mbox{background:var(--paper);border:1px solid rgba(27,26,23,.3);box-shadow:0 24px 60px -20px rgba(27,26,23,.45);max-width:640px;margin:0 auto}
+#mbox.wide{max-width:820px}
+#mhead{display:flex;gap:16px;padding:20px 24px 16px;border-bottom:1px solid rgba(27,26,23,.2)}
+#mhead h3{font-family:var(--disp);font-size:1.55rem;margin:0;line-height:1.2;letter-spacing:-.015em}
+#mhead p{font-size:12.5px;color:var(--ink2);margin:4px 0 0}
+#mbody{padding:20px 24px}
+#mfoot{padding:16px 24px;border-top:1px solid rgba(27,26,23,.2);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+#mx{background:none;border:none;color:var(--ink2);font-size:18px;line-height:1;padding:4px}
+#mx:hover{color:var(--stamp)}
+/* palette */
+#pal{position:fixed;z-index:120;top:12vh;left:50%;transform:translateX(-50%);width:min(640px,92vw);background:var(--paper);border:1px solid rgba(27,26,23,.3);box-shadow:0 30px 80px -24px rgba(27,26,23,.5);display:none}
+#pal.open{display:block}
+#pal input{width:100%;border:none;background:none;outline:none;font-size:15px;padding:14px 16px;color:var(--ink)}
+#palres{max-height:52vh;overflow-y:auto;border-top:1px solid rgba(27,26,23,.2)}
+#palres button{width:100%;text-align:left;background:none;border:none;border-bottom:1px solid rgba(200,192,175,.6);padding:10px 16px;display:flex;gap:12px;align-items:center}
+#palres button.cur{background:var(--paper2)}
+/* onboarding */
+#onb{position:fixed;inset:0;z-index:200;background:var(--paper);overflow-y:auto;display:none}
+#onb.open{display:block}
+#onb .inner{max-width:640px;margin:0 auto;padding:48px 20px 80px}
+/* toast */
+#toasts{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:10px 16px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-size:10px;box-shadow:0 12px 30px -12px rgba(27,26,23,.5)}
+.toast.warn{background:var(--stamp);border-color:var(--stamp)}
+/* pipeline */
+.pipe{display:flex;gap:1px;background:rgba(200,192,175,.6);border:1px solid rgba(200,192,175,.6);overflow-x:auto;padding:0}
+.pcol{width:218px;flex-shrink:0;background:rgba(234,229,218,.4)}
+.pcol header{background:var(--paper);border-bottom:1px solid rgba(200,192,175,.6);padding:8px 10px;display:flex;gap:8px;align-items:baseline}
+.pcard{display:block;width:100%;text-align:left;background:var(--paper);border:1px solid rgba(27,26,23,.15);padding:10px;margin:0}
+.pcard:hover{border-color:rgba(27,26,23,.5)}
+.dots{display:inline-flex;gap:3px}.dots i{width:5px;height:5px;border-radius:50%;background:rgba(27,26,23,.15);display:block}.dots i.f{background:var(--ink)}.dots i.fr{background:var(--stamp)}
+.alertbox{border:1px solid rgba(178,58,43,.5);background:rgba(178,58,43,.05);margin-top:16px}
+.alertbox header{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(178,58,43,.3)}
+.kv{border-top:1px solid var(--rule);padding-top:6px}
+.kv p{margin:6px 0 0;font-size:12.5px;line-height:1.6}
+.timeline{list-style:none;margin:8px 0 0;padding:0}
+.timeline li{border-left:1px solid rgba(27,26,23,.2);padding:0 0 16px 16px;position:relative}
+.timeline li::before{content:"";position:absolute;left:-3.5px;top:6px;width:6px;height:6px;background:var(--ink)}
+.statgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:rgba(200,192,175,.6);border:1px solid rgba(200,192,175,.6)}
+.statgrid>div{background:var(--paper);padding:10px}
+.statgrid .b{font-family:var(--mono);font-size:19px;line-height:1}
+@media(max-width:760px){.statgrid{grid-template-columns:repeat(3,1fr)}#cover{margin:0 -20px;padding:32px 20px}#wrap{padding:0 20px 80px}}
+@media(max-width:900px){
+  #side{transform:translateX(-100%);transition:transform .2s}#side.open{transform:none}
+  #main{margin-left:0}
+  #topbar{display:flex;position:sticky;top:0;z-index:40;background:var(--paper);border-bottom:1px solid rgba(27,26,23,.25);padding:12px 16px;align-items:center;gap:12px}
+}
+kbd{font-family:var(--mono);font-size:10px;border:1px solid rgba(27,26,23,.2);padding:1px 6px;color:var(--taupe)}
+.big-red{font-family:var(--disp);font-size:1.35rem;line-height:1.2;color:var(--stamp);letter-spacing:-.012em;margin:8px 0 0}
+.countbox{border:2px solid rgba(27,26,23,.3);padding:8px 12px;text-align:left;background:none;min-width:110px}
+.countbox:hover{background:var(--ink);color:var(--paper)}
+.countbox.red{border-color:var(--stamp);color:var(--stamp)}
+.countbox.red:hover{background:var(--stamp);color:var(--paper)}
+.countbox .cb-n{font-family:var(--mono);font-size:22px;line-height:1}
+.countbox .cb-l{font-family:var(--mono);text-transform:uppercase;letter-spacing:.16em;font-size:9px;margin-top:6px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <button id="menuBtn" aria-label="Menu" style="background:none;border:none;font-size:20px">☰</button>
+  <span class="lbl" id="topTitle">Command Center</span>
+  <span style="flex:1"></span>
+  <button class="btn ink sm" onclick="quickOpen()">+ New</button>
+</div>
+<aside id="side">
+  <div id="brand">
+    <svg width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="#B23A2B" stroke-width="2.4"/><path d="M32.5 16.8c-2.1-2.6-5.1-4.1-8.5-4.1-6.4 0-11.2 4.8-11.2 11.3s4.8 11.3 11.2 11.3c3.4 0 6.4-1.5 8.5-4.1" fill="none" stroke="#B23A2B" stroke-width="3.2"/><path d="M6 33.5h36" stroke="#1B1A17" stroke-width="1.4"/><path d="M6 37h22" stroke="#1B1A17" stroke-width="1.4" opacity=".45"/></svg>
+    <div><div class="t1">Copywriting</div><div class="t2">Business OS</div></div>
+  </div>
+  <nav id="nav"></nav>
+  <div id="sidefoot">
+    <button class="btn ink" style="justify-content:center" onclick="quickOpen()">+ Quick capture</button>
+    <button class="chip" style="display:flex;align-items:center;gap:8px;padding:8px 10px;text-align:left" onclick="openPal()">⌕ &nbsp;Search <kbd style="margin-left:auto">⌘K</kbd></button>
+    <div style="display:flex;align-items:center;gap:8px"><span class="stamp" id="saveBadge">Saved</span><span class="mono" style="font-size:9.5px;color:var(--taupe)">v1.0 · schema 1</span></div>
+  </div>
+</aside>
+<main id="main"><div id="wrap"></div></main>
+<div id="scrim" onclick="closeModal()"></div>
+<div id="modal" role="dialog" aria-modal="true"><div id="mbox"><div id="mhead"><div style="flex:1;min-width:0"><h3 id="mtitle"></h3><p id="msub"></p></div><button id="mx" onclick="closeModal()" aria-label="Close">✕</button></div><div id="mbody"></div><div id="mfoot"></div></div></div>
+<div id="pal"><div style="display:flex;align-items:center;gap:8px;padding:0 8px"><span style="color:var(--taupe)">⌕</span><input id="palIn" placeholder="Search every record — title, notes, prospect, tag…" autocomplete="off"><kbd>ESC</kbd></div><div id="palres"></div><div style="padding:8px 16px;border-top:1px solid rgba(27,26,23,.2);display:flex;gap:16px"><span class="mono" style="font-size:10px;color:var(--taupe)">↑ ↓ move</span><span class="mono" style="font-size:10px;color:var(--taupe)">↵ open</span></div></div>
+<div id="onb"><div class="inner" id="onbInner"></div></div>
+<div id="toasts"></div>
+<script>
+"use strict";
+/* =====================================================================
+   COPYWRITING BUSINESS OS — standalone single-file build (vanilla JS)
+   No dependencies. No network. Storage: localStorage (portable via JSON).
+   To host on GitHub: push THIS file as-is. Open it via Pages or file://.
+   ===================================================================== */
+var LS_KEY = "copywriting-os-v1";
+function uid(p){ return (p||"r")+"_"+Math.random().toString(36).slice(2,10); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function fmtD(iso){ if(!iso) return "—"; var d=new Date(iso.length<=10?iso+"T00:00:00Z":iso); if(isNaN(d)) return "—"; return d.toLocaleDateString(undefined,{day:"2-digit",month:"short",year:"numeric"}); }
+function shortD(iso){ if(!iso) return "—"; var d=new Date(iso.length<=10?iso+"T00:00:00Z":iso); if(isNaN(d)) return "—"; return d.toLocaleDateString(undefined,{day:"2-digit",month:"short"}); }
+function daysFrom(iso){ if(!iso) return null; var d=new Date(iso.length<=10?iso+"T00:00:00Z":iso); if(isNaN(d)) return null; var t=new Date(); t.setHours(0,0,0,0); return Math.round((d-t)/864e5); }
+function dueLabel(due){ var d=daysFrom(due); if(d===null) return "—"; if(d<0) return Math.abs(d)+"d overdue"; if(d===0) return "due today"; if(d===1) return "due tomorrow"; return "in "+d+"d"; }
+function dueTone(due){ var d=daysFrom(due); if(d===null) return ""; if(d<0) return "color:var(--stamp)"; if(d<=2) return "color:var(--ink)"; return "color:var(--ink2)"; }
+function toast(msg,warn){ var t=document.createElement("div"); t.className="toast"+(warn?" warn":""); t.textContent=msg; document.getElementById("toasts").appendChild(t); setTimeout(function(){ t.remove(); },3600); }
+function dots(n,red){ var h='<span class="dots">'; for(var i=1;i<=5;i++) h+='<i class="'+(i<=n?(red?"fr":"f"):"")+'"></i>'; return h+'</span>'; }
+/* ---------------- seed (labelled demo practice, removable in one click) ---------------- */
+function seed(){
+  var D=function(y,m,d){ return new Date(Date.UTC(y,m-1,d)).toISOString(); };
+  return {
+    schemaVersion:1, appVersion:"1.0.0",
+    settings:{name:"",audience:"Founders of B2B service businesses who sell expertise — coaches, consultants, fractional executives.",positioning:"I help expertise-led businesses say what they actually do — so the right visitors recognise themselves and enquire.",coreService:"Homepage Message Audit (fixed scope, £450)",objective:"Book three audits this quarter and convert two into longer projects.",sampleData:true,onboarded:false},
+    focus:{objective:"Book three paid Homepage Message Audits before the end of Q1.",strategy:"Teardown-first outreach to researched expertise-led businesses, supported by a free clarity check.",why:"Twelve researched, teardown-led emails produced three calls where forty pitch-first emails produced none. This is the only lever I control.",project:"Make the audit offer self-explanatory: scope page, sample teardown, follow-up asset.",mostImportantAction:"Send the revised scope to Northbound and follow up on the Halden proposal.",milestones:["Audit scope page published with a visible price","Clarity check live and attached to outreach","12 qualified prospects contacted this week","First audit booked and delivered"],notNow:["Building a newsletter","Redesigning my own website","Course creation","SEO and content marketing"],constraints:"Delivery capacity ~25 hrs/week alongside client work.",startDate:"2026-01-05",reviewDate:"2026-02-02",changeEvidence:"If 60 qualified teardown emails produce fewer than 3 calls, the mechanism is wrong — change approach, don't add volume.",history:[]},
+    insights:[
+      {id:"ins_cred",createdAt:D(2026,1,12),updatedAt:D(2026,1,20),title:"Expert-service sites open with credentials instead of the costly problem",notes:"Reviewed 11 homepages of executive coaches. 9 of 11 open with certification and biography. Only 2 name a specific costly problem above the fold.",source:"Own audit notes, 11 sites",category:"Positioning",entryType:"observation",evidence:"observed",implication:"A homepage headline audit is a credible, low-friction door-opener.",proposedAction:"Build the 7-Question Clarity Check around this finding.",status:"actionable",tags:["homepage","positioning"],links:[{type:"offer",id:"off_clarity"}]},
+      {id:"ins_revenue",createdAt:D(2026,1,10),updatedAt:D(2026,1,18),title:"Buyers describe the problem as lost revenue, never as 'messaging'",notes:"In 6 discovery conversations the word 'messaging' never appeared unprompted. Owners said 'we lose deals to someone cheaper' or 'people don't get what we do until call two'.",source:"Discovery calls Nov–Jan",category:"Buyer psychology",entryType:"client insight",evidence:"proven",implication:"My marketing must translate copy problems into commercial losses.",proposedAction:"Rewrite the audit page to lead with the lost-deal symptom.",status:"implemented",tags:["messaging"],links:[{type:"offer",id:"off_audit"}]},
+      {id:"ins_teardown",createdAt:D(2026,1,14),updatedAt:D(2026,1,21),title:"Teardown-first emails get replies. Pitch-first emails get silence.",notes:"24 pitch-first emails in December: 1 reply. 19 teardown-first in January: 6 replies, 3 calls. The teardown contains three specific observations before any mention of a service.",source:"Outreach log",category:"Outreach",entryType:"market signal",evidence:"observed",implication:"Leading with specific unpaid observation is the mechanism.",proposedAction:"Make teardown-first the default format.",status:"actionable",tags:["outreach"],links:[{type:"offer",id:"off_tpl"}]},
+      {id:"ins_40",createdAt:D(2026,1,16),updatedAt:D(2026,1,19),title:"40 rushed pitches produced less than 12 researched ones",notes:"Week of 8 Dec: 40 generic pitches, 1 reply, 0 calls. Week of 12 Jan: 12 researched teardown emails, 6 replies, 3 calls.",source:"Outreach log comparison",category:"Working practice",entryType:"lesson",evidence:"proven",implication:"Volume is not the lever. Research depth is.",proposedAction:"Cap weekly outreach at 12, each with a teardown note first.",status:"implemented",tags:["discipline"],links:[]},
+      {id:"ins_numbers",createdAt:D(2026,1,11),updatedAt:D(2026,1,17),title:"Case-study numbers need a time window to be believable",notes:"'Increased conversions 40%' reads as invented. '40% more demo requests in the 8 weeks after launch' reads as measured.",source:"Portfolio review",category:"Proof",entryType:"lesson",evidence:"observed",implication:"Every proof point needs a window and a baseline.",proposedAction:"Add baselines to all portfolio pieces.",status:"worth exploring",tags:["proof"],links:[]},
+      {id:"ins_nine",createdAt:D(2026,1,20),updatedAt:D(2026,1,20),title:"Hypothesis: naming the expensive problem in the first 9 words lifts replies",notes:"I suspect subject lines naming a costly symptom outperform those naming a service. No evidence yet.",source:"",category:"Outreach",entryType:"hypothesis",evidence:"suspected",implication:"If true, my outreach and my clients' pages both improve.",proposedAction:"A/B the first line on the next 30 sends.",status:"unprocessed",tags:["hypothesis"],links:[]}
+    ],
+    offers:[
+      {id:"off_audit",createdAt:D(2025,12,1),updatedAt:D(2026,1,18),name:"Homepage Message Audit — 90 minutes",description:"Fixed-scope entry offer: a written teardown against 7 clarity questions plus a rewritten message hierarchy in 3 working days.",offerType:"productized service",audience:"Founders of B2B service businesses selling expertise.",problem:"The homepage explains what they do but not why it matters.",outcome:"A rewritten message hierarchy the client can implement.",price:"£450",status:"active",files:["docs/audit-scope-v3.pdf"],nextAction:"Add risk-reversal above the price.",tags:[],links:[{type:"insight",id:"ins_revenue"}]},
+      {id:"off_clarity",createdAt:D(2025,12,3),updatedAt:D(2026,1,15),name:"The 7-Question Homepage Clarity Check",description:"One-page self-scoring checklist. The follow-up asset in teardown outreach and the email opt-in.",offerType:"lead magnet",audience:"Same as audit audience, awareness stage.",problem:"Founders know the site underperforms but can't say why.",outcome:"In ten minutes they score their homepage and see the weakest sentences.",price:"Free",status:"published",files:["leadmagnets/clarity-check-v2.pdf"],nextAction:"Publish the landing page.",tags:[],links:[{type:"insight",id:"ins_cred"}]},
+      {id:"off_landing",createdAt:D(2025,12,10),updatedAt:D(2026,1,12),name:"Launch Page Sprint — 2 weeks",description:"Two-week fixed sprint. Week one: interviews and message strategy. Week two: full page copy.",offerType:"paid service",audience:"Consultancies launching a new offer.",problem:"Launches get built around internal language.",outcome:"A complete launch page the developer can build from.",price:"£2,400",status:"drafting",files:[],nextAction:"Finish scope; sanity-check price with two clients.",tags:[],links:[]},
+      {id:"off_tpl",createdAt:D(2026,1,6),updatedAt:D(2026,1,19),name:"3-bullet teardown cold email",description:"One observation, three numbered teardown bullets, one soft question. No service mention in message one.",offerType:"outreach template",audience:"Prospects with a fixable homepage problem.",problem:"Pitch-first email gets ignored.",outcome:"A repeatable structure that earns replies.",price:"—",status:"active",files:["outreach/teardown-email-v4.md"],nextAction:"Track reply rate by first-line variant.",tags:[],links:[{type:"insight",id:"ins_teardown"}]},
+      {id:"off_port",createdAt:D(2026,1,8),updatedAt:D(2026,1,16),name:"Northbound Coaching — homepage rewrite",description:"Before/after with baseline, window and outcome. Was spec, converted to paid phase two.",offerType:"portfolio piece",audience:"Executive coaches browsing the portfolio.",problem:"Existing pieces have no measurable outcomes.",outcome:"A documented before/after with outcome.",price:"—",status:"improving",files:[],nextAction:"Add the 8-week window and a client quote.",tags:[],links:[{type:"insight",id:"ins_numbers"}]}
+    ],
+    prospects:[
+      {id:"pro_north",createdAt:D(2026,1,5),updatedAt:D(2026,1,22),name:"Marta Ivanova",company:"Northbound Coaching",website:"https://northboundcoaching.example",profile:"",industry:"Executive coaching",role:"Founder",problem:"Homepage leads with certification. No costly problem named above the fold.",whySelected:"Perfect audit fit. Clear fixable problem, visible price point suggests budget.",observations:"LinkedIn voice is sharp; the site is generic. The gap is the pitch.",offerFit:"Homepage Message Audit → possible Sprint later.",stage:"conversation",fit:5,strength:4,lastContact:"2026-01-21",followUpDate:"2026-01-28",nextAction:"Send revised scope; confirm start date.",outcome:"",lessons:"Naming one specific sentence got an immediate reply.",tags:[],links:[{type:"offer",id:"off_audit"}],activity:[
+        {id:"a1",date:"2026-01-12",kind:"outreach",channel:"email",subject:"Three things your homepage says instead of the problem",content:"Opened with one observation about LinkedIn voice vs the site, three numbered teardown bullets, one question.",result:""},
+        {id:"a2",date:"2026-01-15",kind:"reply",channel:"email",subject:"Re: Three things…",content:"Warm. Asked what a full audit involves and costs.",result:"Asked for scope"},
+        {id:"a3",date:"2026-01-17",kind:"call / meeting",channel:"video",subject:"Discovery call — 30 min",content:"Talked through scope. Answered the 'already had a coach look' objection with the 7-question framework.",result:"Wants scope in writing"},
+        {id:"a4",date:"2026-01-21",kind:"outreach",channel:"email",subject:"Scope + price, as promised",content:"Sent scope, £450, proposed start 2 Feb.",result:""}]},
+      {id:"pro_ledger",createdAt:D(2026,1,5),updatedAt:D(2026,1,19),name:"Daniel Okoro",company:"Ledger & Co.",website:"https://ledgerandco.example",profile:"",industry:"Fractional CFO",role:"Managing partner",problem:"Three services described in internal finance language; no visible difference.",whySelected:"High-value service, obvious message problem, publishes case studies.",observations:"Case studies have numbers with no time windows.",offerFit:"Homepage Message Audit.",stage:"follow-up due",fit:4,strength:3,lastContact:"2026-01-09",followUpDate:"2026-01-19",nextAction:"Second follow-up with clarity check + one observation.",outcome:"",lessons:"First follow-up should have carried something useful.",tags:[],links:[{type:"offer",id:"off_clarity"}],activity:[
+        {id:"b1",date:"2026-01-05",kind:"outreach",channel:"email",subject:"Your three services read the same from outside",content:"Teardown-first, three bullets on differentiation, one question.",result:""},
+        {id:"b2",date:"2026-01-09",kind:"follow-up",channel:"email",subject:"Re: Your three services…",content:"Short bump with clarity check link.",result:"No response"}]},
+      {id:"pro_halden",createdAt:D(2026,1,5),updatedAt:D(2026,1,22),name:"Priya Raman",company:"Halden Legal",website:"https://haldenlegal.example",profile:"",industry:"Commercial law",role:"Partner",problem:"Practice pages read like every other firm. No named client type or outcome.",whySelected:"Referred by a past client.",observations:"Warm expectations already.",offerFit:"Homepage Message Audit.",stage:"proposal",fit:5,strength:5,lastContact:"2026-01-20",followUpDate:"2026-01-24",nextAction:"Follow up — decision expected this week.",outcome:"",lessons:"Referral removes the credibility burden; spend the call on the problem.",tags:[],links:[{type:"offer",id:"off_audit"}],activity:[
+        {id:"c1",date:"2026-01-13",kind:"note",channel:"—",subject:"Introduced by a past client",content:"Warm intro over email; call booked same week.",result:""},
+        {id:"c2",date:"2026-01-16",kind:"call / meeting",channel:"video",subject:"Discovery — 45 min",content:"'We win on relationships and lose on comprehension.'",result:"Proposal requested"},
+        {id:"c3",date:"2026-01-20",kind:"proposal",channel:"email",subject:"Proposal: practice page message strategy",content:"Audit + practice-page rewrite as phase two. £1,850.",result:""}]},
+      {id:"pro_meridian",createdAt:D(2026,1,5),updatedAt:D(2026,1,19),name:"Tomas Lindqvist",company:"Meridian Ops",website:"https://meridianops.example",profile:"",industry:"Operations consultancy",role:"Director",problem:"Brochure site. No offer, no price, no next step beyond 'get in touch'.",whySelected:"Mid-sized, likely budget; severe visible problem.",observations:"Blog is strong; commercial pages are thin.",offerFit:"Homepage Message Audit.",stage:"contacted",fit:3,strength:2,lastContact:"2026-01-19",followUpDate:"2026-01-26",nextAction:"Follow up with one blog-vs-services observation.",outcome:"",lessons:"",tags:[],links:[],activity:[
+        {id:"d1",date:"2026-01-19",kind:"outreach",channel:"email",subject:"Your blog is doing work your services page can't",content:"Three bullets comparing blog quality to services page.",result:""}]},
+      {id:"pro_atlas",createdAt:D(2026,1,5),updatedAt:D(2026,1,18),name:"Grace Bennett",company:"Atlas People Ops",website:"https://atlaspeopleops.example",profile:"",industry:"HR consultancy",role:"Founder",problem:"'Full-service HR' means nothing to a buyer with a specific problem.",whySelected:"Recent rebrand suggests willingness to invest.",observations:"Timing may be fatigue or appetite.",offerFit:"Homepage Message Audit.",stage:"replied",fit:3,strength:3,lastContact:"2026-01-18",followUpDate:"2026-01-27",nextAction:"Send clarity check; propose short call.",outcome:"",lessons:"",tags:[],links:[],activity:[
+        {id:"e1",date:"2026-01-14",kind:"outreach",channel:"email",subject:"What 'full-service HR' costs you in enquiries",content:"Three bullets on the positioning problem.",result:""},
+        {id:"e2",date:"2026-01-18",kind:"reply",channel:"email",subject:"Re: What 'full-service HR' costs…",content:"'Fair point, we've talked about this internally.' Asked what I'd change first.",result:"Soft interest"}]},
+      {id:"pro_cairn",createdAt:D(2026,1,5),updatedAt:D(2026,1,18),name:"Sofia Almeida",company:"Cairn Financial Planning",website:"https://cairnplanning.example",profile:"",industry:"Financial planning",role:"Principal",problem:"Six-step process page; never says who it is for.",whySelected:"Local, well-reviewed, investing in marketing.",observations:"New photography, unchanged copy.",offerFit:"Homepage Message Audit.",stage:"ready to contact",fit:4,strength:3,lastContact:"",followUpDate:"2026-01-27",nextAction:"Write the teardown. Three bullets before Monday.",outcome:"",lessons:"",tags:[],links:[],activity:[]}
+    ],
+    experiments:[
+      {id:"exp_tear",createdAt:D(2025,12,1),updatedAt:D(2026,1,20),title:"Teardown-first vs pitch-first outreach",track:"clients",kind:"experiment",objective:"Find an outreach format that reliably produces replies.",problem:"Pitch-first produced 1 reply from 24 sends. No signal to learn from.",why:"Without a working mechanism I can't create opportunities on demand.",hypothesis:"An email leading with three specific unpaid observations will materially beat one describing my service.",action:"Send 19 teardown-first emails over 3 weeks. No service mention in message one.",expectedResult:"At least 4 replies and 2 calls.",successMeasure:"Reply rate above 20%, 2+ calls.",startDate:"2026-01-08",reviewDate:"2026-02-05",actualOutcome:"Running. 12 sent: 5 replies, 3 calls, 1 proposal out.",learned:"Specificity matters more than structure.",nextDecision:"Continue to 30 sends, then compare first-line variants.",verdict:"continue",status:"running",resources:[],practice:[],deadline:"",evidenceOfImprovement:"",tags:[],links:[{type:"insight",id:"ins_teardown"}]},
+      {id:"exp_first",createdAt:D(2026,1,10),updatedAt:D(2026,1,20),title:"Does naming the costly problem in the first line lift replies?",track:"clients",kind:"experiment",objective:"Isolate the mechanism inside teardown outreach.",problem:"I know teardown-first works better; I don't know which part does the work.",why:"Knowing the mechanism lets me reuse it in client pages.",hypothesis:"First lines naming a costly symptom beat first lines naming a missed opportunity.",action:"Alternate first-line variant across 30 sends; tag each reply.",expectedResult:"A measurable difference.",successMeasure:"8+ point reply-rate gap.",startDate:"",reviewDate:"2026-03-06",actualOutcome:"",learned:"",nextDecision:"Start after teardown experiment hits 30 sends.",verdict:"not reviewed",status:"planned",resources:[],practice:[],deadline:"",evidenceOfImprovement:"",tags:[],links:[{type:"insight",id:"ins_nine"}]},
+      {id:"exp_price",createdAt:D(2026,1,10),updatedAt:D(2026,1,20),title:"Publishing a starting price on the audit page",track:"clients",kind:"experiment",objective:"Improve enquiry quality without killing volume.",problem:"Enquiries arrive with no sense of budget; calls become qualification.",why:"Filtering earlier frees time for delivery.",hypothesis:"'From £450' reduces total enquiries but raises the qualified share.",action:"Visible price for 6 weeks; tag every enquiry qualified/not.",expectedResult:"Fewer, better enquiries.",successMeasure:"Qualified share above 60%, volume down less than a third.",startDate:"",reviewDate:"2026-03-13",actualOutcome:"",learned:"",nextDecision:"Wait for the page rewrite so changes aren't confounded.",verdict:"not reviewed",status:"planned",resources:[],practice:[],deadline:"",evidenceOfImprovement:"",tags:[],links:[]},
+      {id:"exp_craft",createdAt:D(2025,12,1),updatedAt:D(2026,1,20),title:"Customer interviews as a paid asset in every project",track:"craft",kind:"active strategy",objective:"Make buyer language the foundation of everything I write.",problem:"Without interviews I write from intuition; copy takes twice as long to land.",why:"The best line I wrote all year came from a customer's answer.",hypothesis:"Scoped as a paid deliverable, interviews improve copy measurably.",action:"Five-question interviews in three consecutive projects; compare revision rounds.",expectedResult:"Fewer revision rounds.",successMeasure:"One fewer round per project on average.",startDate:"2025-12-01",reviewDate:"2026-02-28",actualOutcome:"Two projects with interviews: both landed in one round.",learned:"'What almost stopped you buying?' pays for the whole interview.",nextDecision:"Continue. Write it into standard scope.",verdict:"continue",status:"running",resources:["research/interview-script.md"],practice:["One mock interview per week."],deadline:"2026-02-28",evidenceOfImprovement:"Two projects closed in one round vs a previous average of three.",tags:[],links:[{type:"insight",id:"ins_revenue"}]},
+      {id:"exp_goal",createdAt:D(2026,1,1),updatedAt:D(2026,1,20),title:"Goal: three retained clients at £1,500+/mo by June",track:"clients",kind:"long-term goal",objective:"Replace lumpy project income with retained relationships.",problem:"Every month starts at zero.",why:"Retainers buy stability to invest in craft.",hypothesis:"The audit is the natural entry into a retained review relationship.",action:"Offer a monthly message-review retainer to every completed audit client.",expectedResult:"2–3 retainers by end of Q2.",successMeasure:"£4,500/mo recurring by 30 June 2026.",startDate:"2026-01-01",reviewDate:"2026-06-30",actualOutcome:"",learned:"",nextDecision:"Design retainer scope after three audits complete.",verdict:"continue",status:"running",resources:[],practice:[],deadline:"",evidenceOfImprovement:"",tags:[],links:[{type:"offer",id:"off_audit"}]}
+    ],
+    tasks:[
+      {id:"tsk_1",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Send the revised scope to Marta at Northbound",description:"Include £450, 2 Feb start, three-day delivery promise.",priority:"high",due:"2026-01-23",status:"open",effort:"20 min",completedAt:"",notes:"",tags:[],links:[{type:"prospect",id:"pro_north"}]},
+      {id:"tsk_2",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Follow up on the Halden Legal proposal",description:"Decision expected this week. Ask directly what blocks a yes.",priority:"high",due:"2026-01-24",status:"open",effort:"15 min",completedAt:"",notes:"",tags:[],links:[{type:"prospect",id:"pro_halden"}]},
+      {id:"tsk_3",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Second follow-up to Ledger & Co.",description:"Attach clarity check + one observation about case-study numbers.",priority:"high",due:"2026-01-19",status:"open",effort:"25 min",completedAt:"",notes:"",tags:[],links:[{type:"prospect",id:"pro_ledger"}]},
+      {id:"tsk_4",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Write the Cairn Financial teardown",description:"Three specific bullets. No service mention.",priority:"medium",due:"2026-01-27",status:"open",effort:"45 min",completedAt:"",notes:"",tags:[],links:[{type:"prospect",id:"pro_cairn"}]},
+      {id:"tsk_5",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Move risk-reversal above the price on the audit page",description:"",priority:"medium",due:"2026-01-30",status:"in progress",effort:"30 min",completedAt:"",notes:"",tags:[],links:[{type:"offer",id:"off_audit"}]},
+      {id:"tsk_7",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Send the referral ask to two past clients",description:"One paragraph naming who I help, plus a forwardable line.",priority:"high",due:"2026-01-26",status:"open",effort:"30 min",completedAt:"",notes:"",tags:[],links:[]},
+      {id:"tsk_11",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Record the January weekly review",description:"Four prompts, then continue / stop / change.",priority:"medium",due:"2026-01-25",status:"open",effort:"30 min",completedAt:"",notes:"",tags:[],links:[]},
+      {id:"tsk_12",createdAt:D(2026,1,10),updatedAt:D(2026,1,16),title:"Draft the clarity-check landing page copy",description:"",priority:"medium",due:"2026-01-16",status:"done",effort:"3 hr",completedAt:"2026-01-16",notes:"",tags:[],links:[{type:"offer",id:"off_clarity"}]}
+    ],
+    reviews:[
+      {id:"rev_1",createdAt:D(2026,1,18),updatedAt:D(2026,1,18),kind:"weekly review",date:"2026-01-18",title:"Week 3 — teardown outreach is producing signal",movedForward:"Six teardown emails, three discovery calls, one proposal. The Halden proposal exists because of the new format.",learned:"Specificity is the mechanism. Bullets must name a sentence, section or number.",signal:"Three replies in one week — strongest signal since starting outreach.",wasted:"Two hours redesigning the clarity-check PDF nobody asked for.",continueDoing:"Teardown-first outreach, capped at 12/week with a recorded note first.",stopDoing:"Pitch-first emails entirely.",changeDoing:"Follow-ups must carry something useful, never a bump.",nextAction:"Send revised scope to Northbound.",decision:"",evidence:"",consequence:"",tags:[],links:[{type:"experiment",id:"exp_tear"}]},
+      {id:"rev_2",createdAt:D(2026,1,5),updatedAt:D(2026,1,5),kind:"decision",date:"2026-01-05",title:"Decision: stop chasing outreach volume",movedForward:"",learned:"",signal:"",wasted:"",continueDoing:"",stopDoing:"The 40-email weeks.",changeDoing:"",nextAction:"Cap weekly outreach at 12 researched prospects.",decision:"Replace volume targets with a research-quality gate: no email without a recorded teardown note first.",evidence:"December: 40 sends, 1 reply, 0 calls. January comparison week: 12 researched sends, 5 replies, 3 calls.",consequence:"Fewer emails, more replies, slower but steadier pipeline.",tags:[],links:[{type:"experiment",id:"exp_tear"}]}
+    ]
+  };
+}
+/*__MORE__*/
+</script>
+</body>
+</html>

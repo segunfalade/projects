@@ -1,14 +1,14 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0f172a" />
-<title>Speak in 60 — Elevated 60-Day Communication Tracker & Practice Suite</title>
-<meta name="description" content="Upgraded 60-day interactive communication practice studio and tracker with adaptive impromptu timer, quick recovery restart controls, and seamless autosaving." />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#0f172a" name="theme-color"/>
+<title>Speak in 60 — Elevated 60-Day Communication Tracker &amp; Practice Suite</title>
+<meta content="Upgraded 60-day interactive communication practice studio and tracker with adaptive impromptu timer, quick recovery restart controls, and seamless autosaving." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <style>
 :root {
   --bg-main: #f8fafc;
@@ -372,46 +372,47 @@ textarea.input-control { min-height: 78px; resize: vertical; }
 </style>
 </head>
 <body>
-
 <header class="topbar">
-  <div class="brand-mark" data-act="nav" data-to="dashboard" style="cursor:pointer">
-    <div class="logo-badge">🎙️</div>
-    <span>Speak in 60</span>
-  </div>
-  <div class="day-status-pill" id="pill-mobile">Day —</div>
+<div class="brand-mark" data-act="nav" data-to="dashboard" style="cursor:pointer">
+<div class="logo-badge">🎙️</div>
+<span>Speak in 60</span>
+</div>
+<div class="day-status-pill" id="pill-mobile">Day 1</div>
 </header>
-
 <div class="shell-container">
-  <aside class="sidebar">
-    <div class="brand-mark" data-act="nav" data-to="dashboard" style="cursor:pointer">
-      <div class="logo-badge">🎙️</div>
-      <div>
-        <span>Speak in 60</span>
-        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);text-transform:uppercase">Studio Edition</div>
-      </div>
-    </div>
-    <nav id="desktop-nav"></nav>
-    <div class="progbox">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#94a3b8">Progress</span>
-        <b id="pill-desktop" style="font-size:18px">—</b>
-      </div>
-      <div class="bar" style="height:6px;background:#334155;margin:10px 0 6px"><i id="prog-bar" style="width:0%;background:#2dd4bf"></i></div>
-      <span id="prog-label" style="font-size:11.5px;color:#cbd5e1">0/0 completed</span>
-      <div style="font-size:10.5px;color:#94a3b8;margin-top:4px" id="save-status">💾 Autosaves locally</div>
-    </div>
-  </aside>
-
-  <main class="content-area" id="app"></main>
+<aside class="sidebar">
+<div class="brand-mark" data-act="nav" data-to="dashboard" style="cursor:pointer">
+<div class="logo-badge">🎙️</div>
+<div>
+<span>Speak in 60</span>
+<div style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-muted);text-transform:uppercase">Studio Edition</div>
 </div>
-
+</div>
+<nav id="desktop-nav"></nav>
+<div class="progbox">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#94a3b8">Progress</span>
+<b id="pill-desktop" style="font-size:18px">Day 1</b>
+</div>
+<div class="bar" style="height:6px;background:#334155;margin:10px 0 6px"><i id="prog-bar" style="width:0%;background:#2dd4bf"></i></div>
+<span id="prog-label" style="font-size:11.5px;color:#cbd5e1">0/0 completed</span>
+<div id="save-status" style="font-size:10.5px;color:#94a3b8;margin-top:4px">💾 Autosaves locally</div>
+<button class="btn secondary sm" data-act="quick-reset-day1" style="width:100%;margin-top:10px;font-size:11px;height:28px;background:rgba(255,255,255,0.08);color:#cbd5e1;border:1px solid rgba(255,255,255,0.12)">↺ Reset to Day 1</button>
+</div>
+</aside>
+<main class="content-area" id="app"></main>
+</div>
 <nav class="bottomnav" id="mobile-nav"></nav>
-
 <div id="modal">
-  <div class="dialog-window" id="dialog-content"></div>
+<div class="dialog-window" id="dialog-content"></div>
 </div>
-
 <script>
+/* =========================================================
+   DATE UTILITIES (Defined early for initial state)
+   ========================================================= */
+const pad = n => String(n).padStart(2,'0');
+const toISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
 /* =========================================================
    CORE PLAN DATA
    ========================================================= */
@@ -427,8 +428,8 @@ const RAW_PLAN = [
  {n:1,title:'Foundation',theme:'You learn to be before you learn to perform. Body, breath, voice, first contact.',books:'Lowndes — one trick per weekday (Tricks 1–7).',podcast:'“Hacking Your Speaking Anxiety” + the body-language Quick Think episode.',reps:'2 social reps (1 low-stakes stranger, 1 familiar).',
   days:[
    {d:1,title:'BASELINE DAY',min:60,flag:'baseline',tasks:[
-     ['rec','Record ① a 60-sec self-intro, no notes, as you\'d actually do it. Save as 20260907-intro60.','logs/recordings'],
-     ['rec','Record ② a 3-min talk: “Why I do my freelance work” (5 min prep). Save as 20260907-talk3.','logs/recordings'],
+     ['rec','Record ① a 60-sec self-intro, no notes, as you\'d actually do it. Save as intro60 baseline.','logs/recordings'],
+     ['rec','Record ② a 3-min talk: “Why I do my freelance work” (5 min prep). Save as talk3 baseline.','logs/recordings'],
      ['eval','Play both back, tally fillers, log them in the Recording Log. This is your “before”.','logs/recordings'],
      ['eval','Fill the Confidence Scale (Day 1 column).','evaluate/confidence'],
      ['eval','Fill the full 10-Skill Rubric (Day 1 column).','evaluate/rubric']]},
@@ -436,7 +437,7 @@ const RAW_PLAN = [
    {d:3,tasks:[['rec','Recording rep: 60-sec self-intro again. Play back, count fillers. Target: 1 fewer than baseline.','logs/recordings']]},
    {d:4,tasks:[['write','Client comms: pick one recent client email. Write the reply you should have sent, using one Lowndes technique (shorter, warmer, more specific). Don\'t send — archive as reference.']]},
    {d:5,tasks:[['imp','Impromptu: pick a topic from the topic bank, 5-second prep, record 90 seconds. Don\'t edit; just finish.','toolkit/topics']]},
-   {d:6,tasks:[['soc','Social Rep #1 (stranger): 1–2 minutes with a shopkeeper, barista, or market vendor. One genuine exchange using one Lowndes technique. Exit cleanly. Recharge 20 min after. Log it.','logs/social'],['rest','Rest otherwise.']]},
+   {d:6,tasks:[['soc','Social Rep #1 (stranger): 1–2 minutes with a shopkeeper, barista, or market vendor. One genuine exchange using one Lowndes technique. Exit cleanly. Recharge 20 min after. Log it.','logs/social']]},
    {d:7,flag:'review',tasks:[['eval','Weekly Evaluation #1 (Sunday Review).','evaluate/reviews'],['admin','Confirm Week 2\'s reps in your calendar.']]}],
   weekTasks:[['soc','Social Rep #2 (familiar), any weekday: 5-min chat with a friend or family member where you deliberately ask a follow-up question on every answer. Log it.','logs/social']]},
  {n:2,title:'The small-talk engine',theme:'Small talk as a system, not a personality trait.',books:'Lowndes Tricks 8–14.',podcast:'“Question Everything: Why Curiosity Is Communication\'s Secret Weapon.”',reps:'3 recording reps (Mon, Wed, Fri). 2–3 social reps, one of them a 3+ min stranger.',
@@ -476,7 +477,7 @@ const RAW_PLAN = [
    {d:30,tasks:[['rec','Recording rep: 90-sec — “defend your rate” to a skeptical client. Use one Abrahams structure (PREP: Point, Reason, Example, Point).','logs/recordings']]},
    {d:31,tasks:[['soc','Social Rep #5: Coffee Chat #2 — someone in your field or an adjacent one. 25 min.','logs/social'],['write','Send Referral Email #1 (drafted Week 4). Sending one email is a rep. Log both.','evaluate/checkpoints']]},
    {d:32,tasks:[['imp','Impromptu 90-sec.','toolkit/topics'],['read','Abrahams section.']]},
-   {d:33,title:'FIRST TIME ON CAMERA',flag:'camera',tasks:[['cam','Record a 3-min talk to your phone — stand, full voice, hands visible. Then watch it. Write 3 notes: what your body did, where you looked, one moment of energy. Save as 20261009-talk5-video.','logs/recordings']]},
+   {d:33,title:'FIRST TIME ON CAMERA',flag:'camera',tasks:[['cam','Record a 3-min talk to your phone — stand, full voice, hands visible. Then watch it. Write 3 notes: what your body did, where you looked, one moment of energy. Save as talk5-video.','logs/recordings']]},
    {d:34,tasks:[['read','Abrahams. Light.']]},
    {d:35,flag:'review',tasks:[['eval','Weekly Evaluation #5 — include your first-camera notes.','evaluate/reviews']]}],
   weekTasks:[['admin','Confirm your listener dates — both slots booked, calendar invites sent.','toolkit/listeners']]},
@@ -509,7 +510,7 @@ const RAW_PLAN = [
    {d:56,flag:'review',tasks:[['eval','Weekly Evaluation #8.','evaluate/reviews'],['admin','Prep Day-60 recording day (pick a quiet room, same spot as Day 1 if possible).']]}]},
  {n:9,title:'Final Evaluation Block',theme:'Days 57–60. Measure the delta, write the next plan, graduate.',books:'—',podcast:'—',reps:'Re-record the trinity, re-take both instruments, score the Day-60 gate.',
   days:[
-   {d:57,title:'RE-RECORD THE TRINITY',flag:'final',tasks:[['rec','Re-record the 60-sec intro. Same setting as baseline. Save as 20261102-intro60.','logs/recordings'],['rec','Re-record the same 3-min talk from Day 1 (same topic, same structure). Save as 20261102-talk3.','logs/recordings'],['rec','Re-record the 60-sec pitch. Save as 20261102-pitch60.','logs/recordings']]},
+   {d:57,title:'RE-RECORD THE TRINITY',flag:'final',tasks:[['rec','Re-record the 60-sec intro. Same setting as baseline.','logs/recordings'],['rec','Re-record the same 3-min talk from Day 1 (same topic, same structure).','logs/recordings'],['rec','Re-record the 60-sec pitch.','logs/recordings']]},
    {d:58,flag:'final',tasks:[['eval','Re-take the Confidence Scale (Day 60 column) + full 10-Skill Rubric (Day 60 column).','evaluate/confidence'],['eval','Tally the season: total reps, best/worst rep, filler-word trend line, emails sent, both live talks + their feedback.','evaluate/checkpoints']]},
    {d:59,flag:'final',tasks:[['eval','Final self-assessment (8 questions).','evaluate/assessments'],['write','Write your Next-90-Days Plan: what you\'ll keep (habits), what you\'ll attack next (your two weakest skills), your ongoing cadence.','evaluate/assessments']]},
    {d:60,title:'GRADUATION',flag:'final',tasks:[['mile','Listen to Day 1 vs Day 60 recordings end to end, and watch Talk #1 vs Talk #2. Write the delta: small / medium / large.','evaluate/checkpoints'],['chk','Score the Day-60 gate.','evaluate/checkpoints'],['rest','Celebrate something — you did 24+ real conversations and 2 live talks in 60 days.'],['write','Optional: thank-you notes to your listeners + follow-up to your 3 referral contacts.']]}]}
@@ -521,8 +522,7 @@ let _tc=0; const PLAN = RAW_PLAN.map(w=>({...w,
 }));
 const ALL_DAYS = PLAN.flatMap(w=>w.days);
 const ALL_TASKS = PLAN.flatMap(w=>[...w.days.flatMap(d=>d.tasks),...w.weekTasks]);
-const weekForDay = d => PLAN.find(w=>w.days.some(x=>x.d===d)) || PLAN[PLAN.length-1];
-const weekTaskList = w => [...w.days.flatMap(d=>d.tasks),...w.weekTasks];
+const weekForDay = d => PLAN.find(w=>w.days.some(x=>x.d===d)) || PLAN[0];
 
 const TOPICS = [
   'The most underrated skill for freelancers',
@@ -548,29 +548,33 @@ const TOPICS = [
 ];
 
 const CONF = ['2-minute small talk with a stranger','5-minute small talk at an event','First discovery call with a new client','3-minute prepared talk to a small group','Impromptu opinion asked in a group meeting','Negotiating your rates confidently','Presenting 5–10 min of your portfolio work','Speaking up unprompted in a group of 8+'];
-const SKILLS = ['Opening conversations (clean, unhurried)','Keeping flow alive (questions & follow-ups)','Active listening (listener\'s edge)','Exits (ending without awkwardness)','Filler-word control (um/uh/you know)','Structure (opening point, body, close)','Storytelling (setup → turn → lesson)','Vocal presence & diaphragmatic breath','Impromptu composure under pressure','High-stakes client negotiation'];
-const CCOLS=['d1','d30','d60'], RCOLS=['d1','d14','d30','d45','d60'], COLL={d1:'Day 1',d14:'Day 14',d30:'Day 30',d45:'Day 45',d60:'Day 60'};
-const FORD = {
-  F:{label:'Family & Roots',seeds:['Where are you based originally?','What did you grow up around?','Who in your family do you take after?']},
-  O:{label:'Occupation & Craft',seeds:['What\'s the most exciting part of your work right now?','What pulled you into this industry?','What does a real day look like behind the scenes?']},
-  R:{label:'Recreation & Downtime',seeds:['What do you do when work is totally off?','Any passion project you\'ve been dabbling in?','What are you reading or listening to lately?']},
-  D:{label:'Dreams & Horizons',seeds:['What\'s the vision you\'re pushing towards this year?','Where would you love this craft to be in 2 years?','If resources were boundless, what would you make?']}
-};
+const COLL={d1:'Day 1',d14:'Day 14',d30:'Day 30',d45:'Day 45',d60:'Day 60'};
 
 /* =========================================================
    PERSISTENCE STATE
    ========================================================= */
-const KEY = 'speak-in-60-v2', DEFAULT_START = '2026-09-07';
+const KEY = 'speak-in-60-v2';
+
 function initial(){
+  // Defaults startDate dynamically to today's date so curDay() evaluates cleanly to Day 1
   return {
-    version: 2, startDate: DEFAULT_START, todayOverride: '',
-    taskDone: {}, dayNotes: {}, socialReps: [], recordings: [],
+    version: 2, 
+    startDate: toISO(new Date()), 
+    todayOverride: '',
+    taskDone: {}, 
+    dayNotes: {}, 
+    socialReps: [], 
+    recordings: [],
     confidence: { d1: Array(8).fill(null), d30: Array(8).fill(null), d60: Array(8).fill(null) },
     rubric: { d1: Array(10).fill(null), d14: Array(10).fill(null), d30: Array(10).fill(null), d45: Array(10).fill(null), d60: Array(10).fill(null) },
-    weeklyReviews: {}, d30Answers: Array(5).fill(''), d60Answers: Array(8).fill(''),
+    weeklyReviews: {}, 
+    d30Answers: Array(5).fill(''), 
+    d60Answers: Array(8).fill(''),
     next90: { keep:'', attack:'', cadence:'' },
     ford: { F:['','',''], O:['','',''], R:['','',''], D:['','',''] },
-    listeners: [], feedback: [], toolkitChecked: {},
+    listeners: [], 
+    feedback: [], 
+    toolkitChecked: {},
     referrals: [{sent:false,date:'',to:''},{sent:false,date:'',to:''},{sent:false,date:'',to:''}],
     followups: [{sent:false,date:'',to:''},{sent:false,date:'',to:''}],
     checkpoint: { d30TalkTighter: false, d60Delta: '', notes: {} },
@@ -578,16 +582,23 @@ function initial(){
     lastSaved: ''
   };
 }
+
 function load(){
   try {
-    const raw = localStorage.getItem(KEY) || localStorage.getItem('comm-training-60');
+    const raw = localStorage.getItem(KEY);
     if(!raw) return initial();
     const p = JSON.parse(raw);
     const d = p.state || p.data || p;
-    return Object.assign(initial(), d);
+    const merged = Object.assign(initial(), d);
+    // If the saved startDate was a legacy hardcoded date (e.g. 2026-09-07) with 0 tasks done, sanitize it to today's date
+    if(merged.startDate === '2026-09-07' && Object.keys(merged.taskDone || {}).length === 0){
+      merged.startDate = toISO(new Date());
+    }
+    return merged;
   } catch(e) { return initial(); }
 }
 let S = load();
+
 function save(){
   S.lastSaved = new Date().toISOString();
   try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){}
@@ -601,9 +612,6 @@ function setPath(path, val){
   }
   o[ks[ks.length-1]] = val;
 }
-function getPath(path){
-  return path.split('.').reduce((o,k) => o == null ? undefined : o[k], S);
-}
 const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
 
 /* =========================================================
@@ -611,16 +619,12 @@ const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(3
    ========================================================= */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const pad = n => String(n).padStart(2,'0');
 const parseISO = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
-const toISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-const addDays = (d, n) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
-const dateForDay = n => addDays(parseISO(S.startDate), n-1);
-const isoForDay = n => toISO(dateForDay(n));
 const todayISO = () => S.todayOverride || toISO(new Date());
-const dayForDate = iso => Math.round((parseISO(iso) - parseISO(S.startDate)) / 864e5) + 1;
-const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const medLabel = d => `${WD[d.getDay()]}, ${d.getDate()} ${MO[d.getMonth()]}`;
+const dayForDate = iso => {
+  const diffTime = parseISO(iso).getTime() - parseISO(S.startDate || toISO(new Date())).getTime();
+  return Math.round(diffTime / 864e5) + 1;
+};
 const curDay = () => dayForDate(todayISO());
 
 /* =========================================================
@@ -628,7 +632,7 @@ const curDay = () => dayForDate(todayISO());
    ========================================================= */
 const IMP = {
   topic: null,
-  phase: 'idle', // 'idle' | 'prep' | 'speak' | 'paused' | 'done'
+  phase: 'idle',
   sec: 0,
   len: 90,
   prepLen: 5,
@@ -771,19 +775,29 @@ function navigateTo(path, focusDay = null){
 window.addEventListener('hashchange', () => { parseHash(); render(); });
 
 function updateSidebar(){
-  const doneCount = Object.keys(S.taskDone).length;
+  const doneCount = Object.keys(S.taskDone || {}).length;
   const totalTasks = ALL_TASKS.length;
   const pct = Math.round(doneCount / totalTasks * 100);
   const curD = curDay();
   const label = curD < 1 ? `T-${1-curD}` : curD > 60 ? 'Graduated' : `Day ${curD}`;
 
-  $('#pill-mobile').textContent = label;
-  $('#pill-desktop').textContent = label;
-  $('#prog-bar').style.width = pct + '%';
-  $('#prog-label').textContent = `${doneCount}/${totalTasks} tasks (${pct}%)`;
-  if(S.lastSaved){
-    const d = new Date(S.lastSaved);
-    $('#save-status').textContent = `💾 Saved ${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+  const mobilePill = $('#pill-mobile');
+  const desktopPill = $('#pill-desktop');
+  if(mobilePill) mobilePill.textContent = label;
+  if(desktopPill) desktopPill.textContent = label;
+  const progBar = $('#prog-bar');
+  if(progBar) progBar.style.width = pct + '%';
+  const progLabel = $('#prog-label');
+  if(progLabel) progLabel.textContent = `${doneCount}/${totalTasks} tasks (${pct}%)`;
+  
+  const saveStatus = $('#save-status');
+  if(saveStatus){
+    if(S.lastSaved){
+      const d = new Date(S.lastSaved);
+      saveStatus.textContent = `💾 Saved ${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+    } else {
+      saveStatus.textContent = `💾 Autosaves locally`;
+    }
   }
 
   const navHtml = NAVS.map(n => `
@@ -792,8 +806,10 @@ function updateSidebar(){
       <span>${n[1]}</span>
     </button>
   `).join('');
-  $('#desktop-nav').innerHTML = navHtml;
-  $('#mobile-nav').innerHTML = navHtml;
+  const dNav = $('#desktop-nav');
+  const mNav = $('#mobile-nav');
+  if(dNav) dNav.innerHTML = navHtml;
+  if(mNav) mNav.innerHTML = navHtml;
 }
 
 /* =========================================================
@@ -825,17 +841,19 @@ function renderDashboard(){
   const cd = Math.min(60, Math.max(1, curDay()));
   const day = ALL_DAYS.find(d => d.d === cd) || ALL_DAYS[0];
   const week = weekForDay(cd);
-  const doneCount = Object.keys(S.taskDone).length;
-  const pct = Math.round(doneCount / ALL_TASKS.length * 100);
+  const doneCount = Object.keys(S.taskDone || {}).length;
 
   return `
   <div style="display:flex;flex-direction:column;gap:20px">
     <div class="hero-banner">
-      <div class="hero-eyebrow">${week.n > 8 ? 'Final Evaluation' : 'Week ' + week.n} · ${esc(week.title)}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div class="hero-eyebrow">${week.n > 8 ? 'Final Evaluation' : 'Week ' + week.n + ' · ' + esc(week.title)}</div>
+        <button class="btn sm white-glass" style="font-size:11.5px;padding:4px 10px;height:28px" data-act="quick-reset-day1">↺ Reset to Day 1</button>
+      </div>
       <h1 class="hero-title">Day ${cd} <em>— ${esc(day.title || 'Daily Speaking Practice')}</em></h1>
       <p class="hero-theme">${esc(week.theme)}</p>
       <div class="hero-actions">
-        <button class="btn primary lg" data-act="nav" data-to="toolkit/impromptu">⚡ Open Impromptu Studio</button>
+        <button class="btn primary lg" data-act="nav" data-to="toolkit">⚡ Open Impromptu Studio</button>
         <button class="btn white-glass lg" data-act="open-modal-rec">🎙️ Log Recording</button>
         <button class="btn white-glass lg" data-act="open-modal-soc">👥 Log Social Rep</button>
       </div>
@@ -848,7 +866,7 @@ function renderDashboard(){
           <h3>Quick Impromptu Studio</h3>
           <p class="subtitle">Always ready. If interrupted, hit stoppage, reset, or restart cleanly.</p>
         </div>
-        <button class="btn secondary sm" data-act="nav" data-to="toolkit/impromptu">Expand Studio ↗</button>
+        <button class="btn secondary sm" data-act="nav" data-to="toolkit">Expand Studio ↗</button>
       </div>
       <div class="card-body">
         ${renderImpromptuBox(true)}
@@ -862,7 +880,7 @@ function renderDashboard(){
             <h3>Today's Practice Checklist</h3>
             <p class="subtitle">${day.min || 25}-minute focused block</p>
           </div>
-          <span class="badge brand">${day.tasks.filter(t => S.taskDone[t.id]).length}/${day.tasks.length} done</span>
+          <span class="badge brand">${day.tasks.filter(t => S.taskDone && S.taskDone[t.id]).length}/${day.tasks.length} done</span>
         </div>
         <div class="card-body tight">
           ${day.tasks.map(t => renderTaskRow(t)).join('')}
@@ -897,7 +915,7 @@ function renderDashboard(){
 }
 
 function renderTaskRow(t){
-  const done = !!S.taskDone[t.id];
+  const done = !!(S.taskDone && S.taskDone[t.id]);
   const k = KIND[t.kind] || ['Task','📌','#f1f5f9'];
   return `
   <div class="task-item ${done ? 'is-done' : ''}">
@@ -986,7 +1004,6 @@ function renderImpromptuBox(compact = false){
 let activePlanWeek = 1;
 function renderPlan(){
   const w = PLAN.find(x => x.n === activePlanWeek) || PLAN[0];
-  const td = curDay();
   return `
   <div style="display:flex;flex-direction:column;gap:18px">
     <div>
@@ -1019,7 +1036,7 @@ function renderPlan(){
 
     <div class="grid g2">
       ${w.days.map(d => {
-        const done = d.tasks.filter(t => S.taskDone[t.id]).length;
+        const done = d.tasks.filter(t => S.taskDone && S.taskDone[t.id]).length;
         const complete = done === d.tasks.length;
         return `
         <div class="card" id="day-card-${d.d}">
@@ -1135,7 +1152,7 @@ function renderEvaluate(){
                   <select class="input-control" style="width:58px;height:32px;padding:2px 4px;font-size:12px;margin-top:2px"
                     data-bind="confidence.${col}.${i}" data-type="num">
                     <option value="">—</option>
-                    ${[1,2,3,4,5,6,7,8,9,10].map(v => `<option value="${v}" ${S.confidence[col][i] === v ? 'selected' : ''}>${v}</option>`).join('')}
+                    ${[1,2,3,4,5,6,7,8,9,10].map(v => `<option value="${v}" ${(S.confidence && S.confidence[col] && S.confidence[col][i] === v) ? 'selected' : ''}>${v}</option>`).join('')}
                   </select>
                 </label>
               `).join('')}
@@ -1184,22 +1201,27 @@ function renderBackup(){
   return `
   <div style="display:flex;flex-direction:column;gap:18px">
     <div>
-      <h1 class="serif" style="font-size:30px">Data & Backup Management</h1>
-      <p style="color:var(--text-muted);font-size:14.5px">Your progress autosaves in browser storage. Download snapshots anytime.</p>
+      <h1 class="serif" style="font-size:30px">Data & Program Timeline Settings</h1>
+      <p style="color:var(--text-muted);font-size:14.5px">Manage start dates, sync browser storage, and calibrate Day 1 baseline.</p>
     </div>
 
     <div class="grid g2">
       <div class="card">
         <div class="card-header">
-          <h3>Local Storage Status</h3>
-          <span class="badge emerald">Active</span>
+          <h3>Program Timeline & Day 1 Calibration</h3>
+          <span class="badge brand">Day ${Math.min(60, Math.max(1, curDay()))} Active</span>
         </div>
-        <div class="card-body" style="display:flex;flex-direction:column;gap:12px;font-size:14px">
-          <p>Tasks completed: <b>${Object.keys(S.taskDone).length} / ${ALL_TASKS.length}</b></p>
-          <p>Social Reps logged: <b>${S.socialReps.length}</b></p>
-          <p>Recordings logged: <b>${S.recordings.length}</b></p>
-          <p>Last Saved: <b>${S.lastSaved ? new Date(S.lastSaved).toLocaleString() : 'Never'}</b></p>
-          <div style="margin-top:10px;display:flex;gap:10px">
+        <div class="card-body" style="display:flex;flex-direction:column;gap:14px;font-size:14px">
+          <div class="field">
+            <label class="field-label">Program Start Date (Day 1)</label>
+            <div style="display:flex;gap:8px">
+              <input type="date" id="start-date-input" class="input-control" value="${S.startDate || toISO(new Date())}">
+              <button class="btn primary sm" data-act="set-start-date">Save Start Date</button>
+            </div>
+            <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Currently: Start date is set to <b>${S.startDate}</b> (calculating Day ${curDay()}).</p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn secondary" data-act="quick-reset-day1">📅 Set Day 1 to Today (${toISO(new Date())})</button>
             <button class="btn primary" data-act="download-json">⬇️ Download Backup (.json)</button>
           </div>
         </div>
@@ -1207,12 +1229,27 @@ function renderBackup(){
 
       <div class="card">
         <div class="card-header">
-          <h3>Danger Zone</h3>
+          <h3>Local Storage Status</h3>
+          <span class="badge emerald">Active</span>
+        </div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px;font-size:14px">
+          <p>Tasks completed: <b>${Object.keys(S.taskDone || {}).length} / ${ALL_TASKS.length}</b></p>
+          <p>Social Reps logged: <b>${S.socialReps.length}</b></p>
+          <p>Recordings logged: <b>${S.recordings.length}</b></p>
+          <p>Last Saved: <b>${S.lastSaved ? new Date(S.lastSaved).toLocaleString() : 'Never'}</b></p>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column:1 / -1">
+        <div class="card-header">
+          <h3>Danger Zone — Clean Program Reset</h3>
           <span class="badge rose">Caution</span>
         </div>
         <div class="card-body" style="font-size:14px">
-          <p style="color:var(--text-muted)">Reset all progress and reset state to pristine baseline.</p>
-          <button class="btn danger" style="margin-top:14px" data-act="reset-all-data">Wipe All Progress</button>
+          <p style="color:var(--text-muted)">Wipe all logged tasks, recordings, social reps, and reset the program timeline back to <b>Day 1 (Foundation · Baseline Day) starting today</b>.</p>
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn danger" data-act="reset-all-data">↺ Wipe All Progress & Reset to Day 1</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1324,6 +1361,22 @@ function openSocModal(){
 }
 
 /* =========================================================
+   CLEAN DAY 1 RESET FUNCTION
+   ========================================================= */
+function performResetToDay1(wipeData = true){
+  const todayStr = toISO(new Date());
+  if(wipeData){
+    S = initial();
+  }
+  S.startDate = todayStr;
+  S.todayOverride = '';
+  activePlanWeek = 1;
+  save();
+  navigateTo('dashboard');
+  render();
+}
+
+/* =========================================================
    INTERACTION HANDLERS
    ========================================================= */
 const ACTIONS = {
@@ -1331,6 +1384,7 @@ const ACTIONS = {
   'set-plan-week': el => { activePlanWeek = +el.dataset.w; render(); },
   'toggle-task': el => {
     const id = el.dataset.id;
+    if(!S.taskDone) S.taskDone = {};
     if(S.taskDone[id]) delete S.taskDone[id];
     else S.taskDone[id] = new Date().toISOString();
     save();
@@ -1405,9 +1459,21 @@ const ACTIONS = {
     a.click();
     URL.revokeObjectURL(url);
   },
+  'quick-reset-day1': () => {
+    if(confirm('Reset program to Day 1 starting today? This will calibrate today as Day 1 (Foundation · Baseline Day).')){
+      performResetToDay1(false);
+    }
+  },
   'reset-all-data': () => {
-    if(confirm('Are you sure you want to reset all progress to zero?')){
-      S = initial();
+    if(confirm('Are you sure you want to wipe all logged progress and reset cleanly to Day 1?')){
+      performResetToDay1(true);
+    }
+  },
+  'set-start-date': () => {
+    const input = $('#start-date-input');
+    if(input && input.value){
+      S.startDate = input.value;
+      S.todayOverride = '';
       save();
       render();
     }
@@ -1438,5 +1504,4 @@ document.addEventListener('change', e => {
 parseHash();
 render();
 </script>
-</body>
-</html>
+</body></html>

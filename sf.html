@@ -1,274 +1,541 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Copywriting Business OS — a standalone operating system for a freelance copywriting practice. One HTML file, no server, no account.">
-<title>Copywriting Business OS — Command Center</title>
-<style>
-:root{
-  --paper:#f4f1ea; --paper2:#eae5da; --ink:#1b1a17; --ink2:#5a554a;
-  --rule:#c8c0af; --stamp:#b23a2b; --stamp-d:#7c2519; --stamp-l:#e8c9c1;
-  --taupe:#6f6757; --inkblue:#2c4a63;
-  --disp:Georgia,"Times New Roman",serif;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-}
-*{box-sizing:border-box}
-html{-webkit-font-smoothing:antialiased}
-body{margin:0;font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:14px;line-height:1.55;font-variant-numeric:tabular-nums}
-::selection{background:var(--stamp-l)}
-button{font-family:inherit;cursor:pointer}
-input,textarea,select{font-family:inherit}
-:focus-visible{outline:2px solid var(--stamp);outline-offset:2px}
-::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--paper2)}
-::-webkit-scrollbar-thumb{background:var(--rule);border:3px solid var(--paper2)}
-.lbl{font-family:var(--mono);text-transform:uppercase;letter-spacing:.16em;font-size:10.5px;line-height:1.2}
-.mono{font-family:var(--mono)}
-/* layout */
-#side{position:fixed;top:0;left:0;width:252px;height:100vh;background:var(--paper2);border-right:1px solid rgba(27,26,23,.25);display:flex;flex-direction:column;z-index:50}
-#brand{padding:22px 20px 18px;border-bottom:1px solid rgba(27,26,23,.2);display:flex;gap:10px;align-items:center}
-#brand .t1{font-family:var(--disp);font-size:15px}
-#brand .t2{font-family:var(--mono);text-transform:uppercase;letter-spacing:.22em;font-size:9px;color:var(--stamp);margin-top:3px}
-#nav{flex:1;overflow-y:auto;padding:8px 0}
-#nav button{display:flex;gap:12px;align-items:baseline;width:100%;text-align:left;background:none;border:none;border-left:2px solid transparent;padding:10px 12px 10px 20px;color:var(--ink2)}
-#nav button:hover{color:var(--ink);background:rgba(244,241,234,.6)}
-#nav button.on{border-left-color:var(--stamp);background:var(--paper);color:var(--ink)}
-#nav .n{font-family:var(--mono);font-size:10px;color:var(--taupe)}
-#nav button.on .n{color:var(--stamp)}
-#nav .l{font-family:var(--mono);text-transform:uppercase;letter-spacing:.11em;font-size:11px}
-#sidefoot{padding:14px 20px;border-top:1px solid rgba(27,26,23,.2);display:flex;flex-direction:column;gap:10px}
-#main{margin-left:252px}
-#wrap{max-width:1180px;margin:0 auto;padding:0 48px 100px}
-#topbar{display:none}
-/* cover */
-#cover{margin:0 -48px;padding:40px 48px 36px;border-bottom:1px solid rgba(27,26,23,.25);position:relative;overflow:hidden;
-  background:
-    radial-gradient(1200px 300px at 20% 0%,rgba(255,255,255,.55),transparent 60%),
-    repeating-linear-gradient(0deg,transparent 0 27px,rgba(27,26,23,.045) 27px 28px),
-    linear-gradient(115deg,var(--paper) 55%,var(--paper2));
-}
-#cover h1{font-family:var(--disp);font-weight:600;letter-spacing:-.026em;line-height:1.02;font-size:clamp(2rem,4.6vw,3.4rem);margin:26px 0 0;max-width:22ch}
-#cover .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;max-width:900px;margin-top:30px}
-#cover .col{border-top:1px solid rgba(27,26,23,.3);padding-top:10px}
-#cover .col p{margin:8px 0 0;font-size:13.5px;line-height:1.55}
-#seal{position:absolute;right:22px;top:118px;width:118px;height:118px;border:2px solid rgba(178,58,43,.7);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transform:rotate(-4deg);pointer-events:none}
-/* bands */
-.band{border-bottom:1px solid rgba(27,26,23,.25);padding:32px 0 16px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
-.band h2{font-family:var(--disp);font-size:clamp(1.9rem,3.4vw,2.9rem);line-height:1.02;letter-spacing:-.02em;margin:0;flex:1;min-width:220px}
-.band .num{font-family:var(--mono);color:var(--stamp);font-size:13px}
-.band p.desc{width:100%;margin:8px 0 0;color:var(--ink2);font-size:14.5px;line-height:1.6;max-width:62ch}
-.subband{display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(27,26,23,.2);padding-bottom:6px;margin:32px 0 12px}
-.subband .ruleline{flex:1;height:1px;background:var(--rule)}
-.grid2{display:grid;grid-template-columns:1fr 260px;gap:48px}
-@media(max-width:1000px){.grid2{grid-template-columns:1fr}#cover .cols{grid-template-columns:1fr}aside.margin{border-left:none!important;padding-left:0!important}}
-aside.margin{border-left:1px solid rgba(27,26,23,.2);padding-left:32px}
-/* buttons */
-.btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:11px;padding:10px 14px;border:1px solid rgba(27,26,23,.35);background:transparent;color:var(--ink);transition:all .15s}
-.btn:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
-.btn.ink{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.btn.ink:hover{background:var(--stamp);border-color:var(--stamp)}
-.btn.stamp{background:var(--stamp);color:var(--paper);border-color:var(--stamp)}
-.btn.stamp:hover{background:var(--stamp-d);border-color:var(--stamp-d)}
-.btn.sm{font-size:10px;padding:6px 10px}
-.btn.quiet{border:none;color:var(--ink2);padding:6px 8px}
-.btn.quiet:hover{background:none;color:var(--stamp)}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-/* stamps */
-.stamp{display:inline-flex;align-items:center;border:1px solid rgba(27,26,23,.4);padding:3px 6px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.13em;font-size:10px;line-height:1;white-space:nowrap;color:var(--ink)}
-.stamp.red{border-color:var(--stamp);color:var(--stamp)}
-.stamp.blue{border-color:var(--inkblue);color:var(--inkblue)}
-.stamp.taupe{border-color:rgba(111,103,87,.6);color:var(--taupe)}
-.chip{font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-size:10px;padding:4px 8px;border:1px solid rgba(27,26,23,.2);background:none;color:var(--ink2)}
-.chip:hover{border-color:rgba(27,26,23,.6);color:var(--ink)}
-.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-/* rows / ledger */
-.row{border-bottom:1px solid rgba(200,192,175,.7);padding:10px 4px;display:block;width:100%;text-align:left;background:none;border-left:none;border-right:none;border-top:none}
-button.row:hover{background:rgba(234,229,218,.5)}
-.empty{border:1px dashed rgba(27,26,23,.25);padding:34px 24px;text-align:center;margin:12px 0}
-.empty h4{font-family:var(--disp);font-size:1.15rem;margin:12px 0 6px}
-.empty p{color:var(--ink2);font-size:13px;max-width:46ch;margin:0 auto;line-height:1.6}
-/* forms */
-.fld{display:block;margin:0}
-.fld .lbl{color:var(--taupe)}
-.fld .hint{font-size:11px;color:var(--taupe);margin:4px 0 0;line-height:1.5}
-.in{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(27,26,23,.3);padding:6px 2px;font-size:14px;color:var(--ink)}
-.in:focus{outline:none;border-bottom-color:var(--stamp)}
-textarea.in{line-height:1.6;resize:vertical}
-select.in{cursor:pointer}
-.searchbox{display:flex;align-items:center;gap:8px;border:1px solid rgba(27,26,23,.25);padding:8px 10px;flex:1;min-width:220px;background:transparent}
-.searchbox input{flex:1;border:none;background:none;outline:none;font-size:13px;color:var(--ink)}
-/* modal */
-#scrim{position:fixed;inset:0;background:rgba(27,26,23,.45);z-index:90;display:none}
-#modal{position:fixed;z-index:95;top:0;left:0;right:0;bottom:0;display:none;overflow-y:auto;padding:32px 16px}
-#modal.open{display:block}#scrim.open{display:block}
-#mbox{background:var(--paper);border:1px solid rgba(27,26,23,.3);box-shadow:0 24px 60px -20px rgba(27,26,23,.45);max-width:640px;margin:0 auto}
-#mbox.wide{max-width:820px}
-#mhead{display:flex;gap:16px;padding:20px 24px 16px;border-bottom:1px solid rgba(27,26,23,.2)}
-#mhead h3{font-family:var(--disp);font-size:1.55rem;margin:0;line-height:1.2;letter-spacing:-.015em}
-#mhead p{font-size:12.5px;color:var(--ink2);margin:4px 0 0}
-#mbody{padding:20px 24px}
-#mfoot{padding:16px 24px;border-top:1px solid rgba(27,26,23,.2);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
-#mx{background:none;border:none;color:var(--ink2);font-size:18px;line-height:1;padding:4px}
-#mx:hover{color:var(--stamp)}
-/* palette */
-#pal{position:fixed;z-index:120;top:12vh;left:50%;transform:translateX(-50%);width:min(640px,92vw);background:var(--paper);border:1px solid rgba(27,26,23,.3);box-shadow:0 30px 80px -24px rgba(27,26,23,.5);display:none}
-#pal.open{display:block}
-#pal input{width:100%;border:none;background:none;outline:none;font-size:15px;padding:14px 16px;color:var(--ink)}
-#palres{max-height:52vh;overflow-y:auto;border-top:1px solid rgba(27,26,23,.2)}
-#palres button{width:100%;text-align:left;background:none;border:none;border-bottom:1px solid rgba(200,192,175,.6);padding:10px 16px;display:flex;gap:12px;align-items:center}
-#palres button.cur{background:var(--paper2)}
-/* onboarding */
-#onb{position:fixed;inset:0;z-index:200;background:var(--paper);overflow-y:auto;display:none}
-#onb.open{display:block}
-#onb .inner{max-width:640px;margin:0 auto;padding:48px 20px 80px}
-/* toast */
-#toasts{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:8px}
-.toast{background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:10px 16px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-size:10px;box-shadow:0 12px 30px -12px rgba(27,26,23,.5)}
-.toast.warn{background:var(--stamp);border-color:var(--stamp)}
-/* pipeline */
-.pipe{display:flex;gap:1px;background:rgba(200,192,175,.6);border:1px solid rgba(200,192,175,.6);overflow-x:auto;padding:0}
-.pcol{width:218px;flex-shrink:0;background:rgba(234,229,218,.4)}
-.pcol header{background:var(--paper);border-bottom:1px solid rgba(200,192,175,.6);padding:8px 10px;display:flex;gap:8px;align-items:baseline}
-.pcard{display:block;width:100%;text-align:left;background:var(--paper);border:1px solid rgba(27,26,23,.15);padding:10px;margin:0}
-.pcard:hover{border-color:rgba(27,26,23,.5)}
-.dots{display:inline-flex;gap:3px}.dots i{width:5px;height:5px;border-radius:50%;background:rgba(27,26,23,.15);display:block}.dots i.f{background:var(--ink)}.dots i.fr{background:var(--stamp)}
-.alertbox{border:1px solid rgba(178,58,43,.5);background:rgba(178,58,43,.05);margin-top:16px}
-.alertbox header{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(178,58,43,.3)}
-.kv{border-top:1px solid var(--rule);padding-top:6px}
-.kv p{margin:6px 0 0;font-size:12.5px;line-height:1.6}
-.timeline{list-style:none;margin:8px 0 0;padding:0}
-.timeline li{border-left:1px solid rgba(27,26,23,.2);padding:0 0 16px 16px;position:relative}
-.timeline li::before{content:"";position:absolute;left:-3.5px;top:6px;width:6px;height:6px;background:var(--ink)}
-.statgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:rgba(200,192,175,.6);border:1px solid rgba(200,192,175,.6)}
-.statgrid>div{background:var(--paper);padding:10px}
-.statgrid .b{font-family:var(--mono);font-size:19px;line-height:1}
-@media(max-width:760px){.statgrid{grid-template-columns:repeat(3,1fr)}#cover{margin:0 -20px;padding:32px 20px}#wrap{padding:0 20px 80px}}
-@media(max-width:900px){
-  #side{transform:translateX(-100%);transition:transform .2s}#side.open{transform:none}
-  #main{margin-left:0}
-  #topbar{display:flex;position:sticky;top:0;z-index:40;background:var(--paper);border-bottom:1px solid rgba(27,26,23,.25);padding:12px 16px;align-items:center;gap:12px}
-}
-kbd{font-family:var(--mono);font-size:10px;border:1px solid rgba(27,26,23,.2);padding:1px 6px;color:var(--taupe)}
-.big-red{font-family:var(--disp);font-size:1.35rem;line-height:1.2;color:var(--stamp);letter-spacing:-.012em;margin:8px 0 0}
-.countbox{border:2px solid rgba(27,26,23,.3);padding:8px 12px;text-align:left;background:none;min-width:110px}
-.countbox:hover{background:var(--ink);color:var(--paper)}
-.countbox.red{border-color:var(--stamp);color:var(--stamp)}
-.countbox.red:hover{background:var(--stamp);color:var(--paper)}
-.countbox .cb-n{font-family:var(--mono);font-size:22px;line-height:1}
-.countbox .cb-l{font-family:var(--mono);text-transform:uppercase;letter-spacing:.16em;font-size:9px;margin-top:6px}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-</style>
-</head>
-<body>
-<div id="topbar">
-  <button id="menuBtn" aria-label="Menu" style="background:none;border:none;font-size:20px">☰</button>
-  <span class="lbl" id="topTitle">Command Center</span>
-  <span style="flex:1"></span>
-  <button class="btn ink sm" onclick="quickOpen()">+ New</button>
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>The Copywriter's Ledger</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&amp;family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-bright":"#fdf9f3","surface":"#fdf9f3","tertiary-container":"#696358","primary-container":"#b23a2b","on-tertiary-container":"#e8e0d2","tertiary-fixed-dim":"#cdc6b8","secondary":"#44617b","tertiary":"#504b41","inverse-primary":"#ffb4a8","inverse-on-surface":"#f5f0eb","surface-container":"#f2ede8","primary":"#912216","outline-variant":"#e0bfba","on-error":"#ffffff","on-surface-variant":"#58413e","on-primary":"#ffffff","surface-container-highest":"#e6e2dc","on-secondary-fixed":"#001d31","on-tertiary-fixed-variant":"#4b463c","tertiary-fixed":"#eae2d3","on-secondary-container":"#46647e","on-primary-fixed-variant":"#891c11","outline":"#8c716c","on-background":"#1d1b18","secondary-container":"#c2e0ff","surface-dim":"#ded9d4","surface-variant":"#e6e2dc","on-tertiary":"#ffffff","on-error-container":"#93000a","error-container":"#ffdad6","primary-fixed":"#ffdad4","background":"#fdf9f3","surface-container-lowest":"#ffffff","on-surface":"#1d1b18","on-primary-container":"#ffd9d2","on-secondary":"#ffffff","on-secondary-fixed-variant":"#2b4962","secondary-fixed-dim":"#abcae8","primary-fixed-dim":"#ffb4a8","surface-container-high":"#ece7e2","on-tertiary-fixed":"#1f1b13","secondary-fixed":"#cde5ff","surface-tint":"#aa3526","inverse-surface":"#32302d","error":"#ba1a1a","surface-container-low":"#f8f3ed","on-primary-fixed":"#410000"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"margin-mobile":"1rem","gutter-mobile":"0.75rem","gutter":"1.25rem","space-xs":"0.25rem","space-sm":"0.5rem","margin":"2.5rem","space-md":"1rem","space-lg":"1.5rem","space-2xl":"4rem","space-xl":"2.5rem"},"fontFamily":{"display-lg-mobile":["\"Source Serif 4\""],"label-archival":["Work Sans"],"headline-sm":["\"Source Serif 4\""],"body-sm":["Work Sans"],"label-md":["Work Sans"],"label-lg":["Work Sans"],"body-lg":["Work Sans"],"headline-md":["\"Source Serif 4\""],"headline-lg":["\"Source Serif 4\""],"display-lg":["\"Source Serif 4\""],"body-md":["Work Sans"]},"fontSize":{"display-lg-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"600"}],"label-archival":["11px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"700"}],"headline-sm":["19px",{"lineHeight":"26px","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"20px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.02em","fontWeight":"600"}],"body-lg":["17px",{"lineHeight":"28px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.005em","fontWeight":"500"}],"headline-lg":["30px",{"lineHeight":"38px","letterSpacing":"-0.01em","fontWeight":"600"}],"display-lg":["44px",{"lineHeight":"52px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-md":["15px",{"lineHeight":"24px","fontWeight":"400"}]}}}};</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-28 border-b border-outline-variant/50 max-w-7xl mx-auto px-margin"><div class="h-16 flex items-center justify-between border-b border-outline-variant/30"><div class="flex items-center gap-space-md"><img alt="Editorial Nib Studio Emblem" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCrlbN3th-r0v8MQv7b-s2dGn4cP5CHdZ9Tle5S6hBsqkoUnEIpogNL51SVC6_p2YKU7MC3_k2c9I-7duwSJikQrLl-EETJyl2obupKAFF9PgdlxOU-k7g1mnuhEp6vgkG110VxFbMqxTNARDvoU_Jr9aIIkbLJknYz-Aqpfc0Wp7pSjg4G46sGorSTR5HIgpDweei82H-ot2nTdz5DhcgrPYEf3BtdaB-VUzejOfQ74cZQPLWDWbW"/><div class="flex flex-col justify-center"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface uppercase">THE COPYWRITER'S LEDGER</span><span class="font-label-archival text-label-archival uppercase text-primary px-1.5 py-0.5 bg-primary-fixed/40 rounded-DEFAULT border border-outline-variant">VOL. IV</span></div><span class="font-label-md text-label-md text-on-surface-variant">Business Operating System &amp; Intelligence Archive</span></div></div><div class="flex items-center gap-space-lg"><div class="hidden xl:flex items-center gap-space-md bg-surface-container-low px-space-md py-1 rounded-DEFAULT border border-outline-variant/40"><div class="flex items-center gap-1.5"><span class="font-label-archival text-label-archival uppercase text-tertiary">INDEXED DOCS:</span><span class="font-label-md text-label-md text-on-surface font-bold">48</span></div><span class="text-outline-variant">|</span><div class="flex items-center gap-1.5"><span class="font-label-archival text-label-archival uppercase text-tertiary">ACTIVE SWIPES:</span><span class="font-label-md text-label-md text-on-surface font-bold">142</span></div><span class="text-outline-variant">|</span><div class="flex items-center gap-1.5"><span class="font-label-archival text-label-archival uppercase text-tertiary">VOC NOTES:</span><span class="font-label-md text-label-md text-on-surface font-bold">67</span></div></div><div class="flex items-center gap-space-sm"><div class="hidden md:flex items-center gap-1.5 bg-surface-container px-space-sm py-1 rounded-DEFAULT border border-outline-variant/60 text-on-surface-variant"><span class="material-symbols-outlined text-[16px]">search</span><span class="font-label-md text-label-md">Quick Search</span><kbd class="font-label-archival text-label-archival px-1 bg-surface border border-outline-variant/60 rounded-DEFAULT text-tertiary">⌘K</kbd></div><button class="flex items-center gap-1 bg-primary text-on-primary px-space-sm py-1.5 rounded-DEFAULT font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm" type="button"><span class="material-symbols-outlined text-[16px]">add</span><span>Ingest Document</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div><div class="h-12 flex items-center justify-between overflow-x-auto"><nav class="flex items-center gap-1 py-1" data-active-classes="bg-primary-container text-on-primary-container font-bold shadow-sm"><a class="font-label-md text-label-md px-space-sm py-1 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" data-path="command-center" href="#">Command Center</a><a class="font-label-md text-label-md px-space-sm py-1 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" data-path="focus-and-daily-queue" href="#">Focus &amp; Daily Queue</a><a class="font-label-md text-label-md px-space-sm py-1 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" data-path="tasks" href="#">Tasks</a><a class="font-label-md text-label-md px-space-sm py-1 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" data-path="crm-and-pipeline" href="#">CRM &amp; Pipeline</a><a aria-current="page" class="px-space-sm py-1 rounded-DEFAULT transition-colors whitespace-nowrap bg-primary-container text-on-primary-container font-bold shadow-sm" data-path="intelligence-hub" href="#">Intelligence Hub</a><a class="font-label-md text-label-md px-space-sm py-1 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" data-path="offers-and-scope" href="#">Offers &amp; Scope</a><a class="font-label-md text-label-md px-space-sm py-1 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" data-path="strategy-and-icp" href="#">Strategy &amp; ICP</a><a class="font-label-md text-label-md px-space-sm py-1 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" data-path="reviews-and-retros" href="#">Reviews &amp; Retros</a><a class="font-label-md text-label-md px-space-sm py-1 rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors whitespace-nowrap" data-path="data-and-sync" href="#">Data &amp; Sync</a></nav><div class="hidden lg:flex items-center gap-space-xs font-label-archival text-label-archival text-tertiary uppercase"><span class="inline-block w-2 h-2 rounded-full bg-secondary"></span><span>DESK REGISTRY ACTIVE</span></div></div></div></header><main class="w-full pt-28 bg-surface"><div class="max-w-7xl mx-auto px-margin py-space-lg"><div class="flex flex-col w-full text-on-surface">
+<!-- Top Utility & Dossier Bar -->
+<div class="flex flex-col gap-space-md mb-space-xl">
+<!-- Breadcrumb & Archival Meta -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-archival text-label-archival uppercase text-tertiary">ARCHIVE</span>
+<span class="text-tertiary">/</span>
+<span class="font-label-archival text-label-archival uppercase text-primary font-bold tracking-wider">SECTION 04: MARKET INTELLIGENCE &amp; RESEARCH DOSSIER</span>
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary ml-1"></span>
 </div>
-<aside id="side">
-  <div id="brand">
-    <svg width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="#B23A2B" stroke-width="2.4"/><path d="M32.5 16.8c-2.1-2.6-5.1-4.1-8.5-4.1-6.4 0-11.2 4.8-11.2 11.3s4.8 11.3 11.2 11.3c3.4 0 6.4-1.5 8.5-4.1" fill="none" stroke="#B23A2B" stroke-width="3.2"/><path d="M6 33.5h36" stroke="#1B1A17" stroke-width="1.4"/><path d="M6 37h22" stroke="#1B1A17" stroke-width="1.4" opacity=".45"/></svg>
-    <div><div class="t1">Copywriting</div><div class="t2">Business OS</div></div>
-  </div>
-  <nav id="nav"></nav>
-  <div id="sidefoot">
-    <button class="btn ink" style="justify-content:center" onclick="quickOpen()">+ Quick capture</button>
-    <button class="chip" style="display:flex;align-items:center;gap:8px;padding:8px 10px;text-align:left" onclick="openPal()">⌕ &nbsp;Search <kbd style="margin-left:auto">⌘K</kbd></button>
-    <div style="display:flex;align-items:center;gap:8px"><span class="stamp" id="saveBadge">Saved</span><span class="mono" style="font-size:9.5px;color:var(--taupe)">v1.0 · schema 1</span></div>
-  </div>
-</aside>
-<main id="main"><div id="wrap"></div></main>
-<div id="scrim" onclick="closeModal()"></div>
-<div id="modal" role="dialog" aria-modal="true"><div id="mbox"><div id="mhead"><div style="flex:1;min-width:0"><h3 id="mtitle"></h3><p id="msub"></p></div><button id="mx" onclick="closeModal()" aria-label="Close">✕</button></div><div id="mbody"></div><div id="mfoot"></div></div></div>
-<div id="pal"><div style="display:flex;align-items:center;gap:8px;padding:0 8px"><span style="color:var(--taupe)">⌕</span><input id="palIn" placeholder="Search every record — title, notes, prospect, tag…" autocomplete="off"><kbd>ESC</kbd></div><div id="palres"></div><div style="padding:8px 16px;border-top:1px solid rgba(27,26,23,.2);display:flex;gap:16px"><span class="mono" style="font-size:10px;color:var(--taupe)">↑ ↓ move</span><span class="mono" style="font-size:10px;color:var(--taupe)">↵ open</span></div></div>
-<div id="onb"><div class="inner" id="onbInner"></div></div>
-<div id="toasts"></div>
+<div class="flex items-center gap-space-md">
+<span class="font-label-archival text-label-archival uppercase text-on-surface-variant">LEDGER REGISTRY: #MIL-9021-X</span>
+<span class="text-tertiary">|</span>
+<span class="font-label-archival text-label-archival uppercase text-tertiary">ENCRYPTION: LOCAL DISK SYNC</span>
+</div>
+</div>
+<!-- Title & Action Section -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg bg-surface-container-low p-space-lg rounded-xl shadow-sm">
+<div class="max-w-3xl space-y-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[28px]">inventory_2</span>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Intelligence Hub &amp; Document Organizer</h1>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Unified repository for client interview transcripts, competitor teardowns, swipe file hooks, offer frameworks, and messaging guidelines.
+        </p>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="group flex items-center gap-space-xs bg-surface-container-high px-space-md py-space-sm rounded-lg hover:bg-surface-variant transition-all shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">file_download</span>
+<span class="font-label-md text-label-md text-on-surface">Export Index</span>
+</button>
+<button class="flex items-center gap-space-xs bg-primary text-on-primary px-space-lg py-space-sm rounded-lg hover:bg-primary-container transition-all shadow-md active:scale-[0.98]" id="ingestBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">post_add</span>
+<span class="font-label-lg text-label-lg font-bold">+ Ingest Document / Raw Paste</span>
+<kbd class="ml-1 px-1.5 py-0.5 rounded-DEFAULT bg-primary-container text-on-primary-container font-label-archival text-label-archival">N</kbd>
+</button>
+</div>
+</div>
+<!-- Search & Filter Controls -->
+<div class="flex flex-col gap-space-md bg-surface-container p-space-md rounded-xl">
+<!-- Search Input & View Modes -->
+<div class="flex flex-col md:flex-row gap-space-md items-center justify-between">
+<div class="relative w-full md:w-2/3">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary text-[20px]">search</span>
+<input class="w-full bg-surface-container-lowest text-on-surface pl-10 pr-space-lg py-2.5 rounded-lg font-body-md text-body-md shadow-inner focus:outline-none focus:ring-2 focus:ring-secondary/50 placeholder:text-tertiary" placeholder="Search insights, verbatim quotes, frameworks, clients, or tags..." type="text"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 font-label-archival text-label-archival text-tertiary uppercase">⌘ + F</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-high p-1 rounded-lg w-full md:w-auto justify-end">
+<button class="flex items-center gap-1 px-space-sm py-1.5 rounded-md bg-surface-container-lowest text-on-surface shadow-xs font-label-md text-label-md" type="button">
+<span class="material-symbols-outlined text-[16px]">grid_view</span>
+<span class="hidden sm:inline">Filing Cards</span>
+</button>
+<button class="flex items-center gap-1 px-space-sm py-1.5 rounded-md text-on-surface-variant hover:text-on-surface font-label-md text-label-md" type="button">
+<span class="material-symbols-outlined text-[16px]">table_rows</span>
+<span class="hidden sm:inline">Ledger Table</span>
+</button>
+<button class="flex items-center gap-1 px-space-sm py-1.5 rounded-md text-on-surface-variant hover:text-on-surface font-label-md text-label-md" type="button">
+<span class="material-symbols-outlined text-[16px]">timeline</span>
+<span class="hidden sm:inline">Stream</span>
+</button>
+</div>
+</div>
+<!-- Category Filter Pills -->
+<div class="flex flex-wrap items-center gap-space-xs pt-space-xs">
+<button class="px-space-md py-1 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-xs flex items-center gap-1.5" type="button">
+<span>All Records</span>
+<span class="bg-primary-container text-on-primary-container px-1.5 py-0.2 rounded-full font-label-archival text-label-archival">48</span>
+</button>
+<button class="px-space-md py-1 rounded-full bg-surface-container-high hover:bg-surface-variant text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-1.5 transition-colors" type="button">
+<span>Voice of Customer</span>
+<span class="bg-surface-dim text-on-surface px-1.5 py-0.2 rounded-full font-label-archival text-label-archival">18</span>
+</button>
+<button class="px-space-md py-1 rounded-full bg-surface-container-high hover:bg-surface-variant text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-1.5 transition-colors" type="button">
+<span>Competitor Teardowns</span>
+<span class="bg-surface-dim text-on-surface px-1.5 py-0.2 rounded-full font-label-archival text-label-archival">9</span>
+</button>
+<button class="px-space-md py-1 rounded-full bg-surface-container-high hover:bg-surface-variant text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-1.5 transition-colors" type="button">
+<span>Swipe Files</span>
+<span class="bg-surface-dim text-on-surface px-1.5 py-0.2 rounded-full font-label-archival text-label-archival">12</span>
+</button>
+<button class="px-space-md py-1 rounded-full bg-surface-container-high hover:bg-surface-variant text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-1.5 transition-colors" type="button">
+<span>Offer Frameworks</span>
+<span class="bg-surface-dim text-on-surface px-1.5 py-0.2 rounded-full font-label-archival text-label-archival">5</span>
+</button>
+<button class="px-space-md py-1 rounded-full bg-surface-container-high hover:bg-surface-variant text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-1.5 transition-colors" type="button">
+<span>Style Guides</span>
+<span class="bg-surface-dim text-on-surface px-1.5 py-0.2 rounded-full font-label-archival text-label-archival">4</span>
+</button>
+</div>
+<!-- Tag Filters -->
+<div class="flex flex-wrap items-center gap-space-xs pt-1">
+<span class="font-label-archival text-label-archival uppercase text-tertiary mr-1">TOPIC TAGS:</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-dim text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-variant">#SaaS</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-dim text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-variant">#B2B</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-dim text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-variant">#HighTicket</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-dim text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-variant">#EmailSequence</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-dim text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-variant">#LandingPage</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-dim text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-variant">#Objections</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-dim text-on-surface-variant font-label-md text-label-md cursor-pointer hover:bg-surface-variant">#Pains</span>
+</div>
+</div>
+</div>
+<!-- Three-Column Desktop Workspace -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT COLUMN: Filing System & Document Folders (Col 1-3) -->
+<div class="lg:col-span-3 flex flex-col gap-space-lg">
+<!-- Folders Docket -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-sm space-y-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[20px]">folder_special</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Dossier Drawers</span>
+</div>
+<button class="text-tertiary hover:text-on-surface" type="button">
+<span class="material-symbols-outlined text-[18px]">create_new_folder</span>
+</button>
+</div>
+<nav class="space-y-1">
+<!-- Folder 1: Active -->
+<a class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-highest text-on-surface font-label-md text-label-md shadow-xs group" href="#">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-primary text-[20px]">folder_open</span>
+<span class="truncate font-semibold">01. Voice-of-Customer</span>
+</div>
+<div class="flex items-center gap-1 shrink-0">
+<span class="px-1.5 py-0.2 bg-primary-fixed text-on-primary-fixed rounded-DEFAULT font-label-archival text-label-archival font-bold">4 NEW</span>
+<span class="font-label-archival text-label-archival text-tertiary">18</span>
+</div>
+</a>
+<!-- Folder 2 -->
+<a class="flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors group" href="#">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary group-hover:text-secondary text-[20px]">folder</span>
+<span class="truncate">02. Competitor Angles</span>
+</div>
+<span class="font-label-archival text-label-archival text-tertiary">9</span>
+</a>
+<!-- Folder 3 -->
+<a class="flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors group" href="#">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary group-hover:text-secondary text-[20px]">folder</span>
+<span class="truncate">03. High-Converting Swipes</span>
+</div>
+<span class="font-label-archival text-label-archival text-tertiary">12</span>
+</a>
+<!-- Folder 4 -->
+<a class="flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors group" href="#">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary group-hover:text-secondary text-[20px]">folder</span>
+<span class="truncate">04. Proprietary Frameworks</span>
+</div>
+<span class="font-label-archival text-label-archival text-tertiary">5</span>
+</a>
+<!-- Folder 5 -->
+<a class="flex items-center justify-between p-space-sm rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors group" href="#">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-tertiary group-hover:text-secondary text-[20px]">folder</span>
+<span class="truncate">05. Brand Voice Guides</span>
+</div>
+<span class="font-label-archival text-label-archival text-tertiary">4</span>
+</a>
+</nav>
+<!-- Micro Tag Cloud -->
+<div class="pt-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-label-archival text-label-archival uppercase text-tertiary">CLIENT TAXONOMY</span>
+<span class="font-label-archival text-label-archival text-tertiary">6 CLIENTS</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center justify-between py-1 px-space-xs rounded hover:bg-surface-container text-body-sm text-body-sm text-on-surface-variant cursor-pointer">
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span>Acme Ledger (FinTech)</span>
+<span class="font-label-archival text-label-archival text-tertiary">14</span>
+</div>
+<div class="flex items-center justify-between py-1 px-space-xs rounded hover:bg-surface-container text-body-sm text-body-sm text-on-surface-variant cursor-pointer">
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>HyperScale Cloud</span>
+<span class="font-label-archival text-label-archival text-tertiary">9</span>
+</div>
+<div class="flex items-center justify-between py-1 px-space-xs rounded hover:bg-surface-container text-body-sm text-body-sm text-on-surface-variant cursor-pointer">
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>Veloce Health</span>
+<span class="font-label-archival text-label-archival text-tertiary">6</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Ingest Dropzone -->
+<div class="bg-surface-container p-space-lg rounded-xl shadow-inner text-center space-y-space-sm relative group cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="w-12 h-12 mx-auto rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shadow-xs group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[24px]">cloud_upload</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Quick Ingest Box</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Drop raw interview markdown, transcript, Loom notes or swipe link to synthesize.
+          </p>
+</div>
+<div class="pt-1 flex items-center justify-center gap-2">
+<span class="font-label-archival text-label-archival uppercase text-secondary font-bold">PASTE CLIPBOARD [⌘V]</span>
+</div>
+</div>
+<!-- Storage Meter & Archival Integrity -->
+<div class="bg-surface-container-low p-space-md rounded-xl space-y-space-xs shadow-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-archival text-label-archival uppercase text-tertiary">DESK VAULT STATUS</span>
+<span class="font-label-archival text-label-archival text-secondary font-bold">100% LOCAL-FIRST</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 28%;"></div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">48 Files Indexed</span>
+<span class="font-label-archival text-label-archival text-tertiary">1.4 MB / 5.0 MB Cached</span>
+</div>
+</div>
+</div>
+<!-- MIDDLE COLUMN: Active Intelligence Stream & Card Catalog (Col 4-8) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- Stream Header & Quick Stats -->
+<div class="flex flex-col gap-space-sm bg-surface-container-low p-space-md rounded-xl shadow-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface">Card Catalog</span>
+<span class="font-label-archival text-label-archival text-primary uppercase px-1.5 py-0.5 bg-primary-fixed rounded-DEFAULT font-bold">ACTIVE FILTER: ALL</span>
+</div>
+<div class="flex items-center gap-1 font-label-md text-label-md text-on-surface-variant">
+<span>Sort:</span>
+<span class="font-bold text-on-surface underline cursor-pointer">Recent Activity ↓</span>
+</div>
+</div>
+<!-- Metric Badges Row -->
+<div class="grid grid-cols-3 gap-space-xs pt-space-xs">
+<div class="bg-surface-container p-space-sm rounded-lg text-center">
+<span class="block font-headline-sm text-headline-sm text-primary font-bold">142</span>
+<span class="font-label-archival text-label-archival text-tertiary uppercase">Verbatims</span>
+</div>
+<div class="bg-surface-container p-space-sm rounded-lg text-center">
+<span class="block font-headline-sm text-headline-sm text-secondary font-bold">28</span>
+<span class="font-label-archival text-label-archival text-tertiary uppercase">Objections</span>
+</div>
+<div class="bg-surface-container p-space-sm rounded-lg text-center">
+<span class="block font-headline-sm text-headline-sm text-on-surface font-bold">16</span>
+<span class="font-label-archival text-label-archival text-tertiary uppercase">Pitch Hooks</span>
+</div>
+</div>
+</div>
+<!-- CARD 1: Voice of Customer Excerpt (Selected / Featured) -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-md transition-all relative overflow-hidden ring-2 ring-primary">
+<!-- Bookmark Tab -->
+<div class="absolute top-0 right-0 bg-primary text-on-primary font-label-archival text-label-archival uppercase px-space-md py-1 rounded-bl-lg font-bold shadow-xs">
+          ★ SELECTED DOSSIER
+        </div>
+<div class="flex items-start justify-between gap-space-sm mb-space-xs pr-20">
+<div class="space-y-0.5">
+<span class="font-label-archival text-label-archival uppercase text-secondary font-bold">DOC-2025-084 · TRANSCRIPT EXCERPT</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">B2B Founder Interview: FinTech CFO Pain Points</h3>
+</div>
+</div>
+<div class="flex items-center gap-space-sm text-body-sm text-body-sm text-on-surface-variant mb-space-md">
+<span class="font-semibold text-on-surface">Acme Ledger</span>
+<span>·</span>
+<span>Q1 Cold Email Campaign</span>
+<span>·</span>
+<span class="text-tertiary">Zoom Audio Sync (00:18:42)</span>
+</div>
+<!-- Pull Quote Block -->
+<div class="bg-surface-container-low p-space-md rounded-lg mb-space-md shadow-inner relative">
+<span class="material-symbols-outlined text-primary/30 text-[36px] absolute -top-2 left-2">format_quote</span>
+<p class="font-headline-sm text-headline-sm italic text-on-surface leading-relaxed pl-space-md">
+            “We spend 14 hours every Friday reconciling invoices across three tools. If software can’t do that automatically, I won't even book a demo.”
+          </p>
+</div>
+<!-- Synthesized Copy Angle -->
+<div class="bg-secondary-container/30 p-space-sm rounded-lg mb-space-md">
+<div class="flex items-center gap-1 text-secondary mb-1">
+<span class="material-symbols-outlined text-[16px]">psychology</span>
+<span class="font-label-archival text-label-archival uppercase font-bold">SYNTHESIZED COPY ANGLE</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-medium">
+            Anchor on the “Lost Friday Afternoon” emotional pain point rather than technical API reconciliation specs.
+          </p>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs">
+<div class="flex flex-wrap items-center gap-1.5">
+<span class="px-2 py-0.5 rounded-DEFAULT bg-primary-fixed text-on-primary-fixed font-label-archival text-label-archival uppercase font-bold">VERIFIED VERBATIM</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-label-md text-label-md">#FinTech</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-label-md text-label-md">#TimeDrain</span>
+</div>
+<span class="font-label-archival text-label-archival text-tertiary">MAR 14, 2025</span>
+</div>
+</div>
+<!-- CARD 2: Swipe File & Hook Analysis -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer group">
+<div class="flex items-start justify-between gap-space-sm mb-space-xs">
+<div class="space-y-0.5">
+<span class="font-label-archival text-label-archival uppercase text-tertiary font-bold">SWP-2025-019 · VSL BLUEPRINT</span>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">High-Converting VSL Hook: The “Counter-Intuitive Truth” Angle</h3>
+</div>
+<span class="px-2 py-0.5 bg-surface-container-high rounded-DEFAULT font-label-archival text-label-archival text-tertiary uppercase">SWIPE</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm">
+          Source: Agora Financial / Chris Haddad Breakdown · Lead Type: Problem-Agitate-Solve + Novelty Bridge
+        </p>
+<!-- Visual Hook Snippet -->
+<div class="bg-surface-container-low p-space-md rounded-lg mb-space-sm space-y-1">
+<div class="flex items-center justify-between">
+<span class="font-label-archival text-label-archival uppercase text-secondary">PROVEN HOOK FORMULA</span>
+<span class="font-label-archival text-label-archival text-primary font-bold">8.4% CVR</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+<span class="bg-secondary-container/50 px-1 py-0.5 font-semibold">“Everything your accountant told you about SaaS deductions is quietly triggering audit flags...”</span>
+</p>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-label-md text-label-md">#LongForm</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-label-md text-label-md">#Hooks</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-label-md text-label-md">#SubconsciousDesire</span>
+</div>
+<span class="font-label-archival text-label-archival text-tertiary">EST. $4.2M REVENUE</span>
+</div>
+</div>
+<!-- CARD 3: Competitor Teardown -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer group">
+<div class="flex items-start justify-between gap-space-sm mb-space-xs">
+<div class="space-y-0.5">
+<span class="font-label-archival text-label-archival uppercase text-tertiary font-bold">CMP-2025-004 · MARKET GAP ANALYSIS</span>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Gong vs. Chorus Messaging Matrix: Differentiation Gaps</h3>
+</div>
+<span class="px-2 py-0.5 bg-surface-container-high rounded-DEFAULT font-label-archival text-label-archival text-tertiary uppercase">TEARDOWN</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm">
+          Target Category: Revenue Intelligence &amp; Conversation Capture · 18 Landing Pages Deconstructed
+        </p>
+<!-- Teardown Insight Box -->
+<div class="bg-surface-container-low p-space-md rounded-lg mb-space-sm">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-[16px] text-primary">priority_high</span>
+<span class="font-label-archival text-label-archival uppercase text-primary font-bold">EXPLOITABLE POSITIONING GAP</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+            Competitors over-index on generic "AI hype" and enterprise analytics dashboards; clear whitespace exists for human-in-the-loop rep reliability framing.
+          </p>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-label-md text-label-md">#CompetitorAnalysis</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-label-md text-label-md">#Positioning</span>
+</div>
+<span class="font-label-archival text-label-archival text-tertiary">UPDATED 3D AGO</span>
+</div>
+</div>
+<!-- CARD 4: Proprietary Copy Framework -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer group">
+<div class="flex items-start justify-between gap-space-sm mb-space-xs">
+<div class="space-y-0.5">
+<span class="font-label-archival text-label-archival uppercase text-tertiary font-bold">FRM-2025-011 · SPRINT ARCHITECTURE</span>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">The 4-Pillar High-Ticket Landing Page Wireframe Architecture</h3>
+</div>
+<span class="px-2 py-0.5 bg-surface-container-high rounded-DEFAULT font-label-archival text-label-archival text-tertiary uppercase">FRAMEWORK</span>
+</div>
+<!-- Step Sequence -->
+<div class="grid grid-cols-2 gap-space-xs bg-surface-container-low p-space-sm rounded-lg mb-space-sm">
+<div class="flex items-center gap-2 text-body-sm text-body-sm font-medium">
+<span class="w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-archival text-label-archival shrink-0">1</span>
+<span class="truncate">Curiosity Anchor (Lead)</span>
+</div>
+<div class="flex items-center gap-2 text-body-sm text-body-sm font-medium">
+<span class="w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-archival text-label-archival shrink-0">2</span>
+<span class="truncate">Empathy Agitation (Cost)</span>
+</div>
+<div class="flex items-center gap-2 text-body-sm text-body-sm font-medium">
+<span class="w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-archival text-label-archival shrink-0">3</span>
+<span class="truncate">Mechanism Revelation</span>
+</div>
+<div class="flex items-center gap-2 text-body-sm text-body-sm font-medium">
+<span class="w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-archival text-label-archival shrink-0">4</span>
+<span class="truncate">Risk-Reversal Offer Stack</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-label-md text-label-md">#LandingPage</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-label-md text-label-md">#Wireframe</span>
+<span class="px-2 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant font-label-md text-label-md">#Conversion</span>
+</div>
+<span class="font-label-archival text-label-archival text-tertiary">4 CLIENT DEPLOYMENTS</span>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Selected Document Deep-Dive & Synthesis Drawer (Col 9-12) -->
+<div class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- Deep Dive Container -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-sm space-y-space-md sticky top-32">
+<!-- Document Dossier Header -->
+<div class="space-y-space-xs pb-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-archival text-label-archival uppercase text-primary font-bold tracking-wider">ACTIVE FILE DOSSIER</span>
+<span class="font-label-archival text-label-archival uppercase px-1.5 py-0.5 rounded-DEFAULT bg-surface-container text-on-surface-variant">#DOC-2025-084</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">B2B Founder Interview: FinTech CFO Pain Points</h2>
+<div class="flex items-center gap-2 pt-1">
+<span class="font-label-archival text-label-archival text-secondary font-bold uppercase">OFFER #02: COLD OUTBOUND SPRINT</span>
+</div>
+</div>
+<!-- Action Toolbar -->
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="flex items-center justify-center gap-1 bg-surface-container hover:bg-surface-container-high py-2 px-space-xs rounded-lg font-label-md text-label-md text-on-surface transition-colors shadow-xs" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">send</span>
+<span>Export to Pitch</span>
+</button>
+<button class="flex items-center justify-center gap-1 bg-surface-container hover:bg-surface-container-high py-2 px-space-xs rounded-lg font-label-md text-label-md text-on-surface transition-colors shadow-xs" id="copyPromptBtn" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">psychology</span>
+<span>Copy as Prompt</span>
+</button>
+</div>
+<!-- Direct Verbatims Extraction Box -->
+<div class="space-y-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-archival text-label-archival uppercase text-tertiary">EXTRACTED VERBATIMS (4)</span>
+<span class="font-label-archival text-label-archival text-secondary cursor-pointer hover:underline">COPY ALL</span>
+</div>
+<!-- Snippet 1 -->
+<div class="bg-surface-container p-space-sm rounded-lg space-y-1 hover:bg-surface-container-highest transition-colors group">
+<div class="flex items-start justify-between gap-2">
+<p class="font-body-sm text-body-sm text-on-surface italic">
+                “Every software salesperson tells me they connect to our ERP in 5 minutes. In reality, it takes 3 weeks and 4 broken webhooks.”
+              </p>
+<button class="text-tertiary hover:text-primary shrink-0" title="Copy snippet" type="button">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+<span class="font-label-archival text-label-archival text-tertiary block">Trigger: Implementation Skepticism</span>
+</div>
+<!-- Snippet 2 -->
+<div class="bg-surface-container p-space-sm rounded-lg space-y-1 hover:bg-surface-container-highest transition-colors group">
+<div class="flex items-start justify-between gap-2">
+<p class="font-body-sm text-body-sm text-on-surface italic">
+                “If I see one more cold email offering an 'AI-driven copilot' I'm going to set up a filter that routes anything with 'copilot' directly to spam.”
+              </p>
+<button class="text-tertiary hover:text-primary shrink-0" title="Copy snippet" type="button">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+<span class="font-label-archival text-label-archival text-tertiary block">Trigger: AI Buzzword Fatigue</span>
+</div>
+</div>
+<!-- Emotional Diagnostics Matrix -->
+<div class="space-y-space-xs pt-space-xs">
+<span class="font-label-archival text-label-archival uppercase text-tertiary block">EMOTIONAL INTENSITY MAPPING</span>
+<div class="space-y-2 bg-surface-container p-space-sm rounded-lg">
+<div>
+<div class="flex items-center justify-between font-label-md text-label-md pb-1">
+<span class="text-on-surface">Time Theft Frustration</span>
+<span class="font-bold text-primary">Severe (94%)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 94%;"></div>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between font-label-md text-label-md pb-1">
+<span class="text-on-surface">AI Hype Skepticism</span>
+<span class="font-bold text-secondary">High (82%)</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 82%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Generated Angle Proposals (Subject Lines) -->
+<div class="space-y-space-xs pt-space-xs">
+<span class="font-label-archival text-label-archival uppercase text-tertiary block">DERIVED SUBJECT LINES &amp; HOOKS</span>
+<div class="space-y-1.5">
+<div class="p-space-sm bg-surface-container-lowest rounded-lg shadow-xs flex items-center justify-between gap-2">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">“Why CFOs lose Friday afternoons to Stripe &amp; QuickBooks”</span>
+<span class="material-symbols-outlined text-secondary text-[16px] cursor-pointer hover:scale-110 shrink-0">file_copy</span>
+</div>
+<div class="p-space-sm bg-surface-container-lowest rounded-lg shadow-xs flex items-center justify-between gap-2">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">“The 14-hour reconciliation leak in your finance stack”</span>
+<span class="material-symbols-outlined text-secondary text-[16px] cursor-pointer hover:scale-110 shrink-0">file_copy</span>
+</div>
+<div class="p-space-sm bg-surface-container-lowest rounded-lg shadow-xs flex items-center justify-between gap-2">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface truncate">“No AI copilots. Just Friday afternoons back.”</span>
+<span class="material-symbols-outlined text-secondary text-[16px] cursor-pointer hover:scale-110 shrink-0">file_copy</span>
+</div>
+</div>
+</div>
+<!-- Related Files Cross-Index -->
+<div class="space-y-space-xs pt-space-xs">
+<span class="font-label-archival text-label-archival uppercase text-tertiary block">ASSOCIATED LEDGER ASSETS</span>
+<div class="space-y-1">
+<a class="flex items-center gap-2 p-1.5 rounded hover:bg-surface-container text-body-sm text-body-sm text-secondary font-medium" href="#">
+<span class="material-symbols-outlined text-[16px]">description</span>
+<span class="truncate">FinTech ICP Persona Profile (CFO Focus)</span>
+</a>
+<a class="flex items-center gap-2 p-1.5 rounded hover:bg-surface-container text-body-sm text-body-sm text-secondary font-medium" href="#">
+<span class="material-symbols-outlined text-[16px]">alternate_email</span>
+<span class="truncate">Acme Ledger: 5-Touch Cold Sequence V1</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Micro-interactions Script -->
 <script>
-"use strict";
-/* =====================================================================
-   COPYWRITING BUSINESS OS — standalone single-file build (vanilla JS)
-   No dependencies. No network. Storage: localStorage (portable via JSON).
-   To host on GitHub: push THIS file as-is. Open it via Pages or file://.
-   ===================================================================== */
-var LS_KEY = "copywriting-os-v1";
-function uid(p){ return (p||"r")+"_"+Math.random().toString(36).slice(2,10); }
-function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
-function todayISO(){ return new Date().toISOString().slice(0,10); }
-function fmtD(iso){ if(!iso) return "—"; var d=new Date(iso.length<=10?iso+"T00:00:00Z":iso); if(isNaN(d)) return "—"; return d.toLocaleDateString(undefined,{day:"2-digit",month:"short",year:"numeric"}); }
-function shortD(iso){ if(!iso) return "—"; var d=new Date(iso.length<=10?iso+"T00:00:00Z":iso); if(isNaN(d)) return "—"; return d.toLocaleDateString(undefined,{day:"2-digit",month:"short"}); }
-function daysFrom(iso){ if(!iso) return null; var d=new Date(iso.length<=10?iso+"T00:00:00Z":iso); if(isNaN(d)) return null; var t=new Date(); t.setHours(0,0,0,0); return Math.round((d-t)/864e5); }
-function dueLabel(due){ var d=daysFrom(due); if(d===null) return "—"; if(d<0) return Math.abs(d)+"d overdue"; if(d===0) return "due today"; if(d===1) return "due tomorrow"; return "in "+d+"d"; }
-function dueTone(due){ var d=daysFrom(due); if(d===null) return ""; if(d<0) return "color:var(--stamp)"; if(d<=2) return "color:var(--ink)"; return "color:var(--ink2)"; }
-function toast(msg,warn){ var t=document.createElement("div"); t.className="toast"+(warn?" warn":""); t.textContent=msg; document.getElementById("toasts").appendChild(t); setTimeout(function(){ t.remove(); },3600); }
-function dots(n,red){ var h='<span class="dots">'; for(var i=1;i<=5;i++) h+='<i class="'+(i<=n?(red?"fr":"f"):"")+'"></i>'; return h+'</span>'; }
-/* ---------------- seed (labelled demo practice, removable in one click) ---------------- */
-function seed(){
-  var D=function(y,m,d){ return new Date(Date.UTC(y,m-1,d)).toISOString(); };
-  return {
-    schemaVersion:1, appVersion:"1.0.0",
-    settings:{name:"",audience:"Founders of B2B service businesses who sell expertise — coaches, consultants, fractional executives.",positioning:"I help expertise-led businesses say what they actually do — so the right visitors recognise themselves and enquire.",coreService:"Homepage Message Audit (fixed scope, £450)",objective:"Book three audits this quarter and convert two into longer projects.",sampleData:true,onboarded:false},
-    focus:{objective:"Book three paid Homepage Message Audits before the end of Q1.",strategy:"Teardown-first outreach to researched expertise-led businesses, supported by a free clarity check.",why:"Twelve researched, teardown-led emails produced three calls where forty pitch-first emails produced none. This is the only lever I control.",project:"Make the audit offer self-explanatory: scope page, sample teardown, follow-up asset.",mostImportantAction:"Send the revised scope to Northbound and follow up on the Halden proposal.",milestones:["Audit scope page published with a visible price","Clarity check live and attached to outreach","12 qualified prospects contacted this week","First audit booked and delivered"],notNow:["Building a newsletter","Redesigning my own website","Course creation","SEO and content marketing"],constraints:"Delivery capacity ~25 hrs/week alongside client work.",startDate:"2026-01-05",reviewDate:"2026-02-02",changeEvidence:"If 60 qualified teardown emails produce fewer than 3 calls, the mechanism is wrong — change approach, don't add volume.",history:[]},
-    insights:[
-      {id:"ins_cred",createdAt:D(2026,1,12),updatedAt:D(2026,1,20),title:"Expert-service sites open with credentials instead of the costly problem",notes:"Reviewed 11 homepages of executive coaches. 9 of 11 open with certification and biography. Only 2 name a specific costly problem above the fold.",source:"Own audit notes, 11 sites",category:"Positioning",entryType:"observation",evidence:"observed",implication:"A homepage headline audit is a credible, low-friction door-opener.",proposedAction:"Build the 7-Question Clarity Check around this finding.",status:"actionable",tags:["homepage","positioning"],links:[{type:"offer",id:"off_clarity"}]},
-      {id:"ins_revenue",createdAt:D(2026,1,10),updatedAt:D(2026,1,18),title:"Buyers describe the problem as lost revenue, never as 'messaging'",notes:"In 6 discovery conversations the word 'messaging' never appeared unprompted. Owners said 'we lose deals to someone cheaper' or 'people don't get what we do until call two'.",source:"Discovery calls Nov–Jan",category:"Buyer psychology",entryType:"client insight",evidence:"proven",implication:"My marketing must translate copy problems into commercial losses.",proposedAction:"Rewrite the audit page to lead with the lost-deal symptom.",status:"implemented",tags:["messaging"],links:[{type:"offer",id:"off_audit"}]},
-      {id:"ins_teardown",createdAt:D(2026,1,14),updatedAt:D(2026,1,21),title:"Teardown-first emails get replies. Pitch-first emails get silence.",notes:"24 pitch-first emails in December: 1 reply. 19 teardown-first in January: 6 replies, 3 calls. The teardown contains three specific observations before any mention of a service.",source:"Outreach log",category:"Outreach",entryType:"market signal",evidence:"observed",implication:"Leading with specific unpaid observation is the mechanism.",proposedAction:"Make teardown-first the default format.",status:"actionable",tags:["outreach"],links:[{type:"offer",id:"off_tpl"}]},
-      {id:"ins_40",createdAt:D(2026,1,16),updatedAt:D(2026,1,19),title:"40 rushed pitches produced less than 12 researched ones",notes:"Week of 8 Dec: 40 generic pitches, 1 reply, 0 calls. Week of 12 Jan: 12 researched teardown emails, 6 replies, 3 calls.",source:"Outreach log comparison",category:"Working practice",entryType:"lesson",evidence:"proven",implication:"Volume is not the lever. Research depth is.",proposedAction:"Cap weekly outreach at 12, each with a teardown note first.",status:"implemented",tags:["discipline"],links:[]},
-      {id:"ins_numbers",createdAt:D(2026,1,11),updatedAt:D(2026,1,17),title:"Case-study numbers need a time window to be believable",notes:"'Increased conversions 40%' reads as invented. '40% more demo requests in the 8 weeks after launch' reads as measured.",source:"Portfolio review",category:"Proof",entryType:"lesson",evidence:"observed",implication:"Every proof point needs a window and a baseline.",proposedAction:"Add baselines to all portfolio pieces.",status:"worth exploring",tags:["proof"],links:[]},
-      {id:"ins_nine",createdAt:D(2026,1,20),updatedAt:D(2026,1,20),title:"Hypothesis: naming the expensive problem in the first 9 words lifts replies",notes:"I suspect subject lines naming a costly symptom outperform those naming a service. No evidence yet.",source:"",category:"Outreach",entryType:"hypothesis",evidence:"suspected",implication:"If true, my outreach and my clients' pages both improve.",proposedAction:"A/B the first line on the next 30 sends.",status:"unprocessed",tags:["hypothesis"],links:[]}
-    ],
-    offers:[
-      {id:"off_audit",createdAt:D(2025,12,1),updatedAt:D(2026,1,18),name:"Homepage Message Audit — 90 minutes",description:"Fixed-scope entry offer: a written teardown against 7 clarity questions plus a rewritten message hierarchy in 3 working days.",offerType:"productized service",audience:"Founders of B2B service businesses selling expertise.",problem:"The homepage explains what they do but not why it matters.",outcome:"A rewritten message hierarchy the client can implement.",price:"£450",status:"active",files:["docs/audit-scope-v3.pdf"],nextAction:"Add risk-reversal above the price.",tags:[],links:[{type:"insight",id:"ins_revenue"}]},
-      {id:"off_clarity",createdAt:D(2025,12,3),updatedAt:D(2026,1,15),name:"The 7-Question Homepage Clarity Check",description:"One-page self-scoring checklist. The follow-up asset in teardown outreach and the email opt-in.",offerType:"lead magnet",audience:"Same as audit audience, awareness stage.",problem:"Founders know the site underperforms but can't say why.",outcome:"In ten minutes they score their homepage and see the weakest sentences.",price:"Free",status:"published",files:["leadmagnets/clarity-check-v2.pdf"],nextAction:"Publish the landing page.",tags:[],links:[{type:"insight",id:"ins_cred"}]},
-      {id:"off_landing",createdAt:D(2025,12,10),updatedAt:D(2026,1,12),name:"Launch Page Sprint — 2 weeks",description:"Two-week fixed sprint. Week one: interviews and message strategy. Week two: full page copy.",offerType:"paid service",audience:"Consultancies launching a new offer.",problem:"Launches get built around internal language.",outcome:"A complete launch page the developer can build from.",price:"£2,400",status:"drafting",files:[],nextAction:"Finish scope; sanity-check price with two clients.",tags:[],links:[]},
-      {id:"off_tpl",createdAt:D(2026,1,6),updatedAt:D(2026,1,19),name:"3-bullet teardown cold email",description:"One observation, three numbered teardown bullets, one soft question. No service mention in message one.",offerType:"outreach template",audience:"Prospects with a fixable homepage problem.",problem:"Pitch-first email gets ignored.",outcome:"A repeatable structure that earns replies.",price:"—",status:"active",files:["outreach/teardown-email-v4.md"],nextAction:"Track reply rate by first-line variant.",tags:[],links:[{type:"insight",id:"ins_teardown"}]},
-      {id:"off_port",createdAt:D(2026,1,8),updatedAt:D(2026,1,16),name:"Northbound Coaching — homepage rewrite",description:"Before/after with baseline, window and outcome. Was spec, converted to paid phase two.",offerType:"portfolio piece",audience:"Executive coaches browsing the portfolio.",problem:"Existing pieces have no measurable outcomes.",outcome:"A documented before/after with outcome.",price:"—",status:"improving",files:[],nextAction:"Add the 8-week window and a client quote.",tags:[],links:[{type:"insight",id:"ins_numbers"}]}
-    ],
-    prospects:[
-      {id:"pro_north",createdAt:D(2026,1,5),updatedAt:D(2026,1,22),name:"Marta Ivanova",company:"Northbound Coaching",website:"https://northboundcoaching.example",profile:"",industry:"Executive coaching",role:"Founder",problem:"Homepage leads with certification. No costly problem named above the fold.",whySelected:"Perfect audit fit. Clear fixable problem, visible price point suggests budget.",observations:"LinkedIn voice is sharp; the site is generic. The gap is the pitch.",offerFit:"Homepage Message Audit → possible Sprint later.",stage:"conversation",fit:5,strength:4,lastContact:"2026-01-21",followUpDate:"2026-01-28",nextAction:"Send revised scope; confirm start date.",outcome:"",lessons:"Naming one specific sentence got an immediate reply.",tags:[],links:[{type:"offer",id:"off_audit"}],activity:[
-        {id:"a1",date:"2026-01-12",kind:"outreach",channel:"email",subject:"Three things your homepage says instead of the problem",content:"Opened with one observation about LinkedIn voice vs the site, three numbered teardown bullets, one question.",result:""},
-        {id:"a2",date:"2026-01-15",kind:"reply",channel:"email",subject:"Re: Three things…",content:"Warm. Asked what a full audit involves and costs.",result:"Asked for scope"},
-        {id:"a3",date:"2026-01-17",kind:"call / meeting",channel:"video",subject:"Discovery call — 30 min",content:"Talked through scope. Answered the 'already had a coach look' objection with the 7-question framework.",result:"Wants scope in writing"},
-        {id:"a4",date:"2026-01-21",kind:"outreach",channel:"email",subject:"Scope + price, as promised",content:"Sent scope, £450, proposed start 2 Feb.",result:""}]},
-      {id:"pro_ledger",createdAt:D(2026,1,5),updatedAt:D(2026,1,19),name:"Daniel Okoro",company:"Ledger & Co.",website:"https://ledgerandco.example",profile:"",industry:"Fractional CFO",role:"Managing partner",problem:"Three services described in internal finance language; no visible difference.",whySelected:"High-value service, obvious message problem, publishes case studies.",observations:"Case studies have numbers with no time windows.",offerFit:"Homepage Message Audit.",stage:"follow-up due",fit:4,strength:3,lastContact:"2026-01-09",followUpDate:"2026-01-19",nextAction:"Second follow-up with clarity check + one observation.",outcome:"",lessons:"First follow-up should have carried something useful.",tags:[],links:[{type:"offer",id:"off_clarity"}],activity:[
-        {id:"b1",date:"2026-01-05",kind:"outreach",channel:"email",subject:"Your three services read the same from outside",content:"Teardown-first, three bullets on differentiation, one question.",result:""},
-        {id:"b2",date:"2026-01-09",kind:"follow-up",channel:"email",subject:"Re: Your three services…",content:"Short bump with clarity check link.",result:"No response"}]},
-      {id:"pro_halden",createdAt:D(2026,1,5),updatedAt:D(2026,1,22),name:"Priya Raman",company:"Halden Legal",website:"https://haldenlegal.example",profile:"",industry:"Commercial law",role:"Partner",problem:"Practice pages read like every other firm. No named client type or outcome.",whySelected:"Referred by a past client.",observations:"Warm expectations already.",offerFit:"Homepage Message Audit.",stage:"proposal",fit:5,strength:5,lastContact:"2026-01-20",followUpDate:"2026-01-24",nextAction:"Follow up — decision expected this week.",outcome:"",lessons:"Referral removes the credibility burden; spend the call on the problem.",tags:[],links:[{type:"offer",id:"off_audit"}],activity:[
-        {id:"c1",date:"2026-01-13",kind:"note",channel:"—",subject:"Introduced by a past client",content:"Warm intro over email; call booked same week.",result:""},
-        {id:"c2",date:"2026-01-16",kind:"call / meeting",channel:"video",subject:"Discovery — 45 min",content:"'We win on relationships and lose on comprehension.'",result:"Proposal requested"},
-        {id:"c3",date:"2026-01-20",kind:"proposal",channel:"email",subject:"Proposal: practice page message strategy",content:"Audit + practice-page rewrite as phase two. £1,850.",result:""}]},
-      {id:"pro_meridian",createdAt:D(2026,1,5),updatedAt:D(2026,1,19),name:"Tomas Lindqvist",company:"Meridian Ops",website:"https://meridianops.example",profile:"",industry:"Operations consultancy",role:"Director",problem:"Brochure site. No offer, no price, no next step beyond 'get in touch'.",whySelected:"Mid-sized, likely budget; severe visible problem.",observations:"Blog is strong; commercial pages are thin.",offerFit:"Homepage Message Audit.",stage:"contacted",fit:3,strength:2,lastContact:"2026-01-19",followUpDate:"2026-01-26",nextAction:"Follow up with one blog-vs-services observation.",outcome:"",lessons:"",tags:[],links:[],activity:[
-        {id:"d1",date:"2026-01-19",kind:"outreach",channel:"email",subject:"Your blog is doing work your services page can't",content:"Three bullets comparing blog quality to services page.",result:""}]},
-      {id:"pro_atlas",createdAt:D(2026,1,5),updatedAt:D(2026,1,18),name:"Grace Bennett",company:"Atlas People Ops",website:"https://atlaspeopleops.example",profile:"",industry:"HR consultancy",role:"Founder",problem:"'Full-service HR' means nothing to a buyer with a specific problem.",whySelected:"Recent rebrand suggests willingness to invest.",observations:"Timing may be fatigue or appetite.",offerFit:"Homepage Message Audit.",stage:"replied",fit:3,strength:3,lastContact:"2026-01-18",followUpDate:"2026-01-27",nextAction:"Send clarity check; propose short call.",outcome:"",lessons:"",tags:[],links:[],activity:[
-        {id:"e1",date:"2026-01-14",kind:"outreach",channel:"email",subject:"What 'full-service HR' costs you in enquiries",content:"Three bullets on the positioning problem.",result:""},
-        {id:"e2",date:"2026-01-18",kind:"reply",channel:"email",subject:"Re: What 'full-service HR' costs…",content:"'Fair point, we've talked about this internally.' Asked what I'd change first.",result:"Soft interest"}]},
-      {id:"pro_cairn",createdAt:D(2026,1,5),updatedAt:D(2026,1,18),name:"Sofia Almeida",company:"Cairn Financial Planning",website:"https://cairnplanning.example",profile:"",industry:"Financial planning",role:"Principal",problem:"Six-step process page; never says who it is for.",whySelected:"Local, well-reviewed, investing in marketing.",observations:"New photography, unchanged copy.",offerFit:"Homepage Message Audit.",stage:"ready to contact",fit:4,strength:3,lastContact:"",followUpDate:"2026-01-27",nextAction:"Write the teardown. Three bullets before Monday.",outcome:"",lessons:"",tags:[],links:[],activity:[]}
-    ],
-    experiments:[
-      {id:"exp_tear",createdAt:D(2025,12,1),updatedAt:D(2026,1,20),title:"Teardown-first vs pitch-first outreach",track:"clients",kind:"experiment",objective:"Find an outreach format that reliably produces replies.",problem:"Pitch-first produced 1 reply from 24 sends. No signal to learn from.",why:"Without a working mechanism I can't create opportunities on demand.",hypothesis:"An email leading with three specific unpaid observations will materially beat one describing my service.",action:"Send 19 teardown-first emails over 3 weeks. No service mention in message one.",expectedResult:"At least 4 replies and 2 calls.",successMeasure:"Reply rate above 20%, 2+ calls.",startDate:"2026-01-08",reviewDate:"2026-02-05",actualOutcome:"Running. 12 sent: 5 replies, 3 calls, 1 proposal out.",learned:"Specificity matters more than structure.",nextDecision:"Continue to 30 sends, then compare first-line variants.",verdict:"continue",status:"running",resources:[],practice:[],deadline:"",evidenceOfImprovement:"",tags:[],links:[{type:"insight",id:"ins_teardown"}]},
-      {id:"exp_first",createdAt:D(2026,1,10),updatedAt:D(2026,1,20),title:"Does naming the costly problem in the first line lift replies?",track:"clients",kind:"experiment",objective:"Isolate the mechanism inside teardown outreach.",problem:"I know teardown-first works better; I don't know which part does the work.",why:"Knowing the mechanism lets me reuse it in client pages.",hypothesis:"First lines naming a costly symptom beat first lines naming a missed opportunity.",action:"Alternate first-line variant across 30 sends; tag each reply.",expectedResult:"A measurable difference.",successMeasure:"8+ point reply-rate gap.",startDate:"",reviewDate:"2026-03-06",actualOutcome:"",learned:"",nextDecision:"Start after teardown experiment hits 30 sends.",verdict:"not reviewed",status:"planned",resources:[],practice:[],deadline:"",evidenceOfImprovement:"",tags:[],links:[{type:"insight",id:"ins_nine"}]},
-      {id:"exp_price",createdAt:D(2026,1,10),updatedAt:D(2026,1,20),title:"Publishing a starting price on the audit page",track:"clients",kind:"experiment",objective:"Improve enquiry quality without killing volume.",problem:"Enquiries arrive with no sense of budget; calls become qualification.",why:"Filtering earlier frees time for delivery.",hypothesis:"'From £450' reduces total enquiries but raises the qualified share.",action:"Visible price for 6 weeks; tag every enquiry qualified/not.",expectedResult:"Fewer, better enquiries.",successMeasure:"Qualified share above 60%, volume down less than a third.",startDate:"",reviewDate:"2026-03-13",actualOutcome:"",learned:"",nextDecision:"Wait for the page rewrite so changes aren't confounded.",verdict:"not reviewed",status:"planned",resources:[],practice:[],deadline:"",evidenceOfImprovement:"",tags:[],links:[]},
-      {id:"exp_craft",createdAt:D(2025,12,1),updatedAt:D(2026,1,20),title:"Customer interviews as a paid asset in every project",track:"craft",kind:"active strategy",objective:"Make buyer language the foundation of everything I write.",problem:"Without interviews I write from intuition; copy takes twice as long to land.",why:"The best line I wrote all year came from a customer's answer.",hypothesis:"Scoped as a paid deliverable, interviews improve copy measurably.",action:"Five-question interviews in three consecutive projects; compare revision rounds.",expectedResult:"Fewer revision rounds.",successMeasure:"One fewer round per project on average.",startDate:"2025-12-01",reviewDate:"2026-02-28",actualOutcome:"Two projects with interviews: both landed in one round.",learned:"'What almost stopped you buying?' pays for the whole interview.",nextDecision:"Continue. Write it into standard scope.",verdict:"continue",status:"running",resources:["research/interview-script.md"],practice:["One mock interview per week."],deadline:"2026-02-28",evidenceOfImprovement:"Two projects closed in one round vs a previous average of three.",tags:[],links:[{type:"insight",id:"ins_revenue"}]},
-      {id:"exp_goal",createdAt:D(2026,1,1),updatedAt:D(2026,1,20),title:"Goal: three retained clients at £1,500+/mo by June",track:"clients",kind:"long-term goal",objective:"Replace lumpy project income with retained relationships.",problem:"Every month starts at zero.",why:"Retainers buy stability to invest in craft.",hypothesis:"The audit is the natural entry into a retained review relationship.",action:"Offer a monthly message-review retainer to every completed audit client.",expectedResult:"2–3 retainers by end of Q2.",successMeasure:"£4,500/mo recurring by 30 June 2026.",startDate:"2026-01-01",reviewDate:"2026-06-30",actualOutcome:"",learned:"",nextDecision:"Design retainer scope after three audits complete.",verdict:"continue",status:"running",resources:[],practice:[],deadline:"",evidenceOfImprovement:"",tags:[],links:[{type:"offer",id:"off_audit"}]}
-    ],
-    tasks:[
-      {id:"tsk_1",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Send the revised scope to Marta at Northbound",description:"Include £450, 2 Feb start, three-day delivery promise.",priority:"high",due:"2026-01-23",status:"open",effort:"20 min",completedAt:"",notes:"",tags:[],links:[{type:"prospect",id:"pro_north"}]},
-      {id:"tsk_2",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Follow up on the Halden Legal proposal",description:"Decision expected this week. Ask directly what blocks a yes.",priority:"high",due:"2026-01-24",status:"open",effort:"15 min",completedAt:"",notes:"",tags:[],links:[{type:"prospect",id:"pro_halden"}]},
-      {id:"tsk_3",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Second follow-up to Ledger & Co.",description:"Attach clarity check + one observation about case-study numbers.",priority:"high",due:"2026-01-19",status:"open",effort:"25 min",completedAt:"",notes:"",tags:[],links:[{type:"prospect",id:"pro_ledger"}]},
-      {id:"tsk_4",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Write the Cairn Financial teardown",description:"Three specific bullets. No service mention.",priority:"medium",due:"2026-01-27",status:"open",effort:"45 min",completedAt:"",notes:"",tags:[],links:[{type:"prospect",id:"pro_cairn"}]},
-      {id:"tsk_5",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Move risk-reversal above the price on the audit page",description:"",priority:"medium",due:"2026-01-30",status:"in progress",effort:"30 min",completedAt:"",notes:"",tags:[],links:[{type:"offer",id:"off_audit"}]},
-      {id:"tsk_7",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Send the referral ask to two past clients",description:"One paragraph naming who I help, plus a forwardable line.",priority:"high",due:"2026-01-26",status:"open",effort:"30 min",completedAt:"",notes:"",tags:[],links:[]},
-      {id:"tsk_11",createdAt:D(2026,1,15),updatedAt:D(2026,1,22),title:"Record the January weekly review",description:"Four prompts, then continue / stop / change.",priority:"medium",due:"2026-01-25",status:"open",effort:"30 min",completedAt:"",notes:"",tags:[],links:[]},
-      {id:"tsk_12",createdAt:D(2026,1,10),updatedAt:D(2026,1,16),title:"Draft the clarity-check landing page copy",description:"",priority:"medium",due:"2026-01-16",status:"done",effort:"3 hr",completedAt:"2026-01-16",notes:"",tags:[],links:[{type:"offer",id:"off_clarity"}]}
-    ],
-    reviews:[
-      {id:"rev_1",createdAt:D(2026,1,18),updatedAt:D(2026,1,18),kind:"weekly review",date:"2026-01-18",title:"Week 3 — teardown outreach is producing signal",movedForward:"Six teardown emails, three discovery calls, one proposal. The Halden proposal exists because of the new format.",learned:"Specificity is the mechanism. Bullets must name a sentence, section or number.",signal:"Three replies in one week — strongest signal since starting outreach.",wasted:"Two hours redesigning the clarity-check PDF nobody asked for.",continueDoing:"Teardown-first outreach, capped at 12/week with a recorded note first.",stopDoing:"Pitch-first emails entirely.",changeDoing:"Follow-ups must carry something useful, never a bump.",nextAction:"Send revised scope to Northbound.",decision:"",evidence:"",consequence:"",tags:[],links:[{type:"experiment",id:"exp_tear"}]},
-      {id:"rev_2",createdAt:D(2026,1,5),updatedAt:D(2026,1,5),kind:"decision",date:"2026-01-05",title:"Decision: stop chasing outreach volume",movedForward:"",learned:"",signal:"",wasted:"",continueDoing:"",stopDoing:"The 40-email weeks.",changeDoing:"",nextAction:"Cap weekly outreach at 12 researched prospects.",decision:"Replace volume targets with a research-quality gate: no email without a recorded teardown note first.",evidence:"December: 40 sends, 1 reply, 0 calls. January comparison week: 12 researched sends, 5 replies, 3 calls.",consequence:"Fewer emails, more replies, slower but steadier pipeline.",tags:[],links:[{type:"experiment",id:"exp_tear"}]}
-    ]
-  };
-}
-/*__MORE__*/
-</script>
-</body>
-</html>
+    document.addEventListener('DOMContentLoaded', () => {
+      const copyBtn = document.getElementById('copyPromptBtn');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const originalText = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<span class="material-symbols-outlined text-[16px] text-primary">check</span><span>Prompt Copied!</span>';
+          setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+          }, 2000);
+        });
+      }
+
+      const ingestBtn = document.getElementById('ingestBtn');
+      if (ingestBtn) {
+        ingestBtn.addEventListener('click', () => {
+          alert("Ingest Modal Ready: Paste audio transcripts, client notes, or swipe URLs to synthesize.");
+        });
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'n' || e.key === 'N') {
+          if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            if (ingestBtn) ingestBtn.click();
+          }
+        }
+      });
+    });
+  </script>
+</div></div></main><footer class="w-full bg-surface-container-low border-t border-outline-variant/40 mt-space-2xl"><div class="max-w-7xl mx-auto px-margin py-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-md"><span class="font-headline-sm text-headline-sm text-on-surface">The Copywriter's Ledger</span><span class="font-label-archival text-label-archival text-tertiary uppercase">Archival Desk Edition</span></div><div class="flex items-center gap-space-lg font-body-sm text-body-sm text-on-surface-variant"><span>Bibliographic Index: 2,410 Words Drafted Today</span><span>System Status: Pristine</span><span>Ledger Ref: #ED-882-NL</span></div><div class="font-label-archival text-label-archival text-tertiary uppercase">© 2024 Editorial Nib Studio. All Rights Reserved.</div></div></footer></body></html>

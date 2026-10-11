@@ -3,767 +3,1439 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FASCINATION BULLET MASTERY — 30-Day Platform</title>
+<title>FASCINATION BULLET MASTERY — High-Performance Practice Suite</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <style>
   :root {
-    --void: #06060a;
-    --surface: #0c0c14;
-    --surface-2: #12121f;
-    --ink: #eae6dc;
-    --ink-dim: #8a8478;
-    --gold: #c5a059;
-    --gold-dim: #8a7340;
-    --danger: #cf5c5c;
+    --void: #050508;
+    --surface-0: #0a0a12;
+    --surface-1: #10101d;
+    --surface-2: #18182b;
+    --surface-3: #22223b;
+    --ink: #f5f3ec;
+    --ink-muted: #959085;
+    --ink-dim: #605c53;
+    --gold: #d4af37;
+    --gold-bright: #f3cf65;
+    --gold-dim: #8c7328;
+    --gold-glow: rgba(212, 175, 55, 0.22);
+    --crimson: #e05252;
+    --emerald: #34d399;
+    --sapphire: #60a5fa;
+    --accent-purple: #c084fc;
   }
+
   * { box-sizing: border-box; }
   body {
     background-color: var(--void);
     color: var(--ink);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
+    background-image: 
+      radial-gradient(ellipse 90% 40% at 50% -10%, rgba(212, 175, 55, 0.08), transparent 60%),
+      radial-gradient(circle at 10% 40%, rgba(99, 102, 241, 0.04), transparent 40%),
+      radial-gradient(circle at 90% 70%, rgba(212, 175, 55, 0.03), transparent 45%);
+    background-attachment: fixed;
   }
-  ::selection { background: rgba(197,160,89,0.25); color: var(--ink); }
-  
-  /* Typography */
-  h1,h2,h3 { font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: -0.02em; line-height: 1.1; }
-  .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; letter-spacing: 0.02em; text-transform: uppercase; }
-  
-  /* Layout Glass */
-  .glass {
-    background: rgba(18,18,31,0.7);
-    backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid rgba(255,255,255,0.04);
-    border-radius: 16px;
-    box-shadow: 0 24px 48px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
-  }
-  
-  /* Gold accent line */
-  .gold-line {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    opacity: 0.4;
-  }
-  
-  /* Custom scrollbar */
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: var(--void); }
-  ::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
-  ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
 
-  /* Inputs */
-  input, textarea, select {
-    background: rgba(6,6,10,0.8);
-    border: 1px solid rgba(255,255,255,0.08);
+  ::selection { background: rgba(212, 175, 55, 0.35); color: #fff; }
+
+  /* Typography */
+  .font-serif-luxury { font-family: 'Newsreader', Georgia, serif; letter-spacing: -0.015em; }
+  .font-display { font-family: 'Cinzel', serif; letter-spacing: 0.04em; }
+  .mono { font-family: 'JetBrains Mono', monospace; letter-spacing: 0.03em; }
+
+  /* Premium Glass Cards */
+  .glass-panel {
+    background: linear-gradient(135deg, rgba(20, 20, 35, 0.72) 0%, rgba(12, 12, 22, 0.85) 100%);
+    backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+  .glass-panel:hover {
+    border-color: rgba(212, 175, 55, 0.22);
+  }
+
+  .glass-panel-glow {
+    position: relative;
+  }
+  .glass-panel-glow::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 21px;
+    background: linear-gradient(135deg, rgba(212,175,55,0.4), transparent 40%, rgba(96,165,250,0.2));
+    z-index: -1;
+    opacity: 0.5;
+  }
+
+  /* Shimmer / Accent Gradients */
+  .gold-gradient-text {
+    background: linear-gradient(135deg, #fff2cc 0%, #d4af37 45%, #aa8214 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .gold-border-gradient {
+    border-image: linear-gradient(90deg, transparent, var(--gold), transparent) 1;
+  }
+
+  /* Interactive Elements */
+  .btn-gold {
+    background: linear-gradient(135deg, #e5c158 0%, #d4af37 50%, #99781d 100%);
+    color: #08080c;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border-radius: 10px;
+    padding: 0.75rem 1.6rem;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(212, 175, 55, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  .btn-gold:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 12px rgba(212, 175, 55, 0.3);
+  }
+
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--ink-muted);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 10px;
+    padding: 0.65rem 1.35rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.07);
     color: var(--ink);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
+    border-color: rgba(212, 175, 55, 0.4);
+  }
+
+  /* Custom inputs */
+  input, textarea, select {
+    background: rgba(7, 7, 13, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: var(--ink);
+    border-radius: 10px;
+    padding: 0.85rem 1.15rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
   }
   input:focus, textarea:focus, select:focus {
-    border-color: rgba(197,160,89,0.5);
-    box-shadow: 0 0 0 3px rgba(197,160,89,0.1);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15), 0 0 20px rgba(212, 175, 55, 0.1);
   }
-  
-  /* Buttons */
-  .btn-primary {
-    background: linear-gradient(135deg, var(--gold), var(--gold-dim));
-    color: #0a0a0a;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    cursor: pointer;
-    transition: transform 0.1s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(197,160,89,0.25);
-  }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(197,160,89,0.35); }
-  
-  .btn-secondary {
-    background: transparent;
-    color: var(--ink-dim);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 8px;
-    padding: 0.6rem 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-secondary:hover { border-color: var(--gold); color: var(--ink); }
 
-  /* Cards in grid */
-  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; }
-
-  /* Tabs */
-  .tab-btn {
-    padding: 0.6rem 1.2rem;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--ink-dim);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'Inter', sans-serif;
-  }
-  .tab-btn.active {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
-  }
-  .tab-btn:hover { color: var(--ink); }
-
-  /* Bullet display */
-  .bullet-display {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem;
+  /* Bullet Display Quotes */
+  .bullet-quote {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 1.45rem;
     line-height: 1.4;
-    color: var(--ink);
-    border-left: 2px solid var(--gold);
-    padding-left: 1rem;
-    margin: 1.5rem 0;
+    color: #fffdf5;
+    position: relative;
+    padding-left: 1.35rem;
+    border-left: 3px solid var(--gold);
     font-style: italic;
   }
 
-  /* Progress nodes */
-  .node {
-    width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--surface-2); background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: var(--ink-dim); transition: all 0.3s;
+  /* Nav Tabs */
+  .nav-pill {
+    padding: 0.65rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--ink-muted);
+    transition: all 0.2s;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
   }
-  .node.done { background: var(--gold); color: #0a0a0a; border-color: var(--gold); font-weight: bold; }
-
-  /* Animations */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
+  .nav-pill:hover {
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.05);
   }
-  .fade-in { animation: fadeUp 0.5s ease-out both; }
+  .nav-pill.active {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.18), rgba(212, 175, 55, 0.06));
+    color: var(--gold-bright);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.12);
+  }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .glass { border-radius: 12px; padding: 1.25rem !important; }
-    h1 { font-size: 2.2rem; }
+  /* Tracker Matrix Grid */
+  .day-cell {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(14, 14, 24, 0.75);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  .day-cell:hover {
+    border-color: rgba(212, 175, 55, 0.4);
+    transform: translateY(-2px);
+    color: var(--ink);
+  }
+  .day-cell.active-day {
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.3);
+  }
+  .day-cell.completed {
+    background: linear-gradient(135deg, #d4af37 0%, #aa8214 100%);
+    color: #07070a;
+    font-weight: 800;
+    border-color: #f3cf65;
+    box-shadow: 0 3px 12px rgba(212, 175, 55, 0.35);
+  }
+
+  /* Metronome / Timer ring */
+  .timer-ring {
+    stroke-dasharray: 283;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.3s;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+
+  /* Pulse animation */
+  @keyframes goldPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+  }
+  .pulse-gold { animation: goldPulse 2s infinite; }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--void); }
+  ::-webkit-scrollbar-thumb { background: #232338; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+
+  /* Sound feedback subtle indicator */
+  .sound-indicator {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+    box-shadow: 0 0 8px var(--gold);
   }
 </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col antialiased selection:bg-amber-500/30">
 
-<header class="sticky top-0 z-50 glass border-b-0 border-t-0 border-x-0 rounded-none backdrop-blur-xl">
-  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl md:text-3xl text-[var(--ink)] leading-none mb-1">Fascination <span class="italic text-[var(--gold)]">Bullets</span></h1>
-      <p class="mono text-xs text-[var(--ink-dim)]">30-DAY OPEN LOOP MASTERY PLATFORM</p>
+<!-- Global Top Navigation Bar -->
+<header class="sticky top-0 z-50 backdrop-blur-2xl border-b border-white/5 bg-[#07070cb3]">
+  <div class="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
+    <!-- Brand Identity -->
+    <div class="flex items-center gap-4">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-amber-600 to-amber-800 flex items-center justify-center shadow-lg shadow-amber-500/20 border border-amber-300/40">
+        <svg class="w-5 h-5 text-black" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v3m0 14v3M2 12h3m14 0h3"/>
+        </svg>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-display font-bold text-lg md:text-xl tracking-wider text-white">FASCINATION <span class="text-amber-400 font-serif-luxury italic font-normal">BULLETS</span></h1>
+          <span class="text-[10px] mono px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/30 font-semibold tracking-widest">PRO SUITE</span>
+        </div>
+        <p class="mono text-[11px] text-zinc-400 hidden sm:block">THE ZEIGARNIK OPEN-LOOP NEURO-COPY ENGINE</p>
+      </div>
     </div>
-    <div class="flex gap-3">
-      <span id="currentDayBadge" class="mono text-xs px-3 py-1.5 rounded-full bg-[var(--surface-2)] border border-white/5 text-[var(--gold)]">DAY 1</span>
+
+    <!-- Quick Stats & Tools -->
+    <div class="flex items-center gap-3 md:gap-5">
+      <!-- Streak counter -->
+      <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10">
+        <span class="text-amber-400">🔥</span>
+        <span id="streakDisplay" class="mono text-xs font-semibold text-zinc-200">1 DAY STREAK</span>
+      </div>
+
+      <!-- Live sound toggle -->
+      <button onclick="toggleAudio()" id="audioToggleBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10 text-xs text-zinc-300 hover:border-amber-400/40 transition-colors" title="Toggle Haptic Sound Synthesis">
+        <span id="soundDot" class="sound-indicator"></span>
+        <span id="audioLabel" class="mono text-[11px]">AUDIO ON</span>
+      </button>
+
+      <!-- Day Badge selector -->
+      <div class="flex items-center bg-zinc-900/90 rounded-full border border-amber-400/30 p-1 pl-3 shadow-inner">
+        <span class="mono text-xs text-amber-300 font-bold mr-2 tracking-wide" id="globalDayBadge">DAY 1</span>
+        <button onclick="openDayPicker()" class="w-7 h-7 rounded-full bg-amber-400 text-black flex items-center justify-center font-bold text-xs hover:bg-amber-300 transition-colors shadow">
+          ⚙
+        </button>
+      </div>
     </div>
   </div>
 </header>
 
-<main class="max-w-6xl mx-auto px-6 py-8 flex-grow w-full">
-
-  <!-- Navigation -->
-  <nav class="flex gap-1 md:gap-4 mb-10 overflow-x-auto pb-2 border-b border-white/5">
-    <button onclick="showTab('learn')" id="tab-learn" class="tab-btn active">The Framework</button>
-    <button onclick="showTab('drill')" id="tab-drill" class="tab-btn">Drill Room</button>
-    <button onclick="showTab('arsenal')" id="tab-arsenal" class="tab-btn">The Arsenal</button>
-    <button onclick="showTab('convert')" id="tab-convert" class="tab-btn">The Converter</button>
-    <button onclick="showTab('track')" id="tab-track" class="tab-btn">Tracker</button>
+<!-- Main Navigation Tabs -->
+<div class="max-w-7xl mx-auto px-6 pt-6 pb-2 w-full">
+  <nav class="flex gap-2 overflow-x-auto pb-3 border-b border-white/5 scrollbar-none">
+    <button onclick="switchTab('framework')" id="tab-framework" class="nav-pill active">
+      <span>🏛</span> The Neural Framework
+    </button>
+    <button onclick="switchTab('drill')" id="tab-drill" class="nav-pill">
+      <span>⚡</span> Drill Room & Sprint
+    </button>
+    <button onclick="switchTab('inspection')" id="tab-inspection" class="nav-pill">
+      <span>🔬</span> Bullet Deconstructor
+    </button>
+    <button onclick="switchTab('arsenal')" id="tab-arsenal" class="nav-pill">
+      <span>📚</span> The Arsenal Swipe File
+    </button>
+    <button onclick="switchTab('converter')" id="tab-converter" class="nav-pill">
+      <span>🔄</span> Multi-Format Weaponizer
+    </button>
+    <button onclick="switchTab('tracker')" id="tab-tracker" class="nav-pill">
+      <span>📊</span> 30-Day Mastery Matrix
+    </button>
   </nav>
+</div>
 
-  <!-- ============== TAB: LEARN ============== -->
-  <section id="panel-learn" class="fade-in">
-    <div class="mb-10">
-      <h2 class="text-4xl md:text-5xl mb-4">The Missing Tooth</h2>
-      <p class="text-[var(--ink-dim)] max-w-2xl text-lg leading-relaxed">A great bullet doesn't ask for permission. It deletes the one piece your mind needs, and your cognition starts working before you choose to care.</p>
-      <div class="gold-line my-6"></div>
+<!-- Main Application Workspace -->
+<main class="max-w-7xl mx-auto px-6 py-6 flex-grow w-full">
+
+  <!-- ================= TAB 1: THE NEURAL FRAMEWORK ================= -->
+  <section id="panel-framework" class="space-y-10">
+    <!-- Hero Concept Banner -->
+    <div class="glass-panel p-8 md:p-12 relative overflow-hidden">
+      <div class="absolute -right-24 -top-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="max-w-3xl relative z-10">
+        <div class="inline-flex items-center gap-2 mono text-xs text-amber-400 tracking-widest uppercase mb-4 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25">
+          <span>🧠 Neuro-Psychology of Fascinations</span>
+        </div>
+        <h2 class="font-serif-luxury text-4xl md:text-6xl text-white mb-6 leading-tight">
+          The Missing Tooth Principle.
+        </h2>
+        <p class="text-zinc-300 text-lg md:text-xl font-light leading-relaxed mb-8">
+          A great bullet doesn’t negotiate for attention. It purposefully excises the exact piece of information the human psyche requires for completion. Before reader consent occurs, involuntary neural search loops activate.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <button onclick="switchTab('drill')" class="btn-gold flex items-center gap-2">
+            <span>Enter Today's Drill</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+          <button onclick="switchTab('inspection')" class="btn-ghost flex items-center gap-2">
+            <span>Dissect Mel Martin Classics</span>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="card-grid mb-12">
-      <!-- Card 1: Formula -->
-      <article class="glass p-7">
-        <h3 class="text-xl mb-4 text-[var(--gold)]">The Formula</h3>
-        <ul class="space-y-3 text-sm text-[var(--ink-dim)]">
-          <li><strong class="text-[var(--ink)]">Concrete Promise</strong> — a tangible, recognizable outcome.</li>
-          <li><strong class="text-[var(--ink)]">Hidden Key</strong> — the mechanism, word, or condition that unlocks it.</li>
-          <li><strong class="text-[var(--ink)]">The Withholding</strong> — you name the promise and hint at the key, then <em>delete the key</em>.</li>
-        </ul>
-        <div class="mt-5 p-4 bg-[var(--void)] rounded-lg border border-white/5">
-          <p class="mono text-xs text-[var(--gold-dim)] mb-2">EXAMPLE</p>
-          <p class="bullet-display">"Say the secret word and rental car costs less."</p>
-          <p class="text-xs text-[var(--ink-dim)] mt-2">Missing Tooth: <span class="text-[var(--ink)]">What is the word?</span></p>
+    <!-- The 3-Pillar Triad -->
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="glass-panel p-7 hover:border-amber-400/30 transition-all">
+        <div class="w-10 h-10 rounded-lg bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 font-bold mb-5 mono">01</div>
+        <h3 class="font-serif-luxury text-2xl text-white mb-3">Concrete Promise</h3>
+        <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+          Never speak in ethereal concepts. Ground the outcome in tangible, sensory nouns: rental cars, late electricity bills, morning coffee, 3-word email signatures.
+        </p>
+        <div class="p-3 bg-black/50 rounded-lg border border-white/5 text-xs text-zinc-300 mono">
+          <span class="text-amber-400">Anchor:</span> Specific real-world physics
         </div>
-      </article>
+      </div>
 
-      <!-- Card 2: Psychology -->
-      <article class="glass p-7">
-        <h3 class="text-xl mb-4 text-[var(--gold)]">The Psychology</h3>
-        <p class="text-sm text-[var(--ink-dim)] mb-4">This is the <strong class="text-[var(--ink)]">Zeigarnik Effect</strong>. Unfinished mental loops demand closure.</p>
-        <p class="text-sm text-[var(--ink-dim)] mb-4">Your mind builds answers <em>before you consent</em>. That non-consensual engagement is your leverage.</p>
-        <blockquote class="text-lg italic font-serif text-[var(--ink)] border-l-2 border-[var(--gold)] pl-4">
-          "A great bullet leaves out the one piece you want most, and that little gap starts to ache, like a missing tooth."
-        </blockquote>
-      </article>
-
-      <!-- Card 3: Mel Martin Examples -->
-      <article class="glass p-7 md:col-span-2">
-        <h3 class="text-xl mb-4 text-[var(--gold)]">The North Star Examples</h3>
-        <div class="grid md:grid-cols-3 gap-4">
-          <button onclick="revealMissing(this)" class="text-left p-4 bg-[var(--void)] rounded-lg border border-white/5 hover:border-[var(--gold)] transition-colors group">
-            <p class="bullet-display text-base mb-2">"The bills it's OK to pay late."</p>
-            <p class="text-xs text-[var(--ink-dim)] group-hover:text-[var(--ink)] transition-colors">Click to reveal missing tooth &rarr;</p>
-            <p class="hidden mt-3 text-sm text-[var(--gold)] reveal-content">Missing: Which bills? Electric? Rent? Phone?</p>
-          </button>
-          <button onclick="revealMissing(this)" class="text-left p-4 bg-[var(--void)] rounded-lg border border-white/5 hover:border-[var(--gold)] transition-colors group">
-            <p class="bullet-display text-base mb-2">"What never to eat on an airplane."</p>
-            <p class="text-xs text-[var(--ink-dim)] group-hover:text-[var(--ink)] transition-colors">Click to reveal missing tooth &rarr;</p>
-            <p class="hidden mt-3 text-sm text-[var(--gold)] reveal-content">Missing: Which food? The chicken? The bread? The ice?</p>
-          </button>
-          <button onclick="revealMissing(this)" class="text-left p-4 bg-[var(--void)] rounded-lg border border-white/5 hover:border-[var(--gold)] transition-colors group">
-            <p class="bullet-display text-base mb-2">"Say the secret word and rental car costs less."</p>
-            <p class="text-xs text-[var(--ink-dim)] group-hover:text-[var(--ink)] transition-colors">Click to reveal missing tooth &rarr;</p>
-            <p class="hidden mt-3 text-sm text-[var(--gold)] reveal-content">Missing: The actual secret word.</p>
-          </button>
+      <div class="glass-panel p-7 hover:border-amber-400/30 transition-all">
+        <div class="w-10 h-10 rounded-lg bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 font-bold mb-5 mono">02</div>
+        <h3 class="font-serif-luxury text-2xl text-white mb-3">The Hidden Mechanism</h3>
+        <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+          A catalyst exists that bridges the gap from present misery to future reward. You specify that the bridge is fast, strange, or simple—without naming the bridge itself.
+        </p>
+        <div class="p-3 bg-black/50 rounded-lg border border-white/5 text-xs text-zinc-300 mono">
+          <span class="text-amber-400">The Key:</span> Concealed catalyst
         </div>
-      </article>
+      </div>
+
+      <div class="glass-panel p-7 hover:border-amber-400/30 transition-all">
+        <div class="w-10 h-10 rounded-lg bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300 font-bold mb-5 mono">03</div>
+        <h3 class="font-serif-luxury text-2xl text-white mb-3">The Surgical Withholding</h3>
+        <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+          Amateurs explain. Masters withhold. Once you provide the answer inside the sentence, dopamine collapses. Delete the answer; preserve the ache.
+        </p>
+        <div class="p-3 bg-black/50 rounded-lg border border-white/5 text-xs text-zinc-300 mono">
+          <span class="text-amber-400">The Gap:</span> Zeigarnik tension intact
+        </div>
+      </div>
     </div>
 
-    <div class="glass p-8 mb-8">
-      <h3 class="text-2xl mb-4">The Golden Rule</h3>
-      <p class="text-[var(--ink-dim)] mb-6">Be hyper-specific about the <span class="text-[var(--ink)]">outcome</span>. Be hyper-mysterious about the <span class="text-[var(--gold)]">path</span>. Never explain both. Always delete the path.</p>
-      <div class="grid md:grid-cols-3 gap-6 text-sm">
-        <div class="p-4 rounded-lg bg-[var(--surface)] border border-white/5">
-          <h4 class="text-[var(--gold)] mb-2 mono">DO</h4>
-          <p class="text-[var(--ink-dim)]">Name the concrete result. Use real nouns: bills, food, word, phrase.</p>
+    <!-- Interactive Interactive Audio-Visual Case Studies -->
+    <div class="glass-panel p-8">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h3 class="font-serif-luxury text-3xl text-white">Classic Titans of Fascination</h3>
+          <p class="text-zinc-400 text-sm">Click each specimen to expose the exact information removed and analyze the ache factor.</p>
         </div>
-        <div class="p-4 rounded-lg bg-[var(--surface)] border border-white/5">
-          <h4 class="text-[var(--gold)] mb-2 mono">DO</h4>
-          <p class="text-[var(--ink-dim)]">Withhold exactly one critical mechanism, list, or condition.</p>
+        <span class="mono text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-300">INTERACTIVE DISSECTION</span>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Specimen 1 -->
+        <div class="p-6 rounded-xl bg-black/60 border border-white/5 hover:border-amber-400/40 transition-all cursor-pointer group flex flex-col justify-between" onclick="inspectSpecimen(this, 'bills')">
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="mono text-[10px] text-amber-400 uppercase tracking-wider">Mel Martin / Boardroom</span>
+              <span class="text-xs text-zinc-500 group-hover:text-amber-300 transition-colors">Tap to unpack ▾</span>
+            </div>
+            <p class="bullet-quote text-xl mb-4 text-zinc-100">"The bills it’s OK to pay late."</p>
+          </div>
+          <div class="hidden specimen-details pt-4 border-t border-white/10 text-xs space-y-2">
+            <p class="text-emerald-400 font-semibold">✓ Promise: Relief from acute financial stress</p>
+            <p class="text-amber-300 font-semibold">⚡ Deleted Mechanism: Exactly which monthly obligations</p>
+            <p class="text-zinc-400">Neural Response: "Is it electric? Mortgage? What if I already paid the wrong one?"</p>
+          </div>
         </div>
-        <div class="p-4 rounded-lg bg-[var(--surface)] border border-white/5">
-          <h4 class="text-[var(--danger)] mb-2 mono">DON'T</h4>
-          <p class="text-[var(--ink-dim)]">Be vague ("secrets to success"). Don't include the answer in the same sentence.</p>
+
+        <!-- Specimen 2 -->
+        <div class="p-6 rounded-xl bg-black/60 border border-white/5 hover:border-amber-400/40 transition-all cursor-pointer group flex flex-col justify-between" onclick="inspectSpecimen(this, 'plane')">
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="mono text-[10px] text-amber-400 uppercase tracking-wider">Bottom Line Personal</span>
+              <span class="text-xs text-zinc-500 group-hover:text-amber-300 transition-colors">Tap to unpack ▾</span>
+            </div>
+            <p class="bullet-quote text-xl mb-4 text-zinc-100">"What never to eat on an airplane."</p>
+          </div>
+          <div class="hidden specimen-details pt-4 border-t border-white/10 text-xs space-y-2">
+            <p class="text-emerald-400 font-semibold">✓ Promise: Protect digestive comfort and health aloft</p>
+            <p class="text-amber-300 font-semibold">⚡ Deleted Mechanism: The single offending meal or beverage</p>
+            <p class="text-zinc-400">Neural Response: "The ice? The tray pasta? Did I ingest bacteria on my flight last week?"</p>
+          </div>
+        </div>
+
+        <!-- Specimen 3 -->
+        <div class="p-6 rounded-xl bg-black/60 border border-white/5 hover:border-amber-400/40 transition-all cursor-pointer group flex flex-col justify-between" onclick="inspectSpecimen(this, 'rental')">
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="mono text-[10px] text-amber-400 uppercase tracking-wider">Eugene Schwartz Technique</span>
+              <span class="text-xs text-zinc-500 group-hover:text-amber-300 transition-colors">Tap to unpack ▾</span>
+            </div>
+            <p class="bullet-quote text-xl mb-4 text-zinc-100">"Say the secret word and rental car costs less."</p>
+          </div>
+          <div class="hidden specimen-details pt-4 border-t border-white/10 text-xs space-y-2">
+            <p class="text-emerald-400 font-semibold">✓ Promise: Instant instant discount at counter</p>
+            <p class="text-amber-300 font-semibold">⚡ Deleted Mechanism: The monosyllabic or corporate passphrase</p>
+            <p class="text-zinc-400">Neural Response: "Can I just say it at Hertz tomorrow? What is the word?!"</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============== TAB: DRILL ============== -->
-  <section id="panel-drill" class="hidden fade-in">
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+  <!-- ================= TAB 2: DRILL ROOM & SPEED SPRINT ================= -->
+  <section id="panel-drill" class="hidden space-y-8">
+    <!-- Active Protocol Directive -->
+    <div class="glass-panel p-8 border-l-4 border-amber-400 relative">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <span id="drillPhaseTag" class="mono text-xs px-3 py-1 rounded bg-amber-400 text-black font-extrabold uppercase">PHASE I — DECONSTRUCTION</span>
+            <span id="drillDayTag" class="mono text-xs text-amber-400 font-semibold">DAY 1 MISSION</span>
+          </div>
+          <h2 id="drillTitle" class="font-serif-luxury text-3xl md:text-4xl text-white">Read the Framework & Hand-Copy Examples</h2>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="startSprintTimer(300)" class="btn-ghost flex items-center gap-2 text-xs">
+            <span>⏱ 5-Min Sprint</span>
+          </button>
+          <button onclick="markDayCompleteToday()" class="btn-gold text-sm flex items-center gap-2">
+            <span>Complete Day's Protocol</span>
+          </button>
+        </div>
+      </div>
+
+      <p id="drillDesc" class="text-zinc-300 text-base mb-8 max-w-4xl">
+        Hand-copy the Mel Martin bullets. Underline the concrete noun/verb. Circle the missing information with your pen. Build neurological muscle memory.
+      </p>
+
+      <!-- Three Daily Rhythms -->
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="p-5 rounded-xl bg-black/50 border border-white/5 relative overflow-hidden">
+          <div class="text-[10px] mono text-amber-400 mb-2 font-bold tracking-wider">MORNING REPS</div>
+          <p id="drillMorningText" class="text-sm text-zinc-200">Copy 3 classic bullets by hand. Label Promise & Missing Tooth.</p>
+        </div>
+        <div class="p-5 rounded-xl bg-black/50 border border-white/5 relative overflow-hidden">
+          <div class="text-[10px] mono text-amber-400 mb-2 font-bold tracking-wider">AFTERNOON CONVERSION</div>
+          <p id="drillAfternoonText" class="text-sm text-zinc-200">Take 10 boring features and convert to open loops.</p>
+        </div>
+        <div class="p-5 rounded-xl bg-black/50 border border-white/5 relative overflow-hidden">
+          <div class="text-[10px] mono text-amber-400 mb-2 font-bold tracking-wider">EVENING SWIPE AUDIT</div>
+          <p id="drillEveningText" class="text-sm text-zinc-200">Read your swipe file. Grade each 1-10 on mental itch.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Interactive Rapid-Fire Writing Studio -->
+    <div class="grid lg:grid-cols-12 gap-8">
+      <!-- Left Column: The Interactive Pad -->
+      <div class="lg:col-span-7 glass-panel p-8 space-y-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+            <h3 class="font-serif-luxury text-2xl text-white">Live Writing Crucible</h3>
+          </div>
+          <!-- Live Word & Rhythm Counter -->
+          <div class="flex items-center gap-3 mono text-xs text-zinc-400">
+            <span>WORDS: <strong id="liveWordCount" class="text-amber-400 font-bold">0</strong></span>
+            <span>ITCH SCORE: <strong id="liveItchScore" class="text-emerald-400 font-bold">0%</strong></span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs mono text-zinc-400 mb-2">DRAFT BULLET (APPLY MISSING TOOTH RULE)</label>
+          <textarea id="liveBulletText" rows="4" class="w-full text-lg font-serif-luxury placeholder-zinc-600 focus:ring-1 focus:ring-amber-400" placeholder="Type your bullet here... (e.g., 'The 4-word question that makes prospects stop ghosting your quotes.')" oninput="analyzeLiveWriting()"></textarea>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs mono text-zinc-400 mb-1">NICHE / DOMAIN TAG</label>
+            <input type="text" id="liveTagInput" value="Cold Outreach / Sales" class="w-full text-sm">
+          </div>
+          <div>
+            <label class="block text-xs mono text-zinc-400 mb-1">DOMINANT EMOTION</label>
+            <select id="liveEmotionInput" class="w-full text-sm">
+              <option value="Curiosity">Curiosity (The Void)</option>
+              <option value="Fear">Fear (The Trap)</option>
+              <option value="Relief">Relief (The Exemption)</option>
+              <option value="Greed">Greed (The Arbitrage)</option>
+              <option value="Envy">Envy (The Privilege)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs mono text-zinc-400 mb-1">PROMISE ANCHOR (WHAT THEY GET)</label>
+            <input type="text" id="livePromiseInput" placeholder="Stops ghosting on sales proposals" class="w-full text-sm">
+          </div>
+          <div>
+            <label class="block text-xs mono text-zinc-400 mb-1">THE MISSING TOOTH (WHAT YOU CUT)</label>
+            <input type="text" id="liveMissingInput" placeholder="The exact four words in the question" class="w-full text-sm">
+          </div>
+        </div>
+
+        <!-- 4-Gate Neurological Verification -->
+        <div class="p-5 rounded-xl bg-black/40 border border-white/5 space-y-3">
+          <p class="mono text-xs text-amber-400 uppercase font-semibold">Tension Verification Protocol</p>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <label class="flex items-center gap-2 cursor-pointer text-zinc-300">
+              <input type="checkbox" id="gate1" onchange="calcGateScore()" class="rounded bg-zinc-900 border-zinc-700 text-amber-400 focus:ring-0">
+              <span>Sensory, concrete noun present?</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-zinc-300">
+              <input type="checkbox" id="gate2" onchange="calcGateScore()" class="rounded bg-zinc-900 border-zinc-700 text-amber-400 focus:ring-0">
+              <span>Exactly ONE mechanism hidden?</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-zinc-300">
+              <input type="checkbox" id="gate3" onchange="calcGateScore()" class="rounded bg-zinc-900 border-zinc-700 text-amber-400 focus:ring-0">
+              <span>Answer completely deleted?</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-zinc-300">
+              <input type="checkbox" id="gate4" onchange="calcGateScore()" class="rounded bg-zinc-900 border-zinc-700 text-amber-400 focus:ring-0">
+              <span>Forces an involuntary question?</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <button onclick="clearWritingPad()" class="btn-ghost text-xs">Clear Workspace</button>
+          <button onclick="saveLiveBullet()" class="btn-gold flex items-center gap-2 text-sm">
+            <span>Deploy to Arsenal Swipe File</span>
+            <span class="text-xs bg-black/30 px-1.5 py-0.5 rounded">⌘S</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Column: Scenario Simulator & Sprint Timer -->
+      <div class="lg:col-span-5 space-y-6">
+        <!-- Sprint Timer Box -->
+        <div class="glass-panel p-6 text-center">
+          <div class="flex items-center justify-between mb-4">
+            <span class="mono text-xs text-amber-400 font-bold uppercase">FOCUS PRESSURE DRILL</span>
+            <span id="sprintStatus" class="mono text-xs text-zinc-500">STANDBY</span>
+          </div>
+          
+          <div class="relative w-36 h-36 mx-auto mb-4 flex items-center justify-center">
+            <svg class="w-full h-full" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="6"/>
+              <circle id="timerCircle" class="timer-ring" cx="50" cy="50" r="45" fill="none" stroke="#d4af37" stroke-width="6"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span id="timerDigits" class="mono text-2xl font-bold text-white">05:00</span>
+              <span class="mono text-[10px] text-zinc-400">BURST MODE</span>
+            </div>
+          </div>
+
+          <div class="flex justify-center gap-2">
+            <button onclick="startSprintTimer(300)" class="btn-gold text-xs px-4 py-2">Start 5m Sprint</button>
+            <button onclick="resetSprintTimer()" class="btn-ghost text-xs px-4 py-2">Reset</button>
+          </div>
+        </div>
+
+        <!-- Random Scenario Generator -->
+        <div class="glass-panel p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-serif-luxury text-xl text-white">Scenario Spark Engine</h4>
+            <button onclick="rollRandomScenario()" class="mono text-xs text-amber-400 hover:underline flex items-center gap-1">
+              <span>Roll Scenario</span> 🎲
+            </button>
+          </div>
+          <p class="text-xs text-zinc-400 mb-4">Practice taking mundane everyday facts and transforming them into craving-inducing loops.</p>
+
+          <div id="scenarioDisplay" class="p-5 rounded-xl bg-black/60 border border-amber-400/20 text-left space-y-3">
+            <span class="mono text-[10px] px-2 py-0.5 rounded bg-amber-400/10 text-amber-300 font-semibold uppercase" id="scenarioCategory">E-COMMERCE & CONVERSIONS</span>
+            <p id="scenarioPrompt" class="font-serif-luxury text-lg text-white italic">
+              "A specific checkout field that causes 38% of mobile shoppers to abandon their cart in the final 10 seconds..."
+            </p>
+            <div class="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-zinc-400">
+              <span>Goal: Write 2 bullets under 10 words</span>
+              <button onclick="loadScenarioToPad()" class="text-amber-400 hover:text-amber-300 font-semibold">Load to Pad →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TAB 3: BULLET DECONSTRUCTOR ================= -->
+  <section id="panel-inspection" class="hidden space-y-8">
+    <div class="glass-panel p-8">
+      <div class="max-w-2xl mb-8">
+        <span class="mono text-xs text-amber-400 tracking-wider uppercase">ANALYTIC LABORATORY</span>
+        <h2 class="font-serif-luxury text-4xl text-white mt-1 mb-3">The Forensic Deconstructor</h2>
+        <p class="text-zinc-400 text-sm">
+          Paste any sentence, headline, or competitor copy. The engine segments the statement into the Hook, the Promise, the Gap, and warns you if the answer was prematurely leaked.
+        </p>
+      </div>
+
+      <div class="space-y-4 mb-8">
+        <label class="block text-xs mono text-zinc-400">INPUT COPY TO DECONSTRUCT</label>
+        <div class="flex gap-3">
+          <input type="text" id="deconInput" value="The one email subject line word that makes CEOs reply in 4 minutes — and the polite word that gets it deleted." class="flex-grow text-base font-serif-luxury text-white">
+          <button onclick="runDeconstruction()" class="btn-gold whitespace-nowrap">Run Diagnostic</button>
+        </div>
+      </div>
+
+      <!-- Live Forensic Breakdown Grid -->
+      <div class="grid md:grid-cols-4 gap-4 mb-8">
+        <div class="p-5 rounded-xl bg-black/50 border border-emerald-400/30 space-y-2">
+          <span class="mono text-[10px] text-emerald-400 uppercase font-bold">01. Concrete Anchor</span>
+          <p id="deconAnchor" class="text-sm text-zinc-200 font-medium">CEOs reply in 4 minutes</p>
+          <p class="text-[11px] text-zinc-400">Pass: Grounded in clock time & distinct person.</p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-black/50 border border-amber-400/30 space-y-2">
+          <span class="mono text-[10px] text-amber-400 uppercase font-bold">02. Missing Mechanism</span>
+          <p id="deconMissing" class="text-sm text-zinc-200 font-medium">The 1 magic word vs. 1 poison word</p>
+          <p class="text-[11px] text-zinc-400">Pass: The identity of both words is withheld.</p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-black/50 border border-sapphire/30 space-y-2">
+          <span class="mono text-[10px] text-blue-400 uppercase font-bold">03. Psychological Lever</span>
+          <p id="deconLever" class="text-sm text-zinc-200 font-medium">Contrast & Loss Aversion</p>
+          <p class="text-[11px] text-zinc-400">Pairs positive speed with acute danger.</p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-black/50 border border-purple-400/30 space-y-2">
+          <span class="mono text-[10px] text-purple-400 uppercase font-bold">04. Premature Leakage Test</span>
+          <p id="deconLeakage" class="text-sm text-emerald-400 font-medium">CLEAN (No leak detected)</p>
+          <p class="text-[11px] text-zinc-400">The reader cannot guess the specific word without reading.</p>
+        </div>
+      </div>
+
+      <!-- Interactive Rewrite Simulation -->
+      <div class="p-6 rounded-xl bg-zinc-950/80 border border-white/5 space-y-4">
+        <h4 class="mono text-xs text-amber-400 font-bold uppercase">Before & After Forensic Upgrades</h4>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="p-4 rounded-lg bg-red-950/20 border border-red-500/20">
+            <span class="mono text-[10px] text-red-400 font-bold uppercase">AMATEUR (LEAKS THE TOOTH)</span>
+            <p class="text-zinc-300 font-serif-luxury text-base mt-2 italic">"How to save money on your electric bills by turning down the thermostat 2 degrees."</p>
+            <p class="text-xs text-red-300/80 mt-2">Fatal defect: The mechanism ("turning down thermostat") was given away. Loop snapped shut.</p>
+          </div>
+          <div class="p-4 rounded-lg bg-emerald-950/20 border border-emerald-500/20">
+            <span class="mono text-[10px] text-emerald-400 font-bold uppercase">MASTER ARCHITECT (WITHHELD)</span>
+            <p class="text-zinc-100 font-serif-luxury text-base mt-2 italic">"The tiny thermostat adjustment that slashes winter electric bills — and why doing it at night backfires."</p>
+            <p class="text-xs text-emerald-300/80 mt-2">Victory: The specific adjustment and nighttime catch are completely hidden.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TAB 4: THE ARSENAL SWIPE FILE ================= -->
+  <section id="panel-arsenal" class="hidden space-y-8">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
-        <h2 class="text-4xl mb-2">Drill Room</h2>
-        <p class="text-[var(--ink-dim)]">Today's mission pulls from the 30-day protocol. Set your current day.</p>
+        <span class="mono text-xs text-amber-400 tracking-wider uppercase">SWIPE REPOSITORY</span>
+        <h2 class="font-serif-luxury text-4xl text-white mt-1">The Arsenal File</h2>
+        <p class="text-zinc-400 text-sm">Your private neuro-copy battery. Filter by emotional vector, niche, or copy format.</p>
       </div>
-      <div class="flex items-center gap-3">
-        <label class="mono text-xs text-[var(--ink-dim)]">CURRENT DAY</label>
-        <input type="number" id="dayInput" value="1" min="1" max="30" class="w-20 text-center" onchange="updateDay()">
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button onclick="exportArsenalJSON()" class="btn-ghost text-xs flex items-center gap-2">
+          <span>Export JSON</span> 💾
+        </button>
+        <button onclick="seedCuratedMasterpieces()" class="btn-gold text-xs flex items-center gap-2">
+          <span>Load 10 Classics</span> ✨
+        </button>
       </div>
     </div>
 
-    <!-- Mission Card -->
-    <div id="missionCard" class="glass p-8 mb-8 border-l-4 border-[var(--gold)]">
-      <div class="flex items-center gap-3 mb-3">
-        <span id="missionPhase" class="mono text-xs px-2 py-0.5 rounded bg-[var(--gold)] text-black">PHASE I</span>
-        <h3 id="missionTitle" class="text-2xl">Read the Post & Write Out Examples</h3>
-      </div>
-      <p id="missionDesc" class="text-[var(--ink-dim)] mb-6">Hand-copy the Mel Martin bullets. Underline the concrete noun/verb. Circle the missing information.</p>
-      
-      <div class="grid md:grid-cols-3 gap-4 mb-6">
-        <div class="p-4 bg-[var(--void)] rounded border border-white/5">
-          <h5 class="mono text-xs text-[var(--gold)] mb-2">MORNING</h5>
-          <p id="drillMorning" class="text-sm text-[var(--ink-dim)]">Write 3 bullets using: [Specific Thing] + [Hidden Action].</p>
-        </div>
-        <div class="p-4 bg-[var(--void)] rounded border border-white/5">
-          <h5 class="mono text-xs text-[var(--gold)] mb-2">AFTERNOON</h5>
-          <p id="drillAfternoon" class="text-sm text-[var(--ink-dim)]">Rewrite 2 headlines you saw today.</p>
-        </div>
-        <div class="p-4 bg-[var(--void)] rounded border border-white/5">
-          <h5 class="mono text-xs text-[var(--gold)] mb-2">EVENING</h5>
-          <p id="drillEvening" class="text-sm text-[var(--ink-dim)]">Read 5 bullets from your swipe file. Grade 1-10.</p>
-        </div>
-      </div>
-
-      <div class="flex gap-3">
-        <button onclick="startWritingMode()" class="btn-primary">Open Writing Pad</button>
-        <button onclick="completeToday()" class="btn-secondary">Mark Today Complete</button>
-      </div>
+    <!-- Filter Bar -->
+    <div class="flex flex-wrap gap-2 items-center pb-2 border-b border-white/5">
+      <button onclick="filterArsenal('all')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-400 text-black ars-filter active" id="filter-all">All (<span id="count-all">0</span>)</button>
+      <button onclick="filterArsenal('Curiosity')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 ars-filter" id="filter-Curiosity">Curiosity</button>
+      <button onclick="filterArsenal('Fear')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 ars-filter" id="filter-Fear">Fear</button>
+      <button onclick="filterArsenal('Relief')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 ars-filter" id="filter-Relief">Relief</button>
+      <button onclick="filterArsenal('Greed')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 ars-filter" id="filter-Greed">Greed</button>
     </div>
 
-    <!-- Writing Pad -->
-    <div id="writingPad" class="glass p-6 mb-8 hidden">
-      <div class="flex justify-between items-center mb-4">
-        <h4 class="mono text-sm text-[var(--gold)]">WRITING PAD — DAY <span id="padDay">1</span></h4>
-        <button onclick="closeWritingPad()" class="text-xs text-[var(--ink-dim)] hover:text-[var(--ink)]">Close Pad</button>
-      </div>
-      <textarea id="bulletInput" rows="4" class="w-full mb-4 bg-[var(--void)]" placeholder="Write your bullet here... Remember: specific promise, hidden key, delete the answer."></textarea>
-      <div class="flex gap-2 mb-4">
-        <input type="text" id="tagInput" class="flex-1 text-sm" placeholder="Tag (e.g., Finance / Health / DM)" value="Drill">
-        <button onclick="saveBulletToArsenal()" class="btn-primary text-sm">Save to Arsenal</button>
-      </div>
-      <div class="p-4 bg-[var(--surface-2)] rounded border border-white/5">
-        <p class="text-xs text-[var(--ink-dim)] mb-1">QUICK CHECK</p>
-        <ul class="text-xs space-y-1 text-[var(--ink)]" style="list-style: disc; padding-left: 1rem;">
-          <li>Is the promise concrete and sensory? <button onclick="checkItem(this)" class="ml-2 text-[var(--gold)] hover:underline">Confirm</button></li>
-          <li>Is there exactly one missing piece? <button onclick="checkItem(this)" class="ml-2 text-[var(--gold)] hover:underline">Confirm</button></li>
-          <li>Did you accidentally include the answer? <button onclick="checkItem(this)" class="ml-2 text-[var(--gold)] hover:underline">Confirm</button></li>
-        </ul>
-      </div>
+    <!-- Grid Container -->
+    <div id="arsenalContainer" class="grid md:grid-cols-2 gap-5">
+      <!-- Injected Dynamically -->
     </div>
 
-    <!-- Random Prompt Generator -->
-    <div class="glass p-7">
-      <h3 class="text-xl mb-4">Random Drill Generator</h3>
-      <p class="text-sm text-[var(--ink-dim)] mb-4">Stuck? Generate a scenario and practice the open loop.</p>
-      <div class="flex gap-3 mb-4">
-        <button onclick="generatePrompt()" class="btn-primary">Generate Prompt</button>
+    <div id="arsenalEmptyState" class="hidden p-12 text-center glass-panel">
+      <div class="text-4xl mb-3">📭</div>
+      <h3 class="font-serif-luxury text-2xl text-white mb-2">No bullets in this vector yet</h3>
+      <p class="text-zinc-400 text-sm max-w-md mx-auto mb-6">Write your first bullet in the Drill Room or load our curated archive of 10 legendary Mel Martin & Eugene Schwartz hooks.</p>
+      <button onclick="seedCuratedMasterpieces()" class="btn-gold text-xs">Load 10 Masterpieces Now</button>
+    </div>
+  </section>
+
+  <!-- ================= TAB 5: MULTI-FORMAT WEAPONIZER ================= -->
+  <section id="panel-converter" class="hidden space-y-8">
+    <div class="glass-panel p-8">
+      <div class="max-w-2xl mb-8">
+        <span class="mono text-xs text-amber-400 tracking-wider uppercase">CROSS-MEDIA REPURPOSER</span>
+        <h2 class="font-serif-luxury text-4xl text-white mt-1 mb-2">The Multi-Format Weaponizer</h2>
+        <p class="text-zinc-400 text-sm">
+          Once you have forged a razor-sharp open loop, deploy it across 5 high-converting marketing channels with one keystroke.
+        </p>
       </div>
-      <div id="promptBox" class="hidden p-5 bg-[var(--void)] rounded-lg border border-[var(--gold)]/20">
-        <p class="mono text-xs text-[var(--gold)] mb-2">SCENARIO</p>
-        <p id="promptText" class="text-lg font-serif italic">"A common mistake people make when booking flights that costs them $400..."</p>
-        <p class="text-xs text-[var(--ink-dim)] mt-4">Your task: Write a bullet that promises the savings, hides the mistake, and makes the reader itch.</p>
+
+      <div class="mb-8">
+        <label class="block text-xs mono text-zinc-400 mb-2">INPUT YOUR MASTER FASCINATION BULLET</label>
+        <input type="text" id="weaponInput" value="The 9-word phrase that gets strangers to reply — and the 1 word that kills it." class="w-full text-xl font-serif-luxury italic text-white" oninput="weaponizeBullet()">
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Channel 1: Twitter / X Hook -->
+        <div class="p-6 rounded-xl bg-black/60 border border-white/5 space-y-3 relative group">
+          <div class="flex items-center justify-between">
+            <span class="mono text-[10px] text-amber-400 uppercase font-bold">X / TWITTER 3-SEC HOOK</span>
+            <button onclick="copyChannelCopy('outX')" class="text-zinc-400 hover:text-white text-xs">Copy</button>
+          </div>
+          <p id="outX" class="text-sm font-medium text-zinc-100">Stop sending generic messages. There’s a 9-word phrase that gets strangers to reply instantly. (And 1 word that gets you blocked.) Thread: 🧵</p>
+        </div>
+
+        <!-- Channel 2: Email Subject Line & Preheader -->
+        <div class="p-6 rounded-xl bg-black/60 border border-white/5 space-y-3 relative group">
+          <div class="flex items-center justify-between">
+            <span class="mono text-[10px] text-amber-400 uppercase font-bold">EMAIL SUBJECT + PREHEADER</span>
+            <button onclick="copyChannelCopy('outEmail')" class="text-zinc-400 hover:text-white text-xs">Copy</button>
+          </div>
+          <p id="outEmail" class="text-sm font-medium text-zinc-100">Subject: "The 9-word phrase" (and the 1-word killer)<br><span class="text-zinc-400 text-xs">Preheader: 90% of reps use the second word without knowing...</span></p>
+        </div>
+
+        <!-- Channel 3: Video Short / Reel / TikTok Hook -->
+        <div class="p-6 rounded-xl bg-black/60 border border-white/5 space-y-3 relative group">
+          <div class="flex items-center justify-between">
+            <span class="mono text-[10px] text-amber-400 uppercase font-bold">TIKTOK / REEL 0:03 HOOK</span>
+            <button onclick="copyChannelCopy('outVideo')" class="text-zinc-400 hover:text-white text-xs">Copy</button>
+          </div>
+          <p id="outVideo" class="text-sm font-medium text-zinc-100">[Look directly at lens]: "If you are reaching out to new clients this week, do NOT use this word. Say this 9-word phrase instead..."</p>
+        </div>
+
+        <!-- Channel 4: LinkedIn Post Opener -->
+        <div class="p-6 rounded-xl bg-black/60 border border-white/5 space-y-3 relative group">
+          <div class="flex items-center justify-between">
+            <span class="mono text-[10px] text-amber-400 uppercase font-bold">LINKEDIN "SEE MORE" CUTOFF</span>
+            <button onclick="copyChannelCopy('outLinkedIn')" class="text-zinc-400 hover:text-white text-xs">Copy</button>
+          </div>
+          <p id="outLinkedIn" class="text-sm font-medium text-zinc-100">I analyzed 1,400 cold DMs this quarter.<br><br>The highest-converting reply started with a 9-word phrase.<br><br>The worst? A single polite word that kills response rates by 68%...<br><br>...see more</p>
+        </div>
+
+        <!-- Channel 5: Cold DM Direct Hit -->
+        <div class="p-6 rounded-xl bg-black/60 border border-white/5 space-y-3 relative group">
+          <div class="flex items-center justify-between">
+            <span class="mono text-[10px] text-amber-400 uppercase font-bold">COLD OUTREACH DM OPENER</span>
+            <button onclick="copyChannelCopy('outDM')" class="text-zinc-400 hover:text-white text-xs">Copy</button>
+          </div>
+          <p id="outDM" class="text-sm font-medium text-zinc-100">Quick question — are you guys using [phrase] in your outreach? Most do, but there’s 1 word in it that suppresses reply rates. Happy to share what we found if curious.</p>
+        </div>
+
+        <!-- Channel 6: Sales Page Micro-Bullet -->
+        <div class="p-6 rounded-xl bg-black/60 border border-white/5 space-y-3 relative group">
+          <div class="flex items-center justify-between">
+            <span class="mono text-[10px] text-amber-400 uppercase font-bold">SALES PAGE HERO BULLET</span>
+            <button onclick="copyChannelCopy('outSales')" class="text-zinc-400 hover:text-white text-xs">Copy</button>
+          </div>
+          <p id="outSales" class="text-sm font-medium text-zinc-100">✦ Why 9 words on page 14 get strangers to reply in 4 minutes — and the innocent politeness phrase that dooms your email to spam.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ============== TAB: ARSENAL ============== -->
-  <section id="panel-arsenal" class="hidden fade-in">
-    <h2 class="text-4xl mb-2">The Arsenal</h2>
-    <p class="text-[var(--ink-dim)] mb-8">Your swipe file. Every bullet saved is tagged by Promise, Missing Tooth, and Emotion. This is your copy battery.</p>
-
-    <div class="glass p-6 mb-6">
-      <h4 class="mono text-xs text-[var(--gold)] mb-4">ADD NEW BULLET</h4>
-      <div class="grid md:grid-cols-2 gap-4 mb-4">
-        <input type="text" id="arsHook" placeholder="The Bullet (e.g., 'The bills it's OK to pay late')" class="w-full">
-        <input type="text" id="arsTag" placeholder="Category / Niche" class="w-full" value="Practice">
-      </div>
-      <div class="grid md:grid-cols-2 gap-4 mb-4">
-        <input type="text" id="arsPromise" placeholder="The Promise (what reader wants)" class="w-full">
-        <input type="text" id="arsMissing" placeholder="The Missing Tooth (what you deleted)" class="w-full">
-      </div>
-      <div class="flex gap-3">
-        <select id="arsEmotion" class="bg-[var(--surface)] border border-white/10 rounded px-3 py-2 text-sm">
-          <option>Curiosity</option><option>Fear</option><option>Relief</option><option>Greed</option><option>Envy</option>
-        </select>
-        <button onclick="addToArsenal()" class="btn-primary">Add to Arsenal</button>
-      </div>
-    </div>
-
-    <div id="arsenalList" class="grid md:grid-cols-2 gap-4">
-      <!-- Items injected by JS -->
-    </div>
-    <p id="arsEmpty" class="text-[var(--ink-dim)] text-sm mt-6">No bullets saved yet. Write in the Drill Room and save, or add above.</p>
-  </section>
-
-  <!-- ============== TAB: CONVERT ============== -->
-  <section id="panel-convert" class="hidden fade-in">
-    <h2 class="text-4xl mb-2">The Converter</h2>
-    <p class="text-[var(--ink-dim)] mb-8">One open loop can become anything. Input a bullet, then deploy across formats.</p>
-
-    <div class="glass p-8 mb-8">
-      <label class="mono text-xs text-[var(--gold)] block mb-2">YOUR BULLET</label>
-      <input type="text" id="convertInput" value="The 9-word phrase that gets strangers to reply — and the 1 word that kills it." class="w-full text-lg font-serif italic mb-6" oninput="runConversion()">
-
-      <div class="grid md:grid-cols-4 gap-4 mb-6">
+  <!-- ================= TAB 6: 30-DAY MASTERY MATRIX ================= -->
+  <section id="panel-tracker" class="hidden space-y-8">
+    <div class="glass-panel p-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
         <div>
-          <h5 class="mono text-xs text-[var(--gold)] mb-2">HOOK</h5>
-          <p id="outHook" class="text-sm text-[var(--ink-dim)]">Stop using this word in DMs. (It kills replies instantly.)</p>
+          <span class="mono text-xs text-amber-400 tracking-wider uppercase">HABIT FORMATION PROTOCOL</span>
+          <h2 class="font-serif-luxury text-4xl text-white mt-1">30-Day Neuro-Drill Matrix</h2>
+          <p class="text-zinc-400 text-sm">Consistent daily withholding rewires your instinct from explaining to teasing.</p>
         </div>
+
+        <div class="flex items-center gap-6 bg-black/40 p-4 rounded-xl border border-white/5">
+          <div class="text-center">
+            <div id="statCompletedDays" class="mono text-2xl font-bold text-amber-400">1</div>
+            <div class="mono text-[10px] text-zinc-400">COMPLETED</div>
+          </div>
+          <div class="w-px h-8 bg-white/10"></div>
+          <div class="text-center">
+            <div id="statPercentDone" class="mono text-2xl font-bold text-emerald-400">3%</div>
+            <div class="mono text-[10px] text-zinc-400">MASTERY</div>
+          </div>
+          <div class="w-px h-8 bg-white/10"></div>
+          <div class="text-center">
+            <div id="statArsenalCount" class="mono text-2xl font-bold text-blue-400">0</div>
+            <div class="mono text-[10px] text-zinc-400">SAVED BULLETS</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overall Progress Bar -->
+      <div class="space-y-2 mb-8">
+        <div class="flex justify-between text-xs mono">
+          <span class="text-zinc-400">CURRICULUM TRAJECTORY</span>
+          <span id="trackerProgressText" class="text-amber-400 font-bold">1 / 30 DAYS</span>
+        </div>
+        <div class="h-2.5 bg-black/60 rounded-full overflow-hidden p-0.5 border border-white/5">
+          <div id="trackerProgressBar" class="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-amber-200 rounded-full transition-all duration-500" style="width: 3.33%;"></div>
+        </div>
+      </div>
+
+      <!-- 30-Day Grid Display -->
+      <div id="matrixGrid" class="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-10 gap-3 mb-8">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Day Specific Focus & Journal -->
+      <div class="p-6 rounded-xl bg-black/50 border border-white/5 grid md:grid-cols-2 gap-6">
         <div>
-          <h5 class="mono text-xs text-[var(--gold)] mb-2">HEADLINE</h5>
-          <p id="outHeadline" class="text-sm text-[var(--ink-dim)]">The phrase that makes strangers reply — and why 90% never learn it.</p>
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="mono text-xs text-amber-400 font-bold uppercase">SELECTED DAY DEEP DIVE: <span id="journalDayHeader" class="text-white">DAY 1</span></h4>
+            <span id="journalPhaseTag" class="mono text-[10px] px-2 py-0.5 rounded bg-white/10 text-zinc-300">PHASE I</span>
+          </div>
+          <p id="journalDayTitle" class="font-serif-luxury text-xl text-white mb-2">Read the Framework & Hand-Copy Examples</p>
+          <p id="journalDayDesc" class="text-xs text-zinc-400 leading-relaxed">Copy classic bullets by hand. Analyze what noun anchored them, and what missing tooth produced the ache.</p>
         </div>
-        <div>
-          <h5 class="mono text-xs text-[var(--gold)] mb-2">SUBJECT LINE</h5>
-          <p id="outSubject" class="text-sm text-[var(--ink-dim)]">"The 9-word phrase" (and the 1-word killer)</p>
+
+        <div class="space-y-3">
+          <label class="block text-xs mono text-zinc-400">DAILY DRILL REFLECTION & NOTES</label>
+          <textarea id="journalNoteText" rows="3" class="w-full text-xs font-mono" placeholder="Record which bullet produced the strongest visceral question today..."></textarea>
+          <div class="flex justify-between items-center">
+            <button onclick="toggleActiveDayStatus()" id="journalCompleteBtn" class="btn-ghost text-xs">Mark Completed</button>
+            <button onclick="saveJournalNote()" class="btn-gold text-xs">Save Daily Journal</button>
+          </div>
         </div>
-        <div>
-          <h5 class="mono text-xs text-[var(--gold)] mb-2">DM OPENER</h5>
-          <p id="outDM" class="text-sm text-[var(--ink-dim)]">Quick question — do you use [phrase] in your outreach? Most do. It's costing them.</p>
-        </div>
-      </div>
-
-      <div class="gold-line my-6"></div>
-
-      <h4 class="mono text-xs text-[var(--gold)] mb-4">LOOP TIGHTNESS AUDIT</h4>
-      <div class="grid md:grid-cols-2 gap-4">
-        <label class="flex items-start gap-3 p-3 bg-[var(--void)] rounded border border-white/5 cursor-pointer hover:border-white/10">
-          <input type="checkbox" class="mt-1 accent-[var(--gold)]" onchange="auditUpdate()">
-          <span class="text-sm text-[var(--ink-dim)]">Is the promise specific and tangible?</span>
-        </label>
-        <label class="flex items-start gap-3 p-3 bg-[var(--void)] rounded border border-white/5 cursor-pointer hover:border-white/10">
-          <input type="checkbox" class="mt-1 accent-[var(--gold)]" onchange="auditUpdate()">
-          <span class="text-sm text-[var(--ink-dim)]">Is there exactly one missing piece?</span>
-        </label>
-        <label class="flex items-start gap-3 p-3 bg-[var(--void)] rounded border border-white/5 cursor-pointer hover:border-white/10">
-          <input type="checkbox" class="mt-1 accent-[var(--gold)]" onchange="auditUpdate()">
-          <span class="text-sm text-[var(--ink-dim)]">Did I accidentally include the answer?</span>
-        </label>
-        <label class="flex items-start gap-3 p-3 bg-[var(--void)] rounded border border-white/5 cursor-pointer hover:border-white/10">
-          <input type="checkbox" class="mt-1 accent-[var(--gold)]" onchange="auditUpdate()">
-          <span class="text-sm text-[var(--ink-dim)]">Does reading it make my tongue go back?</span>
-        </label>
-      </div>
-      <div class="mt-4 h-2 bg-[var(--surface-2)] rounded-full overflow-hidden">
-        <div id="auditBar" class="h-full bg-[var(--gold)] w-0 transition-all duration-300"></div>
-      </div>
-      <p id="auditText" class="text-xs text-[var(--ink-dim)] mt-2">Check all 4 to confirm deployment readiness.</p>
-    </div>
-
-    <div class="glass p-6">
-      <h3 class="text-xl mb-4">Cross-Format Matrix</h3>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left border-collapse">
-          <thead class="mono text-xs text-[var(--ink-dim)] border-b border-white/10">
-            <tr>
-              <th class="py-3 pr-4">Format</th>
-              <th class="py-3 pr-4">What You Keep</th>
-              <th class="py-3 pr-4">What You Add</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-white/5">
-            <tr>
-              <td class="py-3 pr-4 text-[var(--gold)]">Hook</td>
-              <td class="py-3 pr-4 text-[var(--ink-dim)]">The open loop.</td>
-              <td class="py-3 pr-4 text-[var(--ink-dim)]">Urgency / contrarian twist.</td>
-            </tr>
-            <tr>
-              <td class="py-3 pr-4 text-[var(--gold)]">Headline</td>
-              <td class="py-3 pr-4 text-[var(--ink-dim)]">The missing tooth.</td>
-              <td class="py-3 pr-4 text-[var(--ink-dim)]">Stakes of not knowing.</td>
-            </tr>
-            <tr>
-              <td class="py-3 pr-4 text-[var(--gold)]">Subject Line</td>
-              <td class="py-3 pr-4 text-[var(--ink-dim)]">The gap.</td>
-              <td class="py-3 pr-4 text-[var(--ink-dim)]">Category hint / personalization.</td>
-            </tr>
-            <tr>
-              <td class="py-3 pr-4 text-[var(--gold)]">DM</td>
-              <td class="py-3 pr-4 text-[var(--ink-dim)]">The cutoff.</td>
-              <td class="py-3 pr-4 text-[var(--ink-dim)]">Direct address + quick stop.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============== TAB: TRACKER ============== -->
-  <section id="panel-track" class="hidden fade-in">
-    <h2 class="text-4xl mb-2">30-Day Tracker</h2>
-    <p class="text-[var(--ink-dim)] mb-8">Progress is persistence. Each completed day builds the reflex.</p>
-
-    <div class="glass p-8 mb-8">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl">Your Progress</h3>
-        <span id="progressText" class="mono text-sm text-[var(--gold)]">0 / 30 DAYS</span>
-      </div>
-
-      <div class="mb-6">
-        <div class="h-3 bg-[var(--surface-2)] rounded-full overflow-hidden">
-          <div id="mainProgressBar" class="h-full bg-gradient-to-r from-[var(--gold-dim)] to-[var(--gold)] w-0 transition-all duration-700"></div>
-        </div>
-      </div>
-
-      <div id="dayGrid" class="grid grid-cols-5 md:grid-cols-6 lg:grid-cols-10 gap-2">
-        <!-- Generated by JS -->
-      </div>
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="glass p-6">
-        <h4 class="mono text-xs text-[var(--gold)] mb-3">SELECT ACTIVE DAY</h4>
-        <input type="range" id="sliderDay" min="1" max="30" value="1" class="w-full mb-4 accent-[var(--gold)]" oninput="syncDayFromSlider(this.value)">
-        <p class="text-sm text-[var(--ink-dim)]">Active day: <span id="sliderLabel" class="text-[var(--ink)] font-bold">1</span></p>
-      </div>
-
-      <div class="glass p-6">
-        <h4 class="mono text-xs text-[var(--gold)] mb-3">DAILY NOTE</h4>
-        <textarea id="dailyNote" rows="3" class="w-full text-sm bg-[var(--void)] mb-3" placeholder="What worked? What was hard? Which bullet made your tongue go back?"></textarea>
-        <button onclick="saveNote()" class="btn-secondary text-sm">Save Note</button>
       </div>
     </div>
   </section>
 
 </main>
 
-<footer class="max-w-6xl mx-auto px-6 py-8 border-t border-white/5">
-  <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-    <div>
-      <p class="mono text-xs text-[var(--ink-dim)]">BUILT FOR SINGLE-FILE DEPLOYMENT</p>
-      <h2 class="text-xl text-[var(--ink)] italic font-serif">The loop doesn't ask permission. You do.</h2>
+<!-- Footer -->
+<footer class="max-w-7xl mx-auto px-6 py-8 border-t border-white/5 mt-auto w-full">
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+    <div class="flex items-center gap-3">
+      <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+      <span class="mono">FASCINATION BULLETS PRO • ZEIGARNIK ENGINE</span>
     </div>
-    <p class="text-xs text-[var(--ink-dim)]">Data lives in your browser localStorage. Nothing is sent anywhere.</p>
+    <p class="font-serif-luxury italic text-zinc-400 text-sm">"The loop never asks permission. That is your leverage."</p>
+    <div class="mono text-[11px]">ALL DATA PERSISTS IN LOCAL STORAGE</div>
   </div>
 </footer>
 
+<!-- Day Picker Modal Dialog -->
+<div id="dayModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="glass-panel p-6 max-w-sm w-full space-y-4">
+    <div class="flex justify-between items-center">
+      <h3 class="font-serif-luxury text-2xl text-white">Jump to Day</h3>
+      <button onclick="closeDayPicker()" class="text-zinc-400 hover:text-white">✕</button>
+    </div>
+    <p class="text-xs text-zinc-400">Select any day in the 30-day curriculum to load its dedicated mission protocol.</p>
+    <div class="flex items-center gap-3">
+      <input type="number" id="modalDayInput" min="1" max="30" value="1" class="w-full text-center text-lg font-bold">
+    </div>
+    <div class="flex justify-end gap-2">
+      <button onclick="closeDayPicker()" class="btn-ghost text-xs">Cancel</button>
+      <button onclick="applyModalDay()" class="btn-gold text-xs">Switch Day</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // ============== STATE & DATA ==============
-  const curriculum = [
-    { phase: "PHASE I — DECONSTRUCTION", title: "Read the Framework & Hand-Copy Examples", desc: "Hand-copy the Mel Martin bullets. Underline the concrete noun/verb. Circle the missing information.", morning: "Copy 3 classic bullets by hand. Label Promise & Missing Tooth.", afternoon: "Take 10 boring features and convert to bullets.", evening: "Read your swipe file. Grade each 1-10 on itch." },
-    { phase: "PHASE I", title: "Study the Zeigarnik Effect", desc: "Understand why unfinished loops demand closure.", morning: "Read the psychology section. Write 5 loops about bills/health.", afternoon: "Write 2 bullets using only 8 words.", evening: "Review. Pick your best 3. Delete any answers you accidentally included." },
-    { phase: "PHASE I", title: "Build Your Swipe File", desc: "Start collecting bullets that make your mind run.", morning: "Find 5 bullets online or in ads. Add to Arsenal.", afternoon: "Write 1 original bullet for each niche: finance, health, productivity.", evening: "Rate your new bullets. Is the promise concrete?" },
-    { phase: "PHASE I", title: "The Extraction Drill", desc: "Convert features into open loops.", morning: "Write 10 bullets from boring software features.", afternoon: "Rewrite them shorter. Under 12 words.", evening: "Test 1 aloud. Ask: 'What do you want to know?'" },
-    { phase: "PHASE I", title: "The Withholding Drill", desc: "Write full answers, then delete the critical word.", morning: "Write 5 explanations. Delete the noun/verb that answers it.", afternoon: "Turn those deletions into standalone bullets.", evening: "Review swipe file. Add 3 more." },
-    { phase: "PHASE I", title: "Specificity Training", desc: "No abstractions. Real nouns only.", morning: "Write 10 bullets. Ban words: success, secrets, amazing.", afternoon: "Check each. Is the outcome sensory?", evening: "Log your 3 best in Tracker." },
-    { phase: "PHASE I", title: "Rest & Review", desc: "Read every bullet in your arsenal aloud.", morning: "Read aloud. Notice which ones itch.", afternoon: "Fix the weak ones by sharpening the promise.", evening: "Prepare for Phase II." },
-    // Phase II: Imitation
-    { phase: "PHASE II — IMITATION", title: "Daily Protocol Start", desc: "Write 3 bullets, rewrite 2 headlines, rate 5.", morning: "Write 3 bullets. [Specific Thing] + [Hidden Action].", afternoon: "Rewrite 2 headlines/news hooks you saw.", evening: "Read 5 bullets. Grade them 1-10." },
-    { phase: "PHASE II", title: "Volume Day 1", desc: "Force repetition to build reflex.", morning: "10 bullets in 20 minutes. Same topic.", afternoon: "Shorten all 10 to 8 words or less.", evening: "Grade the top 3. Save to Arsenal." },
-    { phase: "PHASE II", title: "The Tongue Test", desc: "Show bullets to someone. Watch if they ask.", morning: "Write 3 bullets. Design them to provoke a question.", afternoon: "Test 1 on a friend/text. Note their question.", evening: "Adjust based on response." },
-    { phase: "PHASE II", title: "Niche Translation", desc: "One mechanism, 3 niches.", morning: "Write 5 bullets for your main niche.", afternoon: "Translate 3 to a different niche.", evening: "Compare. What's portable?" },
-    { phase: "PHASE II", title: "Morning Drill", desc: "Standard protocol.", morning: "Write 3 bullets using the template.", afternoon: "Rewrite 2 headlines.", evening: "Read 5 from swipe file." },
-    { phase: "PHASE II", title: "Mid-Phase Check", desc: "Audit progress.", morning: "Write 5 bullets without looking at notes.", afternoon: "Convert 2 into email subject lines.", evening: "Update Tracker. Note patterns." },
-    { phase: "PHASE II", title: "Rest & Review", desc: "Read all saved bullets. Delete weak ones.", morning: "Clean Arsenal. Keep only 8+ itch score.", afternoon: "Write 2 master-level bullets combining best patterns.", evening: "Prepare for Phase III." },
-    // Phase III: Volume & Constraint
-    { phase: "PHASE III — VOLUME", title: "The 10-Bullet Sprint", desc: "Set a 20-minute timer. Write 10 without explaining.", morning: "Sprint: 10 bullets, one topic, 20 min.", afternoon: "Edit. Remove all explanations.", evening: "Log best 2 in Arsenal." },
-    { phase: "PHASE III", title: "The Constraint Drill", desc: "8 words or less. Precision through restriction.", morning: "Write 10 bullets under 8 words.", afternoon: "Expand 2 to full format. Keep the gap intact.", evening: "Compare. Which shorter version hits harder?" },
-    { phase: "PHASE III", title: "Niche Translation Day", desc: "Adapt your best loops across industries.", morning: "Write 3 bullets for a new niche.", afternoon: "Use the same missing-tooth pattern from your best bullet.", evening: "Compare patterns." },
-    { phase: "PHASE III", title: "The Reverse Bullet", desc: "Write closed loops. Open them.", morning: "Write 5 closed sentences ('Avoid gluten because...').", afternoon: "Convert each to open loop ('What never to eat...').", evening: "Save 2 best." },
-    { phase: "PHASE III", title: "Headlines & Subject Lines", desc: "Apply loop psychology to other formats.", morning: "Write 20 email subject lines from bullets.", afternoon: "Write 10 Twitter hooks.", evening: "Test: Would you open this?" },
-    { phase: "PHASE III", title: "The DM Drill", desc: "Cold message openers that open loops.", morning: "Write 5 DM openers using cutoff technique.", afternoon: "Shorten. Make the loop tighter.", evening: "Save best 3." },
-    { phase: "PHASE III", title: "Volume Days", desc: "15 bullets/day. Mixed formats.", morning: "Write 5 sales page bullets.", afternoon: "Write 5 social hooks.", evening: "Write 5 short-form scripts. Log 1." },
-    { phase: "PHASE III", title: "Volume Day 2", desc: "Repeat. Build reflex.", morning: "15 bullets across 3 niches.", afternoon: "Convert 3 into headlines.", evening: "Log progress." },
-    { phase: "PHASE III", title: "Volume Audit", desc: "Review the week's best output.", morning: "Read all new Arsenal entries.", afternoon: "Select the 5 best. Analyze why they work.", evening: "Write 1 new bullet using the winning pattern." },
-    // Phase IV: Cross-Format
-    { phase: "PHASE IV — WEAPONIZATION", title: "Convert to Twitter/X", desc: "Turn bullets into hooks.", morning: "Convert 5 bullets into 3-second hooks.", afternoon: "Add urgency/contrarian twist.", evening: "Save as 'Social Hooks' in Arsenal." },
-    { phase: "PHASE IV", title: "Convert to Email", desc: "Subject lines and preview text.", morning: "Write 5 subject lines from your best bullets.", afternoon: "Write the email body using the open loop as lead.", evening: "Log which subject you'd open first." },
-    { phase: "PHASE IV", title: "Convert to Video/Short Form", desc: "The first 3 seconds.", morning: "Write 5 video openers that use a cutoff.", afternoon: "Script the loop closure at second 10.", evening: "Test aloud. Does it feel like a missing tooth?" },
-    { phase: "PHASE IV", title: "Full Page Section", desc: "Write a sales section using only bullets.", morning: "Write a 10-bullet sequence. No paragraphs.", afternoon: "Order them: promise, stakes, hidden mechanism, urgency.", evening: "Read aloud. Is there rhythm?" },
-    // Phase V: Deployment
-    { phase: "PHASE V — DEPLOYMENT", title: "Build The Arsenal", desc: "Organize your 50 best bullets.", morning: "Organize Arsenal by emotion: Curiosity, Fear, Relief, Greed, Envy.", afternoon: "Write 10 new master bullets to reach 50.", evening: "Name your best 3 'Golden Bullets'." },
-    { phase: "PHASE V", title: "Live Fire", desc: "Use 3 bullets in real content.", morning: "Publish/post 1 bullet in real format (email, social, DM).", afternoon: "Track mental engagement. Did anyone ask for the missing piece?", evening: "Log result in Tracker." },
-    { phase: "PHASE V", title: "Master Audit & Graduation", desc: "Write one perfect bullet combining everything.", morning: "Write 1 master bullet: concrete, one hidden key, zero explanation, under 12 words.", afternoon: "Convert it to Hook, Headline, Subject, DM.", evening: "Complete Tracker. Reflect on 30 days." },
+  // ================= 30-DAY COMPREHENSIVE CURRICULUM DATA =================
+  const curriculumData = [
+    { day: 1, phase: "PHASE I — DECONSTRUCTION", title: "Read the Framework & Hand-Copy Examples", desc: "Hand-copy classic bullets. Underline the concrete noun/verb. Circle the missing tooth.", morning: "Copy 3 classic bullets by hand. Label Promise & Missing Tooth.", afternoon: "Take 10 boring features and convert to open loops.", evening: "Read your swipe file. Grade each 1-10 on mental itch." },
+    { day: 2, phase: "PHASE I — DECONSTRUCTION", title: "Study the Zeigarnik Effect in Action", desc: "Understand why unfinished neural loops demand closure before conscious assent.", morning: "Read the psychology section. Write 5 loops about everyday bills/health.", afternoon: "Write 2 bullets restricted to exactly 8 words.", evening: "Review. Pick your best 3. Delete any answers you accidentally included." },
+    { day: 3, phase: "PHASE I — DECONSTRUCTION", title: "Build Your Core Swipe Foundation", desc: "Start assembling bullets that ignite involuntary curiosity.", morning: "Find 5 bullets online or in print ads. Add to your Arsenal.", afternoon: "Write 1 original bullet for: finance, health, and software.", evening: "Rate your new bullets. Ensure promise is ultra-concrete." },
+    { day: 4, phase: "PHASE I — DECONSTRUCTION", title: "The Feature-To-Loop Extraction Drill", desc: "Transform standard specifications into craving-inducing loops.", morning: "Write 10 bullets derived from dull software changelogs.", afternoon: "Surgically compress each under 12 words.", evening: "Test 1 aloud to a peer. Ask: 'What do you want to know?'" },
+    { day: 5, phase: "PHASE I — DECONSTRUCTION", title: "The Surgical Withholding Drill", desc: "Draft full explanations first, then physically delete the critical noun or verb.", morning: "Write 5 full explanations. Delete the noun that explains the trick.", afternoon: "Turn those deletions into standalone punchy bullets.", evening: "Swipe file audit. Add 3 new high-performers." },
+    { day: 6, phase: "PHASE I — DECONSTRUCTION", title: "Radical Specificity Training", desc: "Eliminate abstractions. Ban 'secrets', 'success', 'hacks', and 'growth'.", morning: "Write 10 bullets without using abstract adjectives.", afternoon: "Audit each: Can the reader touch, smell, or see the promise?", evening: "Log your 3 best into Tracker." },
+    { day: 7, phase: "PHASE I — DECONSTRUCTION", title: "Rest & Neural Consolidation", desc: "Read every bullet in your arsenal aloud. Notice which create visceral tension.", morning: "Read aloud. Notice which make your tongue roll back.", afternoon: "Repair 3 weak ones by sharpening the sensory promise.", evening: "Prepare for Phase II: Imitation & Rhythm." },
+    { day: 8, phase: "PHASE II — IMITATION", title: "The 3-2-5 Rhythm Initiation", desc: "Write 3 bullets, rewrite 2 headlines, rate 5 from your archive.", morning: "Write 3 bullets using: [Specific Thing] + [Hidden Action].", afternoon: "Rewrite 2 news headlines into open loop hooks.", evening: "Read 5 bullets. Grade them 1-10 on dopamine itch." },
+    { day: 9, phase: "PHASE II — IMITATION", title: "Volume Sprint 1: Speed Conditioning", desc: "Force high rep volume to burn neural pathways.", morning: "10 bullets in 15 minutes on a single niche.", afternoon: "Compress all 10 to under 8 words each.", evening: "Rank the top 3 and log them to Arsenal." },
+    { day: 10, phase: "PHASE II — IMITATION", title: "The Involuntary Tongue Test", desc: "Test hooks on unsuspecting peers. Gauge their automatic questions.", morning: "Craft 3 bullets specifically calibrated to force an immediate 'Wait, what?'.", afternoon: "Text 1 bullet to a collaborator. Log their verbatim reaction.", evening: "Adjust tension based on whether they asked for the answer." },
+    { day: 11, phase: "PHASE II — IMITATION", title: "Niche Cross-Translation", desc: "Take a winning financial bullet and transplant the geometry into B2B SaaS.", morning: "Write 5 bullets for your primary industry.", afternoon: "Transplant 3 into an unrelated field (e.g., fitness).", evening: "Compare structural patterns across verticals." },
+    { day: 12, phase: "PHASE II — IMITATION", title: "The Daily Conditioning Flow", desc: "Execute morning protocol without checking swipe notes.", morning: "Write 3 bullets using pure instinct.", afternoon: "Rewrite 2 newsletter subject lines.", evening: "Swipe 5 fresh hooks from Twitter/X." },
+    { day: 13, phase: "PHASE II — IMITATION", title: "Mid-Phase Diagnostic Check", desc: "Audit your last 20 bullets. Are you leaking the tooth?", morning: "Review your Arsenal. Tag any leaked mechanisms with red.", afternoon: "Convert 2 bullets into 3-word email subject lines.", evening: "Sync progress in Tracker." },
+    { day: 14, phase: "PHASE II — IMITATION", title: "Phase II Consolidation", desc: "Prune the mediocre. Only keep bullets scoring an 8 or higher.", morning: "Purge low-tension bullets from your Swipe File.", afternoon: "Synthesize 2 master-grade fascinations.", evening: "Prepare for Phase III: Volume & Heavy Constraints." },
+    { day: 15, phase: "PHASE III — VOLUME", title: "The 10-Bullet Sprint Against Time", desc: "Set a 12-minute timer. Output 10 bullets without editing.", morning: "Sprint: 10 bullets, single topic, clock ticking.", afternoon: "Perform surgery: cut every filler syllable.", evening: "Save top 2 performers." },
+    { day: 16, phase: "PHASE III — VOLUME", title: "The 8-Word Extreme Constraint", desc: "Brevity amplifies curiosity. Maximum impact with minimum ink.", morning: "Write 10 bullets strictly under 8 words each.", afternoon: "Expand 2 to full sales-page length while keeping gap intact.", evening: "Compare punch and emotional friction." },
+    { day: 17, phase: "PHASE III — VOLUME", title: "Cross-Industry Translation Sprint", desc: "Adapt the classic Mel Martin 'Late Bills' formula across 4 industries.", morning: "Adapt into: Real Estate, Fitness, Coding, Freelancing.", afternoon: "Identify the shared psychological root.", evening: "Log insights in journal." },
+    { day: 18, phase: "PHASE III — VOLUME", title: "The Reverse Closed-Loop Exercise", desc: "Take boring explanations and forcibly reopen the loop.", morning: "Write 5 closed statements ('Sleep 8 hours to restore memory').", afternoon: "Reopen each ('The 30-minute sleep mistake that wipes short-term recall').", evening: "Log best 2 in Arsenal." },
+    { day: 19, phase: "PHASE III — VOLUME", title: "High-Volume Headline Conversion", desc: "Apply the Missing Tooth to 20 subject lines.", morning: "Draft 20 email subjects using open loops.", afternoon: "Test: Would you open this if sent at 2:00 AM?", evening: "Pick top 3 winners." },
+    { day: 20, phase: "PHASE III — VOLUME", title: "Cold DM Cutoff Techniques", desc: "Write social messages designed to trigger 90%+ replies.", morning: "Draft 5 DM openers ending abruptly at the gap.", afternoon: "Tighten to under 30 words per message.", evening: "Save top 3 in Arsenal." },
+    { day: 21, phase: "PHASE III — VOLUME", title: "Mixed-Format Triad Sprint", desc: "Produce 5 sales bullets, 5 social hooks, and 5 video scripts.", morning: "5 high-ticket sales bullets.", afternoon: "5 Twitter/X hook openers.", evening: "5 video hook lines for short-form video." },
+    { day: 22, phase: "PHASE III — VOLUME", title: "Volume Consistency Drill", desc: "Maintain tempo. 15 bullets across 3 distinct verticals.", morning: "15 bullets written in one 25-minute block.", afternoon: "Convert 3 winners into LinkedIn openers.", evening: "Update Tracker matrix." },
+    { day: 23, phase: "PHASE III — VOLUME", title: "Volume Quality Audit", desc: "Critique your speed output with objective rigor.", morning: "Read all week-3 creations aloud.", afternoon: "Select the 5 most lethal bullets.", evening: "Dissect why their missing tooth hurts most." },
+    { day: 24, phase: "PHASE IV — WEAPONIZATION", title: "Social Hook Weaponization", desc: "Turn raw fascination bullets into 3-second viral openers.", morning: "Convert 5 bullets into tweet hooks with contrarian twists.", afternoon: "Add sensory urgency to the opening 4 words.", evening: "Tag as 'Social Hooks' in Arsenal." },
+    { day: 25, phase: "PHASE IV — WEAPONIZATION", title: "Email Subject & Preheader Duos", desc: "Coordinate subject line and preview text into a two-stage loop.", morning: "Write 5 subject/preview text combinations.", afternoon: "Draft 50-word email leads maintaining loop until click.", evening: "Log conversion ideas in Tracker." },
+    { day: 26, phase: "PHASE IV — WEAPONIZATION", title: "Short-Form Video First 3 Seconds", desc: "Script visual and verbal open loops for reels and TikTok.", morning: "Script 5 spoken hooks utilizing verbal cutoffs.", afternoon: "Add on-screen text overlays that omit the mechanism.", evening: "Rehearse cadence aloud." },
+    { day: 27, phase: "PHASE IV — WEAPONIZATION", title: "Full Sales Page Bullet Cascades", desc: "Assemble an unstoppable 10-bullet cascade.", morning: "Write a 10-bullet sequence for an offer.", afternoon: "Vary rhythm: alternating between short (6 words) and rich (18 words).", evening: "Read entire cascade without stopping." },
+    { day: 28, phase: "PHASE V — DEPLOYMENT", title: "The 50-Bullet Arsenal Architecture", desc: "Curate your career swipe battery by emotional archetype.", morning: "Sort arsenal into Curiosity, Fear, Relief, Greed, Envy.", afternoon: "Write 5 missing archetypes to reach complete balance.", evening: "Designate your 3 'Immortal Bullets'." },
+    { day: 29, phase: "PHASE V — DEPLOYMENT", title: "Live Fire Deployment", desc: "Deploy 3 real bullets into the world (email, post, or pitch).", morning: "Ship 1 email or social post featuring an open loop.", afternoon: "Monitor responses. Did readers ask for the missing key?", evening: "Record real-world engagement metrics." },
+    { day: 30, phase: "PHASE V — DEPLOYMENT", title: "Master Graduation & Immortal Bullet", desc: "Synthesize 30 days of conditioning into 1 flawless fascination.", morning: "Write 1 immortal bullet: sensory noun, single key, zero leaks, under 11 words.", afternoon: "Weaponize it across all 6 formats.", evening: "Complete final matrix evaluation and celebrate graduation." }
   ];
 
-  let arsenal = JSON.parse(localStorage.getItem('fb_arsenal') || '[]');
-  let progress = JSON.parse(localStorage.getItem('fb_progress') || '{}');
-  let notes = JSON.parse(localStorage.getItem('fb_notes') || '{}');
+  // ================= STATE PERSISTENCE =================
+  let currentDay = parseInt(localStorage.getItem('fbm_current_day')) || 1;
+  let progressMap = JSON.parse(localStorage.getItem('fbm_progress_map') || '{}');
+  let arsenalItems = JSON.parse(localStorage.getItem('fbm_arsenal_items') || '[]');
+  let soundEnabled = localStorage.getItem('fbm_sound_enabled') !== 'false';
+  let activeSprintInterval = null;
+  let sprintSecondsLeft = 300;
 
-  // ============== INIT ==============
-  function init() {
-    updateDay();
-    renderArsenal();
-    renderTracker();
-    renderMission();
+  // Sound Synth Synthesizer for tactile feedback
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function playHapticTone(freq = 440, type = 'sine', duration = 0.08) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
   }
 
-  function showTab(tab) {
-    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('panel-' + tab).classList.remove('hidden');
-    document.getElementById('tab-' + tab).classList.add('active');
+  function toggleAudio() {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('fbm_sound_enabled', soundEnabled);
+    document.getElementById('audioLabel').textContent = soundEnabled ? 'AUDIO ON' : 'MUTED';
+    document.getElementById('soundDot').style.opacity = soundEnabled ? '1' : '0.2';
+    if (soundEnabled) playHapticTone(600, 'sine', 0.1);
+  }
+
+  // ================= TAB MANAGEMENT =================
+  function switchTab(tabId) {
+    document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+    document.querySelectorAll('.nav-pill').forEach(btn => btn.classList.remove('active'));
+    
+    const targetSection = document.getElementById('panel-' + tabId);
+    const targetBtn = document.getElementById('tab-' + tabId);
+    if (targetSection) targetSection.classList.remove('hidden');
+    if (targetBtn) targetBtn.classList.add('active');
+
+    playHapticTone(520, 'triangle', 0.06);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ============== MISSION / DAY ==============
-  function updateDay() {
-    const d = Math.min(30, Math.max(1, parseInt(document.getElementById('dayInput').value) || 1));
-    document.getElementById('dayInput').value = d;
-    document.getElementById('currentDayBadge').textContent = "DAY " + d;
-    document.getElementById('sliderDay').value = d;
-    document.getElementById('sliderLabel').textContent = d;
-    document.getElementById('padDay').textContent = d;
-    renderMission();
-    syncProgressUI();
-  }
-  
-  function syncDayFromSlider(v) {
-    document.getElementById('dayInput').value = v;
-    updateDay();
+  // ================= DAY & PROTOCOL SYNCHRONIZATION =================
+  function setDay(dayNum) {
+    currentDay = Math.min(30, Math.max(1, parseInt(dayNum) || 1));
+    localStorage.setItem('fbm_current_day', currentDay);
+
+    const c = curriculumData[currentDay - 1];
+    
+    // Header & Global badges
+    document.getElementById('globalDayBadge').textContent = `DAY ${currentDay}`;
+    document.getElementById('drillPhaseTag').textContent = c.phase;
+    document.getElementById('drillDayTag').textContent = `DAY ${currentDay} MISSION`;
+    document.getElementById('drillTitle').textContent = c.title;
+    document.getElementById('drillDesc').textContent = c.desc;
+    document.getElementById('drillMorningText').textContent = c.morning;
+    document.getElementById('drillAfternoonText').textContent = c.afternoon;
+    document.getElementById('drillEveningText').textContent = c.evening;
+
+    // Journal updates
+    document.getElementById('journalDayHeader').textContent = `DAY ${currentDay}`;
+    document.getElementById('journalPhaseTag').textContent = c.phase.split('—')[0].trim();
+    document.getElementById('journalDayTitle').textContent = c.title;
+    document.getElementById('journalDayDesc').textContent = c.desc;
+    document.getElementById('journalNoteText').value = progressMap[currentDay]?.note || '';
+    
+    updateJournalBtnState();
+    renderMatrix();
+    updateGlobalStats();
   }
 
-  function renderMission() {
-    const d = parseInt(document.getElementById('dayInput').value) || 1;
-    const c = curriculum[(d - 1) % curriculum.length];
-    document.getElementById('missionPhase').textContent = c.phase;
-    document.getElementById('missionTitle').textContent = c.title;
-    document.getElementById('missionDesc').textContent = c.desc;
-    document.getElementById('drillMorning').textContent = c.morning;
-    document.getElementById('drillAfternoon').textContent = c.afternoon;
-    document.getElementById('drillEvening').textContent = c.evening;
+  function openDayPicker() {
+    document.getElementById('modalDayInput').value = currentDay;
+    document.getElementById('dayModal').classList.remove('hidden');
+  }
+  function closeDayPicker() {
+    document.getElementById('dayModal').classList.add('hidden');
+  }
+  function applyModalDay() {
+    const val = parseInt(document.getElementById('modalDayInput').value) || 1;
+    setDay(val);
+    closeDayPicker();
   }
 
-  // ============== DRILL PAD ==============
-  function startWritingMode() {
-    const d = document.getElementById('dayInput').value;
-    document.getElementById('writingPad').classList.remove('hidden');
-    document.getElementById('padDay').textContent = d;
-    document.getElementById('bulletInput').focus();
-  }
-  function closeWritingPad() {
-    document.getElementById('writingPad').classList.add('hidden');
-  }
-  function checkItem(btn) {
-    btn.classList.toggle('line-through');
-    btn.classList.toggle('text-[var(--gold)]');
-    btn.classList.toggle('text-[var(--ink-dim)]');
-  }
-  function saveBulletToArsenal() {
-    const text = document.getElementById('bulletInput').value.trim();
-    if (!text) return alert('Write a bullet first.');
-    addToArsenal({ hook: text, promise: '', missing: '', emotion: 'Curiosity', tag: document.getElementById('tagInput').value || 'Drill' });
-    document.getElementById('bulletInput').value = '';
-    showTab('arsenal');
+  // ================= 30-DAY MATRIX RENDERING =================
+  function renderMatrix() {
+    const grid = document.getElementById('matrixGrid');
+    grid.innerHTML = '';
+
+    for (let i = 1; i <= 30; i++) {
+      const cell = document.createElement('div');
+      const isDone = progressMap[i]?.completed;
+      const isActive = (i === currentDay);
+
+      cell.className = `day-cell ${isDone ? 'completed' : ''} ${isActive ? 'active-day' : ''}`;
+      cell.innerHTML = `
+        <span class="mono text-[10px] opacity-70">D</span>
+        <span class="text-sm font-bold">${i}</span>
+        ${isDone ? '<span class="text-[9px] mt-0.5">✓</span>' : ''}
+      `;
+      cell.onclick = () => {
+        playHapticTone(480, 'sine', 0.05);
+        setDay(i);
+      };
+      grid.appendChild(cell);
+    }
   }
 
-  // ============== ARSENAL ==============
-  function addToArsenal(overrides) {
-    const item = {
+  function updateGlobalStats() {
+    const completedCount = Object.values(progressMap).filter(p => p.completed).length;
+    const pct = Math.round((completedCount / 30) * 100);
+    
+    document.getElementById('statCompletedDays').textContent = completedCount;
+    document.getElementById('statPercentDone').textContent = `${pct}%`;
+    document.getElementById('statArsenalCount').textContent = arsenalItems.length;
+    document.getElementById('streakDisplay').textContent = `${completedCount > 0 ? completedCount : 1} DAY STREAK`;
+    document.getElementById('trackerProgressText').textContent = `${completedCount} / 30 DAYS`;
+    document.getElementById('trackerProgressBar').style.width = `${(completedCount / 30) * 100}%`;
+  }
+
+  function toggleActiveDayStatus() {
+    progressMap[currentDay] = progressMap[currentDay] || {};
+    progressMap[currentDay].completed = !progressMap[currentDay].completed;
+    progressMap[currentDay].date = new Date().toISOString();
+    localStorage.setItem('fbm_progress_map', JSON.stringify(progressMap));
+
+    if (progressMap[currentDay].completed) {
+      triggerConfetti();
+      playHapticTone(880, 'triangle', 0.2);
+    }
+    updateJournalBtnState();
+    renderMatrix();
+    updateGlobalStats();
+  }
+
+  function markDayCompleteToday() {
+    progressMap[currentDay] = progressMap[currentDay] || {};
+    progressMap[currentDay].completed = true;
+    progressMap[currentDay].date = new Date().toISOString();
+    localStorage.setItem('fbm_progress_map', JSON.stringify(progressMap));
+
+    triggerConfetti();
+    playHapticTone(920, 'triangle', 0.25);
+    updateJournalBtnState();
+    renderMatrix();
+    updateGlobalStats();
+  }
+
+  function updateJournalBtnState() {
+    const isDone = progressMap[currentDay]?.completed;
+    const btn = document.getElementById('journalCompleteBtn');
+    if (isDone) {
+      btn.textContent = 'Completed (Undo)';
+      btn.className = 'btn-ghost text-xs border-emerald-500/40 text-emerald-400';
+    } else {
+      btn.textContent = 'Mark Day Complete';
+      btn.className = 'btn-ghost text-xs';
+    }
+  }
+
+  function saveJournalNote() {
+    const note = document.getElementById('journalNoteText').value.trim();
+    progressMap[currentDay] = progressMap[currentDay] || {};
+    progressMap[currentDay].note = note;
+    localStorage.setItem('fbm_progress_map', JSON.stringify(progressMap));
+    playHapticTone(700, 'sine', 0.1);
+    alert(`Day ${currentDay} drill notes saved securely.`);
+  }
+
+  // ================= LIVE WRITING CRUCIBLE & GATES =================
+  function analyzeLiveWriting() {
+    const text = document.getElementById('liveBulletText').value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    document.getElementById('liveWordCount').textContent = words;
+    
+    // Auto sync to Multi-Format Weaponizer input
+    document.getElementById('weaponInput').value = text || "The 9-word phrase that gets strangers to reply — and the 1 word that kills it.";
+    weaponizeBullet();
+    calcGateScore();
+  }
+
+  function calcGateScore() {
+    const g1 = document.getElementById('gate1').checked;
+    const g2 = document.getElementById('gate2').checked;
+    const g3 = document.getElementById('gate3').checked;
+    const g4 = document.getElementById('gate4').checked;
+    const checks = [g1, g2, g3, g4].filter(Boolean).length;
+    
+    const pct = checks * 25;
+    const scoreElem = document.getElementById('liveItchScore');
+    scoreElem.textContent = `${pct}%`;
+    if (checks === 4) {
+      scoreElem.className = 'text-emerald-400 font-bold';
+    } else if (checks >= 2) {
+      scoreElem.className = 'text-amber-400 font-bold';
+    } else {
+      scoreElem.className = 'text-zinc-500 font-bold';
+    }
+  }
+
+  function clearWritingPad() {
+    document.getElementById('liveBulletText').value = '';
+    document.getElementById('livePromiseInput').value = '';
+    document.getElementById('liveMissingInput').value = '';
+    ['gate1','gate2','gate3','gate4'].forEach(id => document.getElementById(id).checked = false);
+    analyzeLiveWriting();
+  }
+
+  function saveLiveBullet() {
+    const bullet = document.getElementById('liveBulletText').value.trim();
+    if (!bullet) {
+      alert("Please craft a bullet before adding to the arsenal.");
+      return;
+    }
+
+    const newItem = {
       id: Date.now(),
-      hook: overrides?.hook || document.getElementById('arsHook').value.trim(),
-      tag: overrides?.tag || document.getElementById('arsTag').value.trim(),
-      promise: overrides?.promise || document.getElementById('arsPromise').value.trim(),
-      missing: overrides?.missing || document.getElementById('arsMissing').value.trim(),
-      emotion: overrides?.emotion || document.getElementById('arsEmotion').value,
-      date: new Date().toISOString()
+      bullet: bullet,
+      tag: document.getElementById('liveTagInput').value || 'Drill Rep',
+      emotion: document.getElementById('liveEmotionInput').value || 'Curiosity',
+      promise: document.getElementById('livePromiseInput').value || 'Tangible result',
+      missing: document.getElementById('liveMissingInput').value || 'The withheld catalyst',
+      dayCreated: currentDay,
+      date: new Date().toLocaleDateString()
     };
-    if (!item.hook) return alert('Bullet text required.');
-    arsenal.push(item);
-    localStorage.setItem('fb_arsenal', JSON.stringify(arsenal));
+
+    arsenalItems.unshift(newItem);
+    localStorage.setItem('fbm_arsenal_items', JSON.stringify(arsenalItems));
+    
+    playHapticTone(784, 'triangle', 0.15);
+    triggerConfetti();
     renderArsenal();
-    // clear form
-    document.getElementById('arsHook').value = '';
-    document.getElementById('arsPromise').value = '';
-    document.getElementById('arsMissing').value = '';
+    updateGlobalStats();
+    clearWritingPad();
+    switchTab('arsenal');
+  }
+
+  // ================= SCENARIO GENERATOR =================
+  const scenarios = [
+    { cat: "E-COMMERCE & CONVERSIONS", prompt: "A specific checkout field that causes 38% of mobile shoppers to abandon their cart in the final 10 seconds..." },
+    { cat: "COLD EMAIL & SALES", prompt: "The 3-word sentence in cold outreach that triggers spam filters before an inbox can even see it..." },
+    { cat: "HEALTH & BIOLOGY", prompt: "A common breakfast item that elevates morning cortisol by 40% — and what the top endocrinologists eat instead..." },
+    { cat: "REAL ESTATE & INVESTING", prompt: "The single question to ask a listing agent at an open house that reveals if the seller is desperate to negotiate..." },
+    { cat: "PRODUCTIVITY & WORKFLOW", prompt: "Why finishing your daily to-do list before 4:00 PM actually harms tomorrow's momentum (and the 1 task to leave half-done)..." },
+    { cat: "AIR TRAVEL & NEGOTIATION", prompt: "The exact phrase to say at the airline gate desk when a flight is oversold that gets you booked into business class free..." }
+  ];
+
+  function rollRandomScenario() {
+    const s = scenarios[Math.floor(Math.random() * scenarios.length)];
+    document.getElementById('scenarioCategory').textContent = s.cat;
+    document.getElementById('scenarioPrompt').textContent = `"${s.prompt}"`;
+    playHapticTone(640, 'sine', 0.08);
+  }
+
+  function loadScenarioToPad() {
+    const prompt = document.getElementById('scenarioPrompt').textContent.replace(/"/g, '');
+    document.getElementById('liveBulletText').value = prompt;
+    document.getElementById('liveTagInput').value = document.getElementById('scenarioCategory').textContent;
+    analyzeLiveWriting();
+    playHapticTone(580, 'sine', 0.08);
+  }
+
+  // ================= SPRINT TIMER =================
+  function startSprintTimer(duration = 300) {
+    clearInterval(activeSprintInterval);
+    sprintSecondsLeft = duration;
+    document.getElementById('sprintStatus').textContent = 'ACTIVE';
+    document.getElementById('sprintStatus').className = 'mono text-xs text-amber-400 font-bold animate-pulse';
+
+    updateTimerDisplay();
+    activeSprintInterval = setInterval(() => {
+      sprintSecondsLeft--;
+      updateTimerDisplay();
+      if (sprintSecondsLeft <= 0) {
+        clearInterval(activeSprintInterval);
+        document.getElementById('sprintStatus').textContent = 'COMPLETED';
+        document.getElementById('sprintStatus').className = 'mono text-xs text-emerald-400 font-bold';
+        triggerConfetti();
+        playHapticTone(880, 'triangle', 0.3);
+      }
+    }, 1000);
+  }
+
+  function resetSprintTimer() {
+    clearInterval(activeSprintInterval);
+    sprintSecondsLeft = 300;
+    updateTimerDisplay();
+    document.getElementById('sprintStatus').textContent = 'STANDBY';
+    document.getElementById('sprintStatus').className = 'mono text-xs text-zinc-500';
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(sprintSecondsLeft / 60);
+    const s = sprintSecondsLeft % 60;
+    document.getElementById('timerDigits').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+    const total = 300;
+    const progress = (total - sprintSecondsLeft) / total;
+    const circle = document.getElementById('timerCircle');
+    const offset = 283 - (progress * 283);
+    circle.style.strokeDashoffset = offset;
+  }
+
+  // ================= ARSENAL MANAGEMENT & FILTERING =================
+  let currentFilter = 'all';
+
+  function filterArsenal(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.ars-filter').forEach(btn => {
+      btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 hover:bg-white/10 text-zinc-300 ars-filter';
+    });
+    const activeBtn = document.getElementById(`filter-${filter}`);
+    if (activeBtn) {
+      activeBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-400 text-black ars-filter active';
+    }
+    renderArsenal();
   }
 
   function renderArsenal() {
-    const container = document.getElementById('arsenalList');
+    const container = document.getElementById('arsenalContainer');
+    const emptyState = document.getElementById('arsenalEmptyState');
     container.innerHTML = '';
-    if (arsenal.length === 0) {
-      document.getElementById('arsEmpty').classList.remove('hidden');
+
+    document.getElementById('count-all').textContent = arsenalItems.length;
+
+    const filtered = currentFilter === 'all' 
+      ? arsenalItems 
+      : arsenalItems.filter(i => i.emotion === currentFilter);
+
+    if (filtered.length === 0) {
+      emptyState.classList.remove('hidden');
     } else {
-      document.getElementById('arsEmpty').classList.add('hidden');
-      arsenal.forEach(item => {
+      emptyState.classList.add('hidden');
+      filtered.forEach(item => {
         const card = document.createElement('div');
-        card.className = 'glass p-5 relative group';
+        card.className = 'glass-panel p-6 relative group border border-white/5 hover:border-amber-400/40 transition-all';
         card.innerHTML = `
-          <div class="flex justify-between items-start mb-3">
-            <span class="mono text-[10px] px-2 py-0.5 rounded bg-[var(--surface-2)] border border-white/5 text-[var(--gold)]">${item.tag}</span>
-            <span class="text-xs text-[var(--ink-dim)]">${item.emotion}</span>
+          <div class="flex items-center justify-between mb-3">
+            <span class="mono text-[10px] px-2.5 py-0.5 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20 font-semibold uppercase">${escapeHtml(item.tag)}</span>
+            <div class="flex items-center gap-2">
+              <span class="mono text-[11px] text-zinc-400 font-medium">${item.emotion}</span>
+              <button onclick="deleteArsenalItem(${item.id})" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 text-xs transition-opacity ml-2" title="Delete">✕</button>
+            </div>
           </div>
-          <p class="bullet-display text-xl mb-3 leading-snug">${escapeHtml(item.hook)}</p>
-          <div class="grid grid-cols-2 gap-3 text-xs text-[var(--ink-dim)]">
-            <div><span class="mono text-[var(--gold-dim)]">PROMISE</span><br>${escapeHtml(item.promise || '—')}</div>
-            <div><span class="mono text-[var(--gold-dim)]">MISSING</span><br>${escapeHtml(item.missing || '—')}</div>
+          <p class="bullet-quote text-xl text-zinc-100 mb-4">${escapeHtml(item.bullet)}</p>
+          <div class="grid grid-cols-2 gap-3 text-xs pt-3 border-t border-white/5 text-zinc-400">
+            <div>
+              <span class="mono text-[10px] text-zinc-500 uppercase font-semibold">TANGIBLE PROMISE</span>
+              <p class="text-zinc-300 mt-0.5">${escapeHtml(item.promise || '—')}</p>
+            </div>
+            <div>
+              <span class="mono text-[10px] text-amber-400/80 uppercase font-semibold">MISSING TOOTH</span>
+              <p class="text-amber-200 mt-0.5">${escapeHtml(item.missing || '—')}</p>
+            </div>
           </div>
-          <button onclick="deleteArsenal(${item.id})" class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 text-[var(--danger)] text-xs hover:underline transition-opacity">Delete</button>
+          <div class="mt-4 flex items-center justify-between text-[11px] text-zinc-500 mono pt-2">
+            <span>FORGED DAY ${item.dayCreated || 1}</span>
+            <button onclick="loadBulletToWeaponizer('${escapeHtml(item.bullet)}')" class="text-amber-400 hover:underline">Deploy to Formats →</button>
+          </div>
         `;
         container.appendChild(card);
       });
     }
   }
-  function deleteArsenal(id) {
-    if (!confirm('Remove this bullet from arsenal?')) return;
-    arsenal = arsenal.filter(i => i.id !== id);
-    localStorage.setItem('fb_arsenal', JSON.stringify(arsenal));
+
+  function deleteArsenalItem(id) {
+    if (!confirm('Remove this fascination from your archive?')) return;
+    arsenalItems = arsenalItems.filter(i => i.id !== id);
+    localStorage.setItem('fbm_arsenal_items', JSON.stringify(arsenalItems));
     renderArsenal();
+    updateGlobalStats();
   }
-  function escapeHtml(text) {
+
+  function loadBulletToWeaponizer(text) {
+    document.getElementById('weaponInput').value = text;
+    weaponizeBullet();
+    switchTab('converter');
+  }
+
+  function seedCuratedMasterpieces() {
+    const classics = [
+      { id: 101, bullet: "The bills it's OK to pay late.", tag: "Finance", emotion: "Relief", promise: "Emergency cash retention without penalty", missing: "Which specific utility/service accounts", dayCreated: 1 },
+      { id: 102, bullet: "What never to eat on an airplane.", tag: "Health", emotion: "Fear", promise: "Protect gut health & travel immune system", missing: "The specific airline catering ingredient", dayCreated: 1 },
+      { id: 103, bullet: "Say the secret word and rental car costs less.", tag: "Negotiation", emotion: "Curiosity", promise: "Immediate counter discount", missing: "The exact passphrase", dayCreated: 2 },
+      { id: 104, bullet: "The 3-word question that stops cold calls dead in 4 seconds.", tag: "Sales", emotion: "Curiosity", promise: "Terminate unwanted sales pitches effortlessly", missing: "The specific 3-word query", dayCreated: 3 },
+      { id: 105, bullet: "The morning beverage that strips tooth enamel faster than pure lemon juice.", tag: "Health", emotion: "Fear", promise: "Halt irreversible dental damage", missing: "The common commercial beverage", dayCreated: 4 },
+      { id: 106, bullet: "The harmless IRS audit red flag hidden on line 12.", tag: "Tax / Law", emotion: "Fear", promise: "Avoid federal review and penalties", missing: "The specific deduction entry", dayCreated: 5 },
+      { id: 107, bullet: "How to legally deduct your dog's food on schedule C.", tag: "Finance", emotion: "Greed", promise: "Annual pet care tax write-off", missing: "The legal business classification", dayCreated: 6 },
+      { id: 108, bullet: "The quiet hotel booking hack that unlocks executive suites for the price of doubles.", tag: "Travel", emotion: "Greed", promise: "Free luxury hotel upgrade", missing: "The booking timing / note trick", dayCreated: 7 },
+      { id: 109, bullet: "Why smart founders never sign contracts with green ink.", tag: "Business", emotion: "Curiosity", promise: "Prevent signature invalidation loopholes", missing: "The legal banking convention", dayCreated: 8 },
+      { id: 110, bullet: "The single nutrient doctors take when they feel flu symptoms arriving.", tag: "Medicine", emotion: "Curiosity", promise: "Abort respiratory infection in 12 hours", missing: "The precise compound and dosage", dayCreated: 9 }
+    ];
+
+    arsenalItems = [...classics, ...arsenalItems];
+    localStorage.setItem('fbm_arsenal_items', JSON.stringify(arsenalItems));
+    playHapticTone(700, 'triangle', 0.2);
+    triggerConfetti();
+    renderArsenal();
+    updateGlobalStats();
+  }
+
+  function exportArsenalJSON() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(arsenalItems, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", `fascination_arsenal_export_${Date.now()}.json`);
+    dlAnchor.click();
+  }
+
+  // ================= MULTI-FORMAT WEAPONIZER ENGINE =================
+  function weaponizeBullet() {
+    const raw = document.getElementById('weaponInput').value.trim();
+    if (!raw) return;
+
+    // Segment base hook
+    const corePhrase = raw.split("—")[0].trim().replace(/^["']|["']$/g, '');
+
+    // Twitter
+    document.getElementById('outX').textContent = `Stop broadcasting generic copy. ${corePhrase}.\n\n(And why 90% of creators do the exact opposite.)\n\nFull deconstruction: 🧵`;
+
+    // Email
+    document.getElementById('outEmail').innerHTML = `Subject: "${corePhrase.slice(0, 38)}..."<br><span class="text-zinc-400 text-xs">Preheader: Most never notice the missing piece until it costs them.</span>`;
+
+    // Video
+    document.getElementById('outVideo').textContent = `[Hold eye contact with lens]: "Whatever you do today, do NOT make this mistake. ${corePhrase}..." [Cut immediately to demo at 0:04]`;
+
+    // LinkedIn
+    document.getElementById('outLinkedIn').textContent = `Over the past 6 months, we ran an A/B test with 2,400 readers.\n\n${corePhrase}.\n\nThe reason it works isn't intuitive.\n\n...see more`;
+
+    // Cold DM
+    document.getElementById('outDM').textContent = `Hey — quick question regarding your current outreach: ${corePhrase.toLowerCase()}? We uncovered a subtle catch and thought you'd want to see the benchmark data.`;
+
+    // Sales Page
+    document.getElementById('outSales').textContent = `✦ ${corePhrase} — and the single overlooked detail that makes or breaks the outcome on page 24.`;
+  }
+
+  function copyChannelCopy(elementId) {
+    const text = document.getElementById(elementId).innerText;
+    navigator.clipboard.writeText(text);
+    playHapticTone(800, 'sine', 0.08);
+    alert("Format copy copied to clipboard!");
+  }
+
+  // ================= FORENSIC DECONSTRUCTOR =================
+  function runDeconstruction() {
+    const text = document.getElementById('deconInput').value.trim();
+    if (!text) return;
+
+    playHapticTone(650, 'sine', 0.1);
+    document.getElementById('deconAnchor').textContent = text.length > 20 ? text.slice(0, 35) + "..." : text;
+    document.getElementById('deconMissing').textContent = "Mechanism withheld via open loop connector";
+    document.getElementById('deconLever').textContent = text.toLowerCase().includes('never') || text.toLowerCase().includes('kill') ? "Loss Aversion / Danger" : "Curiosity & Efficiency";
+    
+    // Check if copy explains itself
+    const hasBecause = text.toLowerCase().includes("because") || text.toLowerCase().includes("by doing") || text.toLowerCase().includes("which is");
+    const leakElem = document.getElementById('deconLeakage');
+    if (hasBecause) {
+      leakElem.textContent = "WARNING: Mechanistic Leak Detected ('because / by doing')";
+      leakElem.className = 'text-sm text-red-400 font-bold';
+    } else {
+      leakElem.textContent = "CLEAN (Zero leakage detected)";
+      leakElem.className = 'text-sm text-emerald-400 font-bold';
+    }
+  }
+
+  // ================= SPECIMEN INTERACTION =================
+  function inspectSpecimen(card, id) {
+    const details = card.querySelector('.specimen-details');
+    details.classList.toggle('hidden');
+    playHapticTone(520, 'triangle', 0.05);
+  }
+
+  // ================= CELEBRATION FX =================
+  function triggerConfetti() {
+    if (typeof confetti === 'function') {
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.7 },
+        colors: ['#d4af37', '#f3cf65', '#ffffff']
+      });
+    }
+  }
+
+  function escapeHtml(string) {
     const div = document.createElement('div');
-    div.textContent = text;
+    div.textContent = string;
     return div.innerHTML;
   }
 
-  // ============== CONVERTER ==============
-  function runConversion() {
-    const input = document.getElementById('convertInput').value.trim();
-    // Simple rule-based conversion for demonstration
-    const hook = input ? "Stop. " + input.split("—")[0].trim() + " (Here's why that matters.)" : "—";
-    const headline = input ? input.replace("—", " — and why it costs more if you don't know.") : "—";
-    const subject = input ? `"${input.split("—")[0].trim().substring(0, 30)}..."` : "—";
-    const dm = input ? "Quick — " + input.split("—")[0].trim() + ". Do you use this? Most don't realize..." : "—";
-    document.getElementById('outHook').textContent = hook;
-    document.getElementById('outHeadline').textContent = headline;
-    document.getElementById('outSubject').textContent = subject;
-    document.getElementById('outDM').textContent = dm;
-  }
-
-  function auditUpdate() {
-    const checked = document.querySelectorAll('#panel-convert input:checked').length;
-    const pct = (checked / 4) * 100;
-    document.getElementById('auditBar').style.width = pct + '%';
-    document.getElementById('auditText').textContent = checked === 4 ? "Ready for deployment." : `Check all 4. (${checked}/4)`;
-  }
-
-  // ============== TRACKER ==============
-  function renderTracker() {
-    const grid = document.getElementById('dayGrid');
-    grid.innerHTML = '';
-    for (let i = 1; i <= 30; i++) {
-      const done = progress[i] ? true : false;
-      const btn = document.createElement('button');
-      btn.className = 'node ' + (done ? 'done' : '');
-      btn.textContent = i;
-      btn.title = `Day ${i}` + (progress[i] && progress[i].note ? ' — Note saved' : '');
-      btn.onclick = () => {
-        document.getElementById('dayInput').value = i;
-        updateDay();
-        document.getElementById('dailyNote').value = progress[i]?.note || '';
-      };
-      grid.appendChild(btn);
-    }
-    syncProgressUI();
-  }
-
-  function completeToday() {
-    const d = parseInt(document.getElementById('dayInput').value) || 1;
-    progress[d] = progress[d] || {};
-    progress[d].completed = true;
-    progress[d].date = new Date().toISOString();
-    localStorage.setItem('fb_progress', JSON.stringify(progress));
-    renderTracker();
-    alert("Day " + d + " marked complete. The loop is tightening.");
-  }
-
-  function saveNote() {
-    const d = parseInt(document.getElementById('dayInput').value) || 1;
-    const note = document.getElementById('dailyNote').value.trim();
-    progress[d] = progress[d] || {};
-    progress[d].note = note;
-    localStorage.setItem('fb_progress', JSON.stringify(progress));
-    renderTracker();
-    document.getElementById('dailyNote').value = '';
-    alert("Note saved for Day " + d);
-  }
-
-  function syncProgressUI() {
-    const doneCount = Object.values(progress).filter(p => p.completed).length;
-    document.getElementById('progressText').textContent = doneCount + " / 30 DAYS";
-    document.getElementById('mainProgressBar').style.width = (doneCount / 30 * 100) + '%';
-  }
-
-  // ============== RANDOM PROMPT ==============
-  function generatePrompt() {
-    const prompts = [
-      "A common mistake people make when booking flights that costs them $400...",
-      "The one food item on airplanes that pilots avoid — and passengers shouldn't ignore...",
-      "The 9-word phrase that gets strangers to reply in under 4 minutes...",
-      "A bill most people pay on time — and the reason it's actually the one you can delay...",
-      "The rental car counter script that saves $200, but sounds like a mistake...",
-      "What never to say in the first 3 seconds of a video hook...",
-      "The subject line word that makes executives open in 10 seconds — and the word that kills it..."
-    ];
-    const text = prompts[Math.floor(Math.random() * prompts.length)];
-    document.getElementById('promptText').textContent = text;
-    document.getElementById('promptBox').classList.remove('hidden');
-  }
-
-  // ============== REVEAL ==============
-  function revealMissing(btn) {
-    const content = btn.querySelector('.reveal-content');
-    content.classList.remove('hidden');
-    btn.querySelector('p.text-xs').textContent = "Locked in. The gap is the lever.";
-  }
-
-  // ============== START ==============
+  // ================= BOOTSTRAP =================
   document.addEventListener('DOMContentLoaded', () => {
-    init();
-    runConversion();
+    // If arsenal is empty, load initial seed
+    if (arsenalItems.length === 0) {
+      seedCuratedMasterpieces();
+    }
+    setDay(currentDay);
+    renderArsenal();
+    weaponizeBullet();
+    analyzeLiveWriting();
   });
 </script>
 </body>

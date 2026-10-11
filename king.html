@@ -1,525 +1,1944 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>The Practice File</title>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>The Practice File — Field Dossier &amp; Diagnostic Protocol</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&amp;family=Special+Elite&amp;display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-
-:root{
-  --paper: #E7DFC6;
-  --paper-card: #DED3AF;
-  --paper-deep: #D3C79E;
-  --ink: #201C14;
-  --ink-soft: #55503F;
-  --rule: #B7A97E;
-  --stamp-red: #9C2B1B;
-  --stamp-red-soft: rgba(156,43,27,0.12);
-  --moat-blue: #22415A;
-  --moat-blue-soft: rgba(34,65,90,0.12);
-  --brass: #9C7A25;
-  --steel: #4F7288;
-  --paper-hi: #F3ECD3;
+:root {
+  --paper-raw: #ECE5CE;
+  --paper-card: #E4D9BD;
+  --paper-deep: #D5C79E;
+  --paper-aged: #CBB98C;
+  --paper-hi: #F7F2E2;
+  --ink: #1B1812;
+  --ink-soft: #4C4637;
+  --ink-faint: #7A725D;
+  --rule: #BAAA7C;
+  --rule-light: #DDD2AF;
+  
+  --stamp-red: #A32A19;
+  --stamp-red-soft: rgba(163, 42, 25, 0.12);
+  --stamp-red-glow: rgba(163, 42, 25, 0.25);
+  
+  --moat-blue: #1B3F5B;
+  --moat-blue-soft: rgba(27, 63, 91, 0.12);
+  --moat-blue-light: #2C577A;
+  
+  --brass: #96701B;
+  --brass-soft: rgba(150, 112, 27, 0.14);
+  --brass-glow: #B88E2B;
+  
+  --leather: #3D2C1E;
+  --wax: #B54124;
+  --shadow-press: 4px 5px 0px rgba(27, 24, 18, 0.12);
+  --shadow-deep: 7px 9px 0px rgba(27, 24, 18, 0.15);
 }
 
-*{ box-sizing:border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-body{
-  margin:0;
-  background: var(--paper);
-  background-image:
-    repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 3px);
+body {
+  background-color: var(--paper-raw);
+  background-image: 
+    radial-gradient(#baa97c 0.5px, transparent 0.5px),
+    linear-gradient(to right, rgba(0,0,0,0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.015) 1px, transparent 1px);
+  background-size: 20px 20px, 40px 40px, 40px 40px;
   color: var(--ink);
-  font-family: 'Source Serif 4', Georgia, serif;
-  padding: 28px 20px 60px;
+  font-family: 'Newsreader', Georgia, serif;
   min-height: 100vh;
+  padding: 32px 24px 80px;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
 }
 
-.wrap{ max-width: 1180px; margin: 0 auto; }
+.wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  position: relative;
+}
 
-/* ---------- HEADER ---------- */
-.folder-tab{
-  display:inline-block;
+/* Texture Overlays & Tabs */
+.top-system-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 2;
+  padding: 0 4px;
+}
+
+.folder-tabs-cluster {
+  display: flex;
+  gap: 6px;
+}
+
+.tab {
   background: var(--paper-deep);
-  border: 1px solid var(--ink);
-  border-bottom: none;
-  padding: 6px 22px 10px;
+  border: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--paper-deep);
+  padding: 8px 18px 6px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--ink-soft);
+  font-weight: 600;
   border-radius: 6px 6px 0 0;
-  transform: translateY(1px);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
 }
-
-.header{
-  border: 1px solid var(--ink);
+.tab:hover {
+  background: var(--paper-card);
+  color: var(--ink);
+}
+.tab.active {
   background: var(--paper-hi);
-  padding: 26px 30px 22px;
-  position: relative;
-  box-shadow: 5px 5px 0 rgba(32,28,20,0.08);
+  border-bottom: 2px solid var(--paper-hi);
+  color: var(--ink);
+  padding-top: 10px;
+  margin-top: -2px;
 }
 
-.header-top{
-  display:flex;
+.classification-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  padding-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.classification-tag .live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--stamp-red);
+  box-shadow: 0 0 0 2px rgba(163, 42, 25, 0.25);
+  animation: pulse 2s infinite ease-in-out;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* Dossier Header */
+.header-dossier {
+  border: 2px solid var(--ink);
+  background: var(--paper-hi);
+  padding: 32px 36px 28px;
+  position: relative;
+  box-shadow: var(--shadow-deep);
+  margin-bottom: 28px;
+}
+
+.header-dossier::after {
+  content: "";
+  position: absolute;
+  top: 6px; left: 6px; right: 6px; bottom: 6px;
+  border: 1px dashed var(--rule);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.header-meta-row {
+  display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 20px;
+  gap: 24px;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 
-h1{
-  font-family: 'Special Elite', 'IBM Plex Mono', monospace;
-  font-size: clamp(26px, 4vw, 38px);
-  margin: 0 0 6px;
-  letter-spacing: 0.01em;
-  line-height: 1.15;
+.title-area h1 {
+  font-family: 'Special Elite', cursive;
+  font-size: clamp(30px, 4.2vw, 44px);
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 6px;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.06);
 }
 
-.subject-line{
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
+.title-area .tagline {
+  font-family: 'Newsreader', serif;
+  font-size: 16px;
+  font-style: italic;
   color: var(--ink-soft);
-  border-top: 1px dashed var(--rule);
-  padding-top: 10px;
-  margin-top: 14px;
-  display:flex;
-  gap: 28px;
-  flex-wrap: wrap;
+  margin-bottom: 14px;
 }
-.subject-line b{ color: var(--ink); font-weight:600; }
 
-.stamp{
-  border: 3px solid var(--stamp-red);
-  color: var(--stamp-red);
-  font-family: 'Special Elite', monospace;
-  font-size: 15px;
+.subject-dossier {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  background: var(--paper-card);
   padding: 8px 14px;
-  transform: rotate(-6deg);
-  border-radius: 4px;
-  opacity: 0.85;
-  white-space: nowrap;
-  letter-spacing: 0.06em;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  color: var(--ink-soft);
+}
+.subject-dossier span b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Stamps Cluster */
+.stamp-cluster {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   flex-shrink: 0;
 }
 
-.stat-row{
-  display:flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-top: 18px;
+.official-stamp {
+  border: 2.5px solid var(--stamp-red);
+  color: var(--stamp-red);
+  font-family: 'Special Elite', monospace;
+  font-size: 15px;
+  padding: 8px 16px;
+  transform: rotate(-4deg);
+  border-radius: 4px;
+  letter-spacing: 0.1em;
+  background: rgba(163, 42, 25, 0.04);
+  box-shadow: inset 0 0 0 1px var(--stamp-red);
+  user-select: none;
+  text-align: center;
 }
-.stat-chip{
+.official-stamp small {
+  display: block;
+  font-size: 9px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Stat Ribbon */
+.stat-cockpit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-cell {
   background: var(--paper-card);
   border: 1px solid var(--rule);
-  border-radius: 4px;
-  padding: 8px 14px;
+  padding: 10px 14px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.stat-cell:hover {
+  transform: translateY(-1px);
+  border-color: var(--ink);
+}
+.stat-cell .label {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--ink-soft);
-  display:flex;
-  align-items:baseline;
-  gap:7px;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: space-between;
 }
-.stat-chip .num{
-  font-size: 17px;
+.stat-cell .metric {
+  font-family: 'Special Elite', monospace;
+  font-size: 24px;
   color: var(--ink);
-  font-weight: 600;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.stat-cell .metric .unit {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+.stat-cell .sub {
+  font-size: 11px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink-soft);
+  margin-top: 2px;
 }
 
-/* ---------- ENGINES GRID ---------- */
-.engines{
-  display:grid;
+/* Main Layout Grid */
+.dossier-layout {
+  display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 22px;
-  margin-top: 24px;
+  gap: 24px;
 }
-@media (max-width: 860px){
-  .engines{ grid-template-columns: 1fr; }
+@media (max-width: 980px) {
+  .dossier-layout { grid-template-columns: 1fr; }
 }
 
-.engine{
-  border: 1px solid var(--ink);
+/* Ledger Box Design */
+.ledger-card {
+  border: 2px solid var(--ink);
   background: var(--paper-hi);
-  box-shadow: 5px 5px 0 rgba(32,28,20,0.08);
+  box-shadow: var(--shadow-press);
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
-.engine.craft{ --accent: var(--brass); --accent-soft: rgba(156,122,37,0.14); }
-.engine.moat{ --accent: var(--moat-blue); --accent-soft: var(--moat-blue-soft); }
 
-.engine-head{
-  padding: 16px 20px 14px;
-  border-bottom: 1px solid var(--rule);
-  background: var(--accent-soft);
+.ledger-card.craft {
+  --engine-accent: var(--brass);
+  --engine-soft: var(--brass-soft);
+  --engine-glow: var(--brass-glow);
 }
-.engine-eyebrow{
-  font-family:'IBM Plex Mono', monospace;
+.ledger-card.moat {
+  --engine-accent: var(--moat-blue);
+  --engine-soft: var(--moat-blue-soft);
+  --engine-glow: var(--moat-blue-light);
+}
+
+.ledger-head {
+  padding: 18px 22px 16px;
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--engine-soft);
+  position: relative;
+}
+
+.ledger-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 10.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--engine-accent);
+  font-weight: 700;
+  margin-bottom: 4px;
 }
-.engine-title{
+
+.ledger-title {
   font-family: 'Special Elite', monospace;
-  font-size: 21px;
-  margin: 4px 0 10px;
+  font-size: 23px;
+  color: var(--ink);
+  margin-bottom: 4px;
 }
-.engine-sub{
+
+.ledger-sub {
   font-size: 13.5px;
   color: var(--ink-soft);
-  line-height:1.5;
-  margin-bottom: 8px;
+  line-height: 1.45;
+  margin-bottom: 14px;
 }
 
-/* rank ladder */
-.ladder{
-  display:flex;
-  flex-direction: column;
-  gap: 0;
-  margin-top: 10px;
+/* Rank Pathway & Ladder */
+.ladder-box {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  padding: 12px 14px;
+  border-radius: 4px;
+  margin-bottom: 12px;
 }
-.rank{
-  display:grid;
-  grid-template-columns: 20px 1fr;
-  gap: 10px;
-  padding: 6px 0;
+
+.ladder-nodes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.rank-step {
+  text-align: center;
   position: relative;
 }
-.rank .node{
-  width: 12px; height:12px; border-radius:50%;
+.rank-step .step-point {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
   border: 2px solid var(--ink-soft);
   background: var(--paper-hi);
-  margin-top: 4px;
+  margin: 0 auto 6px;
   position: relative;
-  z-index:1;
+  z-index: 2;
+  transition: all 0.2s ease;
 }
-.rank.reached .node{ background: var(--accent); border-color: var(--accent); }
-.rank:not(:last-child)::before{
-  content:"";
-  position:absolute;
-  left: 5px; top: 20px; bottom: -6px;
-  width: 2px;
-  background: var(--rule);
+.rank-step.reached .step-point {
+  background: var(--engine-accent);
+  border-color: var(--engine-accent);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
 }
-.rank.reached:not(:last-child)::before{ background: var(--accent); }
-.rank-name{
-  font-family:'IBM Plex Mono', monospace;
-  font-size: 12.5px;
+.rank-step.current .step-point {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 3px var(--engine-glow);
+}
+.rank-step .step-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
   font-weight: 600;
-  color: var(--ink-soft);
+  color: var(--ink-faint);
+  line-height: 1.2;
 }
-.rank.reached .rank-name{ color: var(--ink); }
-.rank.current .rank-name::after{
-  content:" \25C0 current file status";
-  font-weight: 400;
-  color: var(--accent);
-  font-size: 10.5px;
+.rank-step.reached .step-title { color: var(--ink); }
+.rank-step.current .step-title { color: var(--engine-accent); font-weight: 700; }
+.rank-step .step-xp {
+  font-size: 9px;
+  color: var(--ink-faint);
+  font-family: 'IBM Plex Mono', monospace;
 }
-.rank-req{ font-size: 10.5px; color: var(--ink-soft); opacity:0.7; }
 
-.progress-track{
-  height: 6px;
+.progress-strip {
+  height: 8px;
   background: var(--paper-deep);
   border: 1px solid var(--rule);
   border-radius: 4px;
-  overflow:hidden;
-  margin: 10px 0 4px;
+  overflow: hidden;
+  position: relative;
 }
-.progress-fill{
-  height:100%;
-  background: var(--accent);
-  transition: width 0.4s ease;
+.progress-bar-fill {
+  height: 100%;
+  background: var(--engine-accent);
+  transition: width 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
 }
-.progress-label{
-  font-family:'IBM Plex Mono', monospace;
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 10.5px;
   color: var(--ink-soft);
-  text-align:right;
 }
 
-/* task groups */
-.tasks{ padding: 4px 20px 20px; }
-.cadence-group{ margin-top: 16px; }
-.cadence-label{
-  font-family:'IBM Plex Mono', monospace;
-  font-size: 10.5px;
+/* Tasks / Drills Section */
+.ledger-body {
+  padding: 16px 20px 22px;
+  flex: 1;
+}
+
+.cadence-shelf {
+  margin-bottom: 18px;
+}
+.cadence-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.cadence-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom: 8px;
+  font-weight: 600;
+  white-space: nowrap;
 }
-.cadence-label .rule{
-  flex:1;
-  height:1px;
+.cadence-line {
+  flex: 1;
+  height: 1px;
   background: var(--rule);
 }
-.streak-flame{
-  font-size: 11px;
-  color: var(--stamp-red);
-  font-family:'IBM Plex Mono', monospace;
+.cadence-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  padding: 2px 7px;
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  color: var(--ink-soft);
 }
 
-.task{
-  display:flex;
-  align-items:flex-start;
+.task-item {
+  display: flex;
+  align-items: flex-start;
   gap: 12px;
-  padding: 9px 10px;
+  padding: 10px 12px;
   border: 1px solid transparent;
+  background: transparent;
   border-radius: 4px;
-  cursor:pointer;
+  cursor: pointer;
   position: relative;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
+  user-select: none;
+  margin-bottom: 4px;
 }
-.task:hover{ background: var(--accent-soft); }
-.task.done{
-  background: var(--accent-soft);
+.task-item:hover {
+  background: var(--engine-soft);
+  border-color: var(--rule-light);
+}
+.task-item.done {
+  background: var(--engine-soft);
   border-color: var(--rule);
 }
-.checkbox{
-  width: 18px; height: 18px;
+
+.task-item .check-square {
+  width: 19px;
+  height: 19px;
   border: 2px solid var(--ink-soft);
   border-radius: 3px;
-  margin-top: 2px;
-  flex-shrink:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
   background: var(--paper-hi);
-}
-.task.done .checkbox{
-  background: var(--accent);
-  border-color: var(--accent);
-}
-.checkbox svg{ width:12px; height:12px; display:none; }
-.task.done .checkbox svg{ display:block; }
-.task-body{ flex:1; }
-.task-label{
-  font-size: 14px;
-  font-weight: 600;
-  line-height:1.3;
-}
-.task.done .task-label{ text-decoration: line-through; text-decoration-color: var(--ink-soft); opacity:0.75; }
-.task-desc{
-  font-size: 12.5px;
-  color: var(--ink-soft);
   margin-top: 2px;
-  line-height:1.4;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
 }
-.task-xp{
-  font-family:'IBM Plex Mono', monospace;
-  font-size: 11px;
-  color: var(--accent);
-  font-weight:600;
-  white-space: nowrap;
-  margin-top: 3px;
+.task-item.done .check-square {
+  background: var(--engine-accent);
+  border-color: var(--engine-accent);
+}
+.check-square svg {
+  width: 13px;
+  height: 13px;
+  stroke: var(--paper-hi);
+  display: none;
+}
+.task-item.done .check-square svg {
+  display: block;
 }
 
-.stamp-pop{
-  position:absolute;
-  right: 8px; top: -6px;
-  font-family:'Special Elite', monospace;
+.task-content {
+  flex: 1;
+}
+.task-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.task-name {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.task-item.done .task-name {
+  text-decoration: line-through;
+  color: var(--ink-soft);
+  opacity: 0.75;
+}
+.task-xp-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--engine-accent);
+  background: rgba(255,255,255,0.4);
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--rule-light);
+  white-space: nowrap;
+}
+.task-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+/* Stamp Effect on Task Click */
+.stamp-stampede {
+  position: absolute;
+  right: 14px;
+  top: 6px;
+  font-family: 'Special Elite', monospace;
   font-size: 12px;
   color: var(--stamp-red);
   border: 2px solid var(--stamp-red);
   border-radius: 3px;
-  padding: 2px 6px;
-  transform: rotate(-8deg) scale(1.3);
+  padding: 2px 7px;
+  transform: rotate(-7deg) scale(1.4);
   opacity: 0;
-  pointer-events:none;
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
-.stamp-pop.show{
-  opacity: 0.9;
-  transform: rotate(-8deg) scale(1);
+.stamp-stampede.show {
+  opacity: 0.95;
+  transform: rotate(-7deg) scale(1);
 }
 
-/* ---------- FIELD LOG ---------- */
-.fieldlog{
-  margin-top: 22px;
-  border: 1px solid var(--ink);
+/* =========================================
+   DIAGNOSTIC WORKBENCH & INTERACTIVE LABS
+   ========================================= */
+.workbench-panel {
+  margin-top: 28px;
+  border: 2px solid var(--ink);
   background: var(--paper-hi);
-  box-shadow: 5px 5px 0 rgba(32,28,20,0.08);
-  padding: 20px 24px 24px;
+  box-shadow: var(--shadow-press);
+  position: relative;
 }
-.fieldlog h2{
-  font-family:'Special Elite', monospace;
-  font-size: 17px;
-  margin: 0 0 4px;
+
+.workbench-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper-deep);
+  overflow-x: auto;
 }
-.fieldlog p.hint{
-  font-size: 12.5px;
+.wb-tab-btn {
+  padding: 12px 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  border: none;
+  border-right: 1.5px solid var(--ink);
   color: var(--ink-soft);
-  margin: 0 0 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
-textarea{
-  width:100%;
-  min-height: 70px;
+.wb-tab-btn:hover {
+  background: var(--paper-card);
+  color: var(--ink);
+}
+.wb-tab-btn.active {
+  background: var(--paper-hi);
+  color: var(--ink);
+}
+.wb-tab-btn .badge {
+  font-size: 9.5px;
+  padding: 2px 6px;
+  background: var(--rule);
+  color: var(--ink);
+  border-radius: 3px;
+}
+
+.wb-tab-content {
+  padding: 24px 28px 28px;
+  display: none;
+}
+.wb-tab-content.active {
+  display: block;
+}
+
+/* LAB 1: Live Diagnostic Drill */
+.diagnostic-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 860px) {
+  .diagnostic-container { grid-template-columns: 1fr; }
+}
+
+.specimen-card {
   background: var(--paper-card);
   border: 1px solid var(--rule);
   border-radius: 4px;
-  padding: 10px 12px;
-  font-family: 'Source Serif 4', serif;
-  font-size: 14px;
+  padding: 18px 20px;
+  position: relative;
+}
+.specimen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.specimen-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--stamp-red);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.specimen-shuffle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  background: var(--paper-hi);
+  border: 1px solid var(--rule);
+  padding: 4px 10px;
+  border-radius: 3px;
+  cursor: pointer;
   color: var(--ink);
+}
+.specimen-shuffle:hover {
+  background: var(--paper-deep);
+}
+
+.specimen-copy {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--paper-hi);
+  padding: 16px;
+  border-left: 3px solid var(--stamp-red);
+  border-radius: 2px;
+  margin-bottom: 14px;
+}
+.specimen-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.diagnostic-form h3 {
+  font-family: 'Special Elite', monospace;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+.diagnostic-form p.tip {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+.form-group label {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 5px;
+}
+
+/* Awareness Stage Interactive Selector Chips */
+.schwartz-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  margin-bottom: 12px;
+}
+@media (max-width: 640px) {
+  .schwartz-selector-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.schwartz-chip {
+  background: var(--paper-card);
+  border: 1.5px solid var(--rule);
+  border-radius: 3px;
+  padding: 6px 4px;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.schwartz-chip:hover {
+  background: var(--paper-deep);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.schwartz-chip.active {
+  background: var(--moat-blue);
+  color: #fff;
+  border-color: var(--moat-blue);
+  box-shadow: 0 0 0 1px var(--moat-blue);
+}
+
+.schwartz-guidance-pill {
+  background: var(--paper-card);
+  border: 1px dashed var(--rule);
+  padding: 8px 12px;
+  border-radius: 3px;
+  font-size: 11.5px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+.schwartz-guidance-pill strong {
+  color: var(--stamp-red);
+}
+
+/* Schwartz Matrix Styles */
+.matrix-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.matrix-intro {
+  border-left: 3px solid var(--brass);
+  padding-left: 12px;
+}
+.matrix-nav-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.matrix-nav-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  background: var(--paper-card);
+  border: 1.5px solid var(--rule);
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: all 0.15s ease;
+}
+.matrix-nav-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.matrix-nav-btn.active {
+  background: var(--ink);
+  color: var(--paper-hi);
+  border-color: var(--ink);
+}
+
+.matrix-card {
+  border: 1.5px solid var(--ink);
+  background: var(--paper-card);
+  padding: 18px 20px;
+  border-radius: 4px;
+  box-shadow: 2px 3px 0 rgba(27,24,18,0.08);
+}
+.matrix-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+.matrix-card-title {
+  font-family: 'Special Elite', monospace;
+  font-size: 20px;
+  color: var(--ink);
+}
+.matrix-card-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--stamp-red);
+  letter-spacing: 0.1em;
+}
+
+.matrix-grid-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 740px) {
+  .matrix-grid-2x2 { grid-template-columns: 1fr; }
+}
+.matrix-block {
+  background: var(--paper-hi);
+  border: 1px solid var(--rule);
+  padding: 12px 14px;
+  border-radius: 3px;
+}
+.matrix-block-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+}
+.matrix-block-label.red { color: var(--stamp-red); }
+.matrix-block-label.blue { color: var(--moat-blue); }
+.matrix-block-label.brass { color: var(--brass); }
+.matrix-block-label.ink { color: var(--ink); }
+
+.matrix-block p, .matrix-block ul {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.matrix-block ul {
+  list-style: none;
+  padding-left: 0;
+}
+.matrix-block ul li {
+  position: relative;
+  padding-left: 14px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+.matrix-block ul li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--stamp-red);
+  font-weight: bold;
+}
+
+select.vintage-select, input.vintage-input {
+  width: 100%;
+  background: var(--paper-card);
+  border: 1.5px solid var(--rule);
+  padding: 8px 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--ink);
+  border-radius: 3px;
+}
+select.vintage-select:focus, input.vintage-input:focus, textarea.vintage-area:focus {
+  outline: 2px solid var(--moat-blue);
+  outline-offset: 1px;
+}
+
+textarea.vintage-area {
+  width: 100%;
+  min-height: 90px;
+  background: var(--paper-card);
+  border: 1.5px solid var(--rule);
+  padding: 10px 12px;
+  font-family: 'Newsreader', serif;
+  font-size: 15px;
+  color: var(--ink);
+  border-radius: 3px;
   resize: vertical;
 }
-textarea:focus, .task:focus-visible, button:focus-visible{
-  outline: 2px solid var(--moat-blue);
-  outline-offset: 2px;
-}
-.log-actions{
-  display:flex;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
-button.save-btn{
-  font-family:'IBM Plex Mono', monospace;
+
+.btn-primary {
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   background: var(--ink);
   color: var(--paper-hi);
   border: none;
-  padding: 9px 16px;
-  border-radius: 4px;
+  padding: 10px 20px;
+  border-radius: 3px;
   cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s ease;
 }
-button.save-btn:hover{ background: var(--stamp-red); }
-button.save-btn:disabled{ opacity:0.4; cursor:default; }
+.btn-primary:hover {
+  background: var(--stamp-red);
+}
 
-.log-entries{ margin-top: 16px; display:flex; flex-direction:column; gap:10px; }
-.log-entry{
-  border-left: 3px solid var(--rule);
-  padding: 4px 0 4px 12px;
+/* LAB 2: Swipe File & Proprietary Vault */
+.swipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 18px;
 }
-.log-entry .log-date{
-  font-family:'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  color: var(--ink-soft);
-}
-.log-entry .log-text{ font-size: 13.5px; margin-top: 2px; }
-.log-empty{ font-size: 12.5px; color: var(--ink-soft); font-style: italic; }
-
-/* ---------- FOOTER ACTIONS ---------- */
-.data-actions {
+.swipe-card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  padding: 14px 16px;
+  border-radius: 3px;
+  position: relative;
   display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 24px;
+  flex-direction: column;
+  justify-content: space-between;
 }
-.data-actions button {
+.swipe-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+.swipe-card .swipe-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--moat-blue);
+}
+.swipe-card .awareness-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
   background: var(--paper-deep);
   color: var(--ink);
   border: 1px solid var(--rule);
+  border-radius: 2px;
+  letter-spacing: 0.05em;
 }
-.data-actions button:hover {
-  background: var(--rule);
+.swipe-card .swipe-text {
+  font-family: 'Newsreader', serif;
+  font-size: 14.5px;
   color: var(--ink);
+  font-style: italic;
+  margin-bottom: 10px;
+  line-height: 1.45;
 }
-
-.footer-note{
-  text-align:center;
-  font-family:'IBM Plex Mono', monospace;
-  font-size: 10.5px;
+.swipe-card .swipe-why {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
   color: var(--ink-soft);
-  margin-top: 14px;
-  opacity: 0.7;
+  border-top: 1px dashed var(--rule);
+  padding-top: 8px;
 }
 
-@media (prefers-reduced-motion: reduce){
-  *{ transition: none !important; animation: none !important; }
+/* LAB 3: Case Notes & Memory Log */
+.fieldlog-area {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 24px;
+}
+@media (max-width: 860px) {
+  .fieldlog-area { grid-template-columns: 1fr; }
+}
+
+.log-stream {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.log-stream::-webkit-scrollbar {
+  width: 6px;
+}
+.log-stream::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 3px;
+}
+
+.log-entry-item {
+  background: var(--paper-card);
+  border-left: 3.5px solid var(--brass);
+  padding: 10px 14px;
+  border-radius: 0 3px 3px 0;
+  position: relative;
+}
+.log-entry-item .entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+  gap: 8px;
+}
+.log-entry-item .entry-body {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+/* Utility Bottom Dock */
+.dossier-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 28px;
+  padding: 16px 20px;
+  background: var(--paper-deep);
+  border: 1.5px solid var(--ink);
+  border-radius: 3px;
+}
+.dossier-actions .hint-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+.dossier-buttons {
+  display: flex;
+  gap: 10px;
+}
+.btn-secondary {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  padding: 7px 14px;
+  background: var(--paper-hi);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.btn-secondary:hover {
+  background: var(--paper-card);
+  border-color: var(--stamp-red);
+  color: var(--stamp-red);
+}
+
+/* Success Toast */
+.dossier-toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--ink);
+  color: var(--paper-hi);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 12px 20px;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+}
+.dossier-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.dossier-toast .toast-dot {
+  width: 8px;
+  height: 8px;
+  background: #34D399;
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
 }
 </style>
 </head>
 <body>
 <div class="wrap">
-
-  <div class="folder-tab">Trust Gap Protocol &mdash; Personal File</div>
-  <div class="header">
-    <div class="header-top">
-      <div>
-        <h1>The Practice File</h1>
-        <div class="subject-line">
-          <span><b>Subject:</b> Copy Strategist, Trust-First Industries</span>
-          <span><b>Focus:</b> Coaches / Consultants / Course Creators</span>
+<!-- Top System Bar with Vintage Tab Navigation -->
+<div class="top-system-bar">
+<div class="folder-tabs-cluster">
+<div class="tab active" data-tab="active-practice">Daily Practice Dossier</div>
+<div class="tab" data-tab="interactive-lab">Diagnostic Lab &amp; Drills</div>
+<div class="tab" data-tab="vault-tab">Proprietary Vault</div>
+</div>
+<div class="classification-tag">
+<span class="live-dot"></span>
+      CLASSIFIED: HIGH-INTEGRITY PRACTICE • SEC-84
+    </div>
+</div>
+<!-- Master Dossier Header -->
+<header class="header-dossier">
+<div class="header-meta-row">
+<div class="title-area">
+<h1 class="">The Practice File</h1>
+<div class="tagline">An accountable daily rigor engine for high-ticket copy strategists &amp; category leaders.</div>
+<div class="subject-dossier">
+<span class=""><b>Subject:</b> Copy Strategist &amp; Conversion Diagnostician</span>
+<span class=""><b>Focus:</b> Trust-First • High-Ticket Coaches &amp; Consultancies</span>
+<span class=""><b>Operating Protocol:</b> Anti-Commodity Moat &amp; Schwartz Calibration</span>
+</div>
+</div>
+<div class="stamp-cluster">
+<div class="official-stamp" id="statusStamp">
+          ACTIVE DOSSIER
+          <small id="stampSubText">VERIFIED STANDARDS</small>
+</div>
+</div>
+</div>
+<!-- Live Performance Cockpit -->
+<div class="stat-cockpit" id="statCockpit">
+      <div class="stat-cell">
+        <div class="label"><span class="">Total Protocol XP</span><span class="">Cumulative</span></div>
+        <div class="metric">0<span class="unit">PTS</span></div>
+        <div class="sub">Craft 0 • Moat 0</div>
+      </div>
+      <div class="stat-cell">
+        <div class="label"><span class="">Consistency Streak</span><span class="">Daily</span></div>
+        <div class="metric">0<span class="unit">DAYS</span></div>
+        <div class="sub">Active Cadence Track</div>
+      </div>
+      <div class="stat-cell">
+        <div class="label"><span class="">Craft Authority</span><span class="">Engine 01</span></div>
+        <div class="metric" style="font-size:18px;">Apprentice Diagnostician</div>
+        <div class="sub">Diagnostic Sharpness</div>
+      </div>
+      <div class="stat-cell">
+        <div class="label"><span class="">Defensibility Moat</span><span class="">Engine 02</span></div>
+        <div class="metric" style="font-size:18px;">Vendor</div>
+        <div class="sub">Anti-Commodity Standing</div>
+      </div>
+    </div>
+</header>
+<!-- VIEW 1: Dual Ledger Engines (Craft & Moat) -->
+<main class="view-panel" id="view-active-practice">
+<div class="dossier-layout">
+<!-- Engine 01: The Craft Ledger -->
+<section class="ledger-card craft" id="engine-craft">
+<div class="ledger-head">
+<div class="ledger-badge">
+<svg fill="currentColor" height="12" viewBox="0 0 24 24" width="12"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+            Engine 01
+          </div>
+<h2 class="ledger-title">The Craft Ledger</h2>
+<p class="ledger-sub">Getting sharper on record every day. Tracks diagnostic perception, hook architecture, and raw prose power.</p>
+<div class="ladder-box">
+<div class="ladder-nodes" id="ladder-craft">
+        <div class="rank-step reached current">
+          <div class="step-point"></div>
+          <div class="step-title">Apprentice Diagnostician</div>
+          <div class="step-xp">0 XP</div>
+        </div>
+      
+        <div class="rank-step  ">
+          <div class="step-point"></div>
+          <div class="step-title">Working Strategist</div>
+          <div class="step-xp">150 XP</div>
+        </div>
+      
+        <div class="rank-step  ">
+          <div class="step-point"></div>
+          <div class="step-title">Senior Diagnostician</div>
+          <div class="step-xp">420 XP</div>
+        </div>
+      
+        <div class="rank-step  ">
+          <div class="step-point"></div>
+          <div class="step-title">Master Strategist</div>
+          <div class="step-xp">850 XP</div>
         </div>
       </div>
-      <div class="stamp" id="statusStamp">ACTIVE&nbsp;FILE</div>
-    </div>
-    <div class="stat-row" id="statRow"></div>
-  </div>
-
-  <div class="engines">
-    <div class="engine craft" id="engine-craft">
-      <div class="engine-head">
-        <div class="engine-eyebrow">Engine 01</div>
-        <div class="engine-title">The Craft Ledger</div>
-        <div class="engine-sub">Getting sharper, on record, every day. This engine tracks how good you actually are &mdash; not how good you feel.</div>
-        <div class="ladder" id="ladder-craft"></div>
-        <div class="progress-track"><div class="progress-fill" id="progress-craft"></div></div>
-        <div class="progress-label" id="progress-craft-label"></div>
-      </div>
-      <div class="tasks" id="tasks-craft"></div>
-    </div>
-
-    <div class="engine moat" id="engine-moat">
-      <div class="engine-head">
-        <div class="engine-eyebrow">Engine 02</div>
-        <div class="engine-title">The Moat Ledger</div>
-        <div class="engine-sub">Making you hard to swap out &mdash; for a competitor or a prompt. This engine tracks what only you can produce.</div>
-        <div class="ladder" id="ladder-moat"></div>
-        <div class="progress-track"><div class="progress-fill" id="progress-moat"></div></div>
-        <div class="progress-label" id="progress-moat-label"></div>
-      </div>
-      <div class="tasks" id="tasks-moat"></div>
-    </div>
-  </div>
-
-  <div class="fieldlog">
-    <h2>Case Notes</h2>
-    <p class="hint">Anything worth remembering from today &mdash; a phrase that landed, a diagnosis you're proud of, a pattern you caught. Kept for you, not graded.</p>
-    <textarea id="logInput" placeholder="Today I noticed..."></textarea>
-    <div class="log-actions">
-      <button class="save-btn" id="saveLogBtn">File note</button>
-    </div>
-    <div class="log-entries" id="logEntries"></div>
-  </div>
-
-  <div class="data-actions">
-    <button class="save-btn" id="exportBtn">Download Backup</button>
-    <button class="save-btn" id="importBtn">Upload Backup</button>
-    <input type="file" id="importFile" accept=".json" style="display:none;">
-  </div>
-
-  <div class="footer-note">Progress is saved automatically to this file. Nothing here is scored by anyone but you.</div>
+<div class="progress-strip">
+<div class="progress-bar-fill" id="progress-craft" style="width: 0%;"></div>
 </div>
+<div class="progress-meta">
+<span id="rank-name-craft" class="">Apprentice Diagnostician</span>
+<span id="progress-craft-label" class="">0 / 150 XP (Working Strategist)</span>
+</div>
+</div>
+</div>
+<div class="ledger-body">
+<div id="tasks-craft"><div class="cadence-shelf"><div class="cadence-header">
+        <span class="cadence-title">Daily Drills</span>
+        <span class="cadence-line"></span>
+        <span class="cadence-chip">0/3 Done</span>
+      </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Schwartz Diagnostic Rep</span>
+              <span class="task-xp-badge">+5 XP</span>
+            </div>
+            <div class="task-desc">Cold-diagnose a live specimen for Awareness Stage misalignment (Breakthrough Advertising).</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Blind Rewrite Rep</span>
+              <span class="task-xp-badge">+5 XP</span>
+            </div>
+            <div class="task-desc">Strip adjectives from poor copy and rebuild the mechanism.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Swipe File Dissection</span>
+              <span class="task-xp-badge">+5 XP</span>
+            </div>
+            <div class="task-desc">Capture 1 piece of copy that stopped your scroll; tag its awareness stage.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div></div><div class="cadence-shelf"><div class="cadence-header">
+        <span class="cadence-title">Weekly Sprints</span>
+        <span class="cadence-line"></span>
+        <span class="cadence-chip">0/3 Done</span>
+      </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Voice-of-Customer Mining</span>
+              <span class="task-xp-badge">+15 XP</span>
+            </div>
+            <div class="task-desc">Spend 20 min harvesting unprocessed phrases from client interviews or uncensored reviews.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Full Conversion Spec Audit</span>
+              <span class="task-xp-badge">+15 XP</span>
+            </div>
+            <div class="task-desc">Draft one full teardown detailing root positioning friction.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Hostile Feedback Sparring</span>
+              <span class="task-xp-badge">+15 XP</span>
+            </div>
+            <div class="task-desc">Subject your copy to a direct peer review from someone who will push back.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div></div><div class="cadence-shelf"><div class="cadence-header">
+        <span class="cadence-title">Monthly Audits</span>
+        <span class="cadence-line"></span>
+        <span class="cadence-chip">0/2 Done</span>
+      </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Framework Re-immersion</span>
+              <span class="task-xp-badge">+40 XP</span>
+            </div>
+            <div class="task-desc">Study Eugene Schwartz, Gary Bencivenga, or six-layer offer architecture.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Conversion Split-Test Retrospective</span>
+              <span class="task-xp-badge">+40 XP</span>
+            </div>
+            <div class="task-desc">Audit hard metrics from live campaigns to validate diagnostic accuracy.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div></div></div>
+</div>
+</section>
+<!-- Engine 02: The Moat Ledger -->
+<section class="ledger-card moat" id="engine-moat">
+<div class="ledger-head">
+<div class="ledger-badge">
+<svg fill="currentColor" height="12" viewBox="0 0 24 24" width="12"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"></path></svg>
+            Engine 02
+          </div>
+<h2 class="ledger-title">The Moat Ledger</h2>
+<p class="ledger-sub">Building defensibility against AI prompting &amp; copy commoditization. Tracks proprietary intellectual capital.</p>
+<div class="ladder-box">
+<div class="ladder-nodes" id="ladder-moat">
+        <div class="rank-step reached current">
+          <div class="step-point"></div>
+          <div class="step-title">Vendor</div>
+          <div class="step-xp">0 XP</div>
+        </div>
+      
+        <div class="rank-step  ">
+          <div class="step-point"></div>
+          <div class="step-title">Specialist</div>
+          <div class="step-xp">150 XP</div>
+        </div>
+      
+        <div class="rank-step  ">
+          <div class="step-point"></div>
+          <div class="step-title">Category Owner</div>
+          <div class="step-xp">420 XP</div>
+        </div>
+      
+        <div class="rank-step  ">
+          <div class="step-point"></div>
+          <div class="step-title">Irreplaceable Partner</div>
+          <div class="step-xp">850 XP</div>
+        </div>
+      </div>
+<div class="progress-strip">
+<div class="progress-bar-fill" id="progress-moat" style="width: 0%;"></div>
+</div>
+<div class="progress-meta">
+<span id="rank-name-moat" class="">Vendor</span>
+<span id="progress-moat-label" class="">0 / 150 XP (Specialist)</span>
+</div>
+</div>
+</div>
+<div class="ledger-body">
+<div id="tasks-moat"><div class="cadence-shelf"><div class="cadence-header">
+        <span class="cadence-title">Daily Drills</span>
+        <span class="cadence-line"></span>
+        <span class="cadence-chip">0/2 Done</span>
+      </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Publish the Strategic Rationale</span>
+              <span class="task-xp-badge">+5 XP</span>
+            </div>
+            <div class="task-desc">Broadcast how you arrived at a conversion decision, not just the output.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Proprietary Metaphor Capture</span>
+              <span class="task-xp-badge">+5 XP</span>
+            </div>
+            <div class="task-desc">Coin or capture an analogy that makes complex value obvious.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div></div><div class="cadence-shelf"><div class="cadence-header">
+        <span class="cadence-title">Weekly Sprints</span>
+        <span class="cadence-line"></span>
+        <span class="cadence-chip">0/3 Done</span>
+      </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Category Ownership Essay</span>
+              <span class="task-xp-badge">+15 XP</span>
+            </div>
+            <div class="task-desc">Publish authoritative long-form content using your proprietary frameworks.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Judgment-Call Dossier</span>
+              <span class="task-xp-badge">+15 XP</span>
+            </div>
+            <div class="task-desc">Document an ambiguous strategic ruling an AI model was incapable of making.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Strategic Advisor Pivot</span>
+              <span class="task-xp-badge">+15 XP</span>
+            </div>
+            <div class="task-desc">Initiate an unprompted diagnostic recommendation treating clients as partners.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div></div><div class="cadence-shelf"><div class="cadence-header">
+        <span class="cadence-title">Monthly Audits</span>
+        <span class="cadence-line"></span>
+        <span class="cadence-chip">0/2 Done</span>
+      </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Commodity Pattern Purge</span>
+              <span class="task-xp-badge">+40 XP</span>
+            </div>
+            <div class="task-desc">Scan your recent deliverables against cliché phrases and ban tired formulas.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div><div class="task-item" tabindex="0" role="checkbox" aria-checked="false">
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">Hard Proof Case Asset</span>
+              <span class="task-xp-badge">+40 XP</span>
+            </div>
+            <div class="task-desc">Produce verified statistical evidence, case breakdowns, or client revenue proof.</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        </div></div></div>
+</div>
+</section>
+</div>
+</main>
+<!-- VIEW 2: Interactive Diagnostic Lab & Practice Drills -->
+<div class="view-panel" id="view-interactive-lab" style="display:none;">
+<section class="workbench-panel">
+<div class="workbench-tabs">
+<button class="wb-tab-btn active" data-wb="drill-diagnostic">
+<span class="">01. Schwartz Awareness Diagnostic</span>
+<span class="badge">+5 XP</span>
+</button>
+<button class="wb-tab-btn" data-wb="schwartz-matrix">
+<span class="">02. Schwartz 5-Stages Matrix</span>
+<span class="badge">Reference</span>
+</button>
+<button class="wb-tab-btn" data-wb="drill-rewrite">
+<span class="">03. Blind Rewrite Station</span>
+<span class="badge">+5 XP</span>
+</button>
+<button class="wb-tab-btn" data-wb="drill-judgment">
+<span class="">04. Judgment Call Logger</span>
+<span class="badge">+15 XP</span>
+</button>
+</div>
+<!-- Tab 1: Live Diagnostic with Schwartz 5-Stages Calibration -->
+<div class="wb-tab-content active" id="wb-drill-diagnostic">
+<div class="diagnostic-container">
+<div class="specimen-card">
+<div class="specimen-header">
+<span class="specimen-tag" id="specimenBadge">Specimen #204 • High Ticket Coaching Ad</span>
+<button class="specimen-shuffle" id="shuffleSpecimenBtn">↻ Next Specimen</button>
+</div>
+<div class="specimen-copy" id="specimenText">"Are you ready to explode your coaching revenue? Stop trading time for dollars! Our revolutionary 7-figure mastermind unlocks passive freedom in 60 days with guaranteed organic client attraction secrets."</div>
+<div class="specimen-meta">
+<span class=""><b>Target Segment:</b> <span id="specimenTarget" class="">High-Ticket Business Mentorship</span></span>
+<span class=""><b>Target Audience State:</b> <span id="specimenAudienceState" class="">Cold Ad Traffic (Unaware / Early Problem)</span></span>
+<span class=""><b>Friction Vector:</b> <span id="specimenSymptom" class="">Severe Pitch-Too-Early Friction • Stage 5 Claim Fatigue on Stage 2 Prospects</span></span>
+</div>
+</div>
+<div class="diagnostic-form">
+<h3 class="">Schwartz 5 Stages Calibration Rep</h3>
+<p class="tip">Diagnose audience awareness level and identify stage-misalignment friction before rewriting.</p>
+<div class="form-group">
+<label class="">1. Diagnose Prospect Awareness Stage</label>
+<div class="schwartz-selector-grid" id="stageSelectorGrid">
+<div class="schwartz-chip" data-stage="unaware">1. Unaware</div>
+<div class="schwartz-chip active" data-stage="problem">2. Problem-Aware</div>
+<div class="schwartz-chip" data-stage="solution">3. Solution-Aware</div>
+<div class="schwartz-chip" data-stage="product">4. Product-Aware</div>
+<div class="schwartz-chip" data-stage="most">5. Most Aware</div>
+</div>
+<div class="schwartz-guidance-pill" id="stageGuidancePill">
+<strong>Problem-Aware State:</strong> Prospect feels the symptom/pain keenly, but knows zero credible mechanisms or offers. <em>Fatal Sin:</em> Jumping into product specs before proving you understand their exact torment.
+              </div>
+</div>
+<div class="form-group">
+<label class="">2. Awareness-Stage Mismatch Fracture</label>
+<select class="vintage-select" id="diagType">
+<option value="pitch-too-early">Pitch Too Early: Pitching product before problem intimacy is proven</option>
+<option value="lecturing-aware">Lecturing the Aware: Over-explaining pain to someone already Product-Aware</option>
+<option value="missing-mechanism">Missing Mechanism: Jumping from problem to promise without unique "why"</option>
+<option value="stage5-cynicism">Stage 5 Fatigue: Tired claims that market has developed immunity against</option>
+<option value="offer-delay">Delayed Close: Burying the offer on a high-intent, Most-Aware checkout or lead page</option>
+</select>
+</div>
+<div class="form-group">
+<label class="">3. Breakthrough Advertising Prescription (Prescribe Lead Hook)</label>
+<textarea class="vintage-area" id="diagFix" placeholder="State the required Lead Archetype (Story, Symptom, Mechanism, or Direct Offer Lead) and prescribe the exact angle adjustment..."></textarea>
+</div>
+<button class="btn-primary" id="submitDiagBtn">Record Diagnostic Rep (+5 XP)</button>
+</div>
+</div>
+</div>
+<!-- Tab 2: Schwartz 5-Stages Matrix Reference -->
+<div class="wb-tab-content" id="wb-schwartz-matrix">
+<div class="matrix-wrap">
+<div class="matrix-intro">
+<h3 style="font-family:'Special Elite', monospace; font-size:22px; margin-bottom:4px;" class="">Eugene Schwartz's 5 Stages of Awareness Matrix</h3>
+<p style="font-size:13.5px; color:var(--ink-soft);" class="">From <em>Breakthrough Advertising (1966)</em>. Copy does not create desire; it channels existing mass desire onto your offer. The headline and lead must meet the prospect at their exact stage of consciousness.</p>
+</div>
+<div class="matrix-nav-strip" id="matrixNavStrip">
+<button class="matrix-nav-btn active" data-matrix="unaware">Stage 1: Unaware</button>
+<button class="matrix-nav-btn" data-matrix="problem">Stage 2: Problem-Aware</button>
+<button class="matrix-nav-btn" data-matrix="solution">Stage 3: Solution-Aware</button>
+<button class="matrix-nav-btn" data-matrix="product">Stage 4: Product-Aware</button>
+<button class="matrix-nav-btn" data-matrix="most">Stage 5: Most Aware</button>
+</div>
+<div id="matrixDisplayArea">
+      <div class="matrix-card">
+        <div class="matrix-card-head">
+          <div class="matrix-card-title">Stage 1: Completely Unaware</div>
+          <div class="matrix-card-tag">Highest Market Size • Lowest Immediate Readiness</div>
+        </div>
+        <div class="matrix-grid-2x2">
+          <div class="matrix-block">
+            <div class="matrix-block-label blue">1. Core Prospect Mindset &amp; Mental State</div>
+            <p class="">Prospect has no realization of the problem, need, or market desire. They may be living with an uncomfortable symptom but have not conceptualized it as a solvable condition.</p>
+          </div>
+          <div class="matrix-block">
+            <div class="matrix-block-label red">2. The Fatal Mistake / Cardinal Sin</div>
+            <p class="">Pitching the product, offer, or brand name in the headline. Any hint of commercial selling triggers instant bounce and reflex skepticism.</p>
+          </div>
+          <div class="matrix-block">
+            <div class="matrix-block-label brass">3. Schwartz Lead Archetype / Hook Law</div>
+            <p class="">Story Lead, Secret / Intrigue Lead, Contrarian Insight, or Relatable Identity Trigger. Start 10 miles away from the transaction.</p>
+          </div>
+          <div class="matrix-block">
+            <div class="matrix-block-label ink">4. Cold Diagnostic Questions to Run</div>
+            <ul>
+              <li class="">Does the headline hook an undeniable identity or external curiosity rather than an offer?</li><li class="">Is product mentioned in the first 30% of the asset? (If yes: fatal leak).</li><li class="">Does the hook validate something they already secretly believe about the world?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+<!-- Tab 3: Blind Rewrite -->
+<div class="wb-tab-content" id="wb-drill-rewrite">
+<div class="diagnostic-container">
+<div class="specimen-card">
+<div class="specimen-header">
+<span class="specimen-tag">Weak Copy Specimen</span>
+</div>
+<div class="specimen-copy">
+              "We help founders scale seamlessly with our cutting-edge bespoke consulting frameworks that deliver game-changing results across every business vertical."
+            </div>
+<div class="specimen-meta">
+<span class=""><b>Target Segment:</b> Growth Stage B2B Founders</span>
+<span class=""><b>Awareness Stage:</b> Solution-Aware (They know consulting exists, tired of empty claims)</span>
+<span class=""><b>Vibe:</b> 100% Agency Fluff • Zero Concrete Proof Mechanics</span>
+</div>
+</div>
+<div class="diagnostic-form">
+<h3 class="">Strategic Rewrite Studio</h3>
+<p class="tip">Strip adjectives. Ground in concrete constraints, unique mechanism, and undeniable proof mechanics.</p>
+<div class="form-group">
+<label class="">Intended Awareness Stage</label>
+<select class="vintage-select" id="rewriteStage">
+<option value="Solution-Aware">Solution-Aware (Differentiate through proprietary mechanism)</option>
+<option value="Problem-Aware">Problem-Aware (Agitate operational bottlenecks)</option>
+<option value="Product-Aware">Product-Aware (Stack verified case proof against alternatives)</option>
+<option value="Most Aware">Most Aware (Clean transactional terms &amp; capacity)</option>
+</select>
+</div>
+<div class="form-group">
+<label class="">Your High-Ticket Rewrite</label>
+<textarea class="vintage-area" id="rewriteInput" placeholder="Draft your sharp, trust-first alternative here..."></textarea>
+</div>
+<button class="btn-primary" id="submitRewriteBtn">Commit Rewrite Rep (+5 XP)</button>
+</div>
+</div>
+</div>
+<!-- Tab 4: Judgment Call -->
+<div class="wb-tab-content" id="wb-drill-judgment">
+<div class="diagnostic-form" style="max-width: 780px;">
+<h3 class="">Proprietary Judgment-Call Log</h3>
+<p class="tip">Document decisions that an LLM prompt would fail to navigate — nuanced client politics, awareness-stage disputes, or sacrificing short-term CTR for category authority.</p>
+<div class="form-group">
+<label class="">The Ambiguous Dilemma</label>
+<input class="vintage-input" id="judgmentDilemma" placeholder="e.g., Client demanded hype-based urgency countdown on a $12k enterprise offer..." type="text">
+</div>
+<div class="form-group">
+<label class="">Awareness / Market Sophistication Context</label>
+<select class="vintage-select" id="judgmentStage">
+<option value="Unaware">Cold / Unaware Traffic</option>
+<option value="Problem-Aware">Problem-Aware Prospects</option>
+<option value="Solution-Aware">Solution-Aware / Skeptical Prospects</option>
+<option value="Product-Aware">Product-Aware (Direct Competitor Comparison)</option>
+<option value="Most-Aware">Most-Aware Warm Pipeline</option>
+</select>
+</div>
+<div class="form-group">
+<label class="">Your Strategic Ruling &amp; Moat Rationale</label>
+<textarea class="vintage-area" id="judgmentRuling" placeholder="Why you killed the convention, what you installed instead, and how it protected price integrity..."></textarea>
+</div>
+<button class="btn-primary" id="submitJudgmentBtn">Archive Judgment Call (+15 XP)</button>
+</div>
+</div>
+</section>
+</div>
+<!-- VIEW 3: Swipe File Vault & Case Logs -->
+<div class="view-panel" id="view-vault-tab" style="display:none;">
+<section class="workbench-panel">
+<div class="workbench-tabs">
+<button class="wb-tab-btn active" data-wb="vault-swipe">
+<span class="">Scroll-Stopping Swipe Vault</span>
+</button>
+<button class="wb-tab-btn" data-wb="vault-notes">
+<span class="">Case Notes &amp; Field Ledger</span>
+</button>
+</div>
+<!-- Swipe Sub-tab -->
+<div class="wb-tab-content active" id="wb-vault-swipe">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 14px;">
+<div>
+<h3 style="font-family:'Special Elite', monospace; font-size:20px;" class="">Proprietary Swipe &amp; Input Capture</h3>
+<p style="font-size:13px; color:var(--ink-soft);" class="">Add specimens that stopped your scroll with immediate deconstruction of why they work and their Schwartz awareness stage.</p>
+</div>
+<div style="display:flex; flex-wrap:wrap; gap:8px;">
+<input class="vintage-input" id="swipeAddText" placeholder="Paste copy snippet..." style="width:230px;" type="text">
+<select class="vintage-select" id="swipeAddStage" style="width:160px;">
+<option value="Unaware">Stage 1: Unaware</option>
+<option value="Problem-Aware">Stage 2: Problem</option>
+<option selected="" value="Solution-Aware">Stage 3: Solution</option>
+<option value="Product-Aware">Stage 4: Product</option>
+<option value="Most-Aware">Stage 5: Most Aware</option>
+</select>
+<input class="vintage-input" id="swipeAddWhy" placeholder="Why it works / mechanism..." style="width:200px;" type="text">
+<button class="btn-primary" id="addSwipeBtn">+ Capture</button>
+</div>
+</div>
+<div class="swipe-grid" id="swipeGrid">
+      <div class="swipe-card">
+        <div>
+          <div class="swipe-card-top">
+            <span class="swipe-tag">Mechanism Lead</span>
+            <span class="awareness-badge">Solution-Aware</span>
+          </div>
+          <div class="swipe-text">"In 2024, 78% of B2B buyers reported that software sales reps wasted their time. Here is the 12-minute diagnostic we run before scheduling a single demo."</div>
+        </div>
+        <div class="swipe-why"><b>Deconstruction:</b> Validates prospect cynicism first, then presents high-integrity mechanism.</div>
+      </div>
+    
+      <div class="swipe-card">
+        <div>
+          <div class="swipe-card-top">
+            <span class="swipe-tag">Inverted Hook</span>
+            <span class="awareness-badge">Problem-Aware</span>
+          </div>
+          <div class="swipe-text">"Why high-performing agencies are firing their top lead-gen retainers this quarter."</div>
+        </div>
+        <div class="swipe-why"><b>Deconstruction:</b> Direct curiosity trigger based on institutional contrarianism.</div>
+      </div>
+    
+      <div class="swipe-card">
+        <div>
+          <div class="swipe-card-top">
+            <span class="swipe-tag">Friction Neutralizer</span>
+            <span class="awareness-badge">Product-Aware</span>
+          </div>
+          <div class="swipe-text">"We do not offer a 30-day money-back guarantee. Instead, we tie our final invoice to your pipeline verification milestone."</div>
+        </div>
+        <div class="swipe-why"><b>Deconstruction:</b> Signals unassailable conviction and filters out unqualified bargain-hunters.</div>
+      </div>
+    
+      <div class="swipe-card">
+        <div>
+          <div class="swipe-card-top">
+            <span class="swipe-tag">Direct Close</span>
+            <span class="awareness-badge">Most-Aware</span>
+          </div>
+          <div class="swipe-text">"Cohort 14 opens tomorrow at 9 AM EST. 6 seats remaining. No sales calls; application review only."</div>
+        </div>
+        <div class="swipe-why"><b>Deconstruction:</b> Zero fluff for a warm audience that already trusts the brand. Strict terms create decisive action.</div>
+      </div>
+    </div>
+</div>
+<!-- Case Notes Sub-tab -->
+<div class="wb-tab-content" id="wb-vault-notes">
+<div class="fieldlog-area">
+<div>
+<h3 style="font-family:'Special Elite', monospace; font-size:20px; margin-bottom: 6px;" class="">File a Case Note</h3>
+<p style="font-size:13px; color:var(--ink-soft); margin-bottom: 14px;" class="">Log a client phrase, sudden diagnostic breakthrough, or Schwartz awareness friction caught today.</p>
+<div class="form-group">
+<label class="">Awareness Stage Tag</label>
+<select class="vintage-select" id="logStageSelect" style="margin-bottom:10px;">
+<option value="General Craft">General Diagnostic Rigor</option>
+<option value="Stage 1: Unaware">Stage 1: Unaware</option>
+<option value="Stage 2: Problem-Aware">Stage 2: Problem-Aware</option>
+<option value="Stage 3: Solution-Aware">Stage 3: Solution-Aware</option>
+<option value="Stage 4: Product-Aware">Stage 4: Product-Aware</option>
+<option value="Stage 5: Most-Aware">Stage 5: Most-Aware</option>
+</select>
+</div>
+<textarea class="vintage-area" id="logInput" placeholder="Today I caught a prospect saying... or noted that Schwartz Stage 3 hooks fail when..." style="min-height: 120px;"></textarea>
+<div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+<button class="btn-primary" id="saveLogBtn">File Case Note</button>
+</div>
+</div>
+<div>
+<h4 style="font-family:'IBM Plex Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.12em; color:var(--ink-soft); margin-bottom:10px;" class="">Recent Case Files (Last 40 Entries)</h4>
+<div class="log-stream" id="logEntries"><div style="font-size:13px; color:var(--ink-faint); font-style:italic; padding:12px 0;" class="">No case notes archived yet. File your first insight above.</div></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Bottom Dossier Utility Dock -->
+<footer class="dossier-actions">
+<div class="hint-text">
+<span class="">Auto-Persisted Protocol • Zero Fluff, 100% Hard Craft • Eugene Schwartz Calibrated</span>
+</div>
+<div class="dossier-buttons">
+<button class="btn-secondary" id="exportBtn">Export JSON Backup</button>
+<button class="btn-secondary" id="importBtn">Restore Archive</button>
+<button class="btn-secondary" id="resetDailyBtn" title="Test new day cycle">Simulate New Day</button>
+<input accept=".json" id="importFile" style="display:none;" type="file">
+</div>
+</footer><script>
+(function initFieldManual() {
+  const modal = document.getElementById('fieldManualModal');
+  const openBtn = document.getElementById('manualTabBtn');
+  const closeTop = document.getElementById('closeManualTopBtn');
+  const closeBottom = document.getElementById('closeManualBottomBtn');
 
+  function openManual() {
+    if (modal) {
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeManual() {
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  if (openBtn) openBtn.addEventListener('click', openManual);
+  if (closeTop) closeTop.addEventListener('click', closeManual);
+  if (closeBottom) closeBottom.addEventListener('click', closeManual);
+
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeManual();
+    });
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+      closeManual();
+    }
+  });
+})();
+</script><!-- Classified Field Manual / SOP Modal -->
+
+</div>
+<!-- Interactive Toast -->
+<div class="dossier-toast" id="toast">
+<div class="toast-dot"></div>
+<span id="toastMsg" class="">Logged to official file</span>
+</div>
 <script>
 (function(){
-  const XP = { daily: 5, weekly: 15, monthly: 40 };
+  const XP_VALUES = { daily: 5, weekly: 15, monthly: 40 };
+
+  const SCHWARTZ_MATRIX_DATA = {
+    unaware: {
+      title: "Stage 1: Completely Unaware",
+      tag: "Highest Market Size • Lowest Immediate Readiness",
+      mindset: "Prospect has no realization of the problem, need, or market desire. They may be living with an uncomfortable symptom but have not conceptualized it as a solvable condition.",
+      sin: "Pitching the product, offer, or brand name in the headline. Any hint of commercial selling triggers instant bounce and reflex skepticism.",
+      lead: "Story Lead, Secret / Intrigue Lead, Contrarian Insight, or Relatable Identity Trigger. Start 10 miles away from the transaction.",
+      questions: [
+        "Does the headline hook an undeniable identity or external curiosity rather than an offer?",
+        "Is product mentioned in the first 30% of the asset? (If yes: fatal leak).",
+        "Does the hook validate something they already secretly believe about the world?"
+      ]
+    },
+    problem: {
+      title: "Stage 2: Problem-Aware",
+      tag: "High Pain Intensity • Zero Mechanism Knowledge",
+      mindset: "Prospect feels the bleeding neck, frustration, or bottleneck intensely. They know what hurts, but they have zero clue that a legitimate mechanism exists to solve it.",
+      sin: "Introducing proprietary features or brand comparisons. If you pitch your solution before mirroring their acute pain, they think you don't understand their reality.",
+      lead: "Problem / Symptom Agitation Lead or Empathy Mirror Lead. Describe their daily torment with vivid, uncensored Voice-of-Customer phrases.",
+      questions: [
+        "Does the lead demonstrate diagnostic intimacy with their exact symptom?",
+        "Does it articulate the problem better than the prospect can explain it themselves?",
+        "Does it resist naming any specific product until the problem is fully diagnosed?"
+      ]
+    },
+    solution: {
+      title: "Stage 3: Solution-Aware",
+      tag: "Category Informed • Skeptical of Method",
+      mindset: "Prospect knows the problem and knows solutions exist (e.g., they know SEO, coaching, or ERP tools exist), but they do not know YOUR specific approach or why previous attempts failed.",
+      sin: "Relying on tired generic category claims (e.g., 'we grow your pipeline'). They have heard this 1,000 times and are completely immune to basic benefit copy.",
+      lead: "Mechanism Lead, Inverted Logic Hook, or 'Why Most [X] Fails' Diagnostic Lead. Introduce the proprietary vehicle that creates the breakthrough.",
+      questions: [
+        "Is there a named, proprietary mechanism that explains why existing solutions broke?",
+        "Does the lead shift blame from the prospect's willpower to an obsolete vehicle?",
+        "Does it provide intellectual clarity rather than just louder hype?"
+      ]
+    },
+    product: {
+      title: "Stage 4: Product-Aware",
+      tag: "Vendor Comparison Mode • Proof Sensitive",
+      mindset: "Prospect knows what you sell and knows your competitors. They are actively judging your claim vs. others. They are asking: 'Why should I pick you over the alternative?'",
+      sin: "Wasting time re-educating them on the problem or defining the category. Lecturing an informed buyer on why they need consulting creates patronizing friction.",
+      lead: "Differentiator Lead, Superiority Proof Stack, or Unfair Advantage Hook. Highlight your moats, constraints, track record, and specific deliverables.",
+      questions: [
+        "Does the copy immediately articulate the proprietary wedge against rivals?",
+        "Are hard proof metrics (audited data, case studies, risk reversers) front and center?",
+        "Is price-to-value justification rock-solid against commoditized alternatives?"
+      ]
+    },
+    most: {
+      title: "Stage 5: Most Aware",
+      tag: "Highest Intent • Lowest Copy Volume Needed",
+      mindset: "Prospect already knows your product, respects your authority, and wants the transformation. They only need to know the terms: price, bonuses, availability, and how to start now.",
+      sin: "Over-writing. Trapping a ready buyer inside long backstory, redundant educational essays, or delayed call-to-actions.",
+      lead: "Direct Offer Lead, Capacity Announcement, Deadline / Terms Hook, or Simple Transaction Invitation. State the offer plainly.",
+      questions: [
+        "Is the CTA above the fold or immediately clear?",
+        "Are terms, guarantees, payment structures, and onboarding dates transparent?",
+        "Have all friction points in checkout/application friction been ruthlessly eliminated?"
+      ]
+    }
+  };
+
+  const STAGE_GUIDANCE_TEXTS = {
+    unaware: "<strong>Unaware State:</strong> Prospect feels no conscious problem. <em>Fatal Sin:</em> Pitching product/brand in hook. <em>Prescription:</em> Use Secret / Story Lead focused on intrigue.",
+    problem: "<strong>Problem-Aware State:</strong> Prospect feels the pain keenly but knows zero mechanisms. <em>Fatal Sin:</em> Rushing to product specs before demonstrating deep problem intimacy.",
+    solution: "<strong>Solution-Aware State:</strong> Prospect knows categories exist, immune to generic claims. <em>Fatal Sin:</em> Claim inflation. <em>Prescription:</em> Reveal the Proprietary Mechanism.",
+    product: "<strong>Product-Aware State:</strong> Prospect compares your brand to alternatives. <em>Fatal Sin:</em> Re-explaining the problem. <em>Prescription:</em> Stack superior proof and wedge differentiator.",
+    most: "<strong>Most Aware State:</strong> Ready to buy. <em>Fatal Sin:</em> Over-writing and delaying the CTA with redundant stories. <em>Prescription:</em> Direct terms, deadline, and frictionless close."
+  };
 
   const TASKS = {
     craft: [
-      { id:'c-d1', cadence:'daily', label:'Live Diagnostic Rep', desc:"Diagnose one coach's funnel or page, cold." },
-      { id:'c-d2', cadence:'daily', label:'Rewrite Rep', desc:'Blind rewrite a piece of copy, then compare to the original.' },
-      { id:'c-d3', cadence:'daily', label:'Swipe Capture', desc:'Save one piece of copy that stopped your scroll. Note why it worked.' },
-      { id:'c-w1', cadence:'weekly', label:'Voice-of-Customer Mining', desc:'15\u201320 min pulling raw language from reviews, DMs, comments.' },
-      { id:'c-w2', cadence:'weekly', label:'Full Diagnostic Document', desc:'One complete diagnostic, client or spec.' },
-      { id:'c-w3', cadence:'weekly', label:'Feedback Exposure', desc:"Get one piece of work in front of someone who'll push back." },
-      { id:'c-m1', cadence:'monthly', label:'Framework Re-immersion', desc:'Reread Makepeace, Schwartz, or your six-layer architecture.' },
-      { id:'c-m2', cadence:'monthly', label:'Result-Tracking Review', desc:'Log and review any performance data you have access to.' }
+      { id:'c-d1', cadence:'daily', label:'Schwartz Diagnostic Rep', desc:"Cold-diagnose a live specimen for Awareness Stage misalignment (Breakthrough Advertising)." },
+      { id:'c-d2', cadence:'daily', label:'Blind Rewrite Rep', desc:'Strip adjectives from poor copy and rebuild the mechanism.' },
+      { id:'c-d3', cadence:'daily', label:'Swipe File Dissection', desc:'Capture 1 piece of copy that stopped your scroll; tag its awareness stage.' },
+      { id:'c-w1', cadence:'weekly', label:'Voice-of-Customer Mining', desc:'Spend 20 min harvesting unprocessed phrases from client interviews or uncensored reviews.' },
+      { id:'c-w2', cadence:'weekly', label:'Full Conversion Spec Audit', desc:'Draft one full teardown detailing root positioning friction.' },
+      { id:'c-w3', cadence:'weekly', label:'Hostile Feedback Sparring', desc:'Subject your copy to a direct peer review from someone who will push back.' },
+      { id:'c-m1', cadence:'monthly', label:'Framework Re-immersion', desc:'Study Eugene Schwartz, Gary Bencivenga, or six-layer offer architecture.' },
+      { id:'c-m2', cadence:'monthly', label:'Conversion Split-Test Retrospective', desc:'Audit hard metrics from live campaigns to validate diagnostic accuracy.' }
     ],
     moat: [
-      { id:'m-d1', cadence:'daily', label:'Publish the Reasoning', desc:'Share a piece of thinking, not just an output.' },
-      { id:'m-d2', cadence:'daily', label:'Proprietary Input Capture', desc:'Add one entry to your swipe file or client pattern library.' },
-      { id:'m-w1', cadence:'weekly', label:'Category Ownership Content', desc:'Post using your proprietary system language.' },
-      { id:'m-w2', cadence:'weekly', label:'Judgment-Call Log', desc:"Document one ambiguous call a prompt couldn't have made alone." },
-      { id:'m-w3', cadence:'weekly', label:'Relationship Depth Move', desc:'One action that treats a client relationship as strategist, not vendor.' },
-      { id:'m-m1', cadence:'monthly', label:'Taste Audit', desc:"Run last month's copy against the banned-patterns list." },
-      { id:'m-m2', cadence:'monthly', label:'Accountability Asset', desc:'Build or update one piece of hard proof: result, case study, or guarantee.' }
+      { id:'m-d1', cadence:'daily', label:'Publish the Strategic Rationale', desc:'Broadcast how you arrived at a conversion decision, not just the output.' },
+      { id:'m-d2', cadence:'daily', label:'Proprietary Metaphor Capture', desc:'Coin or capture an analogy that makes complex value obvious.' },
+      { id:'m-w1', cadence:'weekly', label:'Category Ownership Essay', desc:'Publish authoritative long-form content using your proprietary frameworks.' },
+      { id:'m-w2', cadence:'weekly', label:'Judgment-Call Dossier', desc:'Document an ambiguous strategic ruling an AI model was incapable of making.' },
+      { id:'m-w3', cadence:'weekly', label:'Strategic Advisor Pivot', desc:'Initiate an unprompted diagnostic recommendation treating clients as partners.' },
+      { id:'m-m1', cadence:'monthly', label:'Commodity Pattern Purge', desc:'Scan your recent deliverables against cliché phrases and ban tired formulas.' },
+      { id:'m-m2', cadence:'monthly', label:'Hard Proof Case Asset', desc:'Produce verified statistical evidence, case breakdowns, or client revenue proof.' }
     ]
   };
 
@@ -527,18 +1946,80 @@ button.save-btn:disabled{ opacity:0.4; cursor:default; }
     craft: [
       { name:'Apprentice Diagnostician', min:0 },
       { name:'Working Strategist', min:150 },
-      { name:'Senior Diagnostician', min:400 },
-      { name:'Master Strategist', min:800 }
+      { name:'Senior Diagnostician', min:420 },
+      { name:'Master Strategist', min:850 }
     ],
     moat: [
       { name:'Vendor', min:0 },
       { name:'Specialist', min:150 },
-      { name:'Category Owner', min:400 },
-      { name:'Irreplaceable', min:800 }
+      { name:'Category Owner', min:420 },
+      { name:'Irreplaceable Partner', min:850 }
     ]
   };
 
-  const STORAGE_KEY = 'practice-file-state';
+  const SPECIMENS = [
+    {
+      badge: "Specimen #204 &bull; High Ticket Coaching Ad",
+      text: '"Are you ready to explode your coaching revenue? Stop trading time for dollars! Our revolutionary 7-figure mastermind unlocks passive freedom in 60 days with guaranteed organic client attraction secrets."',
+      metaTarget: "High-Ticket Business Mentorship",
+      metaAudience: "Cold Ad Traffic (Unaware / Early Problem)",
+      metaSymptom: "Severe Pitch-Too-Early Friction • Stage 5 Claim Fatigue on Stage 2 Prospects",
+      defaultStage: "problem"
+    },
+    {
+      badge: "Specimen #319 &bull; B2B Enterprise Cold Outreach",
+      text: '"Hi Sarah, our AI omnichannel engine leverages hyper-converged predictive telemetry to accelerate enterprise contract velocitization by 34%. Would 15 mins on Tuesday work for a custom sandbox tour?"',
+      metaTarget: "Enterprise CTOs / Operations VPs",
+      metaAudience: "Unaware of vendor • Problem-Aware of tool sprawl",
+      metaSymptom: "Treating Unaware/Problem prospect as Product-Aware • Zero empathy mirror or problem intimacy",
+      defaultStage: "unaware"
+    },
+    {
+      badge: "Specimen #412 &bull; Retargeting / Checkout Page",
+      text: '"Did you know that having poor marketing hurts business? Marketing is essential for company survival in our modern digital ecosystem. Here is what marketing does: it helps you find buyers..."',
+      metaTarget: "High-Intent Retargeting / Warm Pipeline",
+      metaAudience: "Most-Aware / Product-Aware Hot Traffic",
+      metaSymptom: "Lecturing the Most-Aware • Burying the transaction under redundant elementary education",
+      defaultStage: "most"
+    },
+    {
+      badge: "Specimen #508 &bull; Consultancy Sales Page Hero",
+      text: '"We are the premier boutique strategy consultancy providing bespoke advisory services to forward-thinking mid-market leadership teams."',
+      metaTarget: "Mid-Market CEOs who already buy consulting",
+      metaAudience: "Solution-Aware (Deciding between firms)",
+      metaSymptom: "Zero Mechanism Moat • Fluffy generic jargon instead of proprietary diagnostic vehicle",
+      defaultStage: "solution"
+    }
+  ];
+
+  const INITIAL_SWIPES = [
+    {
+      tag: "Mechanism Lead",
+      stage: "Solution-Aware",
+      text: '"In 2024, 78% of B2B buyers reported that software sales reps wasted their time. Here is the 12-minute diagnostic we run before scheduling a single demo."',
+      why: "Validates prospect cynicism first, then presents high-integrity mechanism."
+    },
+    {
+      tag: "Inverted Hook",
+      stage: "Problem-Aware",
+      text: '"Why high-performing agencies are firing their top lead-gen retainers this quarter."',
+      why: "Direct curiosity trigger based on institutional contrarianism."
+    },
+    {
+      tag: "Friction Neutralizer",
+      stage: "Product-Aware",
+      text: '"We do not offer a 30-day money-back guarantee. Instead, we tie our final invoice to your pipeline verification milestone."',
+      why: "Signals unassailable conviction and filters out unqualified bargain-hunters."
+    },
+    {
+      tag: "Direct Close",
+      stage: "Most-Aware",
+      text: '"Cohort 14 opens tomorrow at 9 AM EST. 6 seats remaining. No sales calls; application review only."',
+      why: "Zero fluff for a warm audience that already trusts the brand. Strict terms create decisive action."
+    }
+  ];
+
+  const STORAGE_KEY = 'practice-file-state-v3';
 
   function todayStr(d){
     const dt = d || new Date();
@@ -569,33 +2050,35 @@ button.save-btn:disabled{ opacity:0.4; cursor:default; }
       daily: { date: todayStr(), done: [] },
       weekly: { key: weekKey(), done: [] },
       monthly: { key: monthKey(), done: [] },
-      fieldLog: []
+      fieldLog: [],
+      swipes: INITIAL_SWIPES,
+      diagnosticsCount: 0,
+      specimenIdx: 0,
+      selectedDrillStage: 'problem',
+      activeMatrixStage: 'unaware'
     };
   }
 
   let state = defaultState();
 
-  // Changed from custom window.storage to standard localStorage
   function loadState(){
-    try{
+    try {
       const res = localStorage.getItem(STORAGE_KEY);
       if(res){
         const parsed = JSON.parse(res);
         state = Object.assign(defaultState(), parsed);
       }
-    }catch(e){
-      // no saved state yet or parse error
+    } catch(e) {
       state = defaultState();
     }
     rolloverPeriods();
-    render();
+    renderAll();
   }
 
-  // Changed from custom window.storage to standard localStorage
   function persist(){
-    try{
+    try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }catch(e){
+    } catch(e) {
       console.error('Save failed', e);
     }
   }
@@ -613,7 +2096,6 @@ button.save-btn:disabled{ opacity:0.4; cursor:default; }
     if(state.monthly.key !== mk){
       state.monthly = { key: mk, done: [] };
     }
-    // streak decay: if last completion wasn't today or yesterday, reset to 0
     if(state.lastCompletionDate && state.lastCompletionDate !== t && state.lastCompletionDate !== yesterdayStr()){
       state.streak = 0;
     }
@@ -627,13 +2109,23 @@ button.save-btn:disabled{ opacity:0.4; cursor:default; }
     return bucketFor(cadence).done.includes(id);
   }
 
+  function showToast(msg){
+    const el = document.getElementById('toast');
+    const txt = document.getElementById('toastMsg');
+    txt.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2400);
+  }
+
   function toggleTask(engineKey, task, taskEl){
     const bucket = bucketFor(task.cadence);
     const idx = bucket.done.indexOf(task.id);
     const engXPKey = engineKey === 'craft' ? 'craftXP' : 'moatXP';
+    const xpGained = XP_VALUES[task.cadence];
+
     if(idx === -1){
       bucket.done.push(task.id);
-      state[engXPKey] += XP[task.cadence];
+      state[engXPKey] += xpGained;
       if(task.cadence === 'daily'){
         const t = todayStr();
         if(state.lastCompletionDate !== t){
@@ -646,194 +2138,479 @@ button.save-btn:disabled{ opacity:0.4; cursor:default; }
         }
       }
       popStamp(taskEl);
+      showToast(`+${xpGained} XP logged to ${engineKey === 'craft' ? 'Craft' : 'Moat'} Ledger`);
     } else {
-      bucket.done.splice(idx,1);
-      state[engXPKey] = Math.max(0, state[engXPKey] - XP[task.cadence]);
+      bucket.done.splice(idx, 1);
+      state[engXPKey] = Math.max(0, state[engXPKey] - xpGained);
+      showToast(`Rep removed (${task.label})`);
     }
     persist();
-    render();
+    renderAll();
   }
 
   function popStamp(taskEl){
-    const stamp = taskEl.querySelector('.stamp-pop');
+    const stamp = taskEl.querySelector('.stamp-stampede');
     if(!stamp) return;
     stamp.classList.remove('show');
     void stamp.offsetWidth;
     stamp.classList.add('show');
-    setTimeout(()=> stamp.classList.remove('show'), 900);
+    setTimeout(() => stamp.classList.remove('show'), 900);
   }
 
-  function tierInfo(engineKey){
+  function getTierInfo(engineKey){
     const xp = engineKey === 'craft' ? state.craftXP : state.moatXP;
     const tiers = TIERS[engineKey];
     let currentIdx = 0;
-    for(let i=0;i<tiers.length;i++){
+    for(let i=0; i<tiers.length; i++){
       if(xp >= tiers[i].min) currentIdx = i;
     }
     const current = tiers[currentIdx];
     const next = tiers[currentIdx+1];
     let pct = 100;
-    let label = 'Maximum file status reached';
+    let label = 'Max Status Maintained';
     if(next){
       const span = next.min - current.min;
       pct = Math.min(100, Math.round(((xp - current.min) / span) * 100));
-      label = xp + ' / ' + next.min + ' XP to ' + next.name;
+      label = `${xp} / ${next.min} XP (${next.name})`;
     } else {
-      label = xp + ' XP \u2014 top rank held';
+      label = `${xp} XP &bull; Highest Rank Held`;
     }
-    return { currentIdx, pct, label, tiers };
+    return { currentIdx, current, next, pct, label, tiers };
   }
 
   function renderLadder(engineKey){
-    const { currentIdx, tiers } = tierInfo(engineKey);
-    const el = document.getElementById('ladder-' + engineKey);
-    el.innerHTML = tiers.map((t,i)=>{
-      const reached = i <= currentIdx ? 'reached' : '';
-      const current = i === currentIdx ? 'current' : '';
-      return '<div class="rank ' + reached + ' ' + current + '">' +
-        '<div class="node"></div>' +
-        '<div><div class="rank-name">' + t.name + '</div><div class="rank-req">' + (t.min===0? 'Starting rank' : t.min + ' XP') + '</div></div>' +
-      '</div>';
+    const info = getTierInfo(engineKey);
+    const ladderEl = document.getElementById('ladder-' + engineKey);
+    
+    ladderEl.innerHTML = info.tiers.map((tier, idx) => {
+      const reached = idx <= info.currentIdx ? 'reached' : '';
+      const current = idx === info.currentIdx ? 'current' : '';
+      return `
+        <div class="rank-step ${reached} ${current}">
+          <div class="step-point"></div>
+          <div class="step-title">${tier.name}</div>
+          <div class="step-xp">${tier.min} XP</div>
+        </div>
+      `;
     }).join('');
-    const info = tierInfo(engineKey);
-    document.getElementById('progress-' + engineKey).style.width = info.pct + '%';
-    document.getElementById('progress-' + engineKey + '-label').textContent = info.label;
-  }
 
-  function cadenceLabel(cadence){
-    if(cadence === 'daily') return 'Daily';
-    if(cadence === 'weekly') return 'This Week';
-    return 'This Month';
+    document.getElementById('progress-' + engineKey).style.width = info.pct + '%';
+    document.getElementById('progress-' + engineKey + '-label').innerHTML = info.label;
+    document.getElementById('rank-name-' + engineKey).textContent = info.current.name;
   }
 
   function renderTasks(engineKey){
     const el = document.getElementById('tasks-' + engineKey);
-    const groups = ['daily','weekly','monthly'];
+    const cadences = ['daily', 'weekly', 'monthly'];
     el.innerHTML = '';
-    groups.forEach(cadence=>{
-      const items = TASKS[engineKey].filter(t=>t.cadence===cadence);
-      if(!items.length) return;
-      const group = document.createElement('div');
-      group.className = 'cadence-group';
-      const label = document.createElement('div');
-      label.className = 'cadence-label';
-      label.innerHTML = '<span>' + cadenceLabel(cadence) + '</span><span class="rule"></span>' +
-        (cadence==='daily' ? '<span class="streak-flame">' + state.streak + ' day streak</span>' : '');
-      group.appendChild(label);
 
-      items.forEach(task=>{
+    cadences.forEach(cadence => {
+      const items = TASKS[engineKey].filter(t => t.cadence === cadence);
+      if(!items.length) return;
+
+      const shelf = document.createElement('div');
+      shelf.className = 'cadence-shelf';
+
+      const header = document.createElement('div');
+      header.className = 'cadence-header';
+      const labelText = cadence === 'daily' ? 'Daily Drills' : (cadence === 'weekly' ? 'Weekly Sprints' : 'Monthly Audits');
+      header.innerHTML = `
+        <span class="cadence-title">${labelText}</span>
+        <span class="cadence-line"></span>
+        <span class="cadence-chip">${items.filter(i=>isDone(i.id, cadence)).length}/${items.length} Done</span>
+      `;
+      shelf.appendChild(header);
+
+      items.forEach(task => {
         const done = isDone(task.id, task.cadence);
         const row = document.createElement('div');
-        row.className = 'task' + (done ? ' done' : '');
+        row.className = 'task-item' + (done ? ' done' : '');
         row.tabIndex = 0;
-        row.setAttribute('role','checkbox');
-        row.setAttribute('aria-checked', done ? 'true':'false');
-        row.innerHTML =
-          '<div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="var(--paper-hi)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
-          '<div class="task-body">' +
-            '<div class="task-label">' + task.label + '</div>' +
-            '<div class="task-desc">' + task.desc + '</div>' +
-            '<div class="task-xp">+' + XP[task.cadence] + ' XP</div>' +
-          '</div>' +
-          '<div class="stamp-pop">LOGGED</div>';
-        row.addEventListener('click', ()=> toggleTask(engineKey, task, row));
-        row.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleTask(engineKey, task, row); }});
-        group.appendChild(row);
+        row.setAttribute('role', 'checkbox');
+        row.setAttribute('aria-checked', done ? 'true' : 'false');
+        row.innerHTML = `
+          <div class="check-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="task-content">
+            <div class="task-label-row">
+              <span class="task-name">${task.label}</span>
+              <span class="task-xp-badge">+${XP_VALUES[task.cadence]} XP</span>
+            </div>
+            <div class="task-desc">${task.desc}</div>
+          </div>
+          <div class="stamp-stampede">RECORDED</div>
+        `;
+
+        row.addEventListener('click', () => toggleTask(engineKey, task, row));
+        row.addEventListener('keydown', (e) => {
+          if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            toggleTask(engineKey, task, row);
+          }
+        });
+        shelf.appendChild(row);
       });
-      el.appendChild(group);
+
+      el.appendChild(shelf);
     });
   }
 
-  function renderStats(){
+  function renderCockpit(){
     const totalXP = state.craftXP + state.moatXP;
-    const el = document.getElementById('statRow');
-    el.innerHTML =
-      '<div class="stat-chip">Total XP <span class="num">' + totalXP + '</span></div>' +
-      '<div class="stat-chip">Streak <span class="num">' + state.streak + '</span> days</div>' +
-      '<div class="stat-chip">Craft Rank <span class="num">' + TIERS.craft[tierInfo('craft').currentIdx].name + '</span></div>' +
-      '<div class="stat-chip">Moat Rank <span class="num">' + TIERS.moat[tierInfo('moat').currentIdx].name + '</span></div>';
+    const craftTier = getTierInfo('craft').current.name;
+    const moatTier = getTierInfo('moat').current.name;
+    const cockpitEl = document.getElementById('statCockpit');
+
+    cockpitEl.innerHTML = `
+      <div class="stat-cell">
+        <div class="label"><span>Total Protocol XP</span><span>Cumulative</span></div>
+        <div class="metric">${totalXP}<span class="unit">PTS</span></div>
+        <div class="sub">Craft ${state.craftXP} &bull; Moat ${state.moatXP}</div>
+      </div>
+      <div class="stat-cell">
+        <div class="label"><span>Consistency Streak</span><span>Daily</span></div>
+        <div class="metric">${state.streak}<span class="unit">DAYS</span></div>
+        <div class="sub">${state.streak > 3 ? '&#9832; High-Discipline Arc' : 'Active Cadence Track'}</div>
+      </div>
+      <div class="stat-cell">
+        <div class="label"><span>Craft Authority</span><span>Engine 01</span></div>
+        <div class="metric" style="font-size:18px;">${craftTier}</div>
+        <div class="sub">Diagnostic Sharpness</div>
+      </div>
+      <div class="stat-cell">
+        <div class="label"><span>Defensibility Moat</span><span>Engine 02</span></div>
+        <div class="metric" style="font-size:18px;">${moatTier}</div>
+        <div class="sub">Anti-Commodity Standing</div>
+      </div>
+    `;
   }
 
-  function renderLog(){
-    const wrap = document.getElementById('logEntries');
-    if(!state.fieldLog.length){
-      wrap.innerHTML = '<div class="log-empty">No case notes filed yet.</div>';
+  function renderSwipes(){
+    const grid = document.getElementById('swipeGrid');
+    if(!state.swipes || !state.swipes.length){
+      grid.innerHTML = '<div style="font-size:13px; color:var(--ink-faint); font-style:italic;">No proprietary swipes captured yet.</div>';
       return;
     }
-    wrap.innerHTML = state.fieldLog.slice(-6).reverse().map(entry=>
-      '<div class="log-entry"><div class="log-date">' + entry.date + '</div><div class="log-text">' + escapeHtml(entry.text) + '</div></div>'
-    ).join('');
+    grid.innerHTML = state.swipes.map(s => `
+      <div class="swipe-card">
+        <div>
+          <div class="swipe-card-top">
+            <span class="swipe-tag">${escapeHtml(s.tag || 'Swipe Pattern')}</span>
+            <span class="awareness-badge">${escapeHtml(s.stage || 'Solution-Aware')}</span>
+          </div>
+          <div class="swipe-text">${escapeHtml(s.text)}</div>
+        </div>
+        <div class="swipe-why"><b>Deconstruction:</b> ${escapeHtml(s.why)}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderLogs(){
+    const wrap = document.getElementById('logEntries');
+    if(!state.fieldLog.length){
+      wrap.innerHTML = '<div style="font-size:13px; color:var(--ink-faint); font-style:italic; padding:12px 0;">No case notes archived yet. File your first insight above.</div>';
+      return;
+    }
+    wrap.innerHTML = state.fieldLog.slice(-40).reverse().map(item => `
+      <div class="log-entry-item">
+        <div class="entry-head">
+          <span>${item.date}</span>
+          <span style="color:var(--moat-blue); font-weight:600;">${item.category || 'Strategic Note'}</span>
+        </div>
+        <div class="entry-body">${escapeHtml(item.text)}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderSpecimen(){
+    const s = SPECIMENS[state.specimenIdx % SPECIMENS.length];
+    document.getElementById('specimenBadge').innerHTML = s.badge;
+    document.getElementById('specimenText').textContent = s.text;
+    document.getElementById('specimenTarget').textContent = s.metaTarget;
+    document.getElementById('specimenAudienceState').textContent = s.metaAudience;
+    document.getElementById('specimenSymptom').textContent = s.metaSymptom;
+  }
+
+  function renderSchwartzMatrix(){
+    const current = SCHWARTZ_MATRIX_DATA[state.activeMatrixStage] || SCHWARTZ_MATRIX_DATA.unaware;
+    const area = document.getElementById('matrixDisplayArea');
+    if(!area) return;
+
+    area.innerHTML = `
+      <div class="matrix-card">
+        <div class="matrix-card-head">
+          <div class="matrix-card-title">${current.title}</div>
+          <div class="matrix-card-tag">${current.tag}</div>
+        </div>
+        <div class="matrix-grid-2x2">
+          <div class="matrix-block">
+            <div class="matrix-block-label blue">1. Core Prospect Mindset &amp; Mental State</div>
+            <p>${current.mindset}</p>
+          </div>
+          <div class="matrix-block">
+            <div class="matrix-block-label red">2. The Fatal Mistake / Cardinal Sin</div>
+            <p>${current.sin}</p>
+          </div>
+          <div class="matrix-block">
+            <div class="matrix-block-label brass">3. Schwartz Lead Archetype / Hook Law</div>
+            <p>${current.lead}</p>
+          </div>
+          <div class="matrix-block">
+            <div class="matrix-block-label ink">4. Cold Diagnostic Questions to Run</div>
+            <ul>
+              ${current.questions.map(q => `<li>${q}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.querySelectorAll('.matrix-nav-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-matrix') === state.activeMatrixStage);
+    });
   }
 
   function escapeHtml(str){
+    if(!str) return '';
     const d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
   }
 
-  function render(){
-    renderStats();
+  function renderAll(){
+    renderCockpit();
     renderLadder('craft');
     renderLadder('moat');
     renderTasks('craft');
     renderTasks('moat');
-    renderLog();
+    renderSwipes();
+    renderLogs();
+    renderSpecimen();
+    renderSchwartzMatrix();
   }
 
-  // Event Listeners for Saving Notes
-  document.getElementById('saveLogBtn').addEventListener('click', () => {
-    const input = document.getElementById('logInput');
-    const text = input.value.trim();
-    if(!text) return;
-    state.fieldLog.push({ date: todayStr(), text: text });
-    if(state.fieldLog.length > 40) state.fieldLog = state.fieldLog.slice(-40);
-    input.value = '';
-    persist();
-    renderLog();
+  // --- Tab System Switcher ---
+  document.querySelectorAll('.tab').forEach(tabBtn => {
+    tabBtn.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tabBtn.classList.add('active');
+      const target = tabBtn.getAttribute('data-tab');
+      document.querySelectorAll('.view-panel').forEach(panel => panel.style.display = 'none');
+      document.getElementById('view-' + target).style.display = 'block';
+    });
   });
 
-  // Export Data Functionality
+  // --- Workbench Sub-Tab Switcher ---
+  document.querySelectorAll('.wb-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const container = btn.closest('.workbench-panel');
+      container.querySelectorAll('.wb-tab-btn').forEach(b => b.classList.remove('active'));
+      container.querySelectorAll('.wb-tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.getAttribute('data-wb');
+      document.getElementById('wb-' + target).classList.add('active');
+    });
+  });
+
+  // --- Schwartz Stage Chip Selector ---
+  document.querySelectorAll('.schwartz-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.schwartz-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const stage = chip.getAttribute('data-stage');
+      state.selectedDrillStage = stage;
+      document.getElementById('stageGuidancePill').innerHTML = STAGE_GUIDANCE_TEXTS[stage] || '';
+    });
+  });
+
+  // --- Schwartz Matrix Nav Switcher ---
+  document.querySelectorAll('.matrix-nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.activeMatrixStage = btn.getAttribute('data-matrix');
+      renderSchwartzMatrix();
+    });
+  });
+
+  // --- Live Diagnostic Drill Specimen Shuffle ---
+  document.getElementById('shuffleSpecimenBtn').addEventListener('click', () => {
+    state.specimenIdx = (state.specimenIdx + 1) % SPECIMENS.length;
+    const currentSpecimen = SPECIMENS[state.specimenIdx];
+    if(currentSpecimen.defaultStage){
+      state.selectedDrillStage = currentSpecimen.defaultStage;
+      document.querySelectorAll('.schwartz-chip').forEach(chip => {
+        chip.classList.toggle('active', chip.getAttribute('data-stage') === currentSpecimen.defaultStage);
+      });
+      document.getElementById('stageGuidancePill').innerHTML = STAGE_GUIDANCE_TEXTS[currentSpecimen.defaultStage] || '';
+    }
+    renderSpecimen();
+  });
+
+  // --- Diagnostic Drill Submit ---
+  document.getElementById('submitDiagBtn').addEventListener('click', () => {
+    const diagType = document.getElementById('diagType').value;
+    const diagFix = document.getElementById('diagFix').value.trim();
+    const stage = state.selectedDrillStage || 'problem';
+    const stageTitles = { unaware:'Unaware', problem:'Problem-Aware', solution:'Solution-Aware', product:'Product-Aware', most:'Most Aware' };
+
+    if(!diagFix){
+      alert('Please enter a field prescription / strategic fix before recording.');
+      return;
+    }
+    state.craftXP += 5;
+    state.fieldLog.push({
+      date: todayStr(),
+      category: `Schwartz Rep [${stageTitles[stage]}]`,
+      text: `Fracture: ${diagType} | Hook Prescription: "${diagFix}"`
+    });
+    // Mark c-d1 if daily task not already done
+    if(!isDone('c-d1', 'daily')){
+      state.daily.done.push('c-d1');
+    }
+    document.getElementById('diagFix').value = '';
+    persist();
+    renderAll();
+    showToast(`+5 Craft XP Recorded: Diagnosed ${stageTitles[stage]} Mismatch`);
+  });
+
+  // --- Blind Rewrite Station Submit ---
+  document.getElementById('submitRewriteBtn').addEventListener('click', () => {
+    const val = document.getElementById('rewriteInput').value.trim();
+    const stage = document.getElementById('rewriteStage').value;
+    if(!val){
+      alert('Please write your strategic rewrite first.');
+      return;
+    }
+    state.craftXP += 5;
+    state.fieldLog.push({
+      date: todayStr(),
+      category: `Rewrite Rep [${stage}]`,
+      text: `Transformed into: "${val}"`
+    });
+    if(!isDone('c-d2', 'daily')){
+      state.daily.done.push('c-d2');
+    }
+    document.getElementById('rewriteInput').value = '';
+    persist();
+    renderAll();
+    showToast('+5 Craft XP Recorded: Rewrite Archived');
+  });
+
+  // --- Judgment Call Logger Submit ---
+  document.getElementById('submitJudgmentBtn').addEventListener('click', () => {
+    const dilemma = document.getElementById('judgmentDilemma').value.trim();
+    const ruling = document.getElementById('judgmentRuling').value.trim();
+    const stage = document.getElementById('judgmentStage').value;
+    if(!dilemma || !ruling){
+      alert('Please provide both the dilemma and your strategic ruling.');
+      return;
+    }
+    state.moatXP += 15;
+    state.fieldLog.push({
+      date: todayStr(),
+      category: `Judgment Moat [${stage}]`,
+      text: `Dilemma: ${dilemma} | Ruling: ${ruling}`
+    });
+    if(!isDone('m-w2', 'weekly')){
+      state.weekly.done.push('m-w2');
+    }
+    document.getElementById('judgmentDilemma').value = '';
+    document.getElementById('judgmentRuling').value = '';
+    persist();
+    renderAll();
+    showToast('+15 Moat XP: Proprietary Judgment Documented');
+  });
+
+  // --- Add Swipe File ---
+  document.getElementById('addSwipeBtn').addEventListener('click', () => {
+    const text = document.getElementById('swipeAddText').value.trim();
+    const stage = document.getElementById('swipeAddStage').value;
+    const why = document.getElementById('swipeAddWhy').value.trim();
+    if(!text || !why){
+      alert('Please fill out both the swipe snippet and the deconstruction reason.');
+      return;
+    }
+    state.swipes.unshift({ tag: 'Field Capture', stage, text, why });
+    state.craftXP += 5;
+    state.moatXP += 5;
+    if(!isDone('c-d3', 'daily')){
+      state.daily.done.push('c-d3');
+    }
+    document.getElementById('swipeAddText').value = '';
+    document.getElementById('swipeAddWhy').value = '';
+    persist();
+    renderAll();
+    showToast(`+10 Total XP: Captured [${stage}] Swipe`);
+  });
+
+  // --- Case Note Filing ---
+  document.getElementById('saveLogBtn').addEventListener('click', () => {
+    const input = document.getElementById('logInput');
+    const stageTag = document.getElementById('logStageSelect').value;
+    const text = input.value.trim();
+    if(!text) return;
+    state.fieldLog.push({ date: todayStr(), category: `Case Note [${stageTag}]`, text });
+    if(state.fieldLog.length > 50) state.fieldLog = state.fieldLog.slice(-50);
+    input.value = '';
+    persist();
+    renderLogs();
+    showToast('Case Note Stored in Dossier');
+  });
+
+  // --- Export & Import ---
   document.getElementById('exportBtn').addEventListener('click', () => {
     const dataStr = JSON.stringify(state, null, 2);
     const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `practice-file-backup-${todayStr()}.json`;
+    a.download = `practice-file-archive-${todayStr()}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    showToast('Dossier Archive Exported');
   });
 
-  // Import Data Functionality
   const importBtn = document.getElementById('importBtn');
   const importFile = document.getElementById('importFile');
   importBtn.addEventListener('click', () => importFile.click());
-  
+
   importFile.addEventListener('change', (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    if(!file) return;
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
         const parsed = JSON.parse(event.target.result);
-        // Merge uploaded data with default state to ensure structure is intact
         state = Object.assign(defaultState(), parsed);
         persist();
         rolloverPeriods();
-        render();
-        alert("Backup loaded successfully!");
-      } catch (err) {
-        alert("Error reading backup file. Make sure it's a valid JSON backup.");
+        renderAll();
+        showToast('Archive Successfully Restored');
+      } catch(err) {
+        alert("Invalid backup file.");
       }
-      importFile.value = ''; // Reset file input
+      importFile.value = '';
     };
     reader.readAsText(file);
+  });
+
+  // --- Simulate New Day ---
+  document.getElementById('resetDailyBtn').addEventListener('click', () => {
+    state.daily = { date: 'simulated-new-day-' + Date.now(), done: [] };
+    persist();
+    renderAll();
+    showToast('Simulated New Daily Cadence Cycle');
   });
 
   loadState();
 })();
 </script>
-</body>
-</html>
+
+
+
+
+</body></html>

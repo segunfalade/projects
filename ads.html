@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A practical daily copy-study hub for strategists serving coaches, consultants and experts who sell intangible outcomes.">
+  <title>Daily Copy Study Desk</title>
+  <style>
+    :root {
+      --paper: #f5f3ed;
+      --paper-2: #fbfaf6;
+      --ink: #1e2a26;
+      --muted: #66726c;
+      --line: #dfe4dc;
+      --forest: #1e3b32;
+      --forest-2: #31594b;
+      --mint: #dfeae2;
+      --gold: #d8b66b;
+      --gold-soft: #f2e9d2;
+      --blue: #356f7b;
+      --white: #fffefa;
+      --shadow: 0 14px 40px rgba(30, 42, 38, .08);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    button { font: inherit; }
+    .page { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar {
+      height: 74px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(30, 42, 38, .12); gap: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; font-size: 12px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    .brand-mark {
+      width: 31px; height: 31px; border-radius: 10px; display: grid; place-items: center;
+      color: var(--white); background: var(--forest); font-size: 16px; letter-spacing: 0;
+    }
+    .top-note { color: var(--muted); font-size: 12px; letter-spacing: .05em; }
+    .hero {
+      background: var(--forest); color: var(--white); margin: 30px 0 22px; padding: clamp(28px, 5vw, 58px);
+      border-radius: 28px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+      display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(250px, .75fr); gap: 36px; align-items: end;
+    }
+    .hero::after {
+      content: ""; position: absolute; width: 370px; height: 370px; border: 1px solid rgba(255,255,255,.1);
+      border-radius: 50%; right: -128px; top: -190px; box-shadow: 0 0 0 36px rgba(255,255,255,.025), 0 0 0 74px rgba(255,255,255,.02);
+      pointer-events: none;
+    }
+    .eyebrow { margin: 0 0 14px; color: var(--gold); font-size: 11px; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
+    h1 { margin: 0; max-width: 700px; font-size: clamp(38px, 6.4vw, 70px); line-height: .99; letter-spacing: -.055em; font-weight: 760; }
+    h1 em { color: var(--gold); font-family: Georgia, "Times New Roman", serif; font-weight: 500; }
+    .hero-copy > p:not(.eyebrow) { margin: 22px 0 0; max-width: 590px; color: rgba(255,255,255,.78); font-size: 16px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent;
+      border-radius: 999px; padding: 11px 16px; min-height: 44px; font-size: 13px; font-weight: 750; text-decoration: none;
+      cursor: pointer; transition: transform .16s ease, background .16s ease, border .16s ease;
+    }
+    .button:hover { transform: translateY(-1px); }
+    .button-light { color: var(--forest); background: var(--white); }
+    .button-outline { color: var(--white); border-color: rgba(255,255,255,.35); background: transparent; }
+    .button-green { color: var(--white); background: var(--forest); }
+    .button-quiet { color: var(--forest); border-color: var(--line); background: transparent; }
+    .hero-side { z-index: 1; position: relative; border-left: 1px solid rgba(255,255,255,.2); padding-left: 25px; }
+    .hero-side h2 { margin: 0 0 15px; font-size: 13px; color: rgba(255,255,255,.7); letter-spacing: .12em; text-transform: uppercase; }
+    .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 22px; }
+    .hero-stats b { display: block; font-size: 21px; line-height: 1.1; letter-spacing: -.04em; }
+    .hero-stats span { color: rgba(255,255,255,.64); font-size: 11px; }
+    .section { margin: 46px 0; scroll-margin-top: 20px; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 18px; }
+    .section-kicker { color: var(--forest-2); margin: 0 0 6px; font-size: 10px; font-weight: 850; letter-spacing: .16em; text-transform: uppercase; }
+    h2.section-title { margin: 0; font-size: clamp(24px, 3vw, 34px); line-height: 1.12; letter-spacing: -.04em; }
+    .section-intro { color: var(--muted); max-width: 570px; font-size: 13px; margin: 7px 0 0; }
+    .daily-card {
+      display: grid; grid-template-columns: minmax(0, 1fr) 230px; align-items: center; gap: 28px;
+      background: var(--gold-soft); border: 1px solid #e9dcc0; border-radius: var(--radius); padding: 24px 27px; margin-top: 22px;
+    }
+    .daily-label { display: flex; align-items: center; gap: 10px; color: #806326; text-transform: uppercase; letter-spacing: .12em; font-size: 10px; font-weight: 850; }
+    .day-dot { width: 8px; height: 8px; border-radius: 50%; background: #b58b35; box-shadow: 0 0 0 4px rgba(181,139,53,.12); }
+    .daily-card h2 { margin: 9px 0 5px; font-size: 23px; letter-spacing: -.035em; }
+    .daily-card p { margin: 0; color: #5e5849; font-size: 13px; max-width: 720px; }
+    .daily-actions { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+    .daily-actions .button { width: 100%; }
+    #todayDate { color: #806326; font-size: 11px; font-weight: 700; text-align: right; }
+    .quick-path {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0 0;
+    }
+    .quick-step { background: var(--paper-2); border: 1px solid var(--line); border-radius: 15px; padding: 15px 16px; }
+    .quick-step .num { color: var(--forest-2); font-size: 10px; font-weight: 900; letter-spacing: .12em; }
+    .quick-step b { display: block; margin: 4px 0; font-size: 13px; }
+    .quick-step span { color: var(--muted); display: block; font-size: 11px; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .resource-card {
+      display: flex; flex-direction: column; min-height: 222px; background: var(--paper-2);
+      border: 1px solid var(--line); border-radius: 17px; padding: 20px; transition: transform .18s ease, box-shadow .18s ease, border .18s ease;
+    }
+    .resource-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: #c8d5cb; }
+    .resource-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .type { color: var(--forest-2); font-size: 9px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .era { border: 1px solid var(--line); padding: 4px 8px; border-radius: 999px; color: var(--muted); font-size: 9px; font-weight: 700; white-space: nowrap; }
+    .resource-card h3 { margin: 14px 0 7px; font-size: 17px; line-height: 1.18; letter-spacing: -.025em; }
+    .resource-card p { color: var(--muted); margin: 0; font-size: 12px; }
+    .resource-card .fit-note { color: var(--forest-2); font-size: 11px; margin-top: 9px; }
+    .resource-card .open-link { display: inline-flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 17px; color: var(--forest); text-decoration: none; font-size: 11px; font-weight: 850; }
+    .resource-card .open-link:hover { text-decoration: underline; }
+    .link-cluster { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0 0; }
+    .link-chip { text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 7px 10px; font-size: 10px; color: var(--forest); background: #fff; font-weight: 750; }
+    .link-chip:hover { background: var(--mint); border-color: #c5d6c9; }
+    .search-box {
+      margin: 17px 0 0; padding: 20px 22px; background: var(--mint); border-radius: 17px; border: 1px solid #ccdbd0;
+    }
+    .search-box h3 { margin: 0 0 7px; font-size: 15px; letter-spacing: -.02em; }
+    .search-box p { margin: 0; color: #4f6257; font-size: 12px; }
+    .terms { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
+    .term { background: rgba(255,255,255,.72); border: 1px solid rgba(49,89,75,.15); border-radius: 999px; color: var(--forest); padding: 5px 9px; font-size: 10px; font-weight: 700; }
+    .caution {
+      margin-top: 15px; padding: 13px 16px; border-left: 3px solid var(--gold); background: rgba(242,233,210,.55);
+      color: #665c45; font-size: 11px; border-radius: 0 10px 10px 0;
+    }
+    .practice-layout { display: grid; grid-template-columns: 1.15fr .85fr; gap: 16px; }
+    .panel { background: var(--paper-2); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+    .panel h3 { margin: 0 0 13px; font-size: 17px; letter-spacing: -.025em; }
+    .checklist { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+    .checklist li { display: flex; gap: 10px; align-items: flex-start; color: #47564e; font-size: 12px; }
+    .check-icon { display: grid; place-items: center; flex: 0 0 18px; width: 18px; height: 18px; color: var(--forest-2); background: var(--mint); border-radius: 6px; font-size: 11px; font-weight: 900; margin-top: 1px; }
+    .time-map { display: grid; gap: 0; }
+    .time-row { display: grid; grid-template-columns: 54px 1fr; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); }
+    .time-row:first-child { border-top: 0; padding-top: 0; }
+    .time { color: var(--forest-2); font-size: 10px; font-weight: 900; }
+    .time-row b { font-size: 12px; display: block; }
+    .time-row span { color: var(--muted); font-size: 11px; }
+    .week-grid { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 9px; }
+    .week-day { background: var(--paper-2); border: 1px solid var(--line); border-radius: 13px; padding: 13px 12px; min-height: 111px; }
+    .week-day strong { display: block; color: var(--forest-2); font-size: 10px; letter-spacing: .11em; text-transform: uppercase; margin-bottom: 7px; }
+    .week-day span { color: #4e5b54; font-size: 11px; }
+    .transfer-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+    .transfer-card { background: var(--forest); color: var(--white); border-radius: 17px; padding: 19px; min-height: 145px; }
+    .transfer-card .mini { color: var(--gold); font-size: 9px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+    .transfer-card h3 { font-size: 15px; margin: 9px 0 6px; letter-spacing: -.02em; }
+    .transfer-card p { margin: 0; color: rgba(255,255,255,.73); font-size: 11px; }
+    .template {
+      background: #e9e7df; border: 1px solid #d8d7cf; border-radius: 18px; overflow: hidden;
+    }
+    .template-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 19px 21px; }
+    .template-head h3 { margin: 0; font-size: 16px; }
+    .template-head p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+    .template pre {
+      margin: 0; padding: 18px 21px 20px; background: #fffefa; color: #46534c; font: 12px/1.9 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap; border-top: 1px solid #d8d7cf; user-select: text;
+    }
+    .small-print { color: var(--muted); font-size: 10px; margin: 15px 0 0; }
+    .footer { border-top: 1px solid var(--line); margin: 50px 0 25px; padding: 22px 0; display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 10px; }
+    .footer a { color: var(--forest-2); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .week-grid { grid-template-columns: repeat(4, minmax(0,1fr)); }
+      .hero { grid-template-columns: 1fr; }
+      .hero-side { border-left: 0; border-top: 1px solid rgba(255,255,255,.2); padding: 18px 0 0; }
+      .hero-stats { grid-template-columns: repeat(4,1fr); }
+    }
+    @media (max-width: 620px) {
+      .page { width: min(100% - 24px, 1160px); }
+      .topbar { height: 62px; }
+      .top-note { display: none; }
+      .hero { margin-top: 17px; border-radius: 20px; gap: 26px; }
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+      .daily-card { grid-template-columns: 1fr; padding: 20px; gap: 17px; }
+      #todayDate { text-align: left; }
+      .daily-actions { flex-direction: row; flex-wrap: wrap; }
+      .daily-actions .button { width: auto; }
+      .quick-path { grid-template-columns: repeat(2,1fr); }
+      .grid { grid-template-columns: 1fr; }
+      .resource-card { min-height: 195px; }
+      .practice-layout { grid-template-columns: 1fr; }
+      .week-grid { grid-template-columns: repeat(2,1fr); }
+      .transfer-grid { grid-template-columns: 1fr; }
+      .section-head { align-items: flex-start; flex-direction: column; }
+      .template-head { align-items: flex-start; flex-direction: column; }
+      .footer { flex-direction: column; }
+    }
+    @media print {
+      body { background: white; }
+      .topbar, .hero-actions, .daily-actions, .open-link { display: none !important; }
+      .hero { box-shadow: none; print-color-adjust: exact; }
+      .page { width: 100%; }
+      .section { break-inside: avoid; margin: 24px 0; }
+      .resource-card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="topbar" aria-label="Main">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">↗</span><span>Daily Copy Study Desk</span></div>
+      <div class="top-note">A research routine for selling outcomes you can’t put neatly in a spreadsheet</div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Your personal practice, already set up</p>
+        <h1>Study the persuasion.<br><em>Not just the words.</em></h1>
+        <p>A curated launchpad for ads, sales letters, landing pages and emails—chosen for a strategist working with coaches, consultants and experts who sell meaningful but hard-to-quantify change.</p>
+        <div class="hero-actions">
+          <a class="button button-light" href="#today">Start today’s study <span aria-hidden="true">↓</span></a>
+          <a class="button button-outline" href="#letters">Go to service sales letters <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <aside class="hero-side" aria-label="Daily practice overview">
+        <h2>The small daily rep</h2>
+        <div class="hero-stats">
+          <div><b>15–20</b><span>minutes</span></div>
+          <div><b>1</b><span>example studied</span></div>
+          <div><b>1</b><span>principle to adapt</span></div>
+          <div><b>1</b><span>idea for your pipeline</span></div>
+        </div>
+      </aside>
+    </header>
+
+    <main>
+      <section class="section" id="today" aria-labelledby="today-heading">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">00 / Start here</p>
+            <h2 class="section-title" id="today-heading">Your study for today</h2>
+            <p class="section-intro">This card rotates by calendar day. Open the source, study one persuasive decision, then turn that observation into one useful idea for your own work.</p>
+          </div>
+        </div>
+        <article class="daily-card" aria-live="polite">
+          <div>
+            <div class="daily-label"><span class="day-dot"></span><span id="todayCategory">Best first study · service offer</span></div>
+            <h2 id="todayTitle">Frank Kern’s consulting sales letter</h2>
+            <p id="todayPrompt">Trace how the letter makes an intangible advisory service feel like a concrete offer: who it qualifies, what value it promises, how it handles risk, and what action it asks for. Treat its specific performance claims as historical copy—not claims to borrow.</p>
+          </div>
+          <div class="daily-actions">
+            <a class="button button-green" id="todayLink" href="https://swiped.co/file/consulting-sales-letter-from-frank-kern/" target="_blank" rel="noopener noreferrer">Open today’s source <span aria-hidden="true">↗</span></a>
+            <button class="button button-quiet" id="pickAnother" type="button">Pick another example</button>
+            <div id="todayDate" aria-label="Today's date"></div>
+          </div>
+        </article>
+
+        <div class="quick-path" aria-label="Quick study sequence">
+          <div class="quick-step"><span class="num">01 / LOOK</span><b>Read or watch once</b><span>Don’t take notes yet. Notice what earns your attention.</span></div>
+          <div class="quick-step"><span class="num">02 / MAP</span><b>Find the argument</b><span>Audience → promise → mechanism → proof → next step.</span></div>
+          <div class="quick-step"><span class="num">03 / TRANSLATE</span><b>Keep the move, not the line</b><span>Adapt the strategy to a coach or consultant offer.</span></div>
+          <div class="quick-step"><span class="num">04 / APPLY</span><b>Make one useful asset</b><span>A LinkedIn insight or a specific, respectful audit observation.</span></div>
+        </div>
+      </section>
+
+      <section class="section" id="letters" aria-labelledby="letters-heading">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">01 / Closest to your work</p>
+            <h2 class="section-title" id="letters-heading">Sales letters for services & expertise</h2>
+            <p class="section-intro">Start with consulting offers: they’re closer to the challenge of selling judgment, access, process and a desired change than a typical product ad.</p>
+          </div>
+        </div>
+        <div class="grid">
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Consulting · long-form</span><span class="era">2013 example</span></div>
+            <h3>Frank Kern’s consulting sales letter</h3>
+            <p>A direct-response pitch for consulting clients, with a scan of the letter and commentary on the offer. Study qualification, exclusivity, value framing and risk reversal.</p>
+            <p class="fit-note">Best first read for a strategist selling expertise.</p>
+            <a class="open-link" href="https://swiped.co/file/consulting-sales-letter-from-frank-kern/" target="_blank" rel="noopener noreferrer">Open the sales letter ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Consulting · direct mail</span><span class="era">2014 example</span></div>
+            <h3>Ryan Deiss & Frank Kern’s “profit blueprint” letter</h3>
+            <p>Another service offer, written as a long direct-mail piece. Compare its lead, proof, application step and risk reversal with the other Kern letter.</p>
+            <p class="fit-note">Try a side-by-side teardown: what changed, and what stayed?</p>
+            <a class="open-link" href="https://swiped.co/file/consulting-salesletter-from-ryan-deiss-frank-kern/" target="_blank" rel="noopener noreferrer">Open the letter + swipe study ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Consulting · archive</span><span class="era">Browse by niche</span></div>
+            <h3>Swiped: consulting examples</h3>
+            <p>Browse a focused collection of consulting and marketing promotions, including ads, follow-ups, landing pages and sales letters.</p>
+            <p class="fit-note">Good when you want a new service-oriented example quickly.</p>
+            <a class="open-link" href="https://swiped.co/niche/consulting/" target="_blank" rel="noopener noreferrer">Browse consulting swipes ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Classic · direct mail</span><span class="era">Gary Halbert</span></div>
+            <h3>The Coat-of-Arms letter</h3>
+            <p>A famous personalized mail piece. Look at how the envelope, opening, family-name detail and curiosity work together before the offer is fully explained.</p>
+            <p class="fit-note">Ask: what is the modern equivalent of relevant personalization?</p>
+            <a class="open-link" href="https://www.thegaryhalbertletter.com/MarkJoyner/hp2.htm" target="_blank" rel="noopener noreferrer">Open the original archive page ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Classic · subscription offer</span><span class="era">Eugene Schwartz · 1988</span></div>
+            <h3>“Read 300 Business Magazines in 30 Minutes”</h3>
+            <p>A Boardroom Reports sales letter about turning a large, vague information advantage into a specific promise. Study the headline, implied mechanism and value stack.</p>
+            <p class="fit-note">Useful for making an expert’s process easier to picture.</p>
+            <a class="open-link" href="https://swiped.co/file/boardroom-reports-eugene-schwartz/" target="_blank" rel="noopener noreferrer">Open the letter + analysis ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Classic · copy archive</span><span class="era">Free archive</span></div>
+            <h3>Gary Halbert’s newsletter archive</h3>
+            <p>Browse issues by headline. Read for voice, story, sales arguments and how a writer earns attention—not as a template to reproduce.</p>
+            <p class="fit-note">The archive states the letters are copyrighted; study, don’t republish.</p>
+            <a class="open-link" href="https://thegaryhalbertletter.com/newsletters/" target="_blank" rel="noopener noreferrer">Browse the newsletter archive ↗</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="current" aria-labelledby="current-heading">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">02 / What’s running now</p>
+            <h2 class="section-title" id="current-heading">Current ads, pages & emails</h2>
+            <p class="section-intro">Use live libraries for current market language and creative. Use curated example sites when you want a quicker, already-organized starting point.</p>
+          </div>
+        </div>
+        <div class="grid">
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">B2B ads · official</span><span class="era">LinkedIn</span></div>
+            <h3>LinkedIn Ad Library</h3>
+            <p>Search advertisers and copy keywords to see real LinkedIn ad creative. Try service phrases as well as the names of coaches, consulting firms and adjacent experts.</p>
+            <p class="fit-note">Start with “leadership coaching,” “executive coach” or “consulting.”</p>
+            <a class="open-link" href="https://www.linkedin.com/ad-library/" target="_blank" rel="noopener noreferrer">Search LinkedIn ads ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Social ads · official</span><span class="era">Meta</span></div>
+            <h3>Meta Ad Library</h3>
+            <p>Look up brands advertising on Facebook and Instagram. Choose the market and “All ads,” then search a brand or offer category. Use it for hooks, proof styles and CTAs.</p>
+            <p class="fit-note">A live-creative source, not a reliable record of conversion results.</p>
+            <a class="open-link" href="https://www.facebook.com/ads/library/" target="_blank" rel="noopener noreferrer">Search Meta ads ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Search & video ads · official</span><span class="era">Google</span></div>
+            <h3>Google Ads Transparency Center</h3>
+            <p>Search by advertiser or domain to view ads appearing across Google properties. Useful for seeing how a business packages its promise across text, image and video formats.</p>
+            <p class="fit-note">Search a known firm or expert’s website—not just a generic keyword.</p>
+            <a class="open-link" href="https://adstransparency.google.com/" target="_blank" rel="noopener noreferrer">Open Google’s transparency center ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Video ads · official</span><span class="era">TikTok</span></div>
+            <h3>TikTok Creative Center</h3>
+            <p>Open Inspiration → Top Ads for a curated set of strong ad examples. Study the first seconds, demonstration, creator voice and the moment the value becomes clear.</p>
+            <p class="fit-note">A creative-pattern library; not an exhaustive archive of every ad.</p>
+            <a class="open-link" href="https://ads.tiktok.com/business/creativecenter/" target="_blank" rel="noopener noreferrer">Open Creative Center ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Curated swipe file</span><span class="era">Fresh examples</span></div>
+            <h3>Swipefile</h3>
+            <p>A browsable collection across ads, copywriting, direct mail, email and sales pages. Use its categories to find a small example without building a search from scratch.</p>
+            <p class="fit-note">A strong “I have 10 minutes—give me something to study” source.</p>
+            <a class="open-link" href="https://swipefile.com/" target="_blank" rel="noopener noreferrer">Browse Swipefile ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Copy & conversion teardowns</span><span class="era">Modern examples</span></div>
+            <h3>Marketing Examples</h3>
+            <p>Short breakdowns of real sales, copywriting, ad and landing-page examples. Start in Sales for outreach/email ideas, or use Copywriting and Landing Page for conversion details.</p>
+            <div class="link-cluster">
+              <a class="link-chip" href="https://marketingexamples.com/sales" target="_blank" rel="noopener noreferrer">Sales</a>
+              <a class="link-chip" href="https://marketingexamples.com/copywriting" target="_blank" rel="noopener noreferrer">Copywriting</a>
+              <a class="link-chip" href="https://marketingexamples.com/landing-page" target="_blank" rel="noopener noreferrer">Landing pages</a>
+            </div>
+            <a class="open-link" href="https://marketingexamples.com/" target="_blank" rel="noopener noreferrer">Open Marketing Examples ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Email swipe file</span><span class="era">Newsletter · nurture</span></div>
+            <h3>Really Good Emails</h3>
+            <p>Browse real email examples and categories such as newsletters. Study subject lines, the first screen, how the idea unfolds, and how the email earns its CTA.</p>
+            <p class="fit-note">Good for learning what happens after a LinkedIn post or lead magnet.</p>
+            <a class="open-link" href="https://reallygoodemails.com/categories/newsletter" target="_blank" rel="noopener noreferrer">Browse newsletter emails ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Campaign inspiration</span><span class="era">Global · current + archive</span></div>
+            <h3>Ads of the World</h3>
+            <p>Explore campaigns from many markets and formats. Less direct-response than the libraries above, but excellent for positioning, conceptual angles, emotional contrast and memorable lines.</p>
+            <p class="fit-note">Borrow the strategic lens—not the consumer-brand voice.</p>
+            <a class="open-link" href="https://www.adsoftheworld.com/" target="_blank" rel="noopener noreferrer">Explore campaigns ↗</a>
+          </article>
+        </div>
+
+        <aside class="search-box">
+          <h3>Search phrases for your market scan</h3>
+          <p>Try several variations; one exact phrase may miss useful ads. Search the buyer’s problem and the kind of expert—not only “coach.”</p>
+          <div class="terms" aria-label="Suggested search terms">
+            <span class="term">executive coach</span><span class="term">leadership coaching</span><span class="term">founder advisor</span>
+            <span class="term">fractional CMO</span><span class="term">strategy consultant</span><span class="term">executive presence</span>
+            <span class="term">change management</span><span class="term">team effectiveness</span><span class="term">sales leadership</span>
+            <span class="term">career transition</span><span class="term">culture transformation</span><span class="term">business coach</span>
+          </div>
+        </aside>
+        <div class="caution"><strong>Keep the evidence straight:</strong> an ad library shows creative and whatever transparency details that platform exposes; it usually doesn’t tell you whether the offer converted. Treat “still running” or “featured” as a clue to investigate, not proof of performance.</div>
+      </section>
+
+      <section class="section" id="history" aria-labelledby="history-heading">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">03 / Old ads, fresh eyes</p>
+            <h2 class="section-title" id="history-heading">Historical ad archives</h2>
+            <p class="section-intro">Older work is useful for studying attention, specificity, argument and format. The context—and many of the claims and assumptions—may have aged badly.</p>
+          </div>
+        </div>
+        <div class="grid">
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Historical print ads</span><span class="era">1911–1955</span></div>
+            <h3>Duke Ad*Access</h3>
+            <p>More than 7,000 U.S. and Canadian newspaper and magazine ads across beauty, radio, television, transportation and wartime advertising.</p>
+            <p class="fit-note">Study headline hierarchy, problem framing, proof, and how a campaign repeats an idea.</p>
+            <a class="open-link" href="https://repository.duke.edu/dc/adaccess" target="_blank" rel="noopener noreferrer">Browse the Duke collection ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Early advertising materials</span><span class="era">1850–1920</span></div>
+            <h3>Emergence of Advertising in America</h3>
+            <p>Duke’s collection of more than 3,000 early advertising items and publications. It includes trade cards, promotional material and “how to advertise” examples.</p>
+            <p class="fit-note">A useful first stop: “How to Write Advertisements That Sell…” is featured in the collection.</p>
+            <a class="open-link" href="https://repository.duke.edu/dc/eaa" target="_blank" rel="noopener noreferrer">Browse the early-ad archive ↗</a>
+          </article>
+          <article class="resource-card">
+            <div class="resource-top"><span class="type">Vintage TV commercials</span><span class="era">1950s–1980s</span></div>
+            <h3>Duke AdViews at the Internet Archive</h3>
+            <p>Thousands of historic commercials from the D’Arcy Masius Benton & Bowles archive. Watch for demonstration, repetition, mnemonic devices and the verbal promise.</p>
+            <p class="fit-note">A good change of medium when you want to study spoken persuasion.</p>
+            <a class="open-link" href="https://archive.org/details/adviews" target="_blank" rel="noopener noreferrer">Watch AdViews ↗</a>
+          </article>
+        </div>
+        <div class="caution"><strong>Context matters:</strong> some archival ads contain harmful stereotypes or claims that would be unacceptable today. Analyze the persuasion mechanics without endorsing or reusing those messages.</div>
+      </section>
+
+      <section class="section" id="method" aria-labelledby="method-heading">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">04 / A repeatable practice</p>
+            <h2 class="section-title" id="method-heading">A 15-minute analysis loop</h2>
+            <p class="section-intro">You’re not trying to collect clever lines. You’re training yourself to spot the strategic choices that make an offer easier to understand, trust and act on.</p>
+          </div>
+        </div>
+        <div class="practice-layout">
+          <article class="panel">
+            <h3>Ask these six questions</h3>
+            <ul class="checklist">
+              <li><span class="check-icon">✓</span><span><strong>Who is this for, right now?</strong> What situation, awareness level or trigger is the copy speaking to?</span></li>
+              <li><span class="check-icon">✓</span><span><strong>What change is being sold?</strong> What will the person be able to do, decide, experience or stop struggling with?</span></li>
+              <li><span class="check-icon">✓</span><span><strong>How is an intangible outcome made visible?</strong> Look for a process, milestone, artifact, scenario, behavior shift or client evidence.</span></li>
+              <li><span class="check-icon">✓</span><span><strong>Why believe it?</strong> Identify the proof type, its context and what it does—and does not—support.</span></li>
+              <li><span class="check-icon">✓</span><span><strong>What hesitation is handled?</strong> Notice fit filters, scope, access, time, risk reversal and the cost of doing nothing.</span></li>
+              <li><span class="check-icon">✓</span><span><strong>What is the next step?</strong> Is the CTA clear, proportionate to the promise and low-friction enough for this moment?</span></li>
+            </ul>
+          </article>
+          <article class="panel">
+            <h3>Keep the session moving</h3>
+            <div class="time-map">
+              <div class="time-row"><span class="time">0–3 min</span><div><b>Take it in</b><span>Read/watch once; record the audience and situation.</span></div></div>
+              <div class="time-row"><span class="time">3–7 min</span><div><b>Map the argument</b><span>Mark promise, mechanism, proof, objection and CTA.</span></div></div>
+              <div class="time-row"><span class="time">7–11 min</span><div><b>Find the craft</b><span>Choose one decision that makes the hard-to-measure feel specific.</span></div></div>
+              <div class="time-row"><span class="time">11–15 min</span><div><b>Apply it</b><span>Write one LinkedIn insight or one prospect-specific audit observation.</span></div></div>
+              <div class="time-row"><span class="time">+5 min</span><div><b>Save the swipe</b><span>Keep the link, date, screenshot if permitted, and your own analysis.</span></div></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="rotation" aria-labelledby="rotation-heading">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">05 / A simple weekly rhythm</p>
+            <h2 class="section-title" id="rotation-heading">Never wonder what to study next</h2>
+            <p class="section-intro">Repeat this seven-day loop, or use the rotating “today” card above when you want a surprise pick.</p>
+          </div>
+        </div>
+        <div class="week-grid">
+          <div class="week-day"><strong>Monday</strong><span>Service sales letter<br><small>Offer, fit, proof</small></span></div>
+          <div class="week-day"><strong>Tuesday</strong><span>LinkedIn ads<br><small>B2B hooks, CTAs</small></span></div>
+          <div class="week-day"><strong>Wednesday</strong><span>Historical print ad<br><small>Headline, hierarchy</small></span></div>
+          <div class="week-day"><strong>Thursday</strong><span>Modern page or email<br><small>Clarity, friction</small></span></div>
+          <div class="week-day"><strong>Friday</strong><span>Live social/search ad<br><small>Angles, variations</small></span></div>
+          <div class="week-day"><strong>Saturday</strong><span>Classic sales letter<br><small>Story, argument</small></span></div>
+          <div class="week-day"><strong>Sunday</strong><span>Synthesize<br><small>Post + outreach insight</small></span></div>
+        </div>
+      </section>
+
+      <section class="section" id="translate" aria-labelledby="translate-heading">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">06 / Your differentiator</p>
+            <h2 class="section-title" id="translate-heading">Translate the lesson for intangible outcomes</h2>
+            <p class="section-intro">When a result can’t be reduced to a neat metric, specificity can come from other places. Look for what makes the change observable and credible.</p>
+          </div>
+        </div>
+        <div class="transfer-grid">
+          <article class="transfer-card"><span class="mini">Make the result visible</span><h3>Describe the before-and-after in real life</h3><p>What decision gets easier? What conversation changes? What repeated problem stops consuming attention? What can the client do differently?</p></article>
+          <article class="transfer-card"><span class="mini">Show the path</span><h3>Name the mechanism, not just the aspiration</h3><p>Make the work tangible through the diagnostic, method, feedback, facilitation, milestones or artifacts that help create the change.</p></article>
+          <article class="transfer-card"><span class="mini">Earn belief honestly</span><h3>Use proof that fits the claim</h3><p>Ground the promise in specific case context, client language, work samples or observed shifts. Don’t invent numbers—or imply certainty the evidence cannot support.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="turn-into-content" aria-labelledby="content-heading">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">07 / Turn study into visibility & pipeline</p>
+            <h2 class="section-title" id="content-heading">One example can create two useful assets</h2>
+          </div>
+        </div>
+        <div class="practice-layout">
+          <article class="panel">
+            <h3>LinkedIn post starter</h3>
+            <p style="color:var(--muted);font-size:12px;margin:0 0 10px;">“I studied <strong>[example]</strong> today. The persuasive move wasn’t <strong>[surface detail]</strong>—it was <strong>[strategic choice]</strong>. For experts selling <strong>[intangible change]</strong>, that matters because <strong>[reason]</strong>. One way to make that promise more concrete is <strong>[observable process, proof or outcome]</strong>.”</p>
+            <p class="small-print">Add your analysis and client context. Don’t simply repost someone else’s copy.</p>
+          </article>
+          <article class="panel">
+            <h3>Respectful audit-outreach bridge</h3>
+            <p style="color:var(--muted);font-size:12px;margin:0 0 10px;">“I noticed <strong>[specific element]</strong> on your <strong>[page/post]</strong>. A first-time prospect may still be wondering <strong>[one unanswered question about the result, process or proof]</strong>. I mapped a small copy opportunity using the evidence you already have. Would it be useful if I sent the one-page audit?”</p>
+            <p class="small-print">Make the observation genuinely specific, and ask permission before sending the audit.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="template" aria-labelledby="template-heading">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">08 / Keep a record</p>
+            <h2 class="section-title" id="template-heading">Copy-study note template</h2>
+            <p class="section-intro">Select and paste this into your own swipe file, Notion, document or daily log. Save the source URL and date so you can find it again.</p>
+          </div>
+        </div>
+        <div class="template">
+          <div class="template-head">
+            <div><h3>One-page teardown</h3><p>Use the same questions every day to make comparisons easier.</p></div>
+            <button class="button button-green" id="copyTemplate" type="button">Copy template</button>
+          </div>
+          <pre id="templateText">EXAMPLE + SOURCE URL:
+DATE / CHANNEL / FORMAT:
+AUDIENCE + SITUATION:
+CORE PROMISE:
+HOW THE OUTCOME IS MADE VISIBLE:
+MECHANISM / PROCESS:
+PROOF (AND WHAT IT ACTUALLY SUPPORTS):
+OBJECTION OR RISK ADDRESSED:
+CTA + LEVEL OF FRICTION:
+ONE STRATEGIC MOVE WORTH ADAPTING:
+ONE THING I WOULD NOT COPY:
+LINKEDIN POST ANGLE:
+SPECIFIC AUDIT / OUTREACH INSIGHT:</pre>
+        </div>
+        <p class="small-print">These examples belong to their original creators. Use them to study structure and strategy, not to lift wording, testimonials or unsupported outcome claims. Some archives may include partial previews, require an account, or change availability over time.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Made for daily practice—not another tab to keep open forever.</span>
+      <span>Tip: bookmark this HTML file, then open one linked source and do one 15-minute rep.</span>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const picks = [
+        {
+          category: "Best first study · service offer",
+          title: "Frank Kern’s consulting sales letter",
+          prompt: "Trace how the letter makes an intangible advisory service feel like a concrete offer: who it qualifies, what value it promises, how it handles risk, and what action it asks for. Treat its specific performance claims as historical copy—not claims to borrow.",
+          url: "https://swiped.co/file/consulting-sales-letter-from-frank-kern/"
+        },
+        {
+          category: "Current scan · B2B ads",
+          title: "LinkedIn Ad Library",
+          prompt: "Search “leadership coaching,” “executive coach,” or “consulting.” Save one ad’s audience clue, hook, proof style and CTA. Note what the ad does not tell you about performance.",
+          url: "https://www.linkedin.com/ad-library/"
+        },
+        {
+          category: "Historical scan · print",
+          title: "Duke Ad*Access",
+          prompt: "Pick a print ad and map its headline, implied problem, promise, proof and visual hierarchy. Then translate one structural move into a contemporary expert-services example.",
+          url: "https://repository.duke.edu/dc/adaccess"
+        },
+        {
+          category: "Modern teardown · conversion copy",
+          title: "Marketing Examples: Copywriting",
+          prompt: "Choose one short breakdown. Identify the strategic choice behind the wording, then write one sentence about how the same principle could make a coach’s or consultant’s value clearer.",
+          url: "https://marketingexamples.com/copywriting"
+        },
+        {
+          category: "Classic scan · long-form sales letter",
+          title: "Eugene Schwartz’s Boardroom letter",
+          prompt: "Study how the letter makes an information service feel valuable and specific. Mark its core promise, mechanism, proof and value stack—then consider what the equivalent evidence would be for an advisory service.",
+          url: "https://swiped.co/file/boardroom-reports-eugene-schwartz/"
+        },
+        {
+          category: "Historical scan · early advertising",
+          title: "Emergence of Advertising in America",
+          prompt: "Browse one item from 1850–1920. Look for how the copy names a desire, makes a benefit concrete and establishes authority. Keep the historical context in view; do not endorse dated claims or stereotypes.",
+          url: "https://repository.duke.edu/dc/eaa"
+        },
+        {
+          category: "Current scan · ads and emails",
+          title: "Swipefile",
+          prompt: "Pick one ad, email or sales page. In your notes, separate the surface tactic from the deeper strategy. Translate only the strategy to an expert offer.",
+          url: "https://swipefile.com/"
+        },
+        {
+          category: "Current scan · email nurture",
+          title: "Really Good Emails: newsletters",
+          prompt: "Study the subject, opening, value delivered and CTA. What makes the message feel worth reading before it asks for attention or action?",
+          url: "https://reallygoodemails.com/categories/newsletter"
+        },
+        {
+          category: "Classic scan · direct mail",
+          title: "Gary Halbert’s Coat-of-Arms letter",
+          prompt: "Look at how personalization and curiosity earn attention. Identify one modern, relevant way to make outreach feel specific without pretending to know the prospect personally.",
+          url: "https://www.thegaryhalbertletter.com/MarkJoyner/hp2.htm"
+        },
+        {
+          category: "Current scan · social ads",
+          title: "Meta Ad Library",
+          prompt: "Choose a coach, expert or adjacent company. Study the promise, proof, creative format and CTA. Treat the ad as a messaging sample, not evidence that the campaign converted.",
+          url: "https://www.facebook.com/ads/library/"
+        },
+        {
+          category: "Historical scan · video",
+          title: "Duke AdViews",
+          prompt: "Watch one short commercial. Note the first moment the value becomes clear, how it is demonstrated, and what is repeated. Turn the pattern into a 20-second expert-services video idea.",
+          url: "https://archive.org/details/adviews"
+        }
+      ];
+
+      const title = document.getElementById("todayTitle");
+      const prompt = document.getElementById("todayPrompt");
+      const category = document.getElementById("todayCategory");
+      const link = document.getElementById("todayLink");
+      const dateNode = document.getElementById("todayDate");
+      const button = document.getElementById("pickAnother");
+      let lastIndex = -1;
+
+      function setPick(index) {
+        const pick = picks[index];
+        if (!pick) return;
+        lastIndex = index;
+        category.textContent = pick.category;
+        title.textContent = pick.title;
+        prompt.textContent = pick.prompt;
+        link.href = pick.url;
+        link.innerHTML = "Open today’s source <span aria-hidden=\"true\">↗</span>";
+      }
+      function dayOfYear(date) {
+        const start = new Date(date.getFullYear(), 0, 0);
+        return Math.floor((date - start) / 86400000);
+      }
+      const now = new Date();
+      const index = (dayOfYear(now) - 1) % picks.length;
+      setPick(index);
+      if (dateNode) {
+        dateNode.textContent = new Intl.DateTimeFormat(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric" }).format(now);
+      }
+      if (button) {
+        button.addEventListener("click", function () {
+          let next = Math.floor(Math.random() * picks.length);
+          if (picks.length > 1 && next === lastIndex) next = (next + 1) % picks.length;
+          setPick(next);
+        });
+      }
+      const copyButton = document.getElementById("copyTemplate");
+      if (copyButton) {
+        copyButton.addEventListener("click", async function () {
+          const text = document.getElementById("templateText").innerText;
+          const original = copyButton.textContent;
+          try {
+            await navigator.clipboard.writeText(text);
+            copyButton.textContent = "Copied ✓";
+          } catch (e) {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(document.getElementById("templateText"));
+            selection.removeAllRanges();
+            selection.addRange(range);
+            copyButton.textContent = "Select + copy";
+          }
+          setTimeout(function () { copyButton.textContent = original; }, 2200);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

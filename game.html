@@ -1,594 +1,352 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The Copy RPG — The Irreplaceability Engine</title>
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --gold:#f5c542; --cyan:#3ad0ff; --purple:#a855f7; --green:#34d399;
-    --pink:#f472b6; --red:#fb7185; --blue:#60a5fa;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; color:#e7e9f3;
-    font-family:'Inter',system-ui,sans-serif;
-    background:
-      radial-gradient(1200px 800px at 15% -10%, #1b1140 0%, transparent 55%),
-      radial-gradient(1000px 700px at 95% 5%, #06283d 0%, transparent 50%),
-      radial-gradient(900px 900px at 50% 120%, #1a0b2e 0%, transparent 55%),
-      #070710;
-    min-height:100vh; background-attachment:fixed;
-  }
-  h1,h2,h3,h4,.display{font-family:'Space Grotesk',sans-serif;}
-  .glass{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(10px);border-radius:18px;}
-  .glass-soft{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:14px;}
-  .xp-fill{transition:width .9s cubic-bezier(.2,.8,.2,1);border-radius:99px;}
-  .node{position:relative;cursor:pointer;transition:transform .15s, box-shadow .25s, border-color .25s, opacity .3s;}
-  .node:hover{transform:translateY(-2px);}
-  .node.done{opacity:.72;}
-  .node.done .node-title{color:var(--gold);}
-  .tree-body{position:relative;padding-left:26px;}
-  .tree-body::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;
-    background:linear-gradient(180deg,var(--purple),var(--cyan),transparent);opacity:.5;border-radius:2px;}
-  .node::before{content:'';position:absolute;left:-21px;top:20px;width:11px;height:11px;border-radius:50%;
-    background:#0b0b18;border:2px solid var(--purple);box-shadow:0 0 10px rgba(168,85,247,.6);}
-  .node.done::before{background:var(--gold);border-color:var(--gold);box-shadow:0 0 14px rgba(245,197,66,.8);}
-  .node.partial::before{background:#2a1548;border-color:var(--purple);box-shadow:0 0 10px rgba(168,85,247,.6),0 0 0 2px rgba(168,85,247,.3);}
-  .glow-gold{box-shadow:0 0 0 1px rgba(245,197,66,.35),0 0 26px rgba(245,197,66,.12);}
-  .tab.active{background:linear-gradient(135deg,rgba(168,85,247,.25),rgba(58,208,255,.18));border-color:rgba(168,85,247,.6);color:#fff;}
-  .pill{font-size:11px;font-weight:600;padding:2px 9px;border-radius:99px;letter-spacing:.02em;}
-  .float-up{animation:floatUp 1.9s ease forwards;}
-  @keyframes floatUp{0%{opacity:0;transform:translateY(10px) scale(.9)}15%{opacity:1}100%{opacity:0;transform:translateY(-46px) scale(1)}}
-  #flash{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 40%,rgba(245,197,66,.25),transparent 60%);opacity:0;transition:opacity .4s;z-index:60;}
-  #flash.on{opacity:1;}
-  .scrollbar-thin::-webkit-scrollbar{width:8px;height:8px}
-  .scrollbar-thin::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:8px}
-  .bggrad-gold{background:linear-gradient(135deg,#f5c542,#f59e0b)}
-  .bggrad-cyan{background:linear-gradient(135deg,#3ad0ff,#2563eb)}
-  .bggrad-purple{background:linear-gradient(135deg,#a855f7,#7c3aed)}
-  .grad-text{background:linear-gradient(90deg,var(--gold),var(--pink),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;}
-  .chk{width:22px;height:22px;border-radius:7px;border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;transition:.2s;}
-  .chk.on{background:var(--green);border-color:var(--green);box-shadow:0 0 14px rgba(52,211,153,.6);}
-  .nav-scroll{scrollbar-width:none}
-  .nav-scroll::-webkit-scrollbar{display:none}
-  .stat-block{transition:background .3s, border-color .3s;}
-</style>
-</head>
-<body class="scrollbar-thin">
-<div id="flash"></div>
-<div id="toasts" class="fixed top-4 left-1/2 -translate-x-1/2 z-[70] flex flex-col items-center gap-2 pointer-events-none"></div>
-
-<div class="max-w-6xl mx-auto px-4 pb-20">
-
-  <!-- HEADER / HUD -->
-  <header class="pt-8 pb-4">
-    <div class="flex items-center justify-between flex-wrap gap-3">
-      <div>
-        <div class="text-xs uppercase tracking-[0.35em] text-purple-300/80">The Irreplaceability Engine</div>
-        <h1 class="text-3xl sm:text-4xl font-bold grad-text leading-tight">The Copy RPG</h1>
-      </div>
-      <div class="glass px-4 py-3 text-right">
-        <div class="text-[11px] uppercase tracking-widest text-white/50">Class</div>
-        <div id="hud-class" class="text-xl font-bold text-gold-300" style="color:var(--gold)">Wordsmith · Lv 1</div>
-      </div>
-    </div>
-    <div class="flex items-center gap-2 mt-3 flex-wrap">
-      <button onclick="exportSave()" class="text-xs px-3 py-1.5 rounded-lg glass-soft text-white/70 hover:text-white hover:border-white/30 transition">📥 Export Progress</button>
-      <button onclick="document.getElementById('import-file').click()" class="text-xs px-3 py-1.5 rounded-lg glass-soft text-white/70 hover:text-white hover:border-white/30 transition">📤 Import Progress</button>
-      <input type="file" id="import-file" accept=".json" class="hidden" onchange="importSave(event)" />
-      <span class="text-[11px] text-white/35 ml-1">Progress saves locally — export to back up beyond this browser</span>
-    </div>
-    <!-- XP bar -->
-    <div class="glass px-5 py-4 mt-4 flex items-center gap-4 flex-wrap">
-      <div class="flex-1 min-w-[240px]">
-        <div class="flex justify-between text-xs mb-1.5 text-white/70">
-          <span id="hud-lvl">Level 1 — Wordsmith</span>
-          <span id="hud-xp">0 / 300 XP</span>
-        </div>
-        <div class="h-3 bg-white/10 rounded-full overflow-hidden">
-          <div id="hud-xpfill" class="xp-fill h-full bggrad-gold" style="width:0%"></div>
-        </div>
-      </div>
-      <div class="flex gap-5">
-        <div class="text-center"><div id="hud-total" class="text-2xl font-bold">0</div><div class="text-[10px] uppercase tracking-wider text-white/50">Total XP</div></div>
-        <div class="text-center"><div id="hud-streak" class="text-2xl font-bold" style="color:var(--cyan)">0</div><div class="text-[10px] uppercase tracking-wider text-white/50">Day Streak</div></div>
-        <div class="text-center"><div id="hud-quests" class="text-2xl font-bold" style="color:var(--green)">0/145</div><div class="text-[10px] uppercase tracking-wider text-white/50">Mastery</div></div>
-      </div>
-    </div>
-  </header>
-
-  <!-- NAV -->
-  <nav class="nav-scroll flex gap-2 overflow-x-auto pb-3 mb-2 -mx-1 px-1">
-    <button data-tab="dashboard" class="tab active glass px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap">🏠 Dashboard</button>
-    <button data-tab="trees" class="tab glass px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap">🌳 Skill Trees</button>
-    <button data-tab="daily" class="tab glass px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap">🔥 Daily Loop</button>
-    <button data-tab="endgame" class="tab glass px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap">🚀 Endgame</button>
-    <button data-tab="ai" class="tab glass px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap">🤖 AI Reality</button>
-  </nav>
-
-  <main>
-    <section id="sec-dashboard"></section>
-    <section id="sec-trees" class="hidden"></section>
-    <section id="sec-daily" class="hidden"></section>
-    <section id="sec-endgame" class="hidden"></section>
-    <section id="sec-ai" class="hidden"></section>
-  </main>
-</div>
-
-<script>
-/* ============================ DATA ============================ */
-const ATTRS = {
-  research:{name:'Research',icon:'🔬',color:'var(--cyan)'},
-  positioning:{name:'Positioning',icon:'🎯',color:'var(--purple)'},
-  psychology:{name:'Psychology',icon:'🧠',color:'var(--pink)'},
-  offerDesign:{name:'Offer Design',icon:'💡',color:'var(--gold)'},
-  trustBuilding:{name:'Trust Building',icon:'🤝',color:'var(--green)'},
-  judgment:{name:'Judgment',icon:'⚖️',color:'var(--blue)'},
-};
-const QUESTS = {
-  demand:[
-    {id:'d1',title:'Find Bigger Markets',branch:'Demand',xp:40,attr:'positioning',desc:'Identify an underserved coaching niche worth attacking before your competitors notice.'},
-    {id:'d2',title:'Solve Expensive Problems',branch:'Demand',xp:50,attr:'offerDesign',desc:'Map a $10k+ problem a client is quietly bleeding money (or momentum) on.'},
-    {id:'d3',title:'Position Yourself',branch:'Demand',xp:60,attr:'positioning',desc:'Write a one-line positioning statement that makes you the only logical choice.'},
-  ],
-  skill:[
-    {id:'s1',title:'Read Customer Conversations',branch:'Research Mastery',xp:20,attr:'research',desc:'Mine Reddit, FB groups, Amazon reviews, YouTube comments for fears, desires, language, beliefs.'},
-    {id:'s2',title:'Reverse Engineer Launches',branch:'Research Mastery',xp:25,attr:'research',desc:'Deconstruct a successful launch: headline, hook, positioning, proof, CTA. Don\'t judge — deconstruct.'},
-    {id:'s3',title:'Objection Mining',branch:'Research Mastery',xp:30,attr:'research',desc:'Collect objections daily. "I don\'t have time." "My audience is different." Eventually you own thousands.'},
-    {id:'s4',title:'Daily Rewriting',branch:'Writing Mastery',xp:25,attr:'offerDesign',desc:'Rewrite a famous sales letter, landing page, or email from memory. Not writing — rewriting.'},
-    {id:'s5',title:'Headline Challenge',branch:'Writing Mastery',xp:40,attr:'offerDesign',desc:'Write 20 headlines. First 5 warm-ups, next 10 get interesting, final 5 hold the surprises.'},
-    {id:'s6',title:'Offer Recreation',branch:'Writing Mastery',xp:35,attr:'offerDesign',desc:'Read an offer, close the tab, rebuild it from memory. Notice sequence, tension, proof placement.'},
-    {id:'s7',title:'Constraint Writing',branch:'Writing Mastery',xp:30,attr:'offerDesign',desc:'10-word email. 50-word landing page. 1-sentence offer. CTA with no verbs. Constraints sharpen instincts.'},
-    {id:'s8',title:'Study Biases',branch:'Psychology',xp:25,attr:'psychology',desc:'Behavioral economics, cognitive biases, persuasion, neuroscience, habits. Ask: what changes in my copy?'},
-    {id:'s9',title:'Watch Interviews',branch:'Psychology',xp:15,attr:'psychology',desc:'Don\'t study the answers. Study the hesitation, the emotion, the exact wording.'},
-    {id:'s10',title:'Predict Objections',branch:'Psychology',xp:40,attr:'psychology',desc:'Predict the objection before the customer voices it. That\'s the edge.'},
-    {id:'s11',title:'Learn Business Fundamentals',branch:'Business Strategy',xp:40,attr:'positioning',desc:'Master pricing, positioning, funnels, economics. Copy does not exist alone.'},
-    {id:'s12',title:'Study One Business',branch:'Business Strategy',xp:50,attr:'positioning',desc:'Each day, find one business\'s bottleneck, opportunity, missing trust, and offer weakness.'},
-    {id:'s13',title:'See Patterns',branch:'Pattern Recognition',xp:100,attr:'judgment',desc:'Store every audit, landing page, funnel, launch mentally. You stop seeing pages — you see patterns.'},
-    {id:'s14',title:'Feedback Loop',branch:'Pattern Recognition',xp:70,attr:'judgment',desc:'After writing, predict what converts and what won\'t. Compare later. This trains judgment.'},
-    {id:'s15',title:'Build Mental Models',branch:'Pattern Recognition',xp:50,attr:'judgment',desc:'Curiosity Gap, Loss Aversion, Trust Ladder, Belief Pyramid, Problem Agitation. Then combine them.'},
-  ],
-  irreplaceable:[
-    {id:'i1',title:'Judgment',xp:60,attr:'judgment',desc:'Take 5 AI outputs. Rank them. Explain why. AI produces possibilities — experts choose.'},
-    {id:'i2',title:'Taste',xp:40,attr:'judgment',desc:'Collect great ads AND terrible ads. Explain WHY each works or fails.'},
-    {id:'i3',title:'Original Thinking',xp:100,attr:'judgment',desc:'Invent one framework, analogy, model, diagram, or concept daily. Most will be terrible. The 100th is yours.'},
-    {id:'i4',title:'Proprietary Frameworks',xp:150,attr:'positioning',desc:'Don\'t say "I write copy." Say "I use the Trust Journey Method." Frameworks become intellectual property.'},
-    {id:'i5',title:'Teach',xp:80,attr:'positioning',desc:'Teach one lesson daily — LinkedIn, X, Newsletter, Video. Teaching compresses knowledge.'},
-    {id:'i6',title:'Build Assets',xp:100,attr:'trustBuilding',desc:'Checklists, templates, calculators, prompts, swipe files, research databases. Assets work while you sleep.'},
-    {id:'i7',title:'Research Database',xp:200,attr:'research',desc:'10,000 objections. 5,000 headlines. 2,000 CTAs. Categorized. Searchable. No AI has your exact database.'},
-    {id:'i8',title:'Decision Journal',xp:100,attr:'judgment',desc:'Record "I chose this headline because…" Compare months later. Judgment compounds.'},
-    {id:'i9',title:'Case Study Vault',xp:120,attr:'trustBuilding',desc:'Document hypothesis, process, revisions, lessons. This creates unique, un-copyable experience.'},
-    {id:'i10',title:'Brand Building',xp:100,attr:'positioning',desc:'Publish one insight, teardown, framework, experiment, observation. Brand is stored trust.'},
-    {id:'i11',title:'Relationship Network',xp:150,attr:'trustBuilding',desc:'Befriend designers, CRO specialists, founders, media buyers, email marketers. Networks become unfair advantages.'},
-  ],
-};
-const DAILY = [
-  {id:'dl1',icon:'🧠',title:'Research Quest',desc:'Extract 10 customer objections from real conversations.',xp:25,attr:'research'},
-  {id:'dl2',icon:'✍️',title:'Writing Quest',desc:'Write 20 headlines.',xp:40,attr:'offerDesign'},
-  {id:'dl3',icon:'🔍',title:'Strategy Quest',desc:'Audit one coaching landing page.',xp:50,attr:'positioning'},
-  {id:'dl4',icon:'🧩',title:'Psychology Quest',desc:'Learn one cognitive bias and rewrite copy using it.',xp:25,attr:'psychology'},
-  {id:'dl5',icon:'⚖️',title:'Judgment Quest',desc:'Compare three AI headlines and justify your ranking.',xp:60,attr:'judgment'},
-  {id:'dl6',icon:'🏗️',title:'Asset Quest',desc:'Add five entries to your swipe file or objection database.',xp:30,attr:'trustBuilding'},
-  {id:'dl7',icon:'📢',title:'Brand Quest',desc:'Publish one original insight or teardown.',xp:50,attr:'positioning'},
-];
-const LEVELS = [
-  {lv:1,name:'Wordsmith',min:0,desc:'You learn to write clear, persuasive copy.'},
-  {lv:2,name:'Researcher',min:300,desc:'You uncover what customers truly think and feel.'},
-  {lv:3,name:'Strategist',min:900,desc:'You identify why offers and funnels fail before rewriting anything.'},
-  {lv:4,name:'Architect',min:1800,desc:'You design messaging systems, offers, and trust journeys.'},
-  {lv:5,name:'Authority',min:3000,desc:'You create original frameworks, build IP, teach, and shape how the industry thinks.'},
-];
-const ABILITIES = [
-  {id:'a1',name:'Objection Archaeologist',reqAttr:'research',reqLv:4,icon:'⛏️',desc:'You can dig up the exact objection silently killing a sale inside any funnel.'},
-  {id:'a2',name:'Trust Leak Detector',reqAttr:'trustBuilding',reqLv:4,icon:'💧',desc:'You spot the precise moment trust breaks in a customer journey — and how to patch it.'},
-  {id:'a3',name:'Offer Architect',reqAttr:'offerDesign',reqLv:5,icon:'🏛️',desc:'You can redesign an offer from the ground up and multiply its conversion.'},
-  {id:'a4',name:'Pattern Cartographer',reqAttr:'judgment',reqLv:5,icon:'🗺️',desc:'You map invisible patterns across years of real projects that no one else can see.'},
-];
-const MASTERY = ['Novice','Apprentice','Practitioner','Adept','Master'];
-function rankName(r){return MASTERY[r-1]||'Master';}
-
-/* ============================ STATE ============================ */
-const SAVE_KEY = 'copyrpg_save_v2';
-let state = {
-  totalXp:0,
-  attrs:{research:0,positioning:0,psychology:0,offerDesign:0,trustBuilding:0,judgment:0},
-  completed:{},
-  daily:{date:'',done:{},claimed:false},
-  streak:0,bestStreak:0,
-};
-let activeTab = 'dashboard';
-
-function todayStr(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
-function yesterdayStr(){const d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
-function load(){
-  try{
-    const raw=localStorage.getItem(SAVE_KEY);
-    if(raw){
-      const s=JSON.parse(raw);
-      state=Object.assign(state,s);
-      for(const k in state.completed){if(typeof state.completed[k]==='boolean')state.completed[k]=state.completed[k]?5:0;}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A copy-forensics study hub for diagnosing weak ads, sales letters, landing pages and emails—especially for coaches, consultants and experts.">
+  <title>Red Flag Copy Lab</title>
+  <style>
+    :root {
+      --paper:#f5f3ed; --surface:#fbfaf6; --ink:#202a28; --muted:#68736e; --line:#dfe3dc;
+      --deep:#263c36; --deep2:#39584d; --mint:#e5ede7; --red:#a6463d; --red-dark:#71352f;
+      --red-soft:#f5e8e4; --amber:#dbb76a; --amber-soft:#f4eddc; --shadow:0 14px 38px rgba(28,42,37,.08);
+      --radius:19px;
     }
-  }catch(e){}
-  const t=todayStr();
-  if(state.daily.date!==t){
-    if(state.daily.date&&state.daily.date!==yesterdayStr()&&!state.daily.claimed)state.streak=0;
-    state.daily={date:t,done:{},claimed:false};
-    save();
-  }
-}
-function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));}catch(e){}}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+    a{color:inherit} button{font:inherit} .page{width:min(1160px,calc(100% - 40px));margin:0 auto}
+    .topbar{height:72px;display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:1px solid rgba(32,42,40,.12)}
+    .brand{display:flex;align-items:center;gap:11px;font-size:12px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+    .brand-mark{width:31px;height:31px;display:grid;place-items:center;background:var(--red);color:#fff;border-radius:10px;font-size:16px;letter-spacing:0}
+    .top-note{font-size:12px;color:var(--muted)}
+    .hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,.7fr);gap:34px;align-items:end;margin:29px 0 22px;padding:clamp(27px,5vw,56px);border-radius:27px;background:var(--deep);color:#fff;box-shadow:var(--shadow)}
+    .hero:after{content:"";position:absolute;right:-115px;top:-205px;width:365px;height:365px;border:1px solid rgba(255,255,255,.11);border-radius:50%;box-shadow:0 0 0 38px rgba(255,255,255,.025),0 0 0 77px rgba(255,255,255,.018);pointer-events:none}
+    .kicker{margin:0 0 12px;color:var(--amber);font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+    h1{margin:0;font-size:clamp(39px,6vw,68px);line-height:.99;letter-spacing:-.055em;font-weight:760;max-width:720px}
+    h1 em{color:#efc8ad;font-family:Georgia,"Times New Roman",serif;font-weight:500}
+    .hero p:not(.kicker){max-width:600px;margin:20px 0 0;color:rgba(255,255,255,.76);font-size:15px}
+    .actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:10px 15px;border:1px solid transparent;border-radius:999px;font-size:12px;font-weight:800;text-decoration:none;cursor:pointer;transition:transform .16s ease,background .16s ease}
+    .btn:hover{transform:translateY(-1px)} .btn-white{color:var(--deep);background:#fffefa}.btn-outline{border-color:rgba(255,255,255,.35);color:#fff;background:transparent}
+    .btn-red{color:#fff;background:var(--red)} .btn-quiet{color:var(--deep);background:transparent;border-color:var(--line)}
+    .hero-side{z-index:1;position:relative;padding-left:23px;border-left:1px solid rgba(255,255,255,.2)}
+    .hero-side h2{margin:0 0 12px;color:rgba(255,255,255,.67);font-size:11px;letter-spacing:.13em;text-transform:uppercase}
+    .hero-side p{margin:0!important;font-size:12px!important}
+    .hero-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}.hero-pills span{padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.09);color:#fff;font-size:9px;font-weight:750}
+    .section{margin:45px 0;scroll-margin-top:18px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:17px}
+    .section-kicker{margin:0 0 6px;color:var(--red);font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+    h2.title{margin:0;font-size:clamp(24px,3vw,34px);line-height:1.12;letter-spacing:-.04em}
+    .intro{max-width:690px;margin:7px 0 0;color:var(--muted);font-size:13px}
+    .today{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:24px;align-items:center;padding:23px 26px;border:1px solid #e8d4cf;border-radius:var(--radius);background:var(--red-soft)}
+    .today-label{display:flex;align-items:center;gap:9px;color:var(--red-dark);font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+    .pulse{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px rgba(166,70,61,.12)}
+    .today h2{margin:9px 0 5px;font-size:22px;line-height:1.2;letter-spacing:-.03em}
+    .today p{max-width:740px;margin:0;color:#64534f;font-size:12px}
+    .today-actions{display:flex;flex-direction:column;gap:8px;align-items:stretch}.today-actions .btn{width:100%}
+    #todayDate{color:var(--red-dark);text-align:right;font-size:10px;font-weight:750}
+    .callout{margin-top:15px;padding:14px 17px;border-left:3px solid var(--amber);border-radius:0 11px 11px 0;background:var(--amber-soft);color:#635b48;font-size:11px}
+    .callout strong{color:#413c31}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+    .card{display:flex;flex-direction:column;min-height:238px;padding:19px;background:var(--surface);border:1px solid var(--line);border-radius:16px;transition:transform .18s ease,box-shadow .18s ease,border .18s ease}
+    .card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#c9d5cc}
+    .meta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .kind{color:var(--deep2);font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+    .badge{padding:4px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:9px;font-weight:750;white-space:nowrap}
+    .badge.red{border-color:#e6c6bf;background:#fbf0ec;color:var(--red-dark)}
+    .card h3{margin:13px 0 7px;font-size:16px;line-height:1.22;letter-spacing:-.025em}
+    .card p{margin:0;color:var(--muted);font-size:11.5px}
+    .card .diagnose{margin-top:10px;color:#4c6256;font-size:10.5px}
+    .card .link{display:inline-flex;align-items:center;gap:7px;margin-top:auto;padding-top:15px;color:var(--deep2);font-size:11px;font-weight:850;text-decoration:none}
+    .card .link:hover{text-decoration:underline}
+    .quote{margin:11px 0 0;padding:10px 12px;border-left:2px solid var(--red);background:#f7efeb;color:#5c4944;font-family:Georgia,"Times New Roman",serif;font-size:12px;line-height:1.45}
+    .small-note{margin:13px 0 0;color:var(--muted);font-size:10px}
+    .practice-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}
+    .panel{padding:21px;background:var(--surface);border:1px solid var(--line);border-radius:17px}
+    .panel h3{margin:0 0 12px;font-size:16px;letter-spacing:-.02em}
+    .list{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+    .list li{display:flex;gap:10px;align-items:flex-start;color:#4c5852;font-size:11.5px}
+    .check{flex:0 0 18px;width:18px;height:18px;margin-top:1px;display:grid;place-items:center;border-radius:6px;background:var(--mint);color:var(--deep2);font-size:10px;font-weight:900}
+    .timeline{display:grid;gap:0}.row{display:grid;grid-template-columns:57px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.row:first-child{padding-top:0;border-top:0}
+    .mins{color:var(--red);font-size:10px;font-weight:900}.row b{display:block;font-size:11.5px}.row span{color:var(--muted);font-size:10.5px}
+    .lens{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+    .lens-card{padding:18px;border-radius:15px;background:var(--deep);color:#fff;min-height:142px}
+    .lens-card small{color:var(--amber);font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+    .lens-card h3{margin:8px 0 6px;font-size:14px;line-height:1.25}.lens-card p{margin:0;color:rgba(255,255,255,.72);font-size:10.5px}
+    .live-box{padding:20px 22px;border:1px solid #ccdbd0;border-radius:16px;background:var(--mint)}
+    .live-box h3{margin:0 0 5px;font-size:15px}.live-box p{margin:0;color:#52645a;font-size:11.5px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.chip{display:inline-block;padding:7px 10px;border:1px solid rgba(49,89,75,.18);border-radius:999px;background:rgba(255,255,255,.76);color:var(--deep);font-size:10px;font-weight:800;text-decoration:none}.chip:hover{background:white}
+    .terms{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}.term{padding:5px 9px;border:1px solid rgba(49,89,75,.15);border-radius:999px;background:rgba(255,255,255,.7);color:var(--deep);font-size:9px;font-weight:750}
+    .template{overflow:hidden;border:1px solid #d8dcd5;border-radius:17px;background:#e9eae4}
+    .template-head{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:18px 20px}.template-head h3{margin:0;font-size:15px}.template-head p{margin:3px 0 0;color:var(--muted);font-size:10px}
+    pre{margin:0;padding:17px 20px;background:#fffefa;border-top:1px solid #d8dcd5;color:#46544c;white-space:pre-wrap;user-select:text;font:11.5px/1.9 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .outreach{padding:20px 22px;border-radius:16px;background:var(--deep);color:#fff}.outreach h3{margin:0 0 8px;font-size:15px}.outreach p{margin:0;color:rgba(255,255,255,.79);font-size:11.5px}.outreach strong{color:#f1c9ac}
+    .footer{display:flex;justify-content:space-between;gap:20px;margin:48px 0 22px;padding:20px 0;border-top:1px solid var(--line);color:var(--muted);font-size:10px}
+    .footer a{color:var(--deep2)}
+    @media(max-width:920px){.hero{grid-template-columns:1fr}.hero-side{padding:17px 0 0;border-top:1px solid rgba(255,255,255,.2);border-left:0}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:650px){.page{width:min(100% - 24px,1160px)}.topbar{height:61px}.top-note{display:none}.hero{margin-top:16px;border-radius:20px;gap:24px}.today{grid-template-columns:1fr;padding:19px;gap:16px}.today-actions{flex-direction:row;flex-wrap:wrap}.today-actions .btn{width:auto}#todayDate{text-align:left}.grid,.practice-grid,.lens{grid-template-columns:1fr}.card{min-height:205px}.section-head{align-items:flex-start;flex-direction:column}.template-head{align-items:flex-start;flex-direction:column}.footer{flex-direction:column}}
+    @media print{body{background:white}.topbar,.actions,.today-actions,.card .link,.template-head .btn{display:none!important}.page{width:100%}.hero{print-color-adjust:exact;box-shadow:none}.section{break-inside:avoid;margin:22px 0}.card{break-inside:avoid}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="topbar" aria-label="Main">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">!</span><span>Red Flag Copy Lab</span></div>
+      <div class="top-note">A companion to your Daily Copy Study Desk · failure-mode edition</div>
+    </nav>
 
-/* ============================ HELPERS ============================ */
-function attrLevel(xp){return Math.floor(xp/100)+1;}
-function attrInto(xp){return xp%100;}
-function levelForXp(xp){let cur=LEVELS[0];for(const L of LEVELS){if(xp>=L.min)cur=L;}return cur;}
-function xpToNext(xp){
-  const cur=levelForXp(xp),idx=LEVELS.indexOf(cur);
-  if(idx===LEVELS.length-1)return null;
-  const next=LEVELS[idx+1];
-  return{next,need:next.min-xp,span:next.min-cur.min,pct:((xp-cur.min)/(next.min-cur.min))*100};
-}
-function questById(id){for(const k in QUESTS){const f=QUESTS[k].find(q=>q.id===id);if(f)return f;}return null;}
-const allQuests=[...QUESTS.demand,...QUESTS.skill,...QUESTS.irreplaceable];
-function masterySummary(){
-  const total=allQuests.reduce((s,q)=>s+(state.completed[q.id]||0),0);
-  return total+'/'+(allQuests.length*5);
-}
+    <header class="hero">
+      <div>
+        <p class="kicker">Practice the diagnosis, not the dunk</p>
+        <h1>Learn from the copy<br><em>that loses the reader.</em></h1>
+        <p>A curated practice lab for unclear ads, sales pages, letters and emails—with extra attention to coaches, consultants and experts selling hard-to-measure outcomes.</p>
+        <div class="actions">
+          <a class="btn btn-white" href="#today">Start today’s critique ↓</a>
+          <a class="btn btn-outline" href="#coach-examples">Jump to coach / consultant examples ↘</a>
+        </div>
+      </div>
+      <aside class="hero-side">
+        <h2>One important distinction</h2>
+        <p>“I don’t like this” is a reaction. A useful critique names the exact line, the reader question it leaves unanswered, and the smallest honest improvement to test.</p>
+        <div class="hero-pills"><span>Clarity</span><span>Offer</span><span>Proof</span><span>CTA</span><span>Fit</span></div>
+      </aside>
+    </header>
 
-/* ============================ ACTIONS ============================ */
-function completeQuest(id){
-  const q=questById(id);
-  if(!q)return;
-  const cur=state.completed[id]||0;
-  if(cur>=5)return;
-  const prevLevel=levelForXp(state.totalXp).lv;
-  const prevAbilities=unlockedAbilities();
-  const nextRank=cur+1;
-  state.completed[id]=nextRank;
-  const xpAward=Math.round(q.xp*(0.6+(nextRank*0.4)));
-  state.totalXp+=xpAward;
-  state.attrs[q.attr]+=xpAward;
-  save();
-  toast('+'+xpAward+' XP · '+q.title+' — '+rankName(nextRank),'xp');
-  if(nextRank===5)toast('⭐ MASTERED — '+q.title,'level');
-  checkUnlocks(prevLevel,prevAbilities);
-  render();
-}
-function toggleDaily(id){
-  const t=todayStr();
-  if(state.daily.date!==t)state.daily={date:t,done:{},claimed:false};
-  state.daily.done[id]=!state.daily.done[id];
-  const q=DAILY.find(d=>d.id===id);
-  if(state.daily.done[id]){
-    const prevLevel=levelForXp(state.totalXp).lv;
-    const prevAbilities=unlockedAbilities();
-    state.totalXp+=q.xp;state.attrs[q.attr]+=q.xp;
-    toast('+'+q.xp+' XP · '+q.title,'xp');
-    checkUnlocks(prevLevel,prevAbilities);
-  }else{
-    state.totalXp=Math.max(0,state.totalXp-q.xp);
-    state.attrs[q.attr]=Math.max(0,state.attrs[q.attr]-q.xp);
-  }
-  const allDone=DAILY.every(d=>state.daily.done[d.id]);
-  if(allDone&&!state.daily.claimed){
-    state.daily.claimed=true;state.streak+=1;state.bestStreak=Math.max(state.bestStreak,state.streak);
-    toast('🔥 Day Complete! Streak +1 ('+state.streak+')','streak');
-  }
-  if(!allDone&&state.daily.claimed)state.daily.claimed=false;
-  save();render();
-}
-function unlockedAbilities(){return ABILITIES.filter(a=>attrLevel(state.attrs[a.reqAttr])>=a.reqLv).map(a=>a.id);}
-function checkUnlocks(prevLevel,prevAbilities){
-  const newLevel=levelForXp(state.totalXp).lv;
-  if(newLevel>prevLevel){
-    levelUpFlash();
-    toast('⭐ LEVEL UP — '+levelForXp(state.totalXp).name+' (Lv '+newLevel+')','level');
-  }
-  const now=unlockedAbilities();
-  now.forEach(id=>{if(!prevAbilities.includes(id)){const a=ABILITIES.find(x=>x.id===id);toast('🦾 ABILITY UNLOCKED — '+a.name,'ability');}});
-}
-function resetProgress(){
-  if(!confirm('Reset ALL progress? This cannot be undone.'))return;
-  state={totalXp:0,attrs:{research:0,positioning:0,psychology:0,offerDesign:0,trustBuilding:0,judgment:0},completed:{},daily:{date:todayStr(),done:{},claimed:false},streak:0,bestStreak:0};
-  save();render();toast('Progress reset.','xp');levelUpFlash();
-}
-function exportSave(){
-  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='copy-rpg-progress-'+todayStr()+'.json';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
-  toast('Progress exported — keep this file safe!','save');
-}
-function importSave(event){
-  const file=event.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=function(e){
-    try{
-      const data=JSON.parse(e.target.result);
-      if(typeof data.totalXp!=='number'||!data.attrs||!data.completed||!data.daily)throw new Error('Invalid save file.');
-      if(!confirm('Import progress? This will overwrite your current save.\n\nImported: '+data.totalXp+' XP, '+Object.keys(data.completed).length+' quests, streak '+data.streak+'.'))return;
-      state=data;
-      state.daily=data.daily||{date:todayStr(),done:{},claimed:false};
-      state.bestStreak=data.bestStreak||state.bestStreak||state.streak;
-      save();render();
-      toast('✅ Progress imported successfully!','save');
-    }catch(err){toast('❌ Invalid save file.','xp');}
-  };
-  reader.readAsText(file);event.target.value='';
-}
+    <main>
+      <section class="section" id="today">
+        <div class="section-head"><div><p class="section-kicker">00 / Start here</p><h2 class="title">Today’s red-flag study</h2><p class="intro">The pick rotates by calendar day. Press “Pick another” if you want a different failure mode.</p></div></div>
+        <article class="today" aria-live="polite">
+          <div>
+            <div class="today-label"><span class="pulse"></span><span id="todayCategory">Coach / consultant copy · illustrative weak example</span></div>
+            <h2 id="todayTitle">A coach’s “highest potential” headline</h2>
+            <p id="todayPrompt">Read the weak version, identify the exact words that make the offer hard to picture, and note what a first-time prospect still needs to know. Then write the smallest truthful repair—without adding made-up metrics.</p>
+          </div>
+          <div class="today-actions">
+            <a class="btn btn-red" id="todayLink" href="https://threwthelookingglass.com/landing-pages-examples-for-coaches-consultants-and-personal-brands/" target="_blank" rel="noopener noreferrer">Open today’s specimen ↗</a>
+            <button class="btn btn-quiet" id="pickAnother" type="button">Pick another example</button>
+            <div id="todayDate"></div>
+          </div>
+        </article>
+        <div class="callout"><strong>No archive can prove that a piece is “bad” just by looking at it.</strong> The items below mix deliberately weak teaching examples, published teardowns and public campaigns that an author criticized. A weak-looking line may be deliberate, audience-specific or effective in context. Diagnose the artifact; don’t assume conversion results.</div>
+      </section>
 
-/* ============================ TOASTS ============================ */
-function toast(msg,type){
-  const el=document.createElement('div');
-  el.className='float-up glass px-4 py-2.5 text-sm font-semibold shadow-lg';
-  let c='#fff';
-  if(type==='xp')c='var(--gold)';
-  if(type==='streak')c='var(--cyan)';
-  if(type==='level')c='var(--pink)';
-  if(type==='ability')c='var(--green)';
-  if(type==='save')c='var(--blue)';
-  el.style.color=c;el.style.borderColor=c;el.textContent=msg;
-  document.getElementById('toasts').appendChild(el);
-  setTimeout(()=>el.remove(),2000);
-}
-function levelUpFlash(){
-  const f=document.getElementById('flash');
-  f.classList.add('on');setTimeout(()=>f.classList.remove('on'),450);
-}
+      <section class="section" id="coach-examples">
+        <div class="section-head"><div><p class="section-kicker">01 / Closest to your niche</p><h2 class="title">Coach & consultant copy that goes vague</h2><p class="intro">Start here for intangible outcomes: clarity, confidence, growth, transformation and “next level” promises. Ask what a prospect can actually picture.</p></div></div>
+        <div class="grid">
+          <article class="card">
+            <div class="meta"><span class="kind">Illustrative weak copy</span><span class="badge red">Best first example</span></div>
+            <h3>Coach / consultant landing-page examples</h3>
+            <p>The article explicitly labels the following as weak teaching versions; they are not presented as live client pages.</p>
+            <div class="quote">“Step Into Your Highest Potential”<br>“Strategic Marketing Support for Visionary Brands”</div>
+            <p class="diagnose"><strong>Study:</strong> abstraction, audience fit, service sprawl, and a “free call” CTA that may not explain what happens next.</p>
+            <a class="link" href="https://threwthelookingglass.com/landing-pages-examples-for-coaches-consultants-and-personal-brands/" target="_blank" rel="noopener noreferrer">Read the weak examples + rewrites ↗</a>
+          </article>
+          <article class="card">
+            <div class="meta"><span class="kind">Coach sales-page critique</span><span class="badge">Service offer</span></div>
+            <h3>10 reasons a coach’s sales page may not convert</h3>
+            <p>A coach-focused copywriter walks through problems such as ad-to-page mismatch, missing audience language, unclear promises and a weak conversation path.</p>
+            <div class="quote">“We’ll work together to identify your next best step…”</div>
+            <p class="diagnose"><strong>Study:</strong> what does “next best step” mean, and how would the reader know where the process is taking them?</p>
+            <a class="link" href="https://www.truerwordsbylauren.com/copywriting-for-coaches-blog/10-reasons-sales-pages-dont-convert" target="_blank" rel="noopener noreferrer">Open the coach sales-page critique ↗</a>
+          </article>
+          <article class="card">
+            <div class="meta"><span class="kind">Landing-page contest</span><span class="badge">Public expert critiques</span></div>
+            <h3>Unbounce: 10 pages, one fictional product</h3>
+            <p>Writers pitched a fictional music-playing robot vacuum. Copywriters critique the submissions for unclear offers, clever-but-confusing headlines, vague benefits and weak buttons.</p>
+            <p class="diagnose"><strong>Study:</strong> compare two writers’ choices against the same product and conversion goal. Not every entry is a “bad” example.</p>
+            <a class="link" href="https://unbounce.com/landing-page-copywriting/vote-for-the-most-persuasive-landing-page" target="_blank" rel="noopener noreferrer">Read the page-by-page critiques ↗</a>
+          </article>
+          <article class="card">
+            <div class="meta"><span class="kind">Sales-page teardown</span><span class="badge">Copyhackers</span></div>
+            <h3>A live sales-page critique</h3>
+            <p>A teardown transcript discusses a page that feels busy, has a headline some reviewers find off-target, places useful proof late, and makes the product preview difficult to see.</p>
+            <p class="diagnose"><strong>Study:</strong> distinguish a copy issue from layout, readability, offer and audience-fit issues.</p>
+            <a class="link" href="https://copyhackers.com/how-to-write-a-sales-page/" target="_blank" rel="noopener noreferrer">Open the Copyhackers session ↗</a>
+          </article>
+          <article class="card">
+            <div class="meta"><span class="kind">Landing-page examples</span><span class="badge">B2B / service</span></div>
+            <h3>Landing-page copy examples with weak value props</h3>
+            <p>Walk through published page examples that the article critiques for not saying clearly who the offer is for, what it does or how it helps.</p>
+            <p class="diagnose"><strong>Study:</strong> find the line where a generic category claim should become a concrete reader outcome.</p>
+            <a class="link" href="https://www.klientboost.com/landing-pages/landing-page-copy/" target="_blank" rel="noopener noreferrer">Browse the copy examples ↗</a>
+          </article>
+          <article class="card">
+            <div class="meta"><span class="kind">Sales-page teardown collection</span><span class="badge">Mixed examples</span></div>
+            <h3>Online course sales-page examples</h3>
+            <p>A mixed teardown of course pages. It includes examples of unjustified price anchoring alongside examples that work—use the contrast to sharpen your diagnosis.</p>
+            <p class="diagnose"><strong>Study:</strong> when does a value stack feel earned, and when is it just a big number beside a discount?</p>
+            <a class="link" href="https://thrivethemes.com/online-course-sales-page-teardown/" target="_blank" rel="noopener noreferrer">Open the sales-page teardown ↗</a>
+          </article>
+        </div>
+      </section>
 
-/* ============================ RENDER: HUD ============================ */
-function renderHUD(){
-  const L=levelForXp(state.totalXp);
-  document.getElementById('hud-class').textContent=L.name+' · Lv '+L.lv;
-  document.getElementById('hud-lvl').textContent='Level '+L.lv+' — '+L.name;
-  document.getElementById('hud-total').textContent=state.totalXp;
-  document.getElementById('hud-streak').textContent=state.streak;
-  const masTotal=allQuests.reduce((s,q)=>s+(state.completed[q.id]||0),0);
-  document.getElementById('hud-quests').textContent=masTotal+'/'+(allQuests.length*5);
-  const nx=xpToNext(state.totalXp);
-  if(nx){
-    document.getElementById('hud-xp').textContent=state.totalXp+' / '+nx.next.min+' XP';
-    document.getElementById('hud-xpfill').style.width=Math.min(100,nx.pct)+'%';
-  }else{
-    document.getElementById('hud-xp').textContent=state.totalXp+' XP · MAX';
-    document.getElementById('hud-xpfill').style.width='100%';
-  }
-}
+      <section class="section" id="emails">
+        <div class="section-head"><div><p class="section-kicker">02 / Inbox friction</p><h2 class="title">Sales emails & marketing emails</h2><p class="intro">Look for self-focused openings, vague asks, fake personalization, too many actions, and mismatch between the subject line and the message.</p></div></div>
+        <div class="grid">
+          <article class="card">
+            <div class="meta"><span class="kind">Illustrative cold-email sample</span><span class="badge red">Teaching specimen</span></div>
+            <h3>Saleshandy’s “bad cold email” specimen</h3>
+            <p>The article presents this as a bad-copy example; use it as a teaching specimen, not as proof that a real campaign failed. Its central diagnosis is that the message lacks a clear value proposition.</p>
+            <p class="diagnose"><strong>Study:</strong> what problem does it solve, for whom, and what would make the CTA feel worth answering?</p>
+            <a class="link" href="https://www.saleshandy.com/blog/cold-email-copywriting/" target="_blank" rel="noopener noreferrer">View the bad / good email pair ↗</a>
+          </article>
+          <article class="card">
+            <div class="meta"><span class="kind">Cold-email Hall of Shame</span><span class="badge">Historical inbox examples</span></div>
+            <h3>SalesFolk’s archived email critiques</h3>
+            <p>Publicly published examples of cold emails that the recipient/author critiques for being pushy, self-focused, long, overly image-heavy or unclear about the ask.</p>
+            <p class="diagnose"><strong>Study:</strong> map the number of requests, reader effort, proof, relevance and the exact moment trust drops.</p>
+            <a class="link" href="https://salesfolk.com/blog/tag/cold-email-hall-of-shame/" target="_blank" rel="noopener noreferrer">Browse the Hall of Shame archive ↗</a>
+          </article>
+          <article class="card">
+            <div class="meta"><span class="kind">Marketing email mistakes</span><span class="badge">Brand examples · 2018</span></div>
+            <h3>SFGate: 10 email-marketing blunders</h3>
+            <p>Examples include a subject line that surprises readers, a broken name fallback, a subtle CTA and emails with redundant information or too many links.</p>
+            <p class="diagnose"><strong>Nuance:</strong> the “Hi, you’re fired” subject reportedly drew opens; study the trust and tone trade-off, not just the attention.</p>
+            <a class="link" href="https://marketing.sfgate.com/blog/the-10-worst-marketing-emails-of-all-time" target="_blank" rel="noopener noreferrer">See the email examples ↗</a>
+          </article>
+        </div>
+        <p class="small-note">Email screenshots can contain names, company details or personal information. Keep your practice notes private, and redact identifying details before sharing anything beyond the source’s public post.</p>
+      </section>
 
-/* ============================ RENDER: DASHBOARD ============================ */
-function renderDashboard(){
-  const demand=state.attrs.positioning;
-  const skill=state.attrs.research+state.attrs.psychology+state.attrs.offerDesign;
-  const irrep=state.attrs.judgment+state.attrs.trustBuilding;
-  const maxv=Math.max(demand,skill,irrep,1);
-  const index=Math.round((Math.max(demand,1)/100)*(Math.max(skill,1)/100)*(Math.max(irrep,1)/100)*1000);
-  const L=levelForXp(state.totalXp);
-  const nx=xpToNext(state.totalXp);
-  const classIdx=LEVELS.indexOf(L);
-  const masTotal=allQuests.reduce((s,q)=>s+(state.completed[q.id]||0),0);
-  const masMax=allQuests.length*5;
-  const doneDaily=DAILY.filter(d=>state.daily.done[d.id]).length;
-  const dailyPct=(doneDaily/DAILY.length)*100;
+      <section class="section" id="ads-letters">
+        <div class="section-head"><div><p class="section-kicker">03 / Ads & direct mail</p><h2 class="title">When the message misses the mark</h2><p class="intro">Some of these are copy problems; others are audience, cultural-context or offer problems. Name which one you’re actually seeing.</p></div></div>
+        <div class="grid">
+          <article class="card">
+            <div class="meta"><span class="kind">Direct-mail sales letter</span><span class="badge">Older teardown</span></div>
+            <h3>“How to Not Write a Direct Mail Sales Letter”</h3>
+            <p>An old letter to real-estate agents, critiqued for a missing headline, company-centered opening, vague benefit and nonspecific next step.</p>
+            <p class="diagnose"><strong>Critique the critique, too:</strong> the article suggests adding scarcity; only do that if the limit and deadline are real.</p>
+            <a class="link" href="https://obviousadamsletter.wordpress.com/tag/bad-sales-letter/" target="_blank" rel="noopener noreferrer">Open the letter + critique ↗</a>
+          </article>
+          <article class="card">
+            <div class="meta"><span class="kind">Print-ad roundup</span><span class="badge">30 examples</span></div>
+            <h3>Content Fuel: ineffective print ads</h3>
+            <p>A visual archive with examples the author sees as confusing or off-message—for instance, an ad where a dominoes explanation distracts from a mortgage offer.</p>
+            <p class="diagnose"><strong>Study:</strong> does the idea clarify the product, or make the reader do extra work to connect the dots?</p>
+            <a class="link" href="https://contentfuel.co/ineffective-print-ads/" target="_blank" rel="noopener noreferrer">Browse the print-ad examples ↗</a>
+          </article>
+          <article class="card">
+            <div class="meta"><span class="kind">Campaign fails · audience fit</span><span class="badge">Context / ethics</span></div>
+            <h3>Copy Posse: 8 public copy fails</h3>
+            <p>Examples of messages criticized for audience alienation, a confusing CTA, a reference without context or humor that crossed a line.</p>
+            <p class="diagnose"><strong>Study:</strong> whose perspective was missed, what context did the copy assume, and what harm could the wording cause?</p>
+            <a class="link" href="https://copyposse.com/blog/how-to-not-write-copy-8-bad-copywriting-examples-marketing-fails/" target="_blank" rel="noopener noreferrer">Read the campaign examples ↗</a>
+          </article>
+        </div>
+      </section>
 
-  const pillar=(label,icon,val,color)=>{
-    const pct=Math.max(6,(val/maxv)*100);
-    const level=Math.floor(val/100)+1;
-    return '<div class="glass-soft p-4 flex flex-col items-center text-center gap-1"><div class="text-2xl">'+icon+'</div><div class="text-[11px] uppercase tracking-widest font-semibold" style="color:'+color+'">'+label+'</div><div class="text-2xl font-bold" style="color:'+color+'">'+val+'</div><div class="text-[10px] text-white/45">XP · Lv '+level+'</div><div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mt-1"><div class="xp-fill h-full" style="width:'+pct+'%;background:'+color+'"></div></div></div>';
-  };
+      <section class="section" id="live">
+        <div class="section-head"><div><p class="section-kicker">04 / Find a fresh specimen</p><h2 class="title">Build your own live “weak copy” queue</h2><p class="intro">There is no reliable “bad ad” filter. Use current ad libraries to find candidates, then apply a consistent rubric before you label anything.</p></div></div>
+        <div class="live-box">
+          <h3>Try a five-minute market scan</h3>
+          <p>Search by a service term, company or advertiser. Save one exact example that creates a question or a point of friction. Keep the market, date, source and format with your notes.</p>
+          <div class="chips">
+            <a class="chip" href="https://www.linkedin.com/ad-library/" target="_blank" rel="noopener noreferrer">LinkedIn Ad Library ↗</a>
+            <a class="chip" href="https://www.facebook.com/ads/library/" target="_blank" rel="noopener noreferrer">Meta Ad Library ↗</a>
+            <a class="chip" href="https://adstransparency.google.com/" target="_blank" rel="noopener noreferrer">Google Ads Transparency ↗</a>
+            <a class="chip" href="https://ads.tiktok.com/business/creativecenter/" target="_blank" rel="noopener noreferrer">TikTok Creative Center ↗</a>
+          </div>
+          <div class="terms"><span class="term">executive coach</span><span class="term">leadership consultant</span><span class="term">business coach</span><span class="term">fractional CMO</span><span class="term">founder advisor</span><span class="term">team effectiveness</span><span class="term">change management</span><span class="term">executive presence</span><span class="term">strategy consultant</span></div>
+        </div>
+      </section>
 
-  const ladders=LEVELS.map((lvl,i)=>{
-    const reached=state.totalXp>=lvl.min;
-    const active=i===classIdx;
-    const nextMin=i<LEVELS.length-1?LEVELS[i+1].min:99999;
-    const fill=reached?Math.min(100,((state.totalXp-lvl.min)/(nextMin-lvl.min))*100):0;
-    return '<div class="flex items-center gap-2 '+(reached?'':'opacity-35')+'"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 '+(active?'bggrad-gold text-gray-900':'bg-white/8 text-white/60')+' '+(reached&&!active?'bg-white/15 text-white/50':'')+'">'+(i+1)+'</div><div class="flex-1 min-w-0"><div class="text-[11px] font-semibold '+(active?'':'text-white/65')+'"'+(active?' style="color:var(--gold)"':'')+'>'+lvl.name+'</div><div class="h-1 bg-white/10 rounded-full overflow-hidden mt-0.5"><div class="xp-fill h-full '+(active?'bggrad-gold':'bg-white/20')+'" style="width:'+fill+'%"></div></div></div><span class="text-[10px] text-white/35 shrink-0">'+lvl.min+' XP</span></div>';
-  }).join('');
+      <section class="section" id="method">
+        <div class="section-head"><div><p class="section-kicker">05 / A fair, repeatable method</p><h2 class="title">Diagnose the friction, then test the repair</h2><p class="intro">Use the same questions on every specimen. This keeps “bad copy” from becoming a synonym for “not my style.”</p></div></div>
+        <div class="practice-grid">
+          <article class="panel">
+            <h3>Copy-forensics checklist</h3>
+            <ul class="list">
+              <li><span class="check">1</span><span><strong>Five-second read:</strong> can I tell who this is for, what is offered and what to do next?</span></li>
+              <li><span class="check">2</span><span><strong>Point to the line:</strong> quote the smallest excerpt that creates confusion or doubt.</span></li>
+              <li><span class="check">3</span><span><strong>Name the failure mode:</strong> audience, promise, mechanism, proof, offer, sequence, CTA, voice, accessibility or production.</span></li>
+              <li><span class="check">4</span><span><strong>State the reader effect as a hypothesis:</strong> “A first-time visitor may wonder…”—not “This definitely loses sales.”</span></li>
+              <li><span class="check">5</span><span><strong>Find the smallest repair:</strong> clarify one audience, outcome, process, proof point or next step.</span></li>
+              <li><span class="check">6</span><span><strong>Check the context:</strong> source traffic, stage of awareness, device, offer, audience language and brand voice may change the diagnosis.</span></li>
+            </ul>
+          </article>
+          <article class="panel">
+            <h3>Coach / consultant lens</h3>
+            <div class="timeline">
+              <div class="row"><span class="mins">PROMISE</span><div><b>Is the transformation only aspirational?</b><span>Can the reader picture a decision, behavior, conversation, milestone or experience?</span></div></div>
+              <div class="row"><span class="mins">PROCESS</span><div><b>Can they imagine how the service works?</b><span>Is the method, scope, cadence or first step concrete enough?</span></div></div>
+              <div class="row"><span class="mins">PROOF</span><div><b>Does the evidence support the claim?</b><span>Is the testimonial specific and contextual, or just “amazing experience”?</span></div></div>
+              <div class="row"><span class="mins">CTA</span><div><b>Does the next step ask for too much trust?</b><span>Does “book a call” explain what the call is for and what will happen?</span></div></div>
+              <div class="row"><span class="mins">ETHICS</span><div><b>Are claims and urgency honest?</b><span>Don’t solve vague copy by inventing metrics, scarcity or guaranteed outcomes.</span></div></div>
+            </div>
+          </article>
+        </div>
+        <div class="lens" style="margin-top:13px">
+          <article class="lens-card"><small>Separate the problem</small><h3>Copy, offer, or business model?</h3><p>If the promise is unclear because the offer itself is undefined, a headline rewrite alone will not fix it.</p></article>
+          <article class="lens-card"><small>Separate observation from outcome</small><h3>“Unclear to me” ≠ “doesn’t convert”</h3><p>You can diagnose comprehension and friction. Conversion performance needs evidence such as analytics, tests or customer research.</p></article>
+          <article class="lens-card"><small>Keep the craft</small><h3>Repair the minimum necessary</h3><p>Keep the owner’s point of view and voice where they help. Clarity doesn’t mean sanding every personality off the page.</p></article>
+        </div>
+      </section>
 
-  const attrPips=Object.keys(ATTRS).map(k=>{
-    const a=ATTRS[k],xp=state.attrs[k],lv=Math.floor(xp/100)+1,into=xp%100;
-    return '<div class="glass-soft p-3 flex items-center gap-3"><span class="text-lg">'+a.icon+'</span><div class="flex-1 min-w-0"><div class="flex justify-between items-baseline mb-0.5"><span class="text-[11px] font-semibold text-white/80">'+a.name+'</span><span class="text-[10px] font-bold" style="color:'+a.color+'">Lv '+lv+'</span></div><div class="h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full" style="width:'+into+'%;background:'+a.color+'"></div></div></div></div>';
-  }).join('');
+      <section class="section" id="weekly">
+        <div class="section-head"><div><p class="section-kicker">06 / Daily practice loop</p><h2 class="title">A seven-day failure-mode rotation</h2><p class="intro">Repeat weekly to build range: not only vague headlines, but also offer gaps, proof problems, sequencing, CTA friction and audience fit.</p></div></div>
+        <div class="grid">
+          <div class="card" style="min-height:115px"><div class="meta"><span class="kind">Monday</span><span class="badge">Positioning</span></div><p style="margin-top:11px">Coach / consultant weak headline and offer clarity.</p></div>
+          <div class="card" style="min-height:115px"><div class="meta"><span class="kind">Tuesday</span><span class="badge">Cold email</span></div><p style="margin-top:11px">One self-focused opening or unclear ask.</p></div>
+          <div class="card" style="min-height:115px"><div class="meta"><span class="kind">Wednesday</span><span class="badge">Sales page</span></div><p style="margin-top:11px">Map proof, objection handling and page sequence.</p></div>
+          <div class="card" style="min-height:115px"><div class="meta"><span class="kind">Thursday</span><span class="badge">Email</span></div><p style="margin-top:11px">Check subject-line promise against the email’s actual content.</p></div>
+          <div class="card" style="min-height:115px"><div class="meta"><span class="kind">Friday</span><span class="badge">Live ad</span></div><p style="margin-top:11px">Find one current ad; assess message match and CTA.</p></div>
+          <div class="card" style="min-height:115px"><div class="meta"><span class="kind">Saturday</span><span class="badge">Print / direct mail</span></div><p style="margin-top:11px">Look for one visual-copy mismatch or missing argument.</p></div>
+          <div class="card" style="min-height:115px"><div class="meta"><span class="kind">Sunday</span><span class="badge">Synthesis</span></div><p style="margin-top:11px">Turn the most useful lesson into a LinkedIn post and an audit insight.</p></div>
+        </div>
+      </section>
 
-  const dailyRows=DAILY.map(d=>{
-    const on=state.daily.done[d.id];
-    return '<div class="flex items-center gap-2 text-[11px] '+(on?'text-white/35 line-through':'text-white/75')+'"><span class="chk '+(on?'on':'')+'" style="width:16px;height:16px;border-radius:5px;font-size:10px">'+(on?'✓':'')+'</span>'+d.icon+' '+d.title+'</div>';
-  }).join('');
+      <section class="section" id="template">
+        <div class="section-head"><div><p class="section-kicker">07 / Save the analysis</p><h2 class="title">One-page teardown template</h2><p class="intro">Copy this into your own swipe file. Keep it factual enough that another strategist could follow your reasoning.</p></div></div>
+        <div class="template">
+          <div class="template-head"><div><h3>Red-flag teardown</h3><p>Record the source and context before forming a verdict.</p></div><button class="btn btn-red" id="copyTemplate" type="button">Copy template</button></div>
+          <pre id="templateText">EXAMPLE / URL / DATE / MARKET:
+FORMAT + OFFER:
+INTENDED AUDIENCE (IF KNOWN):
+5-SECOND READ: WHO / WHAT / NEXT STEP?
+EXACT LINE THAT CREATES FRICTION:
+FAILURE MODE: AUDIENCE / PROMISE / MECHANISM / PROOF / OFFER / SEQUENCE / CTA / VOICE / OTHER
+WHAT A PROSPECT MAY WONDER (HYPOTHESIS):
+WHAT I CANNOT INFER WITHOUT DATA:
+SMALLEST HONEST REPAIR TO TEST:
+WHAT WORKS OR SHOULD BE PRESERVED:
+ONE LINKEDIN TEACHING POINT:
+ONE PRIVATE, RESPECTFUL AUDIT OBSERVATION:</pre>
+        </div>
+      </section>
 
-  const emblem=["✍️","🔬","🧠","🏗️","⭐"][classIdx]||"⭐";
+      <section class="section" id="outreach">
+        <div class="outreach">
+          <h3>Turn a critique into a client-friendly observation</h3>
+          <p>“I noticed <strong>[specific strength]</strong> on your <strong>[page/ad]</strong>. One question a new prospect may still have is <strong>[specific question]</strong>. A small copy change could make <strong>[process, proof or outcome]</strong> easier to understand. I mapped it out in a short audit—would you like me to send it?”</p>
+        </div>
+        <p class="small-note"><strong>Practice with care:</strong> critique the artifact, not the person. Don’t publicly roast a coach or consultant you may want to work with. Keep private inbox material private; only use publicly available examples or examples shared with permission. Don’t republish full copyrighted copy.</p>
+      </section>
+    </main>
 
-  const sec=document.getElementById('sec-dashboard');
-  sec.innerHTML=
+    <footer class="footer"><span>Red Flag Copy Lab · built for evidence-led copy practice</span><span>Some links lead to historical examples; web pages and previews can change.</span></footer>
+  </div>
 
-  '<!-- TOP ROW: Class Card + Equation --><div class="grid lg:grid-cols-2 gap-4">'+
-
-    '<div class="glass p-5 glow-gold relative overflow-hidden">'+
-      '<div class="absolute -bottom-6 -right-6 text-[100px] opacity-[0.04]">'+emblem+'</div>'+
-      '<div class="text-[10px] uppercase tracking-[0.25em] text-white/40 mb-1">Current Class</div>'+
-      '<div class="text-3xl font-bold" style="color:var(--gold)">'+L.name+'</div>'+
-      '<div class="text-sm text-white/55 mt-0.5">Level '+L.lv+' · '+L.desc+'</div>'+
-      '<div class="mt-4 space-y-2">'+ladders+'</div>'+
-    '</div>'+
-
-    '<div class="glass p-5 flex flex-col justify-between">'+
-      '<div>'+
-        '<div class="text-[10px] uppercase tracking-[0.25em] text-white/40 mb-3">The Irreplaceability Equation</div>'+
-        '<div class="flex items-center gap-2 text-xl font-bold flex-wrap">'+
-          '<span style="color:var(--purple)">Demand</span><span class="text-white/40">×</span>'+
-          '<span style="color:var(--cyan)">Skill</span><span class="text-white/40">×</span>'+
-          '<span style="color:var(--green)">Irreplaceability</span></div></div>'+
-      '<div class="mt-3 grid grid-cols-3 gap-3">'+
-        pillar('Demand','🎯',demand,'var(--purple)')+
-        pillar('Skill','🔬',skill,'var(--cyan)')+
-        pillar('Irrep.','🛡️',irrep,'var(--green)')+
-      '</div>'+
-      '<div class="mt-4 flex items-center justify-between glass-soft px-4 py-3 rounded-xl">'+
-        '<div><div class="text-[10px] uppercase tracking-widest text-white/40">Irreplaceability Index</div>'+
-          '<div class="text-2xl font-bold grad-text">'+index.toLocaleString()+'</div></div>'+
-        '<div class="text-[10px] text-white/35 text-right max-w-[180px]">The last two factors can be <b style="color:var(--cyan)">deliberately trained</b></div>'+
-      '</div>'+
-    '</div>'+
-  '</div>'+
-
-  '<!-- MIDDLE ROW: Attributes + Daily --><div class="grid lg:grid-cols-2 gap-4 mt-4">'+
-    '<div class="glass p-5">'+
-      '<div class="flex items-center justify-between mb-3"><h3 class="font-bold text-sm uppercase tracking-wider text-white/70">⚔️ Attributes</h3>'+
-        '<button onclick="switchTab(\'endgame\')" class="text-[10px] font-semibold" style="color:var(--purple)">Details →</button></div>'+
-      '<div class="grid grid-cols-2 gap-2">'+attrPips+'</div>'+
-    '</div>'+
-    '<div class="glass p-5">'+
-      '<div class="flex items-center justify-between mb-3"><h3 class="font-bold text-sm uppercase tracking-wider text-white/70">🔥 Today\'s Loop</h3>'+
-        '<button onclick="switchTab(\'daily\')" class="text-[10px] font-semibold" style="color:var(--cyan)">Open →</button></div>'+
-      '<div class="flex items-center gap-3 mb-3">'+
-        '<div class="text-3xl font-bold" style="color:var(--cyan)">'+doneDaily+'<span class="text-lg text-white/25">/'+DAILY.length+'</span></div>'+
-        '<div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full bggrad-cyan" style="width:'+dailyPct+'%"></div></div>'+
-        '<div class="text-[10px] text-white/40">🔥 '+state.streak+'d</div></div>'+
-      '<div class="space-y-1.5">'+dailyRows+'</div>'+
-    '</div>'+
-  '</div>'+
-
-  '<!-- BOTTOM ROW: Stats --><div class="grid grid-cols-4 gap-3 mt-4">'+
-    '<div class="stat-block glass-soft p-3 text-center"><div class="text-xl font-bold" style="color:var(--gold)">'+state.totalXp+'</div><div class="text-[10px] uppercase tracking-wider text-white/40">Total XP</div></div>'+
-    '<div class="stat-block glass-soft p-3 text-center"><div class="text-xl font-bold" style="color:var(--cyan)">'+state.streak+'</div><div class="text-[10px] uppercase tracking-wider text-white/40">Day Streak</div></div>'+
-    '<div class="stat-block glass-soft p-3 text-center"><div class="text-xl font-bold" style="color:var(--green)">'+masTotal+'<span class="text-sm text-white/25">/'+masMax+'</span></div><div class="text-[10px] uppercase tracking-wider text-white/40">Mastery</div></div>'+
-    '<div class="stat-block glass-soft p-3 text-center"><div class="text-xl font-bold" style="color:var(--purple)">'+(nx?nx.need:'∞')+'</div><div class="text-[10px] uppercase tracking-wider text-white/40">XP to '+(nx?nx.next.name:'Pinnacle')+'</div></div>'+
-  '</div>';
-}
-
-/* ============================ RENDER: TREES ============================ */
-function questCard(q){
-  const rank=state.completed[q.id]||0;
-  const mastered=rank>=5;
-  const a=ATTRS[q.attr];
-  const nxt=rank+1;
-  const nxtXp=Math.round(q.xp*(0.6+(nxt*0.4)));
-  let segs='';
-  for(let i=1;i<=5;i++){
-    const fill=i<=rank;
-    let cl='flex-1 h-1.5 rounded-full mx-[1px] first:ml-0 last:mr-0 '+(fill?'':'bg-white/10');
-    if(fill)cl+=' '+(i===5?'bggrad-gold':(i>=4?'bggrad-cyan':'bggrad-purple'));
-    segs+='<div class="'+cl+'" style="'+(fill?'':'border:1px solid rgba(255,255,255,.1)')+'"></div>';
-  }
-  return '<div class="node glass-soft p-4 mb-3 '+(mastered?'done':(rank>0?'partial':''))+'" onclick="completeQuest(\''+q.id+'\')">'+
-    '<div class="flex items-start justify-between gap-3"><div><div class="node-title font-semibold">'+q.title+'</div>'+
-    '<div class="text-xs text-white/60 mt-1 leading-snug">'+q.desc+'</div></div>'+
-    '<div class="text-right shrink-0"><div class="pill" style="background:'+a.color+'22;color:'+a.color+'">+'+nxtXp+' XP</div>'+
-    '<div class="text-[10px] text-white/45 mt-1">'+a.icon+' '+a.name+'</div></div></div>'+
-    '<div class="mt-2 flex items-center gap-2"><div class="flex flex-1">'+segs+'</div>'+
-    '<span class="text-[11px] font-semibold shrink-0 '+(mastered?'text-yellow-400':'text-white/45')+'">'+(mastered?'★ Master':rankName(rank)+' '+rank+'/5')+'</span></div></div>';
-}
-function treeColumn(title,subtitle,color,quests){
-  let total=0,max=0;
-  quests.forEach(q=>{
-    const rank=state.completed[q.id]||0;
-    for(let r=1;r<=5;r++)max+=Math.round(q.xp*(0.6+(r*0.4)));
-    for(let r=1;r<=rank;r++)total+=Math.round(q.xp*(0.6+(r*0.4)));
-  });
-  const pct=max?(total/max)*100:0;
-  let body;
-  if(quests[0]&&quests[0].branch){
-    const branches=[...new Set(quests.map(q=>q.branch))];
-    body=branches.map(br=>{
-      const items=quests.filter(q=>q.branch===br);
-      return '<div class="mb-3"><div class="text-[11px] uppercase tracking-widest mb-1.5" style="color:'+color+'">'+br+'</div><div class="tree-body">'+items.map(questCard).join('')+'</div></div>';
-    }).join('');
-  }else{body='<div class="tree-body">'+quests.map(questCard).join('')+'</div>';}
-  return '<div class="glass p-5"><div class="flex items-center justify-between mb-1"><h3 class="text-xl font-bold" style="color:'+color+'">'+title+'</h3><span class="text-sm font-bold">'+total+'<span class="text-white/40">/'+max+'</span></span></div><div class="text-xs text-white/55 mb-3">'+subtitle+'</div><div class="h-1.5 bg-white/10 rounded-full overflow-hidden mb-4"><div class="xp-fill h-full" style="width:'+pct+'%;background:'+color+'"></div></div>'+body+'</div>';
-}
-function renderTrees(){
-  document.getElementById('sec-trees').innerHTML=
-  '<div class="grid lg:grid-cols-3 gap-4">'+
-    treeColumn('SKILL','Research · Writing · Psychology · Strategy · Pattern Recognition','var(--cyan)',QUESTS.skill)+
-    treeColumn('IRREPLACEABILITY','Judgment · Taste · Frameworks · Assets · Brand · Network','var(--green)',QUESTS.irreplaceable)+
-    treeColumn('DEMAND','Find bigger markets · Solve expensive problems · Position yourself','var(--purple)',QUESTS.demand)+
-  '</div>'+
-  '<div class="glass p-5 mt-4 text-sm text-white/70 leading-relaxed">Most copywriters spend 95% of their time inside one branch — <b style="color:var(--cyan)">Writing</b>. Ironically, writing is only ~20% of great copywriting. Spread your XP across every tree to become <span class="grad-text font-semibold">almost impossible to copy.</span></div>';
-}
-
-/* ============================ RENDER: DAILY ============================ */
-function renderDaily(){
-  const done=DAILY.filter(d=>state.daily.done[d.id]).length;
-  const pct=(done/DAILY.length)*100;
-  const allDone=done===DAILY.length;
-  const cards=DAILY.map(d=>{
-    const on=state.daily.done[d.id],a=ATTRS[d.attr];
-    return '<div class="node glass-soft p-4 flex items-center gap-4 '+(on?'done':'')+'" onclick="toggleDaily(\''+d.id+'\')"><span class="text-3xl">'+d.icon+'</span><div class="flex-1"><div class="node-title font-semibold">'+d.title+'</div><div class="text-xs text-white/60">'+d.desc+'</div></div><div class="text-right shrink-0 flex flex-col items-end gap-1"><span class="pill" style="background:'+a.color+'22;color:'+a.color+'">+'+d.xp+' XP</span><span class="chk '+(on?'on':'')+'">'+(on?'✓':'')+'</span></div></div>';
-  }).join('');
-  document.getElementById('sec-daily').innerHTML=
-  '<div class="glass p-6 glow-gold"><div class="flex items-center justify-between flex-wrap gap-3"><div><h2 class="text-2xl font-bold">🔥 The Daily Loop</h2><p class="text-sm text-white/65 mt-1">Complete all '+DAILY.length+' quests to grow your streak. This is the addictive core mechanic.</p></div><div class="text-center glass-soft px-5 py-3"><div class="text-3xl font-bold" style="color:var(--cyan)">'+state.streak+'</div><div class="text-[10px] uppercase tracking-wider text-white/50">Day Streak'+(state.bestStreak?(' · best '+state.bestStreak):'')+'</div></div></div><div class="mt-4 h-3 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full bggrad-cyan" style="width:'+pct+'%"></div></div><div class="flex justify-between text-xs text-white/55 mt-1.5"><span>'+done+' / '+DAILY.length+' quests complete</span><span>'+(allDone?'✅ Day complete — streak secured!':'Finish the loop to lock in your streak')+'</span></div></div>'+
-  '<div class="grid md:grid-cols-2 gap-3 mt-4">'+cards+'</div>'+
-  '<div class="glass p-5 mt-4 text-sm text-white/70 leading-relaxed"><b class="text-white">The loop compounds.</b> Every day you receive quests across different domains instead of only writing copy. Each completion levels up specialized attributes — Research, Positioning, Psychology, Offer Design, Trust Building, Judgment. Milestones unlock <b style="color:var(--green)">abilities</b> like Trust Leak Detector and Pattern Cartographer. See the <b>Endgame</b> tab.</div>';
-}
-
-/* ============================ RENDER: ENDGAME ============================ */
-function renderEndgame(){
-  const attrRows=Object.keys(ATTRS).map(k=>{
-    const a=ATTRS[k],xp=state.attrs[k],lv=attrLevel(xp),into=attrInto(xp);
-    return '<div class="glass-soft p-4"><div class="flex justify-between items-center mb-2"><span class="font-semibold">'+a.icon+' '+a.name+'</span><span class="pill" style="background:'+a.color+'22;color:'+a.color+'">Lv '+lv+'</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full" style="width:'+into+'%;background:'+a.color+'"></div></div><div class="text-[11px] text-white/45 mt-1">'+xp+' XP · '+(100-into)+' to next level</div></div>';
-  }).join('');
-  const abCards=ABILITIES.map(a=>{
-    const un=attrLevel(state.attrs[a.reqAttr])>=a.reqLv,reqA=ATTRS[a.reqAttr];
-    return '<div class="glass-soft p-4 border'+(un?' glow-gold':'')+'"><div class="flex items-center gap-2 mb-1"><span class="text-2xl">'+a.icon+'</span><span class="font-bold '+(un?'':'text-white/45')+'">'+a.name+'</span></div><p class="text-xs text-white/65 leading-snug">'+a.desc+'</p><div class="mt-2 text-[11px] font-semibold '+(un?'text-green-400':'text-white/40')+'">'+(un?'🦾 UNLOCKED':('🔒 Requires '+reqA.name+' Lv '+a.reqLv+' (you: Lv '+attrLevel(state.attrs[a.reqAttr])+')'))+'</div></div>';
-  }).join('');
-  const cur=levelForXp(state.totalXp);
-  const levelCards=LEVELS.map(L=>{
-    const isCur=L.lv===cur.lv,isPast=state.totalXp>=L.min;
-    const nxL=L.lv<LEVELS.length?LEVELS.indexOf(L)<LEVELS.length-1?LEVELS[LEVELS.indexOf(L)+1]:null:null;
-    const pct=nxL?Math.min(100,((state.totalXp-L.min)/(nxL.min-L.min))*100):(isPast?100:0);
-    let bar='';
-    if(nxL)bar='<div class="h-1.5 bg-white/10 rounded-full overflow-hidden"><div class="xp-fill h-full" style="width:'+pct+'%;background:var(--gold)"></div></div><div class="text-[10px] text-white/40 mt-1">'+Math.max(0,nxL.min-state.totalXp)+' XP to next</div>';
-    else if(isPast)bar='<div class="text-[11px] text-gold-300" style="color:var(--gold)">★ Pinnacle — your way of thinking is the rarest resource in the market.</div>';
-    return '<div class="glass-soft p-4'+(isCur?' glow-gold':'')+' '+(isPast?'':'opacity-55')+'"><div class="flex items-center justify-between mb-1"><span class="font-bold">Lv '+L.lv+' · '+L.name+'</span><span class="text-[11px] '+(isCur?'text-gold-300':(isPast?'text-green-400':'text-white/40'))+'"'+(isCur?' style="color:var(--gold)"':'')+'>'+(isPast?(isCur?'▶ CURRENT':'✓ UNLOCKED'):('🔒 '+L.min+' XP'))+'</span></div><p class="text-xs text-white/65 leading-snug mb-2">'+L.desc+'</p>'+bar+'</div>';
-  }).join('');
-  document.getElementById('sec-endgame').innerHTML=
-  '<h2 class="text-2xl font-bold mb-1">🚀 Endgame & Attributes</h2><p class="text-sm text-white/65 mb-4">The real objective isn\'t "becoming a better copywriter." It\'s becoming a business problem-solver who happens to use copy as one tool.</p>'+
-  '<h3 class="font-semibold text-lg mt-5 mb-2">⚔️ Attributes</h3><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">'+attrRows+'</div>'+
-  '<h3 class="font-semibold text-lg mt-6 mb-2">🦾 Abilities (Milestone Unlocks)</h3><div class="grid sm:grid-cols-2 gap-3">'+abCards+'</div>'+
-  '<h3 class="font-semibold text-lg mt-6 mb-2">🏆 The Progression</h3><div class="grid md:grid-cols-5 gap-3">'+levelCards+'</div>'+
-  '<div class="glass p-5 mt-6 flex items-center justify-between flex-wrap gap-3"><div class="text-sm text-white/70">At Level 5, clients aren\'t hiring "another copywriter." They\'re hiring <span class="grad-text font-semibold">your way of thinking.</span></div><button onclick="resetProgress()" class="text-xs px-3 py-2 rounded-lg glass-soft text-red-300 hover:bg-red-500/10">Reset Progress</button></div>';
-}
-
-/* ============================ RENDER: AI ============================ */
-function renderAI(){
-  const rows=[
-    ['Drafting','Diagnosing business problems'],['Grammar','Building trust with founders'],
-    ['Summarizing','Reading emotional nuance from conversations'],['Rewriting','Making strategic tradeoffs'],
-    ['Formatting','Creating original frameworks'],['Brainstorming','Exercising judgment under uncertainty'],
-    ['Speed','Pattern matching'],['—','Seeing patterns across years of real projects'],
-    ['—','Earning reputation and trust'],
-  ];
-  const list=rows.map(([ai,hu])=>'<div class="grid grid-cols-2 gap-3 items-stretch"><div class="glass-soft p-3 text-sm text-white/70 flex items-center">'+(ai==='—'?'<span class="text-white/25">—</span>':('🤖 '+ai))+'</div><div class="glass-soft p-3 text-sm font-medium flex items-center" style="border-color:rgba(52,211,153,.25)">'+hu+'</div></div>').join('');
-  document.getElementById('sec-ai').innerHTML=
-  '<h2 class="text-2xl font-bold mb-1">🤖 Skills AI Cannot Easily Replace</h2><p class="text-sm text-white/65 mb-4 max-w-3xl">Notice something interesting: the more you move <i>upward</i>, the less you\'re "writing." AI improves — but these higher-level capabilities become even more valuable because they <b>guide</b> the AI rather than compete with it.</p>'+
-  '<div class="grid md:grid-cols-2 gap-3 mb-4"><div class="glass p-4 text-center font-semibold" style="color:var(--cyan)">AI does well</div><div class="glass p-4 text-center font-semibold" style="color:var(--green)">Humans still create outsized value</div></div>'+
-  '<div class="space-y-2">'+list+'</div>'+
-  '<div class="glass p-5 mt-5 text-sm text-white/75 leading-relaxed glow-gold"><b class="text-white">The takeaway:</b> Let AI handle drafting, grammar, and formatting. Pour your deliberate practice into <span style="color:var(--purple)">diagnosing</span>, <span style="color:var(--pink)">judgment</span>, and <span style="color:var(--green)">original frameworks</span> — the exact paths this RPG trains.</div>';
-}
-
-/* ============================ NAV ============================ */
-function switchTab(tab){
-  activeTab=tab;
-  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
-  ['dashboard','trees','daily','endgame','ai'].forEach(t=>document.getElementById('sec-'+t).classList.toggle('hidden',t!==tab));
-  render();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function render(){
-  renderHUD();
-  if(activeTab==='dashboard')renderDashboard();
-  if(activeTab==='trees')renderTrees();
-  if(activeTab==='daily')renderDaily();
-  if(activeTab==='endgame')renderEndgame();
-  if(activeTab==='ai')renderAI();
-}
-
-/* ============================ INIT ============================ */
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
-load();render();
-</script>
+  <script>
+    (function(){
+      const picks=[
+        {category:"Coach / consultant copy · illustrative weak example",title:"A coach’s “highest potential” headline",prompt:"Read the weak version, identify the exact words that make the offer hard to picture, and note what a first-time prospect still needs to know. Then write the smallest truthful repair—without adding made-up metrics.",url:"https://threwthelookingglass.com/landing-pages-examples-for-coaches-consultants-and-personal-brands/"},
+        {category:"Coach sales page · promise and message match",title:"A vague “next best step” promise",prompt:"Find the sample line about identifying a prospect’s “next best step.” What is the destination, method or visible result? Draft a clearer version that retains an intangible outcome without inventing a number.",url:"https://www.truerwordsbylauren.com/copywriting-for-coaches-blog/10-reasons-sales-pages-dont-convert"},
+        {category:"Landing page · expert critique",title:"Unbounce’s fictional DJ Rumba pages",prompt:"Choose one contest page. Mark one strength and one friction point from the judges’ notes. Decide whether the problem is the headline, offer clarity, target fit, proof or CTA.",url:"https://unbounce.com/landing-page-copywriting/vote-for-the-most-persuasive-landing-page"},
+        {category:"Cold email · teaching specimen",title:"Saleshandy’s bad cold-email example",prompt:"The article describes the example as lacking a clear value proposition. Identify the first point where you ask, “Why should this person care?” What single piece of context would fix it?",url:"https://www.saleshandy.com/blog/cold-email-copywriting/"},
+        {category:"Cold email · published inbox critique",title:"SalesFolk’s Hall of Shame",prompt:"Pick one message and count its requests. Map what the sender wants versus what the recipient gets. Mark the smallest way to reduce pressure and make the ask clear.",url:"https://salesfolk.com/blog/tag/cold-email-hall-of-shame/"},
+        {category:"Email marketing · subject / CTA / UX",title:"SFGate’s email blunders",prompt:"Pick one email. Separate attention from trust: did the subject accurately set expectations? Is the CTA obvious, usable on mobile and consistent with the email’s promise?",url:"https://marketing.sfgate.com/blog/the-10-worst-marketing-emails-of-all-time"},
+        {category:"Direct mail · sales-letter structure",title:"An old direct-mail letter critique",prompt:"Look at the letter, not only the critique. Identify the first missing answer a reader needs. Then challenge any suggested fix that relies on unsupported claims or artificial scarcity.",url:"https://obviousadamsletter.wordpress.com/tag/bad-sales-letter/"},
+        {category:"Print ad · idea-to-offer mismatch",title:"Content Fuel’s ineffective print ads",prompt:"Choose one ad and write what you think it sells before reading the critique. Then compare. Where did the intended concept stop connecting to the actual offer?",url:"https://contentfuel.co/ineffective-print-ads/"},
+        {category:"Advertising · context and audience fit",title:"Copy Posse’s public campaign fails",prompt:"Choose one example and diagnose the root issue: confusing line, inaccessible assumption, poor timing, cultural mismatch or weak offer? Propose a repair that preserves the legitimate business goal.",url:"https://copyposse.com/blog/how-to-not-write-copy-8-bad-copywriting-examples-marketing-fails/"},
+        {category:"Sales page · offer and proof",title:"Course sales-page teardown",prompt:"Find the price-anchoring critique. What would the writer need to show before a comparison price feels credible? Note the difference between “sounds expensive” and “is unsupported.”",url:"https://thrivethemes.com/online-course-sales-page-teardown/"}
+      ];
+      const title=document.getElementById("todayTitle"),prompt=document.getElementById("todayPrompt"),category=document.getElementById("todayCategory"),link=document.getElementById("todayLink"),dateNode=document.getElementById("todayDate"),button=document.getElementById("pickAnother");
+      let last=-1;
+      function setPick(i){const p=picks[i];if(!p)return;last=i;category.textContent=p.category;title.textContent=p.title;prompt.textContent=p.prompt;link.href=p.url;link.innerHTML="Open today’s specimen <span aria-hidden=\"true\">↗</span>";}
+      const now=new Date(),start=new Date(now.getFullYear(),0,0),day=Math.floor((now-start)/86400000);setPick((day-1)%picks.length);
+      dateNode.textContent=new Intl.DateTimeFormat(undefined,{weekday:"short",day:"numeric",month:"short",year:"numeric"}).format(now);
+      button.addEventListener("click",function(){let i=Math.floor(Math.random()*picks.length);if(i===last)i=(i+1)%picks.length;setPick(i);});
+      document.getElementById("copyTemplate").addEventListener("click",async function(){const b=this,original=b.textContent;try{await navigator.clipboard.writeText(document.getElementById("templateText").innerText);b.textContent="Copied ✓";}catch(e){const r=document.createRange();r.selectNodeContents(document.getElementById("templateText"));const s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected — copy";}setTimeout(()=>b.textContent=original,2200);});
+    })();
+  </script>
 </body>
 </html>

@@ -24,7 +24,7 @@
   --border-strong:#cdd6e0;
   --text:#111a26;
   --muted:#5a6b7d;
-  --faint:#67747f;
+  --faint:#64717c;
 
   --accent:#0e6e67;
   --accent-ink:#0a4f4a;
@@ -369,15 +369,69 @@ table.tbl tbody tr:hover{background:var(--surface-2)}
 .paste-box{font-family:var(--mono);font-size:12px;min-height:96px}
 
 /* ---------------------------------------------- swipe file ---------- */
-.swipe-copy{
-  white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--text);
-  background:var(--surface-2);border:1px solid var(--border);border-left:3px solid var(--purple-line);
-  border-radius:var(--radius-sm);padding:9px 11px;margin-top:9px;max-height:118px;overflow:hidden;position:relative;
+/* category colour tokens */
+.t-blue{--c:var(--info);--c-soft:var(--info-soft);--c-line:var(--info-line)}
+.t-purple{--c:var(--purple);--c-soft:var(--purple-soft);--c-line:var(--purple-line)}
+.t-teal{--c:var(--accent);--c-soft:var(--accent-soft);--c-line:var(--accent-line)}
+.t-amber{--c:var(--warn);--c-soft:var(--warn-soft);--c-line:var(--warn-line)}
+.t-green{--c:var(--ok);--c-soft:var(--ok-soft);--c-line:var(--ok-line)}
+.t-rose{--c:var(--danger);--c-soft:var(--danger-soft);--c-line:var(--danger-line)}
+.t-grey{--c:var(--muted);--c-soft:var(--surface-3);--c-line:var(--border)}
+
+/* category cards */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:14px}
+.cat-card{
+  position:relative;text-align:left;border:1px solid var(--border);border-radius:12px;padding:15px 16px 14px;
+  background:var(--surface);cursor:pointer;box-shadow:var(--shadow-sm);overflow:hidden;
+  transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;min-height:118px;
+  display:flex;flex-direction:column;gap:6px;
 }
-.swipe-copy.clamp::after{content:"";position:absolute;left:0;right:0;bottom:0;height:30px;
-  background:linear-gradient(to bottom,rgba(0,0,0,0),var(--surface-2))}
-html[data-theme="dark"] .swipe-copy.clamp::after{background:linear-gradient(to bottom,rgba(0,0,0,0),var(--surface-2))}
+.cat-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);border-color:var(--c-line);background:var(--c-soft)}
+.cat-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+.cat-card .cat-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cat-ico{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--c-soft);color:var(--c);flex:none}
+.cat-count{font-size:23px;font-weight:680;letter-spacing:-.03em;color:var(--c);font-variant-numeric:tabular-nums;line-height:1}
+.cat-name{font-size:14.5px;font-weight:650;letter-spacing:-.01em}
+.cat-hint{font-size:11.5px;color:var(--muted);line-height:1.45;flex:1}
+.cat-foot{font-size:11px;color:var(--faint);border-top:1px solid var(--border);padding-top:7px;margin-top:2px}
+html[data-theme="dark"] .cat-card:hover{border-color:var(--c-line)}
+
+/* swipe item cards inside a category */
+.rec.swipe-item{border-left:3px solid var(--c)}
+.rec.swipe-item:hover{border-color:var(--c-line);border-left-color:var(--c)}
+.swipe-copy{
+  white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--muted);
+  margin-top:8px;padding-left:10px;border-left:2px solid var(--c-line);
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
 .swipe-why{font-size:12.5px;color:var(--muted);margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+#view .crumb{padding:10px 13px;background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  border-left:3px solid var(--c,var(--border));margin-bottom:13px;flex-wrap:wrap}
+/* centred swipe window */
+.sw-head .badge{background:var(--c-soft);color:var(--c);border-color:var(--c-line)}
+.modal.swipe-modal{width:min(760px,100%)}
+.sw-head{display:flex;align-items:flex-start;gap:11px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.sw-head .t{font-size:16px;font-weight:660;line-height:1.3;letter-spacing:-.01em;overflow-wrap:anywhere}
+.sw-head .s{margin-top:4px}
+.sw-body{padding:18px}
+.sw-copy-block{
+  white-space:pre-wrap;font-family:var(--mono);font-size:14px;line-height:1.75;color:var(--text);
+  background:var(--c-soft);border:1px solid var(--c-line);border-left:4px solid var(--c);
+  border-radius:10px;padding:16px 18px;overflow-wrap:anywhere;max-height:46vh;overflow-y:auto;
+}
+.sw-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px;margin-top:16px}
+.sw-meta .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:700;margin-bottom:2px}
+.sw-meta .v{font-size:13px;overflow-wrap:anywhere}
+.sw-block{margin-top:16px}
+.sw-block h5{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:700;margin-bottom:5px}
+.sw-block p{font-size:13.5px;line-height:1.65;white-space:pre-wrap;margin:0}
+.sw-foot-note{font-size:11.5px;color:var(--faint);display:flex;align-items:center;gap:6px}
+@media (max-width:600px){
+  .cat-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .cat-card{min-height:104px;padding:12px}
+  .sw-copy-block{font-size:13px;padding:13px 14px}
+}
 
 /* ============================================================
    6. Drawer
@@ -603,7 +657,7 @@ mark.hit{background:var(--warn-soft);color:inherit;border-radius:3px;padding:0 1
    ========================================================================= */
 const APP = {
   name: "Copywriter OS",
-  version: "1.1.0",
+  version: "1.2.0",
   schema: 1,          // data schema version — bumped on breaking data changes
   fileKey: "copywriter-os"
 };
@@ -905,7 +959,26 @@ const DECISION_STATUS = ["Active", "Confirmed", "Superseded", "Reversed"];
 /* Every collection: label, icon, storage key, title accessor, field list.
    `core: true` marks the fields shown by default. Everything else sits behind
    "Show all fields" so a new record is never a wall of empty boxes. */
-const SWIPE_TYPES = ["Headline", "Hook", "Subject line", "Opening line", "Call to action", "Social post",
+/* Fixed categories — the six shelves of the swipe file, plus a home for the rest. */
+const SWIPE_CATS = ["Headlines", "Hooks", "Openings", "Emails", "Socials", "Ads", "Other"];
+const SWIPE_CAT_META = {
+  Headlines: { icon: "type", tone: "t-blue", hint: "Hero lines, page titles, headlines" },
+  Hooks: { icon: "hook", tone: "t-purple", hint: "The beat that earns the next sentence" },
+  Openings: { icon: "edit", tone: "t-teal", hint: "First lines of emails, pages and posts" },
+  Emails: { icon: "mail", tone: "t-amber", hint: "Subject lines, emails and newsletters" },
+  Socials: { icon: "users", tone: "t-green", hint: "Posts, threads and captions" },
+  Ads: { icon: "megaphone", tone: "t-rose", hint: "Ad copy and calls to action" },
+  Other: { icon: "layers", tone: "t-grey", hint: "Quotes, sections, testimonials" }
+};
+/* Older records used a free "type" list; map them onto the categories. */
+const SWIPE_TYPE_TO_CAT = {
+  "Headline": "Headlines", "Hook": "Hooks", "Opening line": "Openings",
+  "Subject line": "Emails", "Email": "Emails", "Newsletter": "Emails",
+  "Social post": "Socials", "Ad": "Ads", "Call to action": "Ads",
+  "Sales page section": "Other", "Landing page section": "Other",
+  "Quote": "Other", "Testimonial": "Other", "Other": "Other"
+};
+const SWIPE_KINDS = ["Headline", "Hook", "Subject line", "Opening line", "Call to action", "Social post",
   "Ad", "Email", "Sales page section", "Landing page section", "Quote", "Testimonial", "Other"];
 const SWIPE_CHANNELS = ["Email", "Landing page", "Sales page", "LinkedIn", "X / Twitter", "Instagram",
   "Facebook", "Ad", "Blog / article", "Newsletter", "Book", "Podcast", "Sales letter", "Other"];
@@ -1071,15 +1144,17 @@ const COLL = {
   swipe: {
     label: "Swipe item", plural: "Swipe file", key: "swipes", icon: "quote",
     title: r => r.title || (r.copy ? truncate(r.copy, 44) : "Untitled swipe"),
-    quick: ["title", "type", "copy", "source"],
+    modal: true,
+    quick: ["title", "category", "copy", "source"],
     fields: [
       F("title", "Label", "text", { req: true, core: true, wide: true, ph: "e.g. Outcome-first hero headline (Northlight)" }),
-      F("type", "What kind of copy is it?", "select", { options: SWIPE_TYPES, def: "Headline", core: true }),
+      F("category", "Category", "select", { options: SWIPE_CATS, def: "Headlines", core: true }),
       F("copy", "The copy, verbatim", "textarea", { rows: 8, core: true, mono: true, ph: "Paste it exactly as it appeared" }),
       F("source", "Where it came from", "text", { core: true, ph: "e.g. Northlight homepage, Brennan email #2" }),
       F("tags", "Tags", "tags", { core: true, ph: "comma, separated" }),
       F("links", "Linked records", "rels", { core: true }),
       { sep: "More detail" },
+      F("kind", "Specific kind", "select", { options: SWIPE_KINDS, def: "Other" }),
       F("sourceUrl", "Source link", "url", { ph: "https://" }),
       F("author", "Author / brand", "text"),
       F("channel", "Channel", "select", { options: SWIPE_CHANNELS, def: "Other" }),
@@ -1091,6 +1166,7 @@ const COLL = {
       F("notes", "Notes", "textarea", { rows: 3 })
     ]
   }
+
 };
 const TYPES = Object.keys(COLL);
 
@@ -1176,6 +1252,11 @@ function normalizeRecord(type, r) {
   out.links = out.links.filter(l => l && l.type && l.id && COLL[l.type]).map(l => ({ type: l.type, id: l.id }));
   if (!Array.isArray(out.tags)) out.tags = [];
   out.tags = out.tags.filter(Boolean).map(String);
+  if (type === "swipe") {
+    if (!out.category) out.category = SWIPE_TYPE_TO_CAT[out.type] || (SWIPE_CATS.indexOf(out.type) >= 0 ? out.type : "Other");
+    if (SWIPE_CATS.indexOf(out.category) < 0) out.category = "Other";
+    if (!out.kind && out.type) out.kind = out.type;
+  }
   if (type === "prospect" && !Array.isArray(out.activities)) out.activities = [];
   if (type === "prospect") out.activities = out.activities.map(a => Object.assign({ id: uid("a"), date: todayISO(), type: "Note", summary: "" }, a));
   return out;
@@ -1563,32 +1644,53 @@ function sampleData() {
   });
 
   const sw1 = newRecord("swipe", {
-    sample: true, title: "Outcome-first hero (rewrite of Maya's)", type: "Headline",
-    copy: "Stop explaining your credentials. Start showing the promotion.\n\nBefore: Certified Executive Coach (PCC), 8 years, 200+ leaders coached.\nAfter: The coaches we work with get promoted — or they get clear on what's next. In 90 days.",
+    sample: true, title: "Outcome-first hero (rewrite of Maya's)", category: "Headlines", kind: "Headline",
+    copy: "Stop explaining your credentials. Start showing the promotion.\n\nBefore: Certified Executive Coach (PCC), 8 years, 200+ leaders coached.\nAfter: The leaders we work with get promoted — or they get clear on what's next. In 90 days.",
     source: "My rewrite of Northlight Coaching", channel: "Landing page", date: d(-6),
-    why: "Leads with the thing they actually want (the promotion) instead of the thing that qualifies me. The 'or they get clear' clause defuses the biggest objection — that coaching has no guaranteed outcome.",
+    why: "Leads with the thing they actually want (the promotion) instead of the thing that qualifies me. The 'or they get clear' clause defuses the biggest objection — that coaching guarantees nothing.",
     useFor: "Hero headlines for coach homepages", rating: "Study this", status: "In use", tags: ["headline", "coaching", "homepage"]
   });
   const sw2 = newRecord("swipe", {
-    sample: true, title: "Quote-their-own-words opener", type: "Opening line",
+    sample: true, title: "\"You're qualified. So what?\" hook", category: "Hooks", kind: "Hook",
+    copy: "Being the most credentialed person in the room has never been the thing that gets you hired.",
+    source: "Opening of a newsletter I read", channel: "Newsletter", date: d(-9),
+    why: "Names a belief the reader already half-holds but has never said out loud. Mildly uncomfortable, which is exactly why it holds attention.",
+    useFor: "Opening line when the audience is full of experts", rating: "Good", status: "Filed", tags: ["hook", "belief"]
+  });
+  const sw3 = newRecord("swipe", {
+    sample: true, title: "Quote-their-own-words opener", category: "Openings", kind: "Opening line",
     copy: "Your homepage opens with \"Certified Executive Coach (PCC)\". That tells me you're qualified. It doesn't tell me what changes for the people who hire you.",
     source: "Outreach v1 (mine)", channel: "Email", date: d(-11),
     why: "Quoting them back to themselves proves you looked. The second sentence names the gap you can close, which makes the offer feel inevitable rather than salesy.",
     useFor: "First line of cold outreach", rating: "Swipe-worthy", status: "In use", tags: ["outreach", "opener", "email"]
   });
-  const sw3 = newRecord("swipe", {
-    sample: true, title: "Specificity beats superlatives", type: "Quote",
-    copy: "Vague: We help leaders unlock their potential.\n\nSpecific: We help directors stop second-guessing decisions in meetings — usually within six sessions.",
-    source: "Notes from a teardown session", channel: "Other", date: d(-20),
-    why: "The specific version names a moment the reader recognises happening to them. Recognition beats admiration.",
-    useFor: "Rewriting value propositions", rating: "Good", status: "Filed", tags: ["positioning", "value prop"]
-  });
   const sw4 = newRecord("swipe", {
-    sample: true, title: "Low-friction CTA with a reason", type: "Call to action",
+    sample: true, title: "Subject line that names the gap", category: "Emails", kind: "Subject line",
+    copy: "your homepage, line 3",
+    source: "Adapted from a cold email I received", channel: "Email", date: d(-4),
+    why: "Lower case, tiny, specific and impossible to read as a pitch. It reads like a note from a colleague, which is why it gets opened.",
+    useFor: "Cold outreach subject lines", rating: "Swipe-worthy", status: "Filed", tags: ["subject line", "outreach"]
+  });
+  const sw5 = newRecord("swipe", {
+    sample: true, title: "Post that leads with the mistake", category: "Socials", kind: "Social post",
+    copy: "Last year I wrote a sales page that flopped. Six weeks of work, 2 sales.\n\nHere is the line that killed it — and what I'd write now instead:",
+    source: "A LinkedIn post I saved", channel: "LinkedIn", date: d(-13),
+    why: "Failure first, then the promise of a specific lesson. It buys credibility before asking for anything, and the sentence ending in a colon forces the 'see more' click.",
+    useFor: "LinkedIn post openings", rating: "Study this", status: "Filed", tags: ["linkedin", "post", "story"]
+  });
+  const sw6 = newRecord("swipe", {
+    sample: true, title: "Low-friction CTA with a reason", category: "Ads", kind: "Call to action",
     copy: "Send me your homepage and I'll mark up the three lines losing you enquiries — no call needed.\n\n[Send it here →]",
     source: "Adapted from a newsletter I subscribed to", channel: "Newsletter", date: d(-15),
     why: "Asks for a URL, not an hour. Names the deliverable and removes the scare word ('call').",
     useFor: "Lead magnet CTAs", rating: "Swipe-worthy", status: "Filed", tags: ["cta", "lead magnet"]
+  });
+  const sw7 = newRecord("swipe", {
+    sample: true, title: "Specificity beats superlatives", category: "Other", kind: "Quote",
+    copy: "Vague: We help leaders unlock their potential.\n\nSpecific: We help directors stop second-guessing decisions in meetings — usually within six sessions.",
+    source: "Notes from a teardown session", channel: "Other", date: d(-20),
+    why: "The specific version names a moment the reader recognises happening to them. Recognition beats admiration.",
+    useFor: "Rewriting value propositions", rating: "Good", status: "Filed", tags: ["positioning", "value prop"]
   });
 
   // Connections
@@ -1608,14 +1710,14 @@ function sampleData() {
   rv1.links = [{ type: "plan", id: pl2.id }, { type: "prospect", id: p2.id }];
   dc1.links = [{ type: "plan", id: pl2.id }];
   sw1.links = [{ type: "prospect", id: p1.id }, { type: "offer", id: off1.id }];
-  sw2.links = [{ type: "offer", id: off3.id }, { type: "insight", id: ins2.id }];
-  sw4.links = [{ type: "offer", id: off1.id }];
-  off3.links.push({ type: "swipe", id: sw2.id });
+  sw3.links = [{ type: "offer", id: off3.id }, { type: "insight", id: ins2.id }];
+  sw6.links = [{ type: "offer", id: off1.id }];
+  off3.links.push({ type: "swipe", id: sw3.id });
 
   return {
     insights: [ins1, ins2], offers: [off1, off2, off3], prospects: [p1, p2, p3],
     plans: [pl1, pl2], tasks: [t1, t2, t3, t4], reviews: [rv1], decisions: [dc1],
-    swipes: [sw1, sw2, sw3, sw4]
+    swipes: [sw1, sw2, sw3, sw4, sw5, sw6, sw7]
   };
 }
 function loadSampleData() {
@@ -1636,7 +1738,7 @@ function loadSampleData() {
     S.focus.changeEvidence = "Fewer than 3 replies from 30 sends, or 3 conversations that all ask for something other than sales pages";
     S.focus.sample = true;
   }
-  return 21;
+  return 24;
 }
 /* ============================================================================
    MODULE 04 — UI kit: icons, toasts, modals, drawer, forms, shared parts
@@ -1679,7 +1781,10 @@ const P = {
   spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="3"/>',
   quote: '<path d="M9 7H5.5A1.5 1.5 0 0 0 4 8.5v3A1.5 1.5 0 0 0 5.5 13H8v.5a2.5 2.5 0 0 1-2.5 2.5"/><path d="M19 7h-3.5A1.5 1.5 0 0 0 14 8.5v3a1.5 1.5 0 0 0 1.5 1.5H18v.5a2.5 2.5 0 0 1-2.5 2.5"/>',
   table: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/>',
-  layers: '<path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/>'
+  layers: '<path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/>',
+  type: '<path d="M4 7V5h16v2M12 5v14M9 19h6"/>',
+  megaphone: '<path d="M3 11v2a1 1 0 0 0 1 1h2l4 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M14 8a5 5 0 0 1 0 8M17 5a9 9 0 0 1 0 14"/>',
+  hook: '<path d="M9 15l-3 3a4.2 4.2 0 0 1-6-6l5-5a3 3 0 0 1 4.2 4.2l-1.2 1.2"/><path d="M14.5 9.5l3 3"/><path d="M17 7l2.5 2.5a4.2 4.2 0 0 1-6 6l-2-2"/>'
 };
 function icon(name, size, cls) {
   const d = P[name] || P.link;
@@ -1850,22 +1955,31 @@ function formHTML(rec, defs, opts) {
   const shown = useable.filter(f => f.sep || !coreOnly || f.core);
   const hidden = visibleCount(defs, rec, false);
   let html = "";
-  let open = false;
+  let mode = null;              // null | "plain" | "section"
   let pendingSep = null;
-  function openPlain() { if (!open) { html += '<div class="fields">'; open = true; } }
-  function openSection(title) {
-    if (open) html += "</div></div>";
-    html += '<div class="form-section"><h4>' + esc(title) + '</h4><div class="fields">';
-    open = true;
+  function closeBox() {
+    if (mode === "section") html += "</div></div>";       // .fields + .form-section
+    else if (mode === "plain") html += "</div>";          // .fields
+    mode = null;
   }
-  if (!coreOnly) openPlain();
+  function ensurePlain() {
+    if (mode === "plain") return;
+    closeBox();
+    html += '<div class="fields">';
+    mode = "plain";
+  }
+  function openSection(title) {
+    closeBox();
+    html += '<div class="form-section"><h4>' + esc(title) + '</h4><div class="fields">';
+    mode = "section";
+  }
   shown.forEach(f => {
     if (f.sep) { pendingSep = f.sep; return; }
     if (pendingSep) { openSection(pendingSep); pendingSep = null; }
-    openPlain();
+    else ensurePlain();
     html += fieldHTML(f, rec);
   });
-  if (open) html += "</div>";
+  closeBox();
   const tg = ' data-act="toggle-fields" data-type="' + esc(opts.type || "") + '" data-id="' + esc(opts.id || "") + '"';
   if (coreOnly && hidden) {
     html += '<button class="btn subtle sm field-more"' + tg + ">" + icon("chevron", 13) +
@@ -2003,6 +2117,8 @@ let drawerStack = [];
 
 function openRecord(type, id, opts) {
   opts = opts || {};
+  /* Some record types read better in a centred window than in the side drawer. */
+  if (COLL[type] && COLL[type].modal) { openSwipeModal(id, UI.swipeOrder); return; }
   if (drawerRec && opts.push !== false) drawerStack.push(drawerRec);
   drawerRec = { type: type, id: id };
   renderDrawer();
@@ -3432,95 +3548,265 @@ function readBulkFile(file) {
   reader.readAsText(file);
 }
 /* ============================================================================
-   MODULE 09 — Swipe File: headlines, hooks, posts, quotes and copy worth keeping
+   MODULE 09 — Swipe File
+   The file is organised into fixed categories. The workspace opens on a set of
+   coloured category cards; choosing one drills into its saved copy; clicking a
+   saved item opens a centred window with the full swipe.
    ========================================================================= */
+let SWIPE_WIN = null;   // the open swipe window: { id, list, editing, confirmDelete, draw }
+
+/* First few non-empty lines — enough to recognise the piece at a glance. */
+function swipePreview(copy, lines) {
+  const out = [];
+  String(copy || "").replace(/\r/g, "").split("\n").forEach(function (l) {
+    if (out.length < (lines || 3)) out.push(l.replace(/\s+$/, ""));
+  });
+  return out.join("\n");
+}
+function swipeCat(rec) {
+  const c = rec && rec.category;
+  return SWIPE_CATS.indexOf(c) >= 0 ? c : "Other";
+}
+function swipeMeta(rec) { return SWIPE_CAT_META[swipeCat(rec)] || SWIPE_CAT_META.Other; }
+
 VIEWS.swipe = function () {
   const v = "swipe";
   const fl = UI.filters[v] = UI.filters[v] || {};
-  const q = UI.q[v] || "";
+  const q = (UI.q[v] || "").trim();
+  const cat = fl.cat && SWIPE_CATS.indexOf(fl.cat) >= 0 ? fl.cat : "";
+
   let arr = S.swipes.slice();
-  if (fl.type) arr = arr.filter(r => r.type === fl.type);
-  if (fl.channel) arr = arr.filter(r => r.channel === fl.channel);
-  if (fl.rating) arr = arr.filter(r => r.rating === fl.rating);
-  if (fl.status) arr = arr.filter(r => r.status === fl.status);
-  if (q) arr = arr.filter(r => matchQ("swipe", r, q, ["copy", "source", "author", "why", "useFor"]));
+  if (fl.rating) arr = arr.filter(r => (r.rating || "Not rated") === fl.rating);
+  if (fl.status) arr = arr.filter(r => (r.status || "Unfiled") === fl.status);
+  if (q) arr = arr.filter(r => matchQ("swipe", r, q, ["copy", "source", "author", "why", "useFor", "notes"]));
   const sort = UI.sort[v] || "new";
   arr.sort((a, b) => {
     if (sort === "old") return String(a.date || a.createdAt).localeCompare(String(b.date || b.createdAt));
-    if (sort === "type") return String(a.type).localeCompare(String(b.type)) || String(a.title).localeCompare(String(b.title));
     if (sort === "rating") return SWIPE_RATING.indexOf(b.rating) - SWIPE_RATING.indexOf(a.rating);
     if (sort === "title") return String(a.title || "").localeCompare(String(b.title || ""));
     return String(b.date || b.createdAt).localeCompare(String(a.date || a.createdAt));
   });
+  UI.swipeOrder = arr.map(r => r.id);   /* replaced below once the shelf is known */
 
   const inUse = S.swipes.filter(s => s.status === "In use").length;
   const rated = S.swipes.filter(s => s.rating === "Swipe-worthy" || s.rating === "Study this").length;
-  const typesUsed = {};
-  S.swipes.forEach(s => { if (s.type) typesUsed[s.type] = true; });
+  const cats = SWIPE_CATS.filter(c => S.swipes.some(s => swipeCat(s) === c)).length;
 
   let html = pageHead("Swipe File",
-    "Copy worth keeping: headlines, hooks, subject lines, openers, CTAs, posts, ads and quotes. Paste it verbatim, note why it works, and tag it so you can find it when you need a starting point.",
+    "Copy worth keeping — filed into six shelves so you can find the right starting point when you need one. Click a category, then click any piece to read it properly.",
     '<button class="btn primary" data-act="new-swipe">' + icon("plus", 14) + " Save to swipe file</button>");
 
   html += '<div class="stats" style="margin-bottom:14px">' +
     '<div class="stat"><span class="k">Items saved</span><span class="v">' + S.swipes.length + '</span><span class="n">in the file</span></div>' +
+    '<div class="stat"><span class="k">Categories in use</span><span class="v">' + cats + '</span><span class="n">of ' + SWIPE_CATS.length + "</span></div>" +
     '<div class="stat"><span class="k">In use</span><span class="v">' + inUse + '</span><span class="n">actively referenced</span></div>' +
     '<div class="stat"><span class="k">High value</span><span class="v">' + rated + '</span><span class="n">swipe-worthy or study</span></div>' +
-    '<div class="stat"><span class="k">Kinds of copy</span><span class="v">' + Object.keys(typesUsed).length + '</span><span class="n">different types</span></div>' +
     "</div>";
 
   html += filterBar(
     toolbarSearch("Search the copy, source, notes…", v) +
-    selectFilter(SWIPE_TYPES, v, "type", "All kinds of copy") +
-    selectFilter(SWIPE_CHANNELS, v, "channel", "All channels") +
     selectFilter(SWIPE_RATING.filter(x => x !== "Not rated"), v, "rating", "Any value") +
     selectFilter(SWIPE_STATUS, v, "status", "All statuses") +
-    sortSelect(v, [{ v: "new", l: "Newest first" }, { v: "old", l: "Oldest first" }, { v: "rating", l: "Highest value first" }, { v: "type", l: "By type" }, { v: "title", l: "Label A–Z" }]) +
+    sortSelect(v, [{ v: "new", l: "Newest first" }, { v: "old", l: "Oldest first" }, { v: "rating", l: "Highest value first" }, { v: "title", l: "Label A–Z" }]) +
     '<button class="btn subtle sm" data-act="clear-filters" data-view="' + v + '">Reset</button>'
   );
 
-  const counts = {};
-  S.swipes.forEach(r => { counts[r.type] = (counts[r.type] || 0) + 1; });
-  if (S.swipes.length) {
-    html += '<div class="filters" style="margin-bottom:12px">' +
-      filterBtn("All " + S.swipes.length, !fl.type, "set-filter", "") +
-      Object.keys(counts).sort((a, b) => counts[b] - counts[a]).slice(0, 7)
-        .map(t => filterBtn(counts[t] + " " + t, fl.type === t, "set-filter", t)).join("") +
-      "</div>";
-  }
-
+  /* ---------- no items at all ---------- */
   if (!S.swipes.length) {
     html += emptyState({
       title: "Your swipe file is empty",
       text: "Save the lines that made you stop reading — a competitor's headline, a subject line that got you to open, a post that landed. Two fields: what it is, and the copy itself.",
-      steps: ["Paste a headline or hook you wish you had written", "Add where it came from", "Note why it works — that is the part you will reuse"],
+      steps: ["Paste a headline or hook you wish you had written", "Pick the category it belongs in", "Note why it works — that is the part you will reuse"],
       actionLabel: "Save your first swipe", act: "new-swipe", actionIcon: "plus"
     });
-  } else if (!arr.length) {
-    html += '<div class="empty"><h3>Nothing matches</h3><p>Try another filter or clear the search.</p>' +
-      '<button class="btn subtle" data-act="clear-filters" data-view="' + v + '">Reset filters</button></div>';
-  } else {
-    html += '<div class="list">' + arr.map(s => {
-      const copy = String(s.copy || "").trim();
-      const long = copy.length > 420;
-      return '<div class="rec" data-act="open-rec" data-type="swipe" data-id="' + esc(s.id) + '">' +
-        '<div class="rec-title">' + icon("quote", 14) + esc(truncate(s.title || copy, 90)) +
-          (s.sample ? ' <span class="badge info">sample</span>' : "") + "</div>" +
-        '<div class="rec-meta">' + badge(s.type, "purple") + (s.channel && s.channel !== "Other" ? badge(s.channel, "neutral") : "") +
-          (s.rating && s.rating !== "Not rated" ? badge(s.rating, s.rating === "Study this" || s.rating === "Swipe-worthy" ? "accent" : "neutral") : "") +
-          (s.source ? "<span>· " + esc(truncate(s.source, 46)) + "</span>" : "") +
-          (s.date ? "<span>· " + esc(fmtDateShort(s.date)) + "</span>" : "") + "</div>" +
-        (copy ? '<div class="swipe-copy' + (long ? " clamp" : "") + '">' + esc(long ? copy.slice(0, 420) : copy) + "</div>" : "") +
-        (s.why ? '<div class="swipe-why">' + esc(truncate(s.why, 190)) + "</div>" : "") +
-        '<div class="rec-foot">' + (s.tags || []).slice(0, 4).map(t => '<span class="tag">' + esc(t) + "</span>").join("") +
-          (s.links || []).slice(0, 2).map(l => typeChip(l.type, l.id)).join("") +
-          (copy ? '<button class="btn xs subtle" data-act="copy-swipe" data-id="' + esc(s.id) + '">' + icon("copy", 12) + " Copy text</button>" : "") +
-        "</div>" +
-      "</div>";
-    }).join("") + "</div>";
+    return html;
   }
+
+  /* ---------- level 1: the category cards ---------- */
+  if (!cat && !q) {
+    let cards = "";
+    SWIPE_CATS.forEach(function (c) {
+      const m = SWIPE_CAT_META[c];
+      const n = arr.filter(r => swipeCat(r) === c).length;
+      cards += '<button class="cat-card ' + m.tone + '" data-act="swipe-cat" data-val="' + esc(c) + '" aria-label="' + esc(c + ", " + n + " saved") + '">' +
+        '<span class="cat-top"><span class="cat-ico">' + icon(m.icon, 16) + '</span><span class="cat-count">' + n + "</span></span>" +
+        '<span class="cat-name">' + esc(c) + "</span>" +
+        '<span class="cat-hint">' + esc(m.hint) + "</span>" +
+        '<span class="cat-foot">' + (n ? "Open " + esc(c) + " →" : "Nothing here yet") + "</span>" +
+        "</button>";
+    });
+    html += '<div class="cat-grid">' + cards + "</div>";
+    html += '<p class="sub" style="margin-top:14px">Every piece you save lands in one of these. Nothing else to decide — pick the shelf that fits and paste the copy.</p>';
+    return html;
+  }
+
+  /* ---------- level 2: the items in a category (or search results) ---------- */
+  /* A search always looks across the whole file — never silently inside one shelf. */
+  const scope = q ? "" : cat;
+  let list = scope ? arr.filter(r => swipeCat(r) === scope) : arr;
+  UI.swipeOrder = list.map(r => r.id);   /* prev/next walks what you are looking at */
+
+  if (scope) {
+    const m = SWIPE_CAT_META[cat];
+    html += '<div class="crumb ' + m.tone + '">' +
+      '<button class="btn ghost sm" data-act="swipe-cat" data-val="">' + icon("chevron", 13) + " All categories</button>" +
+      '<span class="cat-ico">' + icon(m.icon, 16) + "</span>" +
+      "<span><strong>" + esc(cat) + "</strong> <span class=\"sub\">· " + list.length + " saved</span></span>" +
+      '<button class="btn primary sm" style="margin-left:auto" data-act="new-swipe-cat" data-val="' + esc(cat) + '">' + icon("plus", 13) + " Add to " + esc(cat) + "</button>" +
+      "</div>";
+  } else if (q) {
+    html += '<div class="crumb">' +
+      '<button class="btn ghost sm" data-act="swipe-all">' + icon("chevron", 13) + " All categories</button>" +
+      "<span><strong>" + list.length + '</strong> <span class="sub">matching “' + esc(q) + '” across every category</span></span>' +
+      "</div>";
+  }
+
+  if (!list.length) {
+    html += '<div class="empty"><h3>' + (scope ? "Nothing in " + esc(scope) + " yet" : "Nothing matches") + "</h3><p>" +
+      (scope ? "Save the first piece of " + esc(scope.toLowerCase()) + " you want to keep, or reset the filters to see everything."
+             : "Try another word, or clear the search and filters.") + "</p>" +
+      '<button class="btn subtle" data-act="clear-filters" data-view="' + v + '">Reset filters</button></div>';
+    return html;
+  }
+
+  html += '<div class="list">' + list.map(s => swipeItemCard(s)).join("") + "</div>";
   return html;
 };
+
+function swipeItemCard(s) {
+  const m = swipeMeta(s);
+  const copy = String(s.copy || "").replace(/\r/g, "").replace(/^\s+/, "");
+  const prev = swipePreview(copy, 3);
+  const more = prev.length < copy.replace(/\s+$/, "").length;
+  return '<div class="rec swipe-item ' + m.tone + '" data-act="open-rec" data-type="swipe" data-id="' + esc(s.id) + '" role="button" tabindex="0" aria-label="Open ' + esc(s.title || "swipe item") + '">' +
+    '<div class="rec-head"><div class="rec-title">' + icon(m.icon, 14) + esc(truncate(s.title || copy, 88)) +
+      (s.sample ? ' <span class="badge info">sample</span>' : "") + "</div>" +
+      '<div class="grow"></div>' +
+      (s.rating && s.rating !== "Not rated" ? badge(s.rating, s.rating === "Study this" || s.rating === "Swipe-worthy" ? "accent" : "neutral") : "") +
+      (s.status === "In use" ? badge("In use", "ok") : "") +
+    "</div>" +
+    (prev
+      ? '<div class="swipe-copy">' + esc(prev) + "</div>" +
+        (more ? '<div class="rec-foot" style="gap:6px"><span class="chip subtle">read the rest →</span></div>' : "")
+      : '<div class="rec-body muted">No copy pasted yet.</div>') +
+    '<div class="rec-meta">' + [s.source, s.author, s.channel && s.channel !== "Other" ? s.channel : "", s.date ? fmtDateShort(s.date) : ""]
+      .filter(Boolean).map(x => "<span>" + esc(truncate(x, 44)) + "</span>").join("<span>·</span>") + "</div>" +
+    '<div class="rec-foot">' + (s.tags || []).slice(0, 4).map(t => '<span class="tag">' + esc(t) + "</span>").join("") +
+      (s.links || []).slice(0, 2).map(l => typeChip(l.type, l.id)).join("") +
+      (copy ? '<button class="btn xs subtle" data-act="copy-swipe" data-id="' + esc(s.id) + '">' + icon("copy", 12) + " Copy text</button>" : "") +
+    "</div>" +
+  "</div>";
+}
+
+/* ---------------------------------------------------- the centred window --- */
+function openSwipeModal(id, nav) {
+  const all = S.swipes.map(r => r.id);
+  let list = (nav && nav.length) ? nav.slice().filter(x => findRecord("swipe", x)) : all;
+  if (list.indexOf(id) < 0) list = all;
+  if (list.indexOf(id) < 0) list = [id];
+  const win = { id: id, list: list, editing: false, confirmDelete: false };
+  SWIPE_WIN = win;
+
+  win.draw = function () {
+    const rec = findRecord("swipe", win.id);
+    if (!rec) { SWIPE_WIN = null; closeModal(); toast("That swipe item no longer exists", "err"); renderCurrentView(); return; }
+    const cat = swipeCat(rec);
+    const m = SWIPE_CAT_META[cat];
+    const i = win.list.indexOf(win.id);
+    const title = rec.title || (rec.copy ? truncate(rec.copy, 60) : "Untitled swipe");
+
+    const head = '<div class="sw-head ' + m.tone + '">' +
+      '<span class="cat-ico">' + icon(m.icon, 17) + "</span>" +
+      "<div style=\"flex:1;min-width:0\">" +
+        '<div class="t">' + esc(title) + "</div>" +
+        '<div class="s">' + badge(cat, "", m.icon) +
+          (rec.kind && rec.kind !== "Other" ? badge(rec.kind, "neutral") : "") +
+          (rec.rating && rec.rating !== "Not rated" ? badge(rec.rating, "neutral") : "") +
+          (rec.status && rec.status !== "Unfiled" ? badge(rec.status, rec.status === "In use" ? "ok" : "neutral") : "") +
+        "</div>" +
+      "</div>" +
+      '<button class="icon-btn" data-act="modal-close" aria-label="Close">' + icon("x", 16) + "</button>" +
+    "</div>";
+
+    let body;
+    if (win.editing) {
+      body = '<div class="modal-body"><div data-rec-type="swipe" data-rec-id="' + esc(win.id) + '">' +
+        formHTML(rec, COLL.swipe.fields, { type: "swipe", id: win.id }) +
+        "</div></div>";
+    } else {
+      body = '<div class="modal-body sw-body ' + m.tone + '">' + swipeViewBody(rec, m) + "</div>";
+    }
+
+    let foot;
+    if (win.confirmDelete) {
+      foot = '<div class="modal-foot"><span class="grow"></span>' +
+        '<button class="btn subtle" data-act="swipe-del-cancel">Keep it</button>' +
+        '<button class="btn danger" data-act="swipe-del-yes">' + icon("trash", 14) + " Delete for good</button></div>";
+    } else if (win.editing) {
+      foot = '<div class="modal-foot">' +
+        '<button class="btn subtle" data-act="swipe-edit-cancel">Cancel</button>' +
+        '<span class="sw-foot-note">Changes save as you type — this just closes the form.</span><span class="grow"></span>' +
+        '<button class="btn danger" data-act="swipe-delete">' + icon("trash", 14) + " Delete</button>" +
+        '<button class="btn primary" data-act="swipe-edit-done">Done</button></div>';
+    } else {
+      const prevBtn = i > 0 ? '<button class="btn ghost sm" data-act="swipe-nav" data-dir="-1">' + icon("chevron", 13) + " Previous</button>" : "";
+      const nextBtn = i > -1 && i < win.list.length - 1 ? '<button class="btn ghost sm" data-act="swipe-nav" data-dir="1">Next ' + icon("chevron", 13) + "</button>" : "";
+      foot = '<div class="modal-foot">' + prevBtn + (prevBtn && nextBtn ? " " : "") + nextBtn +
+        '<span class="sw-foot-note">' + (win.list.length > 1 ? (i + 1) + " of " + win.list.length : "") + "</span>" +
+        '<span class="grow"></span>' +
+        (rec.copy ? '<button class="btn subtle" data-act="copy-swipe" data-id="' + esc(rec.id) + '">' + icon("copy", 14) + " Copy text</button>" : "") +
+        '<button class="btn subtle" data-act="swipe-edit">' + icon("edit", 14) + " Details</button>" +
+        '<button class="btn danger" data-act="swipe-delete">' + icon("trash", 14) + " Delete</button>" +
+        '<button class="btn primary" data-act="modal-close">Close</button></div>';
+    }
+
+    const root = openModal({
+      title: false, wide: true, body: head + body + foot,
+      onClose: function () { if (SWIPE_WIN === win) SWIPE_WIN = null; }
+    });
+    const m2 = root.querySelector(".modal");
+    if (m2) m2.classList.add("swipe-modal");
+    const copyBlock = root.querySelector(".sw-copy-block");
+    if (copyBlock) copyBlock.scrollTop = 0;
+  };
+
+  win.draw();
+}
+
+function swipeViewBody(rec, m) {
+  const copy = String(rec.copy || "").trim();
+  let h = "";
+  if (copy) h += '<div class="sw-copy-block">' + esc(copy) + "</div>";
+  else h += '<div class="empty" style="padding:18px"><p>No copy pasted yet — open Details and paste it in.</p></div>';
+
+  const cells = [
+    ["Category", swipeCat(rec)],
+    ["Kind", rec.kind && rec.kind !== "Other" ? rec.kind : ""],
+    ["Source", rec.source],
+    ["Author / brand", rec.author],
+    ["Channel", rec.channel && rec.channel !== "Other" ? rec.channel : ""],
+    ["Saved", rec.date ? fmtDate(rec.date) : ""],
+    ["Value to me", rec.rating && rec.rating !== "Not rated" ? rec.rating : ""],
+    ["Status", rec.status && rec.status !== "Unfiled" ? rec.status : ""]
+  ].filter(c => c[1]);
+  if (cells.length) {
+    h += '<div class="sw-meta">' + cells.map(c =>
+      '<div><div class="k">' + esc(c[0]) + '</div><div class="v">' + esc(c[1]) + "</div></div>").join("") + "</div>";
+  }
+  if (rec.sourceUrl) {
+    h += '<div class="sw-block"><h5>Source link</h5><p><a href="' + esc(rec.sourceUrl) + '" target="_blank" rel="noopener">' + esc(rec.sourceUrl) + "</a></p></div>";
+  }
+  if (rec.why) h += '<div class="sw-block"><h5>Why it works</h5><p>' + esc(rec.why) + "</p></div>";
+  if (rec.useFor) h += '<div class="sw-block"><h5>What I would use it for</h5><p>' + esc(rec.useFor) + "</p></div>";
+  if (rec.notes) h += '<div class="sw-block"><h5>Notes</h5><p>' + esc(rec.notes) + "</p></div>";
+
+  const tags = (rec.tags || []).map(t => '<span class="tag">' + esc(t) + "</span>").join("");
+  const links = (rec.links || []).map(l => typeChip(l.type, l.id)).join("");
+  if (tags || links) {
+    h += '<div class="sw-block"><h5>Tags &amp; links</h5><div class="chips">' + tags + links + "</div></div>";
+  }
+  return h;
+}
 /* ============================================================================
    MODULE 07 — Settings & Data, search, onboarding, router, event wiring
    ========================================================================= */
@@ -4187,7 +4473,6 @@ function bindEvents() {
         UI.filters[view] = UI.filters[view] || {};
         const val = d.val || d.x || "";
         if (view === "insights") UI.filters[view].status = val;
-        else if (view === "swipe") UI.filters[view].type = val;
         else if (view === "prospects") UI.filters[view].view = val;
         renderCurrentView();
         break;
@@ -4201,6 +4486,62 @@ function bindEvents() {
         UI.filters[d.view] = {}; UI.q[d.view] = "";
         renderCurrentView();
         break;
+      case "swipe-cat": {
+        UI.filters.swipe = UI.filters.swipe || {};
+        if (d.val) { UI.filters.swipe.cat = d.val; UI.q.swipe = ""; }
+        else delete UI.filters.swipe.cat;
+        renderCurrentView();
+        const top = $("#main"); if (top) top.scrollTop = 0;
+        break;
+      }
+      case "swipe-all":
+        UI.filters.swipe = UI.filters.swipe || {};
+        delete UI.filters.swipe.cat; UI.q.swipe = "";
+        renderCurrentView();
+        break;
+      case "new-swipe-cat": openQuickCapture("swipe", { category: d.val || "Other" }); break;
+      case "swipe-nav": {
+        if (!SWIPE_WIN) break;
+        const i = SWIPE_WIN.list.indexOf(SWIPE_WIN.id);
+        const nx = SWIPE_WIN.list[i + (+d.dir || 1)];
+        if (nx) { SWIPE_WIN.id = nx; SWIPE_WIN.editing = false; SWIPE_WIN.confirmDelete = false; SWIPE_WIN.draw(); }
+        break;
+      }
+      case "swipe-edit":
+        if (SWIPE_WIN) { SWIPE_WIN.editing = true; SWIPE_WIN.confirmDelete = false; SWIPE_WIN.draw(); }
+        break;
+      case "swipe-edit-cancel":
+        if (SWIPE_WIN) { SWIPE_WIN.editing = false; SWIPE_WIN.draw(); }
+        break;
+      case "swipe-edit-done": {
+        if (!SWIPE_WIN) break;
+        markDirty(true).then(function () {
+          toast("Saved", "ok");
+          if (!SWIPE_WIN) { renderCurrentView(); return; }
+          SWIPE_WIN.editing = false; SWIPE_WIN.draw();
+          if (drawerRec && drawerRec.type === "swipe") renderDrawer();
+          renderCurrentView();
+        });
+        break;
+      }
+      case "swipe-delete":
+        if (SWIPE_WIN) { SWIPE_WIN.confirmDelete = true; SWIPE_WIN.draw(); }
+        break;
+      case "swipe-del-cancel":
+        if (SWIPE_WIN) { SWIPE_WIN.confirmDelete = false; SWIPE_WIN.draw(); }
+        break;
+      case "swipe-del-yes": {
+        if (!SWIPE_WIN) break;
+        const id = SWIPE_WIN.id;
+        const rec0 = findRecord("swipe", id);
+        const name = rec0 ? COLL.swipe.title(rec0) : "this swipe item";
+        deleteRecord("swipe", id);
+        SWIPE_WIN = null;
+        closeModal();
+        markDirty(true).then(renderAll);
+        toast("Deleted: " + truncate(name, 40), "ok");
+        break;
+      }
       case "open-rec": openRecord(d.type, d.id); break;
       case "drawer-close": closeDrawer(); break;
       case "drawer-back": drawerBack(); break;
@@ -4642,5 +4983,5 @@ async function boot() {
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
 else boot();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4a06af9fbe2814c',t:'MTc5MTkxNjI1MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4a152eb3889e9db',t:'MTc5MTkyNTc1MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

@@ -343,6 +343,42 @@ table.tbl tbody tr:hover{background:var(--surface-2)}
 .pipe-stage.alert{border-color:var(--danger-line);background:var(--danger-soft)}
 .pipe-stage.alert .n{color:var(--danger)}
 
+/* ---------------------------------------------- quick capture ------- */
+.qc-kinds{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.qc-kind{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:20px;border:1px solid var(--border);
+  background:var(--surface);font-size:12.5px;color:var(--muted);cursor:pointer}
+.qc-kind:hover{border-color:var(--border-strong);color:var(--text)}
+.qc-kind.on{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent-ink);font-weight:600}
+.qc-note{font-size:11.5px;color:var(--faint);margin-top:12px;line-height:1.5}
+
+/* ---------------------------------------------- bulk import --------- */
+.bulk-prev{max-height:250px;overflow:auto;border:1px solid var(--border);border-radius:var(--radius);margin-top:10px}
+.bulk-prev table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:0}
+.bulk-prev th{position:sticky;top:0;background:var(--surface-2);text-align:left;padding:7px 10px;
+  border-bottom:1px solid var(--border);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:700}
+.bulk-prev td{padding:6px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.bulk-prev tr:last-child td{border-bottom:0}
+.bulk-prev tr.bad td{background:var(--danger-soft)}
+.bulk-prev tr.dup td{background:var(--warn-soft)}
+.bulk-sum{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;margin:10px 0 2px}
+.bulk-sum span b{font-variant-numeric:tabular-nums}
+.step-line{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent-ink);
+  display:grid;place-items:center;font-size:11.5px;font-weight:700;flex:none;margin-top:1px}
+.step-line .grow{min-width:0}
+.paste-box{font-family:var(--mono);font-size:12px;min-height:96px}
+
+/* ---------------------------------------------- swipe file ---------- */
+.swipe-copy{
+  white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--text);
+  background:var(--surface-2);border:1px solid var(--border);border-left:3px solid var(--purple-line);
+  border-radius:var(--radius-sm);padding:9px 11px;margin-top:9px;max-height:118px;overflow:hidden;position:relative;
+}
+.swipe-copy.clamp::after{content:"";position:absolute;left:0;right:0;bottom:0;height:30px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0),var(--surface-2))}
+html[data-theme="dark"] .swipe-copy.clamp::after{background:linear-gradient(to bottom,rgba(0,0,0,0),var(--surface-2))}
+.swipe-why{font-size:12.5px;color:var(--muted);margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
 /* ============================================================
    6. Drawer
    ============================================================ */
@@ -370,7 +406,13 @@ table.tbl tbody tr:hover{background:var(--surface-2)}
   margin-bottom:8px;font-weight:700;display:flex;align-items:center;gap:8px;
 }
 .form-section > h4::after{content:"";flex:1;height:1px;background:var(--border)}
-.fields{display:flex;flex-direction:column;gap:12px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px;align-items:start}
+.fields > .field{min-width:0}
+.fields > .full,.fields > .grid2,.fields > .grid3{grid-column:1/-1}
+@media (max-width:720px){.fields{grid-template-columns:1fr}}
+.req{font-size:11px;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.textarea.mono{font-family:var(--mono);font-size:12.5px;line-height:1.65}
+.field-more{margin-top:14px}
 
 .timeline{display:flex;flex-direction:column;gap:0;position:relative;padding-left:20px}
 .timeline::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--border)}
@@ -532,6 +574,7 @@ mark.hit{background:var(--warn-soft);color:inherit;border-radius:3px;padding:0 1
 <div class="toast-root" id="toastRoot" aria-live="polite"></div>
 <div id="onboardingHost"></div>
 <input type="file" id="importFile" accept="application/json,.json" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none">
+<input type="file" id="bulkFile" accept=".csv,.tsv,.txt,.json,text/csv,text/plain,application/json" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none">
 
 <noscript>
   <div style="padding:40px;font-family:sans-serif">
@@ -560,7 +603,7 @@ mark.hit{background:var(--warn-soft);color:inherit;border-radius:3px;padding:0 1
    ========================================================================= */
 const APP = {
   name: "Copywriter OS",
-  version: "1.0.0",
+  version: "1.1.0",
   schema: 1,          // data schema version — bumped on breaking data changes
   fileKey: "copywriter-os"
 };
@@ -859,168 +902,193 @@ const OUTCOME = ["", "Won", "Lost", "Nurture"];
 const REVIEW_TYPES = ["Daily", "Weekly", "Monthly", "Quarterly"];
 const DECISION_STATUS = ["Active", "Confirmed", "Superseded", "Reversed"];
 
-/* Every collection: label, icon, storage key, title accessor, field list. */
+/* Every collection: label, icon, storage key, title accessor, field list.
+   `core: true` marks the fields shown by default. Everything else sits behind
+   "Show all fields" so a new record is never a wall of empty boxes. */
+const SWIPE_TYPES = ["Headline", "Hook", "Subject line", "Opening line", "Call to action", "Social post",
+  "Ad", "Email", "Sales page section", "Landing page section", "Quote", "Testimonial", "Other"];
+const SWIPE_CHANNELS = ["Email", "Landing page", "Sales page", "LinkedIn", "X / Twitter", "Instagram",
+  "Facebook", "Ad", "Blog / article", "Newsletter", "Book", "Podcast", "Sales letter", "Other"];
+const SWIPE_RATING = ["Not rated", "Reference", "Good", "Swipe-worthy", "Study this"];
+const SWIPE_STATUS = ["Unfiled", "Filed", "In use", "Archived"];
+
 const COLL = {
   insight: {
     label: "Insight", plural: "Insights", key: "insights", icon: "bulb",
     title: r => r.title || "Untitled insight",
+    quick: ["title", "type", "tags"],
     fields: [
-      F("title", "Title", "text", { req: true, ph: "What did you notice or learn?" }),
-      F("type", "Type of entry", "select", { options: INSIGHT_TYPES, def: "Observation" }),
-      F("status", "Status", "select", { options: INSIGHT_STATUS, def: "Unprocessed" }),
-      F("confidence", "Confidence / evidence strength", "select", { options: CONFIDENCE, def: "Suspected",
+      F("title", "What did you notice or learn?", "text", { req: true, core: true, wide: true, ph: "One sentence — you can add detail below" }),
+      F("notes", "The detail", "textarea", { rows: 5, core: true, ph: "What exactly did you see, read or hear?" }),
+      F("type", "Type of entry", "select", { options: INSIGHT_TYPES, def: "Observation", core: true }),
+      F("status", "Status", "select", { options: INSIGHT_STATUS, def: "Unprocessed", core: true }),
+      F("confidence", "Confidence", "select", { options: CONFIDENCE, def: "Suspected", core: true,
         hint: "Suspected = I think · Observed = I saw it · Supported by results = my own data backs it" }),
+      F("tags", "Tags", "tags", { core: true, ph: "comma, separated" }),
+      F("links", "Linked records", "rels", { core: true }),
+      { sep: "More detail" },
       F("date", "Date captured", "date", { def: todayISO }),
-      { sep: "Source" },
-      F("source", "Source or reference", "text", { ph: "e.g. Maya's homepage, r/marketing thread, podcast ep. 41" }),
+      F("source", "Source or reference", "text", { ph: "e.g. Maya's homepage, podcast ep. 41" }),
       F("sourceUrl", "Reference link", "url", { ph: "https://" }),
       F("category", "Category", "text", { ph: "e.g. Market research, Positioning, Outreach" }),
-      F("tags", "Tags", "tags", { ph: "comma, separated" }),
-      { sep: "The substance" },
-      F("notes", "Notes", "textarea", { rows: 6, ph: "What exactly did you see, read or hear?" }),
-      F("evidence", "What evidence supports this?", "textarea", { rows: 3, ph: "Quote, numbers, screenshots, test results — or 'none yet'" }),
+      F("evidence", "What evidence supports this?", "textarea", { rows: 3, ph: "Quote, numbers, test results — or “none yet”" }),
       F("implication", "Potential business implication", "textarea", { rows: 3, ph: "If this is true, I should…" }),
-      F("action", "Proposed action", "text", { ph: "Concrete next step, if any" }),
-      { sep: "Connections" },
-      F("links", "Linked records", "rels")
+      F("action", "Proposed action", "text", { ph: "Concrete next step, if any" })
     ]
   },
   offer: {
     label: "Offer", plural: "Offers & assets", key: "offers", icon: "box",
     title: r => r.name || "Untitled offer",
+    quick: ["name", "type", "audience"],
     fields: [
-      F("name", "Name", "text", { req: true, ph: "e.g. Homepage Outcome Audit" }),
-      F("type", "Asset type", "select", { options: OFFER_TYPES, def: "Paid service" }),
-      F("status", "Lifecycle stage", "select", { options: OFFER_STATUS, def: "Idea" }),
-      F("readyToUse", "Ready to use right now", "check", { hint: "Tick when you would happily send this to a prospect today" }),
-      { sep: "Who it serves" },
-      F("audience", "Target audience", "text", { ph: "e.g. Solo executive coaches with 5+ years experience" }),
-      F("problem", "Problem it addresses", "textarea", { rows: 3 }),
-      F("outcome", "Promised outcome", "textarea", { rows: 3, ph: "What changes for the client?" }),
+      F("name", "Name", "text", { req: true, core: true, wide: true, ph: "e.g. Homepage Outcome Audit" }),
+      F("type", "Asset type", "select", { options: OFFER_TYPES, def: "Paid service", core: true }),
+      F("status", "Lifecycle stage", "select", { options: OFFER_STATUS, def: "Idea", core: true }),
+      F("readyToUse", "Ready to use right now", "check", { core: true, hint: "Tick when you would happily send this to a prospect today" }),
+      F("audience", "Target audience", "text", { core: true, ph: "e.g. Solo executive coaches with 5+ years experience" }),
+      F("problem", "Problem it addresses", "textarea", { rows: 3, core: true }),
+      F("outcome", "Promised outcome", "textarea", { rows: 3, core: true, ph: "What changes for the client?" }),
+      F("nextAction", "Next action", "text", { core: true, ph: "What moves this asset forward?" }),
+      F("links", "Linked records", "rels", { core: true }),
+      { sep: "More detail" },
       F("description", "Description", "textarea", { rows: 4, ph: "What it is, what's inside, how it works" }),
       F("price", "Price / rate (optional)", "text", { ph: "e.g. $1,800 or free" }),
-      { sep: "Files & references" },
       F("files", "Source files or links", "textarea", { rows: 3, ph: "One per line — local paths, Drive links, Figma URLs" }),
-      { sep: "Progress" },
-      F("nextAction", "Next action", "text", { ph: "What moves this asset forward?" }),
-      F("notes", "Notes", "textarea", { rows: 3 }),
-      { sep: "Connections" },
-      F("links", "Linked records", "rels")
+      F("notes", "Notes", "textarea", { rows: 3 })
     ]
   },
   prospect: {
     label: "Prospect", plural: "Prospects", key: "prospects", icon: "users",
     title: r => r.name || r.company || "Untitled prospect",
+    quick: ["name", "company", "email", "website", "why"],
     fields: [
-      F("name", "Contact name", "text", { req: true, ph: "Who you are speaking to" }),
-      F("company", "Company", "text"),
-      F("website", "Website", "url", { ph: "https://" }),
+      F("name", "Contact name", "text", { req: true, core: true, ph: "Who you are speaking to" }),
+      F("company", "Company", "text", { core: true }),
+      F("email", "Email", "text", { core: true, ph: "name@company.com" }),
+      F("website", "Website", "url", { core: true, ph: "https://" }),
+      F("stage", "Pipeline stage", "select", { options: () => (S.settings.pipeline && S.settings.pipeline.length ? S.settings.pipeline : STAGES_DEFAULT), def: "Researching", core: true }),
+      F("why", "Why I picked them", "textarea", { rows: 3, core: true, ph: "One sentence is enough to start" }),
+      F("nextAction", "Next action", "text", { core: true, ph: "e.g. Send follow-up 2" }),
+      F("nextActionDate", "Next action / follow-up date", "date", { core: true }),
+      F("outcome", "Final outcome", "select", { options: OUTCOME, def: "", core: true }),
+      F("links", "Linked records", "rels", { core: true }),
+      { sep: "More detail" },
       F("profile", "Profile link", "url", { ph: "LinkedIn, X, etc." }),
       F("industry", "Industry", "text"),
       F("role", "Role", "text", { ph: "e.g. Founder, Head of Marketing" }),
-      F("stage", "Pipeline stage", "select", { options: () => (S.settings.pipeline && S.settings.pipeline.length ? S.settings.pipeline : STAGES_DEFAULT), def: "Researching" }),
       F("fit", "Prospect fit", "select", { options: FIT, def: "Unknown" }),
       F("strength", "Opportunity strength", "select", { options: STRENGTH, def: "Unknown" }),
-      { sep: "Why this prospect" },
-      F("why", "Why I selected this prospect", "textarea", { rows: 3 }),
       F("problem", "Business problem or opportunity", "textarea", { rows: 3 }),
-      F("observations", "Messaging / customer journey observations", "textarea", { rows: 4, ph: "What their copy does well, where buyers stall, missing proof, unclear offer…" }),
+      F("observations", "Messaging / customer journey observations", "textarea", { rows: 4, ph: "What their copy does well, where buyers stall, missing proof…" }),
       F("offerFit", "Potential service or offer fit", "text", { ph: "e.g. Sales page rewrite" }),
-      F("priorityReason", "Reason to prioritise (or not)", "textarea", { rows: 2, ph: "Why this prospect over another?" }),
-      { sep: "Next step" },
-      F("nextAction", "Next action", "text", { ph: "e.g. Send follow-up 2" }),
-      F("nextActionDate", "Next action / follow-up date", "date"),
-      { sep: "Outcome" },
-      F("outcome", "Final outcome", "select", { options: OUTCOME, def: "" }),
+      F("priorityReason", "Reason to prioritise (or not)", "textarea", { rows: 2 }),
       F("outcomeDate", "Outcome date", "date"),
-      F("lessons", "Lessons learned", "textarea", { rows: 3 }),
-      { sep: "Connections" },
-      F("links", "Linked records", "rels")
+      F("lessons", "Lessons learned", "textarea", { rows: 3 })
     ]
   },
   plan: {
     label: "Plan", plural: "Plans & experiments", key: "plans", icon: "target",
     title: r => r.title || "Untitled plan",
+    quick: ["title", "track", "kind"],
     fields: [
-      F("title", "Objective", "text", { req: true, ph: "What are you trying to achieve?" }),
-      F("track", "Track", "select", { options: ["Craft", "Clients"], def: "Clients" }),
-      F("kind", "Kind", "select", { options: PLAN_KINDS, def: "Experiment" }),
-      F("status", "Status", "select", { options: PLAN_STATUS, def: "Planned" }),
-      { sep: "The thinking" },
-      F("problem", "Problem I am trying to solve", "textarea", { rows: 3 }),
-      F("hypothesis", "Hypothesis", "textarea", { rows: 3, ph: "I believe that if I ___, then ___ will happen" }),
-      F("action", "Action or experiment", "textarea", { rows: 3, ph: "What exactly will you do?" }),
-      F("expected", "Expected result", "textarea", { rows: 2 }),
-      F("measure", "Success measure", "text", { ph: "e.g. 3 replies from 10 sends; 2 finished spec headlines" }),
-      { sep: "Craft track details", showIf: r => r.track === "Craft" },
-      F("skill", "Skill I want to improve", "text", { showIf: r => r.track === "Craft" }),
-      F("whyCommercial", "Why it matters commercially", "textarea", { rows: 2, showIf: r => r.track === "Craft" }),
-      F("resources", "Learning resources", "textarea", { rows: 3, ph: "One per line — books, swipe files, courses, examples", showIf: r => r.track === "Craft" }),
-      F("practice", "Practice activities", "textarea", { rows: 3, ph: "What will you actually write / build?", showIf: r => r.track === "Craft" }),
-      F("evidence", "Evidence of improvement", "textarea", { rows: 3, ph: "Before/after samples, feedback, results", showIf: r => r.track === "Craft" }),
-      F("portfolioWorthy", "Produces portfolio-worthy work", "check", { showIf: r => r.track === "Craft" }),
-      { sep: "Dates" },
-      F("startDate", "Start date", "date"),
-      F("reviewDate", "Review date", "date"),
-      F("deadline", "Deadline (if relevant)", "date"),
+      F("title", "Objective", "text", { req: true, core: true, wide: true, ph: "What are you trying to achieve?" }),
+      F("track", "Track", "select", { options: ["Craft", "Clients"], def: "Clients", core: true, rerender: true }),
+      F("kind", "Kind", "select", { options: PLAN_KINDS, def: "Experiment", core: true }),
+      F("status", "Status", "select", { options: PLAN_STATUS, def: "Planned", core: true }),
+      F("skill", "Skill I want to improve", "text", { core: true, showIf: r => r.track === "Craft" }),
+      F("whyCommercial", "Why it matters commercially", "textarea", { rows: 2, core: true, showIf: r => r.track === "Craft" }),
+      F("practice", "Practice activities", "textarea", { rows: 3, core: true, ph: "What will you actually write / build?", showIf: r => r.track === "Craft" }),
+      F("hypothesis", "Hypothesis", "textarea", { rows: 3, core: true, ph: "I believe that if I ___, then ___ will happen" }),
+      F("measure", "Success measure", "text", { core: true, ph: "e.g. 3 replies from 10 sends" }),
+      F("reviewDate", "Review date", "date", { core: true }),
+      F("links", "Linked records", "rels", { core: true }),
       { sep: "Results & decision" },
-      F("outcome", "Actual outcome", "textarea", { rows: 3 }),
-      F("learned", "What I learned", "textarea", { rows: 3 }),
-      F("nextDecision", "Next decision", "text", { ph: "Continue, change, pause or stop — and why" }),
-      { sep: "Connections" },
-      F("links", "Linked records", "rels")
+      F("outcome", "Actual outcome", "textarea", { rows: 3, core: true }),
+      F("learned", "What I learned", "textarea", { rows: 3, core: true }),
+      F("nextDecision", "Next decision", "text", { core: true, ph: "Continue, change, pause or stop — and why" }),
+      { sep: "More detail" },
+      F("problem", "Problem I am trying to solve", "textarea", { rows: 3 }),
+      F("action", "Action or experiment", "textarea", { rows: 3 }),
+      F("expected", "Expected result", "textarea", { rows: 2 }),
+      F("resources", "Learning resources", "textarea", { rows: 3, ph: "One per line", showIf: r => r.track === "Craft" }),
+      F("evidence", "Evidence of improvement", "textarea", { rows: 3, showIf: r => r.track === "Craft" }),
+      F("portfolioWorthy", "Produces portfolio-worthy work", "check", { showIf: r => r.track === "Craft" }),
+      F("startDate", "Start date", "date"),
+      F("deadline", "Deadline (if relevant)", "date")
     ]
   },
   task: {
     label: "Task", plural: "Tasks", key: "tasks", icon: "check",
     title: r => r.title || "Untitled task",
+    quick: ["title", "due", "priority"],
     fields: [
-      F("title", "Task", "text", { req: true, ph: "What needs doing?" }),
-      F("status", "Status", "select", { options: TASK_STATUS, def: "Open" }),
-      F("priority", "Priority", "select", { options: PRIORITY, def: "Medium" }),
-      F("due", "Due date (optional)", "date"),
-      F("effort", "Estimated effort", "select", { options: EFFORT, def: "Short (~1 hour)" }),
-      F("completedAt", "Completed on", "date", { hint: "Set automatically when you mark the task done" }),
-      { sep: "Detail" },
+      F("title", "Task", "text", { req: true, core: true, wide: true, ph: "What needs doing?" }),
+      F("status", "Status", "select", { options: TASK_STATUS, def: "Open", core: true }),
+      F("priority", "Priority", "select", { options: PRIORITY, def: "Medium", core: true }),
+      F("due", "Due date (optional)", "date", { core: true }),
+      F("links", "Linked records", "rels", { core: true }),
+      { sep: "More detail" },
       F("description", "Description", "textarea", { rows: 3 }),
       F("notes", "Notes or outcome", "textarea", { rows: 2 }),
-      { sep: "Connections" },
-      F("links", "Linked records", "rels")
+      F("effort", "Estimated effort", "select", { options: EFFORT, def: "Short (~1 hour)" }),
+      F("completedAt", "Completed on", "date", { hint: "Set automatically when you mark the task done" })
     ]
   },
   review: {
     label: "Review", plural: "Reviews", key: "reviews", icon: "clipboard",
     title: r => (r.type || "Review") + " · " + (fmtDate(r.date) || "no date"),
+    quick: ["type"],
     fields: [
-      F("date", "Review date", "date", { def: todayISO }),
-      F("type", "Review type", "select", { options: REVIEW_TYPES, def: "Weekly" }),
-      { sep: "The period in review" },
-      F("moved", "What moved the business forward?", "textarea", { rows: 3 }),
-      F("learned", "What did I learn?", "textarea", { rows: 3 }),
+      F("date", "Review date", "date", { def: todayISO, core: true }),
+      F("type", "Review type", "select", { options: REVIEW_TYPES, def: "Weekly", core: true }),
+      F("moved", "What moved the business forward?", "textarea", { rows: 3, core: true }),
+      F("learned", "What did I learn?", "textarea", { rows: 3, core: true }),
+      F("nextAction", "Most important next action", "text", { core: true }),
+      { sep: "More detail" },
       F("signals", "What generated a response or meaningful signal?", "textarea", { rows: 3 }),
       F("wasted", "What did I spend time on without useful progress?", "textarea", { rows: 3 }),
-      { sep: "Decisions" },
       F("cont", "Continue", "textarea", { rows: 2 }),
       F("stopp", "Stop", "textarea", { rows: 2 }),
       F("change", "Change", "textarea", { rows: 2 }),
-      F("nextAction", "Most important next action", "text"),
-      { sep: "Connections" },
       F("links", "Linked records", "rels")
     ]
   },
   decision: {
     label: "Decision", plural: "Decisions", key: "decisions", icon: "scale",
     title: r => r.decision || "Untitled decision",
+    quick: ["decision"],
     fields: [
-      F("date", "Date", "date", { def: todayISO }),
-      F("decision", "Decision", "text", { req: true, ph: "What did you decide?" }),
-      F("status", "Status", "select", { options: DECISION_STATUS, def: "Active" }),
-      { sep: "Reasoning" },
-      F("evidence", "Evidence behind it", "textarea", { rows: 3, ph: "What observations, results or signals led here?" }),
+      F("decision", "Decision", "text", { req: true, core: true, wide: true, ph: "What did you decide?" }),
+      F("date", "Date", "date", { def: todayISO, core: true }),
+      F("status", "Status", "select", { options: DECISION_STATUS, def: "Active", core: true }),
+      F("evidence", "Evidence behind it", "textarea", { rows: 3, core: true, ph: "What observations, results or signals led here?" }),
+      { sep: "More detail" },
       F("expected", "Expected consequences", "textarea", { rows: 3 }),
       F("reviewDate", "Review this decision on", "date"),
-      { sep: "Connections" },
       F("links", "Linked records", "rels")
+    ]
+  },
+  swipe: {
+    label: "Swipe item", plural: "Swipe file", key: "swipes", icon: "quote",
+    title: r => r.title || (r.copy ? truncate(r.copy, 44) : "Untitled swipe"),
+    quick: ["title", "type", "copy", "source"],
+    fields: [
+      F("title", "Label", "text", { req: true, core: true, wide: true, ph: "e.g. Outcome-first hero headline (Northlight)" }),
+      F("type", "What kind of copy is it?", "select", { options: SWIPE_TYPES, def: "Headline", core: true }),
+      F("copy", "The copy, verbatim", "textarea", { rows: 8, core: true, mono: true, ph: "Paste it exactly as it appeared" }),
+      F("source", "Where it came from", "text", { core: true, ph: "e.g. Northlight homepage, Brennan email #2" }),
+      F("tags", "Tags", "tags", { core: true, ph: "comma, separated" }),
+      F("links", "Linked records", "rels", { core: true }),
+      { sep: "More detail" },
+      F("sourceUrl", "Source link", "url", { ph: "https://" }),
+      F("author", "Author / brand", "text"),
+      F("channel", "Channel", "select", { options: SWIPE_CHANNELS, def: "Other" }),
+      F("date", "Date saved", "date", { def: todayISO }),
+      F("why", "Why it works", "textarea", { rows: 4, ph: "The mechanism: what it does to the reader" }),
+      F("useFor", "What I would use it for", "text", { ph: "e.g. Opener for coaching outreach" }),
+      F("rating", "Value to me", "select", { options: SWIPE_RATING, def: "Not rated" }),
+      F("status", "Status", "select", { options: SWIPE_STATUS, def: "Unfiled" }),
+      F("notes", "Notes", "textarea", { rows: 3 })
     ]
   }
 };
@@ -1055,6 +1123,7 @@ function defaultState() {
       onboardingDone: false,
       sampleLoaded: false,
       hideSampleBanner: false,
+      expanded: {},
       owner: "",
       pipeline: STAGES_DEFAULT.slice(),
       profile: {
@@ -1065,7 +1134,7 @@ function defaultState() {
       id: "focus", objective: "", strategy: "", rationale: "", project: "", mit: "", support: "",
       notFocus: "", constraints: "", startDate: "", reviewDate: "", changeEvidence: "", history: []
     },
-    insights: [], offers: [], prospects: [], plans: [], tasks: [], reviews: [], decisions: []
+    insights: [], offers: [], prospects: [], plans: [], tasks: [], reviews: [], decisions: [], swipes: []
   };
 }
 
@@ -1080,6 +1149,7 @@ function normalizeState(raw) {
   if (raw.settings && typeof raw.settings === "object") {
     out.settings = Object.assign(d.settings, raw.settings);
     out.settings.profile = Object.assign(d.settings.profile, raw.settings.profile || {});
+    if (!out.settings.expanded || typeof out.settings.expanded !== "object") out.settings.expanded = {};
     if (!Array.isArray(out.settings.pipeline) || !out.settings.pipeline.length) out.settings.pipeline = STAGES_DEFAULT.slice();
     out.settings.pipeline = out.settings.pipeline.map(s => String(s).trim()).filter(Boolean);
   }
@@ -1232,7 +1302,7 @@ function buildBackup() {
       settings: S.settings,
       focus: S.focus,
       insights: S.insights, offers: S.offers, prospects: S.prospects,
-      plans: S.plans, tasks: S.tasks, reviews: S.reviews, decisions: S.decisions
+      plans: S.plans, tasks: S.tasks, reviews: S.reviews, decisions: S.decisions, swipes: S.swipes
     }
   };
   TYPES.forEach(t => { payload.counts[COLL[t].key] = S[COLL[t].key].length; });
@@ -1390,7 +1460,8 @@ function sampleData() {
     nextAction: "Log reply rate after 10 sends"
   });
   const p1 = newRecord("prospect", {
-    sample: true, name: "Maya Okonkwo", company: "Northlight Coaching", website: "https://example.com/northlight",
+    sample: true, name: "Maya Okonkwo", company: "Northlight Coaching", email: "maya@northlight.example",
+    website: "https://example.com/northlight",
     industry: "Executive coaching", role: "Founder", stage: "Follow-up Due", fit: "High", strength: "Moderate",
     why: "8 years in practice, busy site, but the homepage leads with her ICF credentials.",
     problem: "Plenty of traffic, few discovery calls booked from the site.",
@@ -1405,7 +1476,8 @@ function sampleData() {
     ]
   });
   const p2 = newRecord("prospect", {
-    sample: true, name: "Tom Brennan", company: "Brennan Consulting", website: "https://example.com/brennan",
+    sample: true, name: "Tom Brennan", company: "Brennan Consulting", email: "tom@brennan.example",
+    website: "https://example.com/brennan",
     industry: "Leadership consulting", role: "Founder", stage: "Replied", fit: "Medium", strength: "Strong",
     why: "Just launched a group program and posted about low sign-ups.",
     problem: "New program page is long but thin on proof and specifics.",
@@ -1420,7 +1492,8 @@ function sampleData() {
     ]
   });
   const p3 = newRecord("prospect", {
-    sample: true, name: "Sarah Ahmed", company: "Leadwell", website: "https://example.com/leadwell",
+    sample: true, name: "Sarah Ahmed", company: "Leadwell", email: "sarah@leadwell.example",
+    website: "https://example.com/leadwell",
     industry: "Career coaching", role: "Co-founder", stage: "Contacted", fit: "Medium", strength: "Weak",
     why: "Raising prices and needs the page to justify it.",
     problem: "Raising prices from $900 to $2,500 without changing the page.",
@@ -1489,6 +1562,35 @@ function sampleData() {
     expected: "Faster, more credible outreach because every audit looks familiar to write."
   });
 
+  const sw1 = newRecord("swipe", {
+    sample: true, title: "Outcome-first hero (rewrite of Maya's)", type: "Headline",
+    copy: "Stop explaining your credentials. Start showing the promotion.\n\nBefore: Certified Executive Coach (PCC), 8 years, 200+ leaders coached.\nAfter: The coaches we work with get promoted — or they get clear on what's next. In 90 days.",
+    source: "My rewrite of Northlight Coaching", channel: "Landing page", date: d(-6),
+    why: "Leads with the thing they actually want (the promotion) instead of the thing that qualifies me. The 'or they get clear' clause defuses the biggest objection — that coaching has no guaranteed outcome.",
+    useFor: "Hero headlines for coach homepages", rating: "Study this", status: "In use", tags: ["headline", "coaching", "homepage"]
+  });
+  const sw2 = newRecord("swipe", {
+    sample: true, title: "Quote-their-own-words opener", type: "Opening line",
+    copy: "Your homepage opens with \"Certified Executive Coach (PCC)\". That tells me you're qualified. It doesn't tell me what changes for the people who hire you.",
+    source: "Outreach v1 (mine)", channel: "Email", date: d(-11),
+    why: "Quoting them back to themselves proves you looked. The second sentence names the gap you can close, which makes the offer feel inevitable rather than salesy.",
+    useFor: "First line of cold outreach", rating: "Swipe-worthy", status: "In use", tags: ["outreach", "opener", "email"]
+  });
+  const sw3 = newRecord("swipe", {
+    sample: true, title: "Specificity beats superlatives", type: "Quote",
+    copy: "Vague: We help leaders unlock their potential.\n\nSpecific: We help directors stop second-guessing decisions in meetings — usually within six sessions.",
+    source: "Notes from a teardown session", channel: "Other", date: d(-20),
+    why: "The specific version names a moment the reader recognises happening to them. Recognition beats admiration.",
+    useFor: "Rewriting value propositions", rating: "Good", status: "Filed", tags: ["positioning", "value prop"]
+  });
+  const sw4 = newRecord("swipe", {
+    sample: true, title: "Low-friction CTA with a reason", type: "Call to action",
+    copy: "Send me your homepage and I'll mark up the three lines losing you enquiries — no call needed.\n\n[Send it here →]",
+    source: "Adapted from a newsletter I subscribed to", channel: "Newsletter", date: d(-15),
+    why: "Asks for a URL, not an hour. Names the deliverable and removes the scare word ('call').",
+    useFor: "Lead magnet CTAs", rating: "Swipe-worthy", status: "Filed", tags: ["cta", "lead magnet"]
+  });
+
   // Connections
   ins1.links = [{ type: "offer", id: off1.id }];
   ins2.links = [{ type: "offer", id: off3.id }, { type: "plan", id: pl2.id }];
@@ -1505,10 +1607,15 @@ function sampleData() {
   t4.links = [{ type: "plan", id: pl2.id }, { type: "offer", id: off3.id }];
   rv1.links = [{ type: "plan", id: pl2.id }, { type: "prospect", id: p2.id }];
   dc1.links = [{ type: "plan", id: pl2.id }];
+  sw1.links = [{ type: "prospect", id: p1.id }, { type: "offer", id: off1.id }];
+  sw2.links = [{ type: "offer", id: off3.id }, { type: "insight", id: ins2.id }];
+  sw4.links = [{ type: "offer", id: off1.id }];
+  off3.links.push({ type: "swipe", id: sw2.id });
 
   return {
     insights: [ins1, ins2], offers: [off1, off2, off3], prospects: [p1, p2, p3],
-    plans: [pl1, pl2], tasks: [t1, t2, t3, t4], reviews: [rv1], decisions: [dc1]
+    plans: [pl1, pl2], tasks: [t1, t2, t3, t4], reviews: [rv1], decisions: [dc1],
+    swipes: [sw1, sw2, sw3, sw4]
   };
 }
 function loadSampleData() {
@@ -1529,7 +1636,7 @@ function loadSampleData() {
     S.focus.changeEvidence = "Fewer than 3 replies from 30 sends, or 3 conversations that all ask for something other than sales pages";
     S.focus.sample = true;
   }
-  return 17;
+  return 21;
 }
 /* ============================================================================
    MODULE 04 — UI kit: icons, toasts, modals, drawer, forms, shared parts
@@ -1569,15 +1676,20 @@ const P = {
   copy: '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
   mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/>',
   arrowRight: '<path d="M5 12h14M12 5l7 7-7 7"/>',
-  spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="3"/>'
+  spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="3"/>',
+  quote: '<path d="M9 7H5.5A1.5 1.5 0 0 0 4 8.5v3A1.5 1.5 0 0 0 5.5 13H8v.5a2.5 2.5 0 0 1-2.5 2.5"/><path d="M19 7h-3.5A1.5 1.5 0 0 0 14 8.5v3a1.5 1.5 0 0 0 1.5 1.5H18v.5a2.5 2.5 0 0 1-2.5 2.5"/>',
+  table: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/>',
+  layers: '<path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/>'
 };
 function icon(name, size, cls) {
   const d = P[name] || P.link;
   const s = size || 16;
   return '<svg class="' + (cls || "ico") + '" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
 }
-const TYPE_ICON = { insight: "bulb", offer: "box", prospect: "users", plan: "target", task: "check", review: "clipboard", decision: "scale", focus: "crosshair" };
-const TYPE_TONE = { insight: "warn", offer: "purple", prospect: "info", plan: "accent", task: "neutral", review: "neutral", decision: "purple", focus: "accent" };
+const TYPE_ICON = { insight: "bulb", offer: "box", prospect: "users", plan: "target", task: "check",
+  review: "clipboard", decision: "scale", focus: "crosshair", swipe: "quote" };
+const TYPE_TONE = { insight: "warn", offer: "purple", prospect: "info", plan: "accent", task: "neutral",
+  review: "neutral", decision: "purple", focus: "accent", swipe: "purple" };
 
 const NAV = [
   { group: "Overview", items: [
@@ -1587,7 +1699,8 @@ const NAV = [
   ]},
   { group: "Knowledge & assets", items: [
     { id: "insights", label: "Intelligence Hub", icon: "bulb", desc: "Observations, research, lessons and market signals", count: () => S.insights.length },
-    { id: "offers", label: "Offers & Assets", icon: "box", desc: "Services, lead magnets, templates and portfolio work", count: () => S.offers.length }
+    { id: "offers", label: "Offers & Assets", icon: "box", desc: "Services, lead magnets, templates and portfolio work", count: () => S.offers.length },
+    { id: "swipe", label: "Swipe File", icon: "quote", desc: "Headlines, hooks, posts and copy worth keeping", count: () => S.swipes.length }
   ]},
   { group: "Pipeline", items: [
     { id: "prospects", label: "Prospects & Outreach", icon: "users", desc: "Pipeline, outreach history and follow-ups", count: () => S.prospects.filter(p => !isClosed(p)).length },
@@ -1681,10 +1794,12 @@ function fieldHTML(f, rec) {
   if (f.sep) return "";
   const val = getPath(rec, f.k);
   const idattr = 'data-field="' + esc(f.k) + '"';
+  const wide = f.type === "textarea" || f.type === "rels" || f.type === "check" || !!f.wide;
   let input;
   switch (f.type) {
     case "textarea":
-      input = '<textarea class="textarea" ' + idattr + ' rows="' + (f.rows || 3) + '" placeholder="' + esc(f.ph || "") + '">' + esc(val === undefined || val === null ? "" : val) + "</textarea>";
+      input = '<textarea class="textarea' + (f.mono ? " mono" : "") + '" ' + idattr + ' rows="' + (f.rows || 3) +
+        '" placeholder="' + esc(f.ph || "") + '">' + esc(val === undefined || val === null ? "" : val) + "</textarea>";
       break;
     case "select":
       const opts = resolveOptions(f, rec);
@@ -1701,9 +1816,11 @@ function fieldHTML(f, rec) {
       input = '<select class="select" ' + idattr + ">" + html + "</select>";
       break;
     case "check":
-      return '<label class="check"><input type="checkbox" ' + idattr + (val ? " checked" : "") + " /><span>" + esc(f.label) + (f.hint ? ' <span class="hint">· ' + esc(f.hint) + "</span>" : "") + "</span></label>";
+      return '<div class="field wide"><label class="check"><input type="checkbox" ' + idattr + (val ? " checked" : "") + " /><span>" +
+        esc(f.label) + (f.hint ? ' <span class="hint">· ' + esc(f.hint) + "</span>" : "") + "</span></label></div>";
     case "tags":
-      input = '<input class="input" type="text" ' + idattr + ' value="' + esc(Array.isArray(val) ? val.join(", ") : (val || "")) + '" placeholder="' + esc(f.ph || "comma, separated") + '" list="tagList">';
+      input = '<input class="input" type="text" ' + idattr + ' value="' + esc(Array.isArray(val) ? val.join(", ") : (val || "")) +
+        '" placeholder="' + esc(f.ph || "comma, separated") + '" list="tagList">';
       break;
     case "date":
       input = '<input class="input" type="date" ' + idattr + ' value="' + esc(val || "") + '">';
@@ -1712,28 +1829,50 @@ function fieldHTML(f, rec) {
       input = '<input class="input" type="url" ' + idattr + ' value="' + esc(val || "") + '" placeholder="' + esc(f.ph || "https://") + '">';
       break;
     case "rels":
-      return '<div class="field"><label>' + esc(f.label) + '</label><div class="relbox" ' + idattr + '></div></div>';
+      return '<div class="field wide"><label>' + esc(f.label) + '</label><div class="relbox" ' + idattr + '></div></div>';
     default:
-      input = '<input class="input" type="text" ' + idattr + ' value="' + esc(val === undefined || val === null ? "" : val) + '" placeholder="' + esc(f.ph || "") + '">';
+      input = '<input class="input" type="text" ' + idattr + ' value="' + esc(val === undefined || val === null ? "" : val) +
+        '" placeholder="' + esc(f.ph || "") + '">';
   }
-  return '<div class="field"><label>' + esc(f.label) + (f.req ? ' <span class="badge danger">required</span>' : "") + "</label>" +
+  return '<div class="field' + (wide ? " wide" : "") + '"><label>' + esc(f.label) +
+    (f.req ? ' <span class="req">required</span>' : "") + "</label>" +
     input + (f.hint ? '<div class="hint">' + esc(f.hint) + "</div>" : "") + "</div>";
 }
-/* Builds a full form: sections + fields. */
-function formHTML(rec, defs) {
+/* Builds a form. In `coreOnly` mode only the essential fields are shown, with a
+   button to reveal the rest — new records stay quick to fill in. */
+function visibleCount(defs, rec, core) {
+  return defs.filter(f => !f.sep && !(f.showIf && !f.showIf(rec)) && (core ? f.core : !f.core)).length;
+}
+function formHTML(rec, defs, opts) {
+  opts = opts || {};
+  const coreOnly = !!opts.coreOnly;
+  const useable = defs.filter(f => !f.showIf || f.showIf(rec));
+  const shown = useable.filter(f => f.sep || !coreOnly || f.core);
+  const hidden = visibleCount(defs, rec, false);
   let html = "";
   let open = false;
-  defs.forEach(f => {
-    if (f.showIf && !f.showIf(rec)) return;
-    if (f.sep) {
-      if (open) html += "</div></div>";
-      html += '<div class="form-section"><h4>' + esc(f.sep) + '</h4><div class="fields">';
-      open = true;
-      return;
-    }
+  let pendingSep = null;
+  function openPlain() { if (!open) { html += '<div class="fields">'; open = true; } }
+  function openSection(title) {
+    if (open) html += "</div></div>";
+    html += '<div class="form-section"><h4>' + esc(title) + '</h4><div class="fields">';
+    open = true;
+  }
+  if (!coreOnly) openPlain();
+  shown.forEach(f => {
+    if (f.sep) { pendingSep = f.sep; return; }
+    if (pendingSep) { openSection(pendingSep); pendingSep = null; }
+    openPlain();
     html += fieldHTML(f, rec);
   });
-  if (open) html += "</div></div>";
+  if (open) html += "</div>";
+  const tg = ' data-act="toggle-fields" data-type="' + esc(opts.type || "") + '" data-id="' + esc(opts.id || "") + '"';
+  if (coreOnly && hidden) {
+    html += '<button class="btn subtle sm field-more"' + tg + ">" + icon("chevron", 13) +
+      " Show " + hidden + " more field" + plural(hidden, "", "s") + "</button>";
+  } else if (!coreOnly && opts.allowCollapse) {
+    html += '<button class="btn ghost sm field-more"' + tg + ">" + icon("chevron", 13) + " Show the essentials only</button>";
+  }
   return html;
 }
 function readField(f, el) {
@@ -1905,7 +2044,9 @@ function renderDrawer() {
     body += '<div class="banner info" style="margin-bottom:14px">' + icon("spark", 15) +
       '<div class="grow"><strong>Sample record.</strong> It demonstrates how the workspace connects. Remove all sample data in Settings &amp; Data → Sample data.</div></div>';
   }
-  body += '<div class="card card-pad" data-rec-type="' + type + '" data-rec-id="' + esc(id) + '">' + formHTML(rec, c.fields) + "</div>";
+  const expanded = !!(S.settings.expanded && S.settings.expanded[type]);
+  body += '<div class="card card-pad" data-rec-type="' + type + '" data-rec-id="' + esc(id) + '">' +
+    formHTML(rec, c.fields, { coreOnly: !expanded, type: type, id: id, allowCollapse: true }) + "</div>";
 
   if (type === "prospect") body += prospectActivitiesSection(rec);
   body += linkedTasksSection(type, rec);
@@ -2144,6 +2285,15 @@ VIEWS.command = function () {
   const f = S.focus;
   const pc = pipelineCounts();
   let html = "";
+
+  /* --- quick capture --- */
+  html += '<div class="toolbar" style="margin-bottom:14px">' +
+    '<span class="small muted">Quick capture:</span>' +
+    '<button class="btn subtle sm" data-act="new-insight">' + icon("bulb", 13) + " Observation</button>" +
+    '<button class="btn subtle sm" data-act="new-prospect">' + icon("users", 13) + " Prospect</button>" +
+    '<button class="btn subtle sm" data-act="quick-task-focus">' + icon("check", 13) + " Task</button>" +
+    '<button class="btn subtle sm" data-act="new-swipe">' + icon("quote", 13) + " Swipe</button>" +
+    "</div>";
 
   /* --- banners --- */
   if (Store.backend === "memory") {
@@ -2550,7 +2700,10 @@ VIEWS.prospects = function () {
   const noDate = openProspects.filter(p => !p.nextActionDate);
 
   let html = pageHead("Prospects & Outreach", "A lightweight CRM built for one person doing outreach. Every contact keeps its full history — you never overwrite an earlier message.",
-    '<button class="btn primary" data-act="new-prospect">' + icon("plus", 14) + " New prospect</button>");
+    '<div class="row" style="gap:6px">' +
+      '<button class="btn subtle" data-act="bulk-prospects">' + icon("table", 14) + " Add in bulk</button>" +
+      '<button class="btn primary" data-act="new-prospect">' + icon("plus", 14) + " New prospect</button>" +
+    "</div>");
 
   html += '<div class="stats" style="margin-bottom:14px">' +
     stat("Open prospects", openProspects.length, "still in play", "set-filter", v, "", "open") +
@@ -2590,7 +2743,7 @@ VIEWS.prospects = function () {
     html += emptyState({
       title: "No prospects yet",
       text: "Add the people and companies you want to work with. Record why you picked them, what you noticed about their messaging, and what you will send.",
-      steps: ["Add a prospect and paste the sentence that made you pick them", "Log your outreach message before you send it", "Set a follow-up date so nothing goes quiet"],
+      steps: ["Add a prospect with just a name and a company — seconds, not minutes", "Or upload a whole list from a spreadsheet using the sample format", "Log your outreach message before you send it, then set a follow-up date"],
       actionLabel: "Add your first prospect", act: "new-prospect", actionIcon: "plus"
     });
   } else if (!arr.length) {
@@ -2647,7 +2800,7 @@ function prospectActivitiesSection(p) {
     }).join("") + "</div>";
   }
   html += '<div class="card card-pad" style="background:var(--surface-2)"><div class="fields">' +
-    '<div class="grid3">' +
+    '<div class="grid3 full">' +
       '<div class="field"><label>Date</label><input class="input" type="date" id="actDate" value="' + todayISO() + '"></div>' +
       '<div class="field"><label>Type</label><select class="select" id="actType">' + ACT_TYPES.map(t => '<option' + (t === "Outreach" ? " selected" : "") + ">" + t + "</option>").join("") + "</select></div>" +
       '<div class="field"><label>Channel</label><input class="input" id="actChannel" placeholder="Email, LinkedIn, call…"></div>' +
@@ -2958,6 +3111,417 @@ VIEWS.reviews = function () {
   return html;
 };
 /* ============================================================================
+   MODULE 08 — Bulk prospect import (CSV / TSV / paste / JSON) + sample format
+   ========================================================================= */
+
+/* Column names people actually use in a spreadsheet → our field keys. */
+const BULK_MAP = {
+  name: ["name", "contact", "contact name", "full name", "first name", "last name", "person", "prospect"],
+  company: ["company", "company name", "organisation", "organization", "business", "account", "brand"],
+  email: ["email", "email address", "e-mail", "mail"],
+  website: ["website", "url", "site", "domain", "web", "web site"],
+  profile: ["profile", "linkedin", "linkedin url", "linkedin profile", "profile link", "social"],
+  industry: ["industry", "sector", "niche", "market"],
+  role: ["role", "title", "job title", "position"],
+  stage: ["stage", "pipeline", "pipeline stage", "status"],
+  why: ["why", "why them", "why i selected", "reason", "why this prospect"],
+  problem: ["problem", "opportunity", "business problem", "pain"],
+  observations: ["observations", "messaging", "customer journey", "copy notes", "notes"],
+  offerFit: ["offer fit", "offer", "service", "service fit", "fit"],
+  nextAction: ["next action", "next step", "action", "task", "todo"],
+  nextActionDate: ["next action date", "follow up date", "follow-up date", "followup date", "due date", "date"],
+  tags: ["tags", "labels", "tag", "categories"]
+};
+const BULK_COLUMNS = ["name", "company", "email", "website", "role", "industry", "stage", "why", "nextAction", "nextActionDate", "tags"];
+const BULK_HEADINGS = {
+  name: "name", company: "company", email: "email", website: "website", role: "role",
+  industry: "industry", stage: "stage", why: "why", nextAction: "next action",
+  nextActionDate: "next action date", tags: "tags"
+};
+function bulkSampleCSV() {
+  const head = BULK_COLUMNS.map(c => BULK_HEADINGS[c]);
+  const rows = [
+    ["Ada Nwosu", "Bright Path Coaching", "ada@brightpath.example", "https://brightpath.example", "Founder",
+      "Executive coaching", "Researching", "Homepage leads with her ICF credentials instead of client outcomes",
+      "Send the one-page outcome audit", "2026-11-15", "coaching,homepage"],
+    ["Jonas Weber", "Scale Advisory", "jonas@scaleadvisory.example", "https://scaleadvisory.example", "Partner",
+      "B2B consulting", "Contacted", "New program page is long but thin on proof", "Follow up on the page teardown",
+      "2026-10-25", "consulting,sales page"]
+  ];
+  const q = v => {
+    const s = String(v === undefined || v === null ? "" : v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  };
+  return [head.map(q).join(",")].concat(rows.map(r => r.map(q).join(","))).join("\r\n") + "\r\n";
+}
+function downloadText(text, filename, mime) {
+  const blob = new Blob([text], { type: mime || "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { try { URL.revokeObjectURL(url); } catch (e) {} a.remove(); }, 400);
+}
+
+/* -------------------------------------------------- delimited-text parser -- */
+function splitDelimited(line, d) {
+  const out = [];
+  let cur = "", inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (inQ) {
+      if (c === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else inQ = false; }
+      else cur += c;
+    } else if (c === '"') inQ = true;
+    else if (c === d) { out.push(cur); cur = ""; }
+    else cur += c;
+  }
+  out.push(cur);
+  return out;
+}
+function detectDelimiter(line) {
+  let best = ",", bestN = 1;
+  [",", ";", "\t", "|"].forEach(d => {
+    const n = splitDelimited(line, d).length;
+    if (n > bestN) { bestN = n; best = d; }
+  });
+  return best;
+}
+function parseDelimited(text) {
+  const lines = String(text).replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n").filter(l => l.trim() !== "");
+  if (!lines.length) return { header: [], rows: [], delim: "," };
+  const delim = detectDelimiter(lines[0]);
+  const header = splitDelimited(lines[0], delim).map(h => String(h).trim().toLowerCase());
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cells = splitDelimited(lines[i], delim);
+    const obj = {};
+    header.forEach((h, j) => { obj[h] = String(cells[j] === undefined ? "" : cells[j]).trim(); });
+    rows.push(obj);
+  }
+  return { header: header, rows: rows, delim: delim };
+}
+
+/* ------------------------------------------------------- row normalisation -- */
+function normaliseKey(k) {
+  const key = String(k).trim().toLowerCase().replace(/[_-]+/g, " ");
+  for (const field in BULK_MAP) if (BULK_MAP[field].indexOf(key) >= 0) return field;
+  return null;
+}
+function normUrl(s) {
+  return String(s || "").trim().toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/+$/, "");
+}
+function normName(s) { return String(s || "").trim().toLowerCase().replace(/\s+/g, " "); }
+function parseLooseDate(s) {
+  s = String(s || "").trim();
+  if (!s) return "";
+  let m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(s);
+  if (m) return m[1] + "-" + String(m[2]).padStart(2, "0") + "-" + String(m[3]).padStart(2, "0");
+  m = /^(\d{1,2})[\/.](\d{1,2})[\/.](\d{4})$/.exec(s);   // day/month/year
+  if (m) return m[3] + "-" + String(m[2]).padStart(2, "0") + "-" + String(m[1]).padStart(2, "0");
+  m = /^(\d{1,2})\s+([A-Za-z]{3,})\s+(\d{4})$/.exec(s);  // 15 Nov 2026
+  if (m) {
+    const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    const mi = months.indexOf(m[2].slice(0, 3).toLowerCase());
+    if (mi >= 0) return m[3] + "-" + String(mi + 1).padStart(2, "0") + "-" + String(m[1]).padStart(2, "0");
+  }
+  return "";
+}
+/* Turns raw spreadsheet rows into validated prospect records. */
+function mapBulkRows(rawRows) {
+  const pipeline = (S.settings.pipeline && S.settings.pipeline.length) ? S.settings.pipeline : STAGES_DEFAULT;
+  const out = rawRows.map((raw, i) => {
+    const data = {};
+    const ignored = [];
+    Object.keys(raw).forEach(k => {
+      const field = normaliseKey(k);
+      if (!field) { if (String(raw[k]).trim()) ignored.push(k); return; }
+      if (data[field] === undefined || !data[field]) data[field] = raw[k];
+    });
+    const row = { index: i, data: {}, problems: [], dup: null, ignored: ignored, raw: raw };
+    ["name", "company", "email", "website", "profile", "industry", "role", "why", "problem",
+     "observations", "offerFit", "nextAction"].forEach(f => { row.data[f] = String(data[f] || "").trim(); });
+    row.data.tags = String(data.tags || "").split(/[,;]/).map(t => t.trim()).filter(Boolean);
+    // stage
+    let stage = String(data.stage || "").trim();
+    if (stage && pipeline.indexOf(stage) < 0) {
+      const alt = pipeline.filter(s => s.toLowerCase() === stage.toLowerCase())[0];
+      if (alt) stage = alt;
+      else { row.problems.push('Unknown stage "' + stage + '" — will use ' + pipeline[0]); stage = pipeline[0]; }
+    }
+    row.data.stage = stage || pipeline[0];
+    // date
+    const d = String(data.nextActionDate || "").trim();
+    if (d) {
+      const iso = parseLooseDate(d);
+      if (iso) row.data.nextActionDate = iso;
+      else { row.problems.push('Could not read the date "' + d + '"'); row.data.nextActionDate = ""; }
+    } else row.data.nextActionDate = "";
+    // email sanity (warning only)
+    if (row.data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row.data.email)) row.problems.push("Email looks unusual");
+    // required
+    if (!row.data.name && !row.data.company) row.problems.push("Needs a name or a company");
+    // duplicates
+    const w = normUrl(row.data.website);
+    const nc = normName(row.data.company);
+    row.dup = S.prospects.filter(p => (w && normUrl(p.website) === w) ||
+      (row.data.name && nc && normName(p.name) === normName(row.data.name) && normName(p.company) === nc))[0] || null;
+    row.ok = !row.problems.some(p => /Needs a name/.test(p));
+    return row;
+  });
+  return out;
+}
+function parseBulkInput(text) {
+  const t = String(text || "").trim();
+  if (!t) return { rows: [], error: "" };
+  if (t[0] === "[" || t[0] === "{") {
+    try {
+      const j = JSON.parse(t);
+      const arr = Array.isArray(j) ? j : (Array.isArray(j.prospects) ? j.prospects : [j]);
+      if (!arr.length) return { rows: [], error: "That JSON contains no prospect rows." };
+      return { rows: mapBulkRows(arr), format: "JSON" };
+    } catch (e) {
+      return { rows: [], error: "That JSON could not be read: " + (e && e.message ? e.message : "parse error") };
+    }
+  }
+  const parsed = parseDelimited(t);
+  if (!parsed.rows.length) return { rows: [], error: "No data rows found — include a header line, then one row per prospect." };
+  const known = parsed.header.map(normaliseKey).filter(Boolean);
+  if (!known.length) return { rows: [], error: "No recognised columns. The first line must be a header with at least one of: name, company, email, website." };
+  return { rows: mapBulkRows(parsed.rows), format: parsed.delim === "\t" ? "tab-separated" : "CSV", header: parsed.header };
+}
+function bulkCounts(rows) {
+  const c = { total: rows.length, add: 0, dup: 0, bad: 0, warn: 0 };
+  rows.forEach(r => {
+    if (!r.ok) c.bad++;
+    else if (r.dup) c.dup++;
+    else c.add++;
+    if (r.ok && r.problems.length) c.warn++;
+  });
+  return c;
+}
+
+/* -------------------------------------------------------------- the modal -- */
+let bulkState = { rows: [], update: false };
+function openBulkImport() {
+  bulkState = { rows: [], update: false };
+  openModal({
+    title: "Add prospects in bulk",
+    wide: true,
+    body:
+      '<div class="step-line"><div class="step-num">1</div><div class="grow">' +
+        '<div class="small"><b>Use the sample format.</b> One row per prospect; only a name or a company is required.</div>' +
+        '<div class="row" style="gap:6px;margin-top:8px">' +
+          '<button class="btn subtle sm" data-act="bulk-sample">' + icon("download", 13) + " Download sample CSV</button>" +
+          '<button class="btn subtle sm" data-act="bulk-copy-format">Copy the column list</button>' +
+        "</div>" +
+        '<div class="tiny faint" style="margin-top:8px">Columns: ' + esc(BULK_COLUMNS.map(c => BULK_HEADINGS[c]).join(", ")) + "</div>" +
+      "</div></div>" +
+      '<div class="step-line"><div class="step-num">2</div><div class="grow">' +
+        '<div class="small"><b>Choose a file or paste your rows.</b> CSV, tab-separated or JSON — all processed in your browser.</div>' +
+        '<div class="row" style="gap:6px;margin-top:8px">' +
+          '<button class="btn subtle sm" data-act="bulk-file">' + icon("upload", 13) + " Choose file…</button>" +
+          '<span class="tiny faint" id="bulkFileName">no file chosen</span>' +
+        "</div>" +
+        '<textarea class="textarea paste-box" id="bulkText" style="margin-top:8px" placeholder="…or paste rows straight from a spreadsheet, including the header line"></textarea>' +
+      "</div></div>" +
+      '<div class="step-line"><div class="step-num">3</div><div class="grow">' +
+        '<div class="small"><b>Check the preview, then add them.</b></div>' +
+        '<div id="bulkSummary"></div><div id="bulkPreview"></div>' +
+        '<label class="check" style="margin-top:10px"><input type="checkbox" id="bulkUpdate">' +
+          "<span>Update prospects that already exist instead of skipping them (matched by website, or name + company)</span></label>" +
+      "</div></div>",
+    buttons: [
+      { label: "Cancel", cls: "subtle", onClick: () => closeModal() },
+      { label: "Add prospects", cls: "primary", onClick: () => commitBulkImport() }
+    ]
+  });
+  const ta = $("#bulkText");
+  if (ta) ta.addEventListener("input", e => renderBulkPreview(e.target.value));
+  const cb = $("#bulkUpdate");
+  if (cb) cb.addEventListener("change", e => { bulkState.update = e.target.checked; renderBulkPreview(ta ? ta.value : ""); });
+  renderBulkPreview("");
+}
+function renderBulkPreview(text) {
+  const sum = $("#bulkSummary"), prev = $("#bulkPreview");
+  if (!sum || !prev) return;
+  const res = parseBulkInput(text);
+  bulkState.rows = res.rows;
+  if (!text || !text.trim()) {
+    sum.innerHTML = '<div class="bulk-sum"><span class="muted small">Paste rows or choose a file to see a preview.</span></div>';
+    prev.innerHTML = "";
+    setBulkButton(0);
+    return;
+  }
+  if (res.error) {
+    sum.innerHTML = '<div class="bulk-sum"><span style="color:var(--danger)">' + icon("alert", 13) + " " + esc(res.error) + "</span></div>";
+    prev.innerHTML = "";
+    setBulkButton(0);
+    return;
+  }
+  const c = bulkCounts(res.rows);
+  sum.innerHTML = '<div class="bulk-sum">' +
+    "<span>" + res.format + " file · <b>" + c.total + "</b> " + plural(c.total, "row") + "</span>" +
+    "<span style=\"color:var(--ok)\"><b>" + (c.add + (bulkState.update ? c.dup : 0)) + "</b> to " + (bulkState.update ? "add or update" : "add") + "</span>" +
+    (c.dup && !bulkState.update ? '<span style="color:var(--warn)"><b>' + c.dup + "</b> already in your CRM (will be skipped)</span>" : "") +
+    (c.bad ? '<span style="color:var(--danger)"><b>' + c.bad + "</b> with problems</span>" : "") +
+    (c.warn ? '<span class="muted"><b>' + c.warn + "</b> with warnings</span>" : "") +
+    "</div>";
+  const shown = res.rows.slice(0, 60);
+  prev.innerHTML = '<div class="bulk-prev"><table><thead><tr><th>#</th><th>Name</th><th>Company</th><th>Email / website</th><th>Stage</th><th>Status</th></tr></thead><tbody>' +
+    shown.map(r => {
+      const status = !r.ok ? '<span style="color:var(--danger)">' + esc(r.problems.join("; ")) + "</span>"
+        : (r.dup ? '<span style="color:var(--warn)">' + (bulkState.update ? "Will update " : "Duplicate of ") + esc(COLL.prospect.title(r.dup)) + "</span>"
+          : '<span style="color:var(--ok)">New</span>');
+      return '<tr class="' + (!r.ok ? "bad" : (r.dup ? "dup" : "")) + '">' +
+        "<td>" + (r.index + 1) + "</td><td>" + esc(r.data.name || "—") + "</td><td>" + esc(r.data.company || "—") + "</td>" +
+        "<td>" + esc(r.data.email || r.data.website || "—") + "</td><td>" + esc(r.data.stage) + "</td><td>" + status +
+        (r.ok && r.problems.length ? '<div class="tiny faint">' + esc(r.problems.join("; ")) + "</div>" : "") + "</td></tr>";
+    }).join("") + "</tbody></table>" +
+    (res.rows.length > 60 ? '<div class="tiny faint" style="padding:8px 10px">Showing the first 60 of ' + res.rows.length + " rows.</div>" : "") + "</div>";
+  setBulkButton(c.add + (bulkState.update ? c.dup : 0));
+}
+function setBulkButton(n) {
+  const btn = document.querySelector('#modalRoot [data-mbtn="1"]');
+  if (!btn) return;
+  btn.textContent = n ? "Add " + n + " " + plural(n, "prospect") : "Add prospects";
+  btn.disabled = !n;
+}
+function commitBulkImport() {
+  const rows = bulkState.rows || [];
+  const usable = rows.filter(r => r.ok && (!r.dup || bulkState.update));
+  if (!usable.length) { toast("Nothing to add yet", "err"); return; }
+  let added = 0, updated = 0, skipped = 0;
+  usable.forEach(r => {
+    if (r.dup && bulkState.update) {
+      const p = r.dup;
+      ["name", "company", "email", "website", "industry", "role", "why", "problem", "observations", "offerFit", "nextAction", "nextActionDate", "stage"].forEach(k => {
+        if (r.data[k]) p[k] = r.data[k];
+      });
+      if (r.data.tags && r.data.tags.length) {
+        const set = {};
+        (p.tags || []).concat(r.data.tags).forEach(t => { set[t] = true; });
+        p.tags = Object.keys(set);
+      }
+      p.updatedAt = new Date().toISOString();
+      updated++;
+    } else if (r.dup) { skipped++; }
+    else {
+      const rec = newRecord("prospect", Object.assign({}, r.data, { tags: r.data.tags || [] }));
+      S.prospects.unshift(rec);
+      added++;
+    }
+  });
+  closeModal();
+  markDirty(true).then(() => {
+    renderAll();
+    toast("Imported: " + added + " added, " + updated + " updated, " + skipped + " skipped", "ok", 5000);
+  });
+}
+function readBulkFile(file) {
+  if (!file) return;
+  if (file.size > 8 * 1024 * 1024) { toast("That file is too large for an in-browser import", "err"); return; }
+  const reader = new FileReader();
+  reader.onerror = () => toast("Could not read that file", "err");
+  reader.onload = () => {
+    const ta = $("#bulkText");
+    if (ta) { ta.value = String(reader.result); ta.dispatchEvent(new Event("input", { bubbles: true })); }
+    const nm = $("#bulkFileName");
+    if (nm) nm.textContent = file.name;
+  };
+  reader.readAsText(file);
+}
+/* ============================================================================
+   MODULE 09 — Swipe File: headlines, hooks, posts, quotes and copy worth keeping
+   ========================================================================= */
+VIEWS.swipe = function () {
+  const v = "swipe";
+  const fl = UI.filters[v] = UI.filters[v] || {};
+  const q = UI.q[v] || "";
+  let arr = S.swipes.slice();
+  if (fl.type) arr = arr.filter(r => r.type === fl.type);
+  if (fl.channel) arr = arr.filter(r => r.channel === fl.channel);
+  if (fl.rating) arr = arr.filter(r => r.rating === fl.rating);
+  if (fl.status) arr = arr.filter(r => r.status === fl.status);
+  if (q) arr = arr.filter(r => matchQ("swipe", r, q, ["copy", "source", "author", "why", "useFor"]));
+  const sort = UI.sort[v] || "new";
+  arr.sort((a, b) => {
+    if (sort === "old") return String(a.date || a.createdAt).localeCompare(String(b.date || b.createdAt));
+    if (sort === "type") return String(a.type).localeCompare(String(b.type)) || String(a.title).localeCompare(String(b.title));
+    if (sort === "rating") return SWIPE_RATING.indexOf(b.rating) - SWIPE_RATING.indexOf(a.rating);
+    if (sort === "title") return String(a.title || "").localeCompare(String(b.title || ""));
+    return String(b.date || b.createdAt).localeCompare(String(a.date || a.createdAt));
+  });
+
+  const inUse = S.swipes.filter(s => s.status === "In use").length;
+  const rated = S.swipes.filter(s => s.rating === "Swipe-worthy" || s.rating === "Study this").length;
+  const typesUsed = {};
+  S.swipes.forEach(s => { if (s.type) typesUsed[s.type] = true; });
+
+  let html = pageHead("Swipe File",
+    "Copy worth keeping: headlines, hooks, subject lines, openers, CTAs, posts, ads and quotes. Paste it verbatim, note why it works, and tag it so you can find it when you need a starting point.",
+    '<button class="btn primary" data-act="new-swipe">' + icon("plus", 14) + " Save to swipe file</button>");
+
+  html += '<div class="stats" style="margin-bottom:14px">' +
+    '<div class="stat"><span class="k">Items saved</span><span class="v">' + S.swipes.length + '</span><span class="n">in the file</span></div>' +
+    '<div class="stat"><span class="k">In use</span><span class="v">' + inUse + '</span><span class="n">actively referenced</span></div>' +
+    '<div class="stat"><span class="k">High value</span><span class="v">' + rated + '</span><span class="n">swipe-worthy or study</span></div>' +
+    '<div class="stat"><span class="k">Kinds of copy</span><span class="v">' + Object.keys(typesUsed).length + '</span><span class="n">different types</span></div>' +
+    "</div>";
+
+  html += filterBar(
+    toolbarSearch("Search the copy, source, notes…", v) +
+    selectFilter(SWIPE_TYPES, v, "type", "All kinds of copy") +
+    selectFilter(SWIPE_CHANNELS, v, "channel", "All channels") +
+    selectFilter(SWIPE_RATING.filter(x => x !== "Not rated"), v, "rating", "Any value") +
+    selectFilter(SWIPE_STATUS, v, "status", "All statuses") +
+    sortSelect(v, [{ v: "new", l: "Newest first" }, { v: "old", l: "Oldest first" }, { v: "rating", l: "Highest value first" }, { v: "type", l: "By type" }, { v: "title", l: "Label A–Z" }]) +
+    '<button class="btn subtle sm" data-act="clear-filters" data-view="' + v + '">Reset</button>'
+  );
+
+  const counts = {};
+  S.swipes.forEach(r => { counts[r.type] = (counts[r.type] || 0) + 1; });
+  if (S.swipes.length) {
+    html += '<div class="filters" style="margin-bottom:12px">' +
+      filterBtn("All " + S.swipes.length, !fl.type, "set-filter", "") +
+      Object.keys(counts).sort((a, b) => counts[b] - counts[a]).slice(0, 7)
+        .map(t => filterBtn(counts[t] + " " + t, fl.type === t, "set-filter", t)).join("") +
+      "</div>";
+  }
+
+  if (!S.swipes.length) {
+    html += emptyState({
+      title: "Your swipe file is empty",
+      text: "Save the lines that made you stop reading — a competitor's headline, a subject line that got you to open, a post that landed. Two fields: what it is, and the copy itself.",
+      steps: ["Paste a headline or hook you wish you had written", "Add where it came from", "Note why it works — that is the part you will reuse"],
+      actionLabel: "Save your first swipe", act: "new-swipe", actionIcon: "plus"
+    });
+  } else if (!arr.length) {
+    html += '<div class="empty"><h3>Nothing matches</h3><p>Try another filter or clear the search.</p>' +
+      '<button class="btn subtle" data-act="clear-filters" data-view="' + v + '">Reset filters</button></div>';
+  } else {
+    html += '<div class="list">' + arr.map(s => {
+      const copy = String(s.copy || "").trim();
+      const long = copy.length > 420;
+      return '<div class="rec" data-act="open-rec" data-type="swipe" data-id="' + esc(s.id) + '">' +
+        '<div class="rec-title">' + icon("quote", 14) + esc(truncate(s.title || copy, 90)) +
+          (s.sample ? ' <span class="badge info">sample</span>' : "") + "</div>" +
+        '<div class="rec-meta">' + badge(s.type, "purple") + (s.channel && s.channel !== "Other" ? badge(s.channel, "neutral") : "") +
+          (s.rating && s.rating !== "Not rated" ? badge(s.rating, s.rating === "Study this" || s.rating === "Swipe-worthy" ? "accent" : "neutral") : "") +
+          (s.source ? "<span>· " + esc(truncate(s.source, 46)) + "</span>" : "") +
+          (s.date ? "<span>· " + esc(fmtDateShort(s.date)) + "</span>" : "") + "</div>" +
+        (copy ? '<div class="swipe-copy' + (long ? " clamp" : "") + '">' + esc(long ? copy.slice(0, 420) : copy) + "</div>" : "") +
+        (s.why ? '<div class="swipe-why">' + esc(truncate(s.why, 190)) + "</div>" : "") +
+        '<div class="rec-foot">' + (s.tags || []).slice(0, 4).map(t => '<span class="tag">' + esc(t) + "</span>").join("") +
+          (s.links || []).slice(0, 2).map(l => typeChip(l.type, l.id)).join("") +
+          (copy ? '<button class="btn xs subtle" data-act="copy-swipe" data-id="' + esc(s.id) + '">' + icon("copy", 12) + " Copy text</button>" : "") +
+        "</div>" +
+      "</div>";
+    }).join("") + "</div>";
+  }
+  return html;
+};
+/* ============================================================================
    MODULE 07 — Settings & Data, search, onboarding, router, event wiring
    ========================================================================= */
 
@@ -3173,7 +3737,7 @@ function openQuickTask(linkedTo) {
     title: "Capture a task",
     body: '<div class="fields">' +
       '<div class="field"><label>Task</label><input class="input" id="qtTitle" data-autofocus placeholder="e.g. Rewrite the hero headline for Maya"></div>' +
-      '<div class="grid2">' +
+      '<div class="grid2 full">' +
         '<div class="field"><label>Due date (optional)</label><input class="input" type="date" id="qtDue" value=""></div>' +
         '<div class="field"><label>Priority</label><select class="select" id="qtPri">' + PRIORITY.map(p => '<option' + (p === "Medium" ? " selected" : "") + ">" + p + "</option>").join("") + "</select></div>" +
       "</div>" +
@@ -3198,15 +3762,97 @@ function openQuickTask(linkedTo) {
   setTimeout(() => { const el = $("#qtTitle"); if (el) el.addEventListener("keydown", e => { if (e.key === "Enter") { const b = document.querySelector('#modalRoot [data-mbtn="1"]'); if (b) b.click(); } }); }, 20);
 }
 
+
+/* --------------------------------------------------------- quick capture --- */
+/* The fastest way to get something into the system: two or three fields, then
+   "save and add another". Every other field is one click away inside the record. */
+const QC_KINDS = [
+  { type: "insight", label: "Observation", icon: "bulb" },
+  { type: "prospect", label: "Prospect", icon: "users" },
+  { type: "task", label: "Task", icon: "check" },
+  { type: "swipe", label: "Swipe", icon: "quote" }
+];
+function openQuickCapture(kind, preset) {
+  const k = COLL[kind] ? kind : "insight";
+  function buildDraft() { return Object.assign(newRecord(k), preset || {}); }
+  let draft = buildDraft();
+  const extra = COLL[k].fields.filter(f => !f.sep && !f.core).length;
+  const body =
+    '<div class="qc-kinds">' + QC_KINDS.map(q =>
+      '<button class="qc-kind' + (q.type === k ? " on" : "") + '" data-act="qc-kind" data-val="' + q.type + '">' +
+      icon(q.icon, 13) + esc(q.label) + "</button>").join("") + "</div>" +
+    '<div class="fields">' + COLL[k].quick.map(key => {
+      const f = findDef(k, key);
+      return f ? fieldHTML(f, draft) : "";
+    }).join("") + "</div>" +
+    '<div class="qc-note">' + icon("spark", 12) + " That is enough to save it. Open the record afterwards for the other " +
+      extra + " field" + plural(extra, "", "s") + " — they stay out of the way until you need them.</div>";
+  function collect() {
+    const rec = Object.assign(newRecord(k), preset || {});
+    let missing = null;
+    COLL[k].quick.forEach(key => {
+      const f = findDef(k, key);
+      if (!f) return;
+      const el = document.querySelector('#modalRoot [data-field="' + f.k + '"]');
+      if (!el) return;
+      rec[f.k] = readField(f, el);
+      if (f.req && !String(rec[f.k] || "").trim()) missing = missing || f.label;
+    });
+    if (k === "prospect" && !String(rec.name || "").trim() && !String(rec.company || "").trim()) missing = "a name or a company";
+    return { rec: rec, missing: missing };
+  }
+  function save(andAgain) {
+    const got = collect();
+    if (got.missing) {
+      toast("Add " + got.missing + " first", "err");
+      const el = document.querySelector("#modalRoot [data-field]");
+      if (el) el.focus();
+      return;
+    }
+    if (k === "prospect" && !got.rec.stage) got.rec.stage = S.settings.pipeline[0];
+    S[COLL[k].key].unshift(got.rec);
+    markDirty(true);
+    if (andAgain) {
+      draft = buildDraft();
+      openQuickCapture(k, preset);
+      setTimeout(() => { const el = document.querySelector("#modalRoot [data-field]"); if (el) el.focus(); }, 60);
+      toast(COLL[k].label + " saved — add the next one", "ok", 1600);
+      return;
+    }
+    closeModal();
+    renderAll();
+    openRecord(k, got.rec.id);
+    toast(COLL[k].label + " saved", "ok");
+  }
+  openModal({
+    title: "Quick capture — " + COLL[k].label.toLowerCase(),
+    body: body,
+    buttons: [
+      { label: "Cancel", cls: "subtle", onClick: () => closeModal() },
+      { label: "Save & add another", cls: "subtle", onClick: () => save(true) },
+      { label: "Save & open", cls: "primary", onClick: () => save(false) }
+    ]
+  });
+  setTimeout(() => {
+    const el = document.querySelector("#modalRoot [data-field]");
+    if (el) el.focus();
+    const root = $("#modalRoot");
+    if (root) root.addEventListener("keydown", e => {
+      if (e.key === "Enter" && e.target && e.target.tagName !== "TEXTAREA") { e.preventDefault(); save(false); }
+    });
+  }, 40);
+}
+
 /* ------------------------------------------------------ new-record menu -- */
 function openNewMenu() {
   const items = [
+    { type: "insight", label: "Observation or idea", desc: "One sentence and a tag", icon: "bulb" },
+    { type: "prospect", label: "Prospect", desc: "Name, company, why them", icon: "users" },
     { type: "task", label: "Task", desc: "A next action", icon: "check" },
-    { type: "insight", label: "Insight", desc: "Observation, research or lesson", icon: "bulb" },
-    { type: "prospect", label: "Prospect", desc: "Someone to contact", icon: "users" },
+    { type: "swipe", label: "Swipe file item", desc: "Copy worth keeping", icon: "quote" },
     { type: "offer", label: "Offer or asset", desc: "Service, lead magnet, template", icon: "box" },
-    { type: "plan", label: "Craft objective", desc: "Skill to improve", icon: "book", patch: { track: "Craft", kind: "Active strategy" } },
-    { type: "plan", label: "Client experiment", desc: "Strategy or test", icon: "target", patch: { track: "Clients", kind: "Experiment" } },
+    { type: "plan", label: "Craft objective", desc: "Skill to improve", icon: "book", patch: { track: "Craft", kind: "Active strategy", status: "Active", startDate: todayISO() } },
+    { type: "plan", label: "Client experiment", desc: "Strategy or test", icon: "target", patch: { track: "Clients", kind: "Experiment", status: "Active", startDate: todayISO() } },
     { type: "review", label: "Review", desc: "Daily, weekly or monthly", icon: "clipboard" },
     { type: "decision", label: "Decision", desc: "With the evidence behind it", icon: "scale" }
   ];
@@ -3540,8 +4186,9 @@ function bindEvents() {
         const view = d.view;
         UI.filters[view] = UI.filters[view] || {};
         const val = d.val || d.x || "";
-        if (view === "insights") UI.filters[view].status = val === "__" ? "" : val;
-        else if (view === "prospects") UI.filters[view].view = val === "__" ? "" : val;
+        if (view === "insights") UI.filters[view].status = val;
+        else if (view === "swipe") UI.filters[view].type = val;
+        else if (view === "prospects") UI.filters[view].view = val;
         renderCurrentView();
         break;
       }
@@ -3655,7 +4302,7 @@ function bindEvents() {
         openModal({
           title: "Edit history entry",
           body: '<div class="fields">' +
-            '<div class="grid2"><div class="field"><label>Date</label><input class="input" type="date" id="edDate" value="' + esc(a.date || "") + '"></div>' +
+            '<div class="grid2 full"><div class="field"><label>Date</label><input class="input" type="date" id="edDate" value="' + esc(a.date || "") + '"></div>' +
             '<div class="field"><label>Type</label><select class="select" id="edType">' + ACT_TYPES.map(t => '<option' + (t === a.type ? " selected" : "") + ">" + t + "</option>").join("") + "</select></div></div>" +
             '<div class="field"><label>Channel</label><input class="input" id="edChannel" value="' + esc(a.channel || "") + '"></div>' +
             '<div class="field"><label>Summary</label><input class="input" id="edSummary" value="' + esc(a.summary || "") + '"></div>' +
@@ -3675,21 +4322,47 @@ function bindEvents() {
         });
         break;
       }
-      case "new-insight": openNewRecord("insight", { date: todayISO() }); break;
-      case "new-offer": openNewRecord("offer"); break;
-      case "new-prospect": openNewRecord("prospect", { stage: S.settings.pipeline[0] }); break;
-      case "new-task": openNewRecord("task"); break;
+      case "new-insight": openQuickCapture("insight"); break;
+      case "new-offer": openQuickCapture("offer"); break;
+      case "new-prospect": openQuickCapture("prospect"); break;
+      case "new-swipe": openQuickCapture("swipe"); break;
+      case "new-task": openQuickTask(null); break;
       case "new-review": openNewRecord("review", { date: todayISO() }); break;
       case "new-decision": openNewRecord("decision", { date: todayISO() }); break;
-      case "new-plan-craft": openNewRecord("plan", { track: "Craft", kind: "Active strategy", status: "Active", startDate: todayISO() }); break;
-      case "new-plan-clients": openNewRecord("plan", { track: "Clients", kind: "Experiment", status: "Active", startDate: todayISO() }); break;
+      case "new-plan-craft": openQuickCapture("plan", { track: "Craft", kind: "Active strategy", status: "Active", startDate: todayISO() }); break;
+      case "new-plan-clients": openQuickCapture("plan", { track: "Clients", kind: "Experiment", status: "Active", startDate: todayISO() }); break;
       case "new-from-menu": {
         const items = modalCtx.menu || [];
         const it = items[Number(d.i)];
         closeModal();
-        if (it) openNewRecord(it.type, it.patch || undefined);
+        if (!it) break;
+        if (COLL[it.type].quick && it.type !== "task") openQuickCapture(it.type, it.patch);
+        else if (it.type === "task") openQuickTask(null);
+        else openNewRecord(it.type, it.patch || undefined);
         break;
       }
+      case "qc-kind": openQuickCapture(d.val); break;
+      case "toggle-fields": {
+        S.settings.expanded = S.settings.expanded || {};
+        S.settings.expanded[d.type] = !S.settings.expanded[d.type];
+        markDirty(true).then(() => { if (drawerRec) renderDrawer(); renderCurrentView(); });
+        break;
+      }
+      case "copy-swipe": {
+        const r = findRecord("swipe", d.id);
+        if (r && String(r.copy || "").trim()) copyText(r.copy);
+        else toast("There is no copy text to copy yet", "err");
+        break;
+      }
+      case "bulk-prospects": openBulkImport(); break;
+      case "bulk-file": { const bf = $("#bulkFile"); if (bf) bf.click(); break; }
+      case "bulk-sample":
+        downloadText(bulkSampleCSV(), "copywriter-os-prospects-template.csv");
+        toast("Sample CSV downloaded — open it in any spreadsheet app", "ok", 4500);
+        break;
+      case "bulk-copy-format":
+        copyText(BULK_COLUMNS.map(c => BULK_HEADINGS[c]).join(", "));
+        break;
       case "quick-task-add": {
         const input = $("#ccQuickTask") || $("#taskQuick");
         const title = input ? input.value.trim() : "";
@@ -3865,6 +4538,12 @@ function bindEvents() {
     S.settings.theme = S.settings.theme === "dark" ? "light" : "dark";
     applyTheme(); markDirty(true).then(() => renderCurrentView());
   });
+  const bulkInput = $("#bulkFile");
+  if (bulkInput) bulkInput.addEventListener("change", e => {
+    const f = e.target.files && e.target.files[0];
+    readBulkFile(f);
+    e.target.value = "";
+  });
   $("#importFile").addEventListener("change", e => {
     const f = e.target.files && e.target.files[0];
     handleImportFile(f);
@@ -3963,5 +4642,5 @@ async function boot() {
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
 else boot();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4915fd938039720',t:'MTc5MTc1ODUwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4a06af9fbe2814c',t:'MTc5MTkxNjI1MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

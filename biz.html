@@ -262,6 +262,7 @@ a.chip:hover{text-decoration:none;border-color:var(--accent-line);background:var
 .rec-title{font-weight:620;font-size:13.5px;display:flex;align-items:center;gap:7px}
 .rec-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:5px;font-size:11.5px;color:var(--faint)}
 .rec-body{font-size:12.5px;color:var(--muted);margin-top:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rec-body.lines-4{-webkit-line-clamp:4}
 .rec-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}
 .list{display:flex;flex-direction:column;gap:9px}
 
@@ -368,6 +369,44 @@ table.tbl tbody tr:hover{background:var(--surface-2)}
 .step-line .grow{min-width:0}
 .paste-box{font-family:var(--mono);font-size:12px;min-height:96px}
 
+/* ---------------------------------------------- attachments --------- */
+.filebox{border:1px dashed var(--border-strong);border-radius:10px;padding:11px;background:var(--surface-2)}
+.filebox.dropping,.file-drop.dropping{border-color:var(--accent);background:var(--accent-soft)}
+.file-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:9px;margin-bottom:10px}
+.file-card{display:flex;flex-direction:column;gap:6px;border:1px solid var(--border);border-radius:9px;
+  background:var(--surface);padding:8px;position:relative;box-shadow:var(--shadow-sm)}
+.file-thumb{width:100%;height:96px;border:1px solid var(--border);border-radius:7px;background:var(--surface-3);
+  overflow:hidden;display:grid;place-items:center;padding:0;cursor:zoom-in}
+.file-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.file-thumb-icon{color:var(--muted);cursor:default}
+.file-thumb-icon svg{width:26px;height:26px}
+.file-meta{min-width:0}
+.file-name{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;overflow-wrap:anywhere}
+.file-sub{font-size:11px;color:var(--faint)}
+.file-audio{width:100%;height:30px;margin-top:4px}
+.file-acts{display:flex;gap:4px;margin-top:auto;justify-content:flex-end}
+.icon-btn.sm{width:26px;height:26px;border-radius:7px}
+.icon-btn.sm svg{width:14px;height:14px}
+.file-drop{display:flex;align-items:center;gap:9px;width:100%;text-align:left;cursor:pointer;
+  border:1px dashed var(--border-strong);border-radius:9px;background:var(--surface);color:var(--muted);
+  padding:11px 12px;font-size:12.5px;font-family:inherit}
+.file-drop:hover{border-color:var(--accent-line);background:var(--accent-soft);color:var(--accent-ink)}
+.file-drop b{color:var(--text)}
+.file-drop svg{color:var(--accent);flex:none}
+.file-card.file-missing{opacity:.62}
+.file-card.file-missing .file-sub::after{content:" · missing from storage"}
+/* compact strip on list cards */
+.file-strip{display:flex;align-items:center;gap:5px;margin-top:8px;flex-wrap:wrap}
+.file-thumb-sm{width:34px;height:34px;border-radius:6px;border:1px solid var(--border);overflow:hidden;
+  background:var(--surface-2);display:grid;place-items:center;flex:none;color:var(--muted)}
+.file-thumb-sm img{width:100%;height:100%;object-fit:cover;display:block}
+.file-more,.file-count{font-size:10.5px;color:var(--faint);display:inline-flex;align-items:center;gap:3px}
+.file-count svg{width:11px;height:11px}
+.file-thumb-sm.file-missing{border-style:dashed;opacity:.6}
+.file-viewer{display:flex;flex-direction:column;gap:10px;align-items:center}
+.file-viewer img{max-width:100%;max-height:66vh;border-radius:10px;border:1px solid var(--border);background:var(--surface-2)}
+.file-viewer-bar{display:flex;width:100%;align-items:center;gap:8px}
+
 /* ---------------------------------------------- swipe file ---------- */
 /* category colour tokens */
 .t-blue{--c:var(--info);--c-soft:var(--info-soft);--c-line:var(--info-line)}
@@ -463,6 +502,7 @@ html[data-theme="dark"] .cat-card:hover{border-color:var(--c-line)}
 .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px;align-items:start}
 .fields > .field{min-width:0}
 .fields > .full,.fields > .grid2,.fields > .grid3{grid-column:1/-1}
+.fields > .field.wide{grid-column:1/-1}   /* textareas, checkboxes, link boxes and anything marked wide */
 @media (max-width:720px){.fields{grid-template-columns:1fr}}
 .req{font-size:11px;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
 .textarea.mono{font-family:var(--mono);font-size:12.5px;line-height:1.65}
@@ -657,14 +697,14 @@ mark.hit{background:var(--warn-soft);color:inherit;border-radius:3px;padding:0 1
    ========================================================================= */
 const APP = {
   name: "Copywriter OS",
-  version: "1.2.0",
+  version: "1.3.0",
   schema: 1,          // data schema version — bumped on breaking data changes
   fileKey: "copywriter-os"
 };
 const LS_STATE = "copywriter-os.state.v1";
 const LS_LEGACY = "copyos.state.v1";           // accepted for backward compatibility
 const LS_BACKEND = "copywriter-os.backend";
-const IDB = { name: "copywriter-os", version: 1, store: "kv", key: "app" };
+const IDB = { name: "copywriter-os", version: 2, store: "kv", key: "app", files: "files" };
 const MAX_BACKUP_BYTES = 25 * 1024 * 1024;      // sanity ceiling for imports
 
 /* ============================================================================
@@ -814,6 +854,7 @@ const Store = {
       req.onupgradeneeded = () => {
         const db = req.result;
         if (!db.objectStoreNames.contains(IDB.store)) db.createObjectStore(IDB.store);
+        if (!db.objectStoreNames.contains(IDB.files)) db.createObjectStore(IDB.files);
       };
       req.onsuccess = () => { clearTimeout(timer); resolve(req.result); };
       req.onerror = () => { clearTimeout(timer); reject(req.error || new Error("IndexedDB open failed")); };
@@ -1019,14 +1060,15 @@ const COLL = {
       F("status", "Lifecycle stage", "select", { options: OFFER_STATUS, def: "Idea", core: true }),
       F("readyToUse", "Ready to use right now", "check", { core: true, hint: "Tick when you would happily send this to a prospect today" }),
       F("audience", "Target audience", "text", { core: true, ph: "e.g. Solo executive coaches with 5+ years experience" }),
-      F("problem", "Problem it addresses", "textarea", { rows: 3, core: true }),
+      F("context", "Context", "textarea", { rows: 7, core: true, wide: true, ph: "The situation this asset exists in: who it is for, what is going on for them, what you were reacting to, and anything someone would need to know to use or judge it." }),
       F("outcome", "Promised outcome", "textarea", { rows: 3, core: true, ph: "What changes for the client?" }),
       F("nextAction", "Next action", "text", { core: true, ph: "What moves this asset forward?" }),
+      F("attachments", "Attachments", "files", { core: true, wide: true }),
       F("links", "Linked records", "rels", { core: true }),
       { sep: "More detail" },
       F("description", "Description", "textarea", { rows: 4, ph: "What it is, what's inside, how it works" }),
       F("price", "Price / rate (optional)", "text", { ph: "e.g. $1,800 or free" }),
-      F("files", "Source files or links", "textarea", { rows: 3, ph: "One per line — local paths, Drive links, Figma URLs" }),
+      F("files", "File paths & external links", "textarea", { rows: 3, ph: "One per line — local paths, Drive links, Figma URLs (for files you keep elsewhere; use Attachments to store them in the app)" }),
       F("notes", "Notes", "textarea", { rows: 3 })
     ]
   },
@@ -1152,6 +1194,7 @@ const COLL = {
       F("copy", "The copy, verbatim", "textarea", { rows: 8, core: true, mono: true, ph: "Paste it exactly as it appeared" }),
       F("source", "Where it came from", "text", { core: true, ph: "e.g. Northlight homepage, Brennan email #2" }),
       F("tags", "Tags", "tags", { core: true, ph: "comma, separated" }),
+      F("attachments", "Attachments", "files", { core: true, wide: true }),
       F("links", "Linked records", "rels", { core: true }),
       { sep: "More detail" },
       F("kind", "Specific kind", "select", { options: SWIPE_KINDS, def: "Other" }),
@@ -1257,6 +1300,16 @@ function normalizeRecord(type, r) {
     if (SWIPE_CATS.indexOf(out.category) < 0) out.category = "Other";
     if (!out.kind && out.type) out.kind = out.type;
   }
+  if (!Array.isArray(out.attachments)) out.attachments = [];
+  out.attachments = out.attachments.filter(a => a && a.id).map(a => ({
+    id: String(a.id), name: String(a.name || "file"), type: String(a.type || ""),
+    size: Number(a.size) || 0, addedAt: String(a.addedAt || "")
+  }));
+  if (type === "offer") {
+    // 1.2.0 replaced "Problem it addresses" with a wider "Context" field.
+    if (out.problem && !out.context) out.context = out.problem;
+    delete out.problem;
+  }
   if (type === "prospect" && !Array.isArray(out.activities)) out.activities = [];
   if (type === "prospect") out.activities = out.activities.map(a => Object.assign({ id: uid("a"), date: todayISO(), type: "Note", summary: "" }, a));
   return out;
@@ -1272,6 +1325,7 @@ function newRecord(type, patch) {
     else rec[f.k] = "";
   });
   if (type === "prospect") rec.activities = [];
+  (c.fields || []).forEach(f => { if (f.type === "files") rec[f.k] = []; });
   return Object.assign(rec, patch || {});
 }
 
@@ -1371,7 +1425,8 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 /* ============================================================================
    6. Export / import / reset
    ========================================================================= */
-function buildBackup() {
+async function buildBackup() {
+  const files = (typeof Files !== "undefined") ? (await Files.snapshot()) : {};
   const payload = {
     app: APP.name,
     appVersion: APP.version,
@@ -1383,10 +1438,12 @@ function buildBackup() {
       settings: S.settings,
       focus: S.focus,
       insights: S.insights, offers: S.offers, prospects: S.prospects,
-      plans: S.plans, tasks: S.tasks, reviews: S.reviews, decisions: S.decisions, swipes: S.swipes
+      plans: S.plans, tasks: S.tasks, reviews: S.reviews, decisions: S.decisions, swipes: S.swipes,
+      files: files
     }
   };
   TYPES.forEach(t => { payload.counts[COLL[t].key] = S[COLL[t].key].length; });
+  payload.counts.attachments = Object.keys(files).length;
   return payload;
 }
 function downloadJSON(obj, filename) {
@@ -1399,13 +1456,22 @@ function downloadJSON(obj, filename) {
   setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 400);
   return json.length;
 }
-function exportBackup(silent) {
-  const payload = buildBackup();
+async function exportBackup(silent) {
+  const nAttach = TYPES.reduce((n, t) => n + (S[COLL[t].key] || []).reduce((m, r) => m + ((r.attachments || []).length), 0), 0);
+  let busy = null;
+  if (nAttach) busy = setTimeout(() => toast("Preparing backup — " + nAttach + " attachment" + plural(nAttach, "", "s") + "…", "ok", 8000), 250);
+  let payload;
+  try { payload = await buildBackup(); }
+  finally { if (busy) clearTimeout(busy); }
   const d = new Date();
   const pad = n => String(n).padStart(2, "0");
   const stamp = d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + "-" + pad(d.getHours()) + pad(d.getMinutes());
   const bytes = downloadJSON(payload, "copywriter-os-backup-" + stamp + ".json");
-  if (!silent) toast("Backup downloaded (" + Math.round(bytes / 1024) + " KB)", "ok");
+  const nFiles = Object.keys(payload.data.files || {}).length;
+  if (!silent) {
+    toast("Backup downloaded (" + Math.round(bytes / 1024) + " KB" +
+      (nFiles ? ", " + nFiles + " attachment" + plural(nFiles, "", "s") : "") + ")", "ok", 5000);
+  }
   return bytes;
 }
 
@@ -1415,7 +1481,7 @@ function validateBackup(obj) {
   let data = obj.data;
   if (!data && (obj.insights || obj.prospects || obj.tasks)) data = obj; // raw state shape
   if (!data || typeof data !== "object") return { ok: false, errors: ["No 'data' section found in this file."] };
-  const known = ["meta", "settings", "focus"].concat(TYPES.map(t => COLL[t].key));
+  const known = ["meta", "settings", "focus", "files"].concat(TYPES.map(t => COLL[t].key));
   const unknown = Object.keys(data).filter(k => known.indexOf(k) < 0);
   TYPES.forEach(t => {
     const arr = data[COLL[t].key];
@@ -1468,6 +1534,7 @@ function applyImport(data, mode, importSettings) {
 
 function resetAllData() {
   const theme = S ? S.settings.theme : "light";
+  if (typeof Files !== "undefined") Files.clearAll();
   S = defaultState();
   S.settings.theme = theme;
   S.settings.onboardingDone = true;
@@ -1519,7 +1586,7 @@ function sampleData() {
   const off1 = newRecord("offer", {
     sample: true, name: "Homepage Outcome Audit (lead magnet)", type: "Lead magnet", status: "Drafting", readyToUse: false,
     audience: "Solo executive coaches with an established practice", price: "free",
-    problem: "Their homepage talks about credentials and process, so visitors cannot see the outcome they are buying.",
+    context: "Every coach's site I looked at over six weeks opened with credentials and process — PCC, ICF, years in practice — and buried the outcome three scrolls down. Visitors read the first screen and leave, so the practice never gets judged on results. This audit exists to show that gap on one page, and to be useful enough that a reply feels natural. Works as a free lead magnet, as the first step of the sales page sprint, and as the thing I send in cold outreach instead of a case study I do not have yet.",
     outcome: "A one-page teardown showing three specific messaging fixes they can make this week.",
     description: "Single page: headline rewrite, proof rearrangement, one clearer call to action. Delivered as a PDF with a short Loom walkthrough.",
     files: "docs/audits/homepage-outcome-audit-template.docx",
@@ -1528,14 +1595,14 @@ function sampleData() {
   const off2 = newRecord("offer", {
     sample: true, name: "Sales Page Rewrite — 2 week sprint", type: "Package / productized service", status: "Active", readyToUse: true,
     audience: "Coaches and consultants launching a program", price: "$1,800",
-    problem: "The program is good but the page does not carry the promise, proof or urgency.",
+    context: "Coaches come to me with a program they believe in and a page that undersells it: the promise is implied rather than stated, the proof sits below the fold, and the only next step is 'book a call'. Traffic is rarely the problem — the page is. Fixed scope keeps this sellable without a discovery process, and two weeks fits how these launches actually run.",
     outcome: "A rewritten sales page with a sharper promise, reordered proof and a clear next step.",
     description: "Fixed scope: research call, message map, full draft, two revision rounds. Delivered in two weeks.",
     nextAction: "Collect two testimonials from past clients"
   });
   const off3 = newRecord("offer", {
     sample: true, name: "Outreach template v1 — outcome audit opener", type: "Outreach template", status: "Testing", readyToUse: true,
-    audience: "Solo executive coaches", problem: "Cold outreach gets ignored",
+    audience: "Solo executive coaches", context: "Cold outreach to coaches gets ignored because it reads like outreach: a compliment, a pitch, a calendar link. The version that earns replies quotes one exact sentence from their own site and offers one fix, with nothing attached. Written for sending 10 at a time so the reply rate means something.",
     outcome: "A short email that earns a reply by quoting their own words and offering one specific fix",
     description: "4 sentences: quote, observation, one fix, soft ask. No attachments in the first email.",
     nextAction: "Log reply rate after 10 sends"
@@ -1784,7 +1851,11 @@ const P = {
   layers: '<path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/>',
   type: '<path d="M4 7V5h16v2M12 5v14M9 19h6"/>',
   megaphone: '<path d="M3 11v2a1 1 0 0 0 1 1h2l4 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M14 8a5 5 0 0 1 0 8M17 5a9 9 0 0 1 0 14"/>',
-  hook: '<path d="M9 15l-3 3a4.2 4.2 0 0 1-6-6l5-5a3 3 0 0 1 4.2 4.2l-1.2 1.2"/><path d="M14.5 9.5l3 3"/><path d="M17 7l2.5 2.5a4.2 4.2 0 0 1-6 6l-2-2"/>'
+  hook: '<path d="M9 15l-3 3a4.2 4.2 0 0 1-6-6l5-5a3 3 0 0 1 4.2 4.2l-1.2 1.2"/><path d="M14.5 9.5l3 3"/><path d="M17 7l2.5 2.5a4.2 4.2 0 0 1-6 6l-2-2"/>',
+  paperclip: '<path d="M21.4 11.1l-8.5 8.5a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 1 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/>',
+  image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>',
+  music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>'
 };
 function icon(name, size, cls) {
   const d = P[name] || P.link;
@@ -1935,6 +2006,8 @@ function fieldHTML(f, rec) {
       break;
     case "rels":
       return '<div class="field wide"><label>' + esc(f.label) + '</label><div class="relbox" ' + idattr + '></div></div>';
+    case "files":
+      return fileFieldHTML(f, rec);
     default:
       input = '<input class="input" type="text" ' + idattr + ' value="' + esc(val === undefined || val === null ? "" : val) +
         '" placeholder="' + esc(f.ph || "") + '">';
@@ -2008,6 +2081,7 @@ function findDef(type, key) {
 function onFormInput(e) {
   const el = e.target;
   if (!el || !el.closest) return;
+  if (el.tagName === "INPUT" && el.type === "file") return;   // attachments are handled separately
   const field = el.closest("[data-field]");
   if (!field) return;
   const key = field.getAttribute("data-field");
@@ -2179,6 +2253,7 @@ function renderDrawer() {
     '<div class="drawer-foot"><span class="grow">Created ' + esc(fmtDate(rec.createdAt)) + " · updated " + esc(fmtDate(rec.updatedAt)) + '</span><span class="mono">' + esc(rec.id) + "</span></div>";
 
   d.querySelectorAll(".relbox").forEach(bx => renderRels(bx, rec));
+  hydrateFiles(d);
   // A brand-new record has no title yet — put the cursor straight in the name field.
   const firstTitle = d.querySelector('#drawerBody [data-field="title"],#drawerBody [data-field="name"],#drawerBody [data-field="decision"]');
   if (firstTitle && !String(firstTitle.value || "").trim()) setTimeout(() => { try { firstTitle.focus(); } catch (e) {} }, 80);
@@ -2313,7 +2388,13 @@ function refreshBackendInfo() {
   const el = $("#backendInfo");
   if (!el) return;
   const map = { indexeddb: "IndexedDB", localstorage: "localStorage", memory: "Not saving ⚠" };
-  el.textContent = "Storage: " + (map[Store.backend] || Store.backend);
+  let txt = "Storage: " + (map[Store.backend] || Store.backend);
+  if (typeof S !== "undefined" && S) {
+    let n = 0, bytes = 0;
+    TYPES.forEach(t => (S[COLL[t].key] || []).forEach(r => (r.attachments || []).forEach(a => { n++; bytes += Number(a.size) || 0; })));
+    if (n) txt += " · " + n + " attachment" + plural(n, "", "s") + " (" + fmtBytes(bytes) + ")";
+  }
+  el.textContent = txt;
   el.style.color = Store.backend === "memory" ? "var(--danger)" : "";
 }
 /* ============================================================================
@@ -2705,7 +2786,7 @@ VIEWS.offers = function () {
   if (fl.status) arr = arr.filter(r => r.status === fl.status);
   if (fl.ready === "yes") arr = arr.filter(r => r.readyToUse);
   if (fl.ready === "no") arr = arr.filter(r => !r.readyToUse);
-  arr = arr.filter(r => matchQ("offer", r, q, ["audience", "outcome", "problem", "files"]));
+  arr = arr.filter(r => matchQ("offer", r, q, ["audience", "outcome", "context", "files", "notes", "description"]));
   const sort = UI.sort[v] || "status";
   arr.sort((a, b) => {
     if (sort === "name") return COLL.offer.title(a).localeCompare(COLL.offer.title(b));
@@ -2754,7 +2835,9 @@ VIEWS.offers = function () {
       '<div class="rec-meta">' + badge(o.type, "purple") + badge(o.status, statusTone(o.status)) +
       (o.price ? badge(o.price, "neutral") : "") +
       (o.audience ? "<span>· " + esc(truncate(o.audience, 50)) + "</span>" : "") + "</div>" +
-      ((o.outcome || o.problem) ? '<div class="rec-body">' + esc(truncate(stripTags(o.outcome || o.problem), 190)) + "</div>" : "") +
+      ((o.context || o.outcome) ? '<div class="rec-body lines-4">' + esc(truncate(stripTags(o.context || o.outcome), 320)) + "</div>" : "") +
+      ((o.outcome && o.context) ? '<div class="rec-body tiny muted">Promised outcome: ' + esc(truncate(stripTags(o.outcome), 120)) + "</div>" : "") +
+      fileStripHTML(o, 4) +
       ((o.nextAction || (o.links && o.links.length)) ?
         '<div class="rec-foot">' + (o.nextAction ? '<span class="tiny faint">Next: ' + esc(truncate(o.nextAction, 60)) + "</span>" : "") +
         (o.links || []).slice(0, 3).map(l => typeChip(l.type, l.id)).join("") + "</div>" : "") +
@@ -3691,6 +3774,7 @@ function swipeItemCard(s) {
       : '<div class="rec-body muted">No copy pasted yet.</div>') +
     '<div class="rec-meta">' + [s.source, s.author, s.channel && s.channel !== "Other" ? s.channel : "", s.date ? fmtDateShort(s.date) : ""]
       .filter(Boolean).map(x => "<span>" + esc(truncate(x, 44)) + "</span>").join("<span>·</span>") + "</div>" +
+    fileStripHTML(s, 3) +
     '<div class="rec-foot">' + (s.tags || []).slice(0, 4).map(t => '<span class="tag">' + esc(t) + "</span>").join("") +
       (s.links || []).slice(0, 2).map(l => typeChip(l.type, l.id)).join("") +
       (copy ? '<button class="btn xs subtle" data-act="copy-swipe" data-id="' + esc(s.id) + '">' + icon("copy", 12) + " Copy text</button>" : "") +
@@ -3768,6 +3852,7 @@ function openSwipeModal(id, nav) {
     if (m2) m2.classList.add("swipe-modal");
     const copyBlock = root.querySelector(".sw-copy-block");
     if (copyBlock) copyBlock.scrollTop = 0;
+    hydrateFiles(root);
   };
 
   win.draw();
@@ -3796,6 +3881,10 @@ function swipeViewBody(rec, m) {
   if (rec.sourceUrl) {
     h += '<div class="sw-block"><h5>Source link</h5><p><a href="' + esc(rec.sourceUrl) + '" target="_blank" rel="noopener">' + esc(rec.sourceUrl) + "</a></p></div>";
   }
+  if ((rec.attachments || []).length) {
+    h += '<div class="sw-block"><h5>Attachments (' + rec.attachments.length + ')</h5><div class="file-grid">' +
+      rec.attachments.map(m => fileCardHTML(m)).join("") + "</div></div>";
+  }
   if (rec.why) h += '<div class="sw-block"><h5>Why it works</h5><p>' + esc(rec.why) + "</p></div>";
   if (rec.useFor) h += '<div class="sw-block"><h5>What I would use it for</h5><p>' + esc(rec.useFor) + "</p></div>";
   if (rec.notes) h += '<div class="sw-block"><h5>Notes</h5><p>' + esc(rec.notes) + "</p></div>";
@@ -3806,6 +3895,471 @@ function swipeViewBody(rec, m) {
     h += '<div class="sw-block"><h5>Tags &amp; links</h5><div class="chips">' + tags + links + "</div></div>";
   }
   return h;
+}
+/* ============================================================================
+   MODULE 10 — Attachments
+   Offers/assets and swipe items can carry images, screenshots, PDFs, documents
+   and audio. File payloads are deliberately kept OUT of the state object so
+   autosave stays fast: state holds only {id, name, type, size, addedAt} and the
+   bytes live in their own IndexedDB store (binary), with a localStorage
+   fallback (base64) and a memory last resort. Backups embed the payloads so a
+   restore is complete.
+   ========================================================================= */
+const LS_FILES = "copywriter-os.files.v1";
+const FILE_MAX_BYTES = 10 * 1024 * 1024;     // hard cap per file before shrinking
+const FILE_MAX_PER_REC = 12;                 // keep records sane
+const FILE_EXT_OK = /\.(pdf|docx?|xlsx?|pptx?|txt|csv|md|rtf|zip|json|webp|avif|heic|heif|m4a|ogg|wav|mp3|aac|flac)$/i;
+const FILE_ACCEPT = "image/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.md,.rtf,.zip,.json,.m4a,.ogg,.wav,.mp3,.aac,.flac";
+const FILE_ACCEPT_HINT = "Images and screenshots, PDFs, Word/Excel/PowerPoint, text or CSV, ZIP and audio — up to " +
+  Math.round(FILE_MAX_BYTES / (1024 * 1024)) + " MB each.";
+
+function fmtBytes(n) {
+  n = Number(n) || 0;
+  if (n < 1024) return n + " B";
+  if (n < 1024 * 1024) return Math.round(n / 1024) + " KB";
+  return (n / (1024 * 1024)).toFixed(1) + " MB";
+}
+function fileKind(m) {
+  const t = String((m && m.type) || "");
+  const name = String((m && m.name) || "");
+  if (/^image\//.test(t) || /\.(png|jpe?g|gif|webp|avif|heic|heif)$/i.test(name)) return "image";
+  if (/^audio\//.test(t) || /\.(mp3|m4a|ogg|wav|aac|flac)$/i.test(name)) return "audio";
+  if (t === "application/pdf" || /\.pdf$/i.test(name)) return "pdf";
+  if (/^text\//.test(t) || /\.(txt|csv|md|rtf|json)$/i.test(name)) return "text";
+  if (/\.(docx?|xlsx?|pptx?)$/i.test(name) || /officedocument|msword|ms-excel|ms-powerpoint/.test(t)) return "doc";
+  if (/\.zip$/i.test(name) || t === "application/zip") return "zip";
+  return "file";
+}
+const FILE_KIND_LABEL = { image: "Image", audio: "Audio", pdf: "PDF", text: "Text", doc: "Document", zip: "Archive", file: "File" };
+const FILE_KIND_ICON = { image: "image", audio: "music", pdf: "doc", text: "doc", doc: "doc", zip: "layers", file: "paperclip" };
+function fileKindLabel(k) { return FILE_KIND_LABEL[k] || "File"; }
+function fileAllowed(f) {
+  if (!f) return false;
+  const t = String(f.type || "");
+  if (/^image\//.test(t) || /^audio\//.test(t) || /^text\//.test(t)) return true;
+  if (/^(application\/(pdf|zip|json|msword|ms-excel|ms-powerpoint))$/.test(t)) return true;
+  if (/officedocument/.test(t)) return true;
+  return FILE_EXT_OK.test(String(f.name || ""));
+}
+
+/* ------------------------------------------------------------- the store -- */
+const Files = {
+  urlCache: {},      // id -> object URL or data URL (session cache)
+  mem: {},           // last-resort in-memory store
+  _ls: null,         // parsed localStorage map cache
+
+  _lsAll() {
+    if (this._ls) return this._ls;
+    try { this._ls = JSON.parse(localStorage.getItem(LS_FILES) || "{}") || {}; }
+    catch (e) { this._ls = {}; }
+    return this._ls;
+  },
+  _lsSave() {
+    try { localStorage.setItem(LS_FILES, JSON.stringify(this._ls || {})); return true; }
+    catch (e) { return false; }
+  },
+
+  _idbPut(rec) {
+    return new Promise((resolve, reject) => {
+      if (!Store.db) return reject(new Error("no database"));
+      const tx = Store.db.transaction(IDB.files, "readwrite");
+      tx.objectStore(IDB.files).put(rec, rec.id);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error || new Error("file write failed"));
+      tx.onabort = () => reject(tx.error || new Error("file write aborted"));
+    });
+  },
+  _idbGet(id) {
+    return new Promise((resolve, reject) => {
+      if (!Store.db) return reject(new Error("no database"));
+      const tx = Store.db.transaction(IDB.files, "readonly");
+      const rq = tx.objectStore(IDB.files).get(id);
+      rq.onsuccess = () => resolve(rq.result || null);
+      rq.onerror = () => reject(rq.error || new Error("file read failed"));
+    });
+  },
+  _idbDel(id) {
+    return new Promise((resolve, reject) => {
+      if (!Store.db) return reject(new Error("no database"));
+      const tx = Store.db.transaction(IDB.files, "readwrite");
+      tx.objectStore(IDB.files).delete(id);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error || new Error("file delete failed"));
+    });
+  },
+
+  /* Returns "indexeddb" | "localstorage" | "memory" | null (failure). */
+  async put(id, blob, meta) {
+    const rec = Object.assign({ id: id, name: "file", type: blob.type || "", size: blob.size, addedAt: new Date().toISOString() }, meta || {});
+    rec.blob = blob;
+    if (Store.db) {
+      try { await this._idbPut(rec); delete this.mem[id]; return "indexeddb"; }
+      catch (e) { /* fall through */ }
+    }
+    let data = null;
+    try { data = await blobToDataURL(blob); } catch (e) { data = null; }
+    if (data) {
+      const map = this._lsAll();
+      map[id] = { id: id, name: rec.name, type: rec.type, size: rec.size, addedAt: rec.addedAt, data: data };
+      if (this._lsSave()) { delete this.mem[id]; return "localstorage"; }
+      this.mem[id] = map[id];
+      return "memory";
+    }
+    this.mem[id] = rec;
+    return "memory";
+  },
+
+  async get(id) {
+    if (Store.db) { try { const r = await this._idbGet(id); if (r) return r; } catch (e) { /* ignore */ } }
+    const map = this._lsAll();
+    if (map[id]) return map[id];
+    return this.mem[id] || null;
+  },
+
+  async del(id) {
+    if (Store.db) { try { await this._idbDel(id); } catch (e) { /* ignore */ } }
+    const map = this._lsAll();
+    if (map[id]) { delete map[id]; this._lsSave(); }
+    delete this.mem[id];
+    if (this.urlCache[id]) {
+      if (/^blob:/.test(this.urlCache[id])) { try { URL.revokeObjectURL(this.urlCache[id]); } catch (e) { /* ignore */ } }
+      delete this.urlCache[id];
+    }
+  },
+  async delMany(ids) {
+    for (const id of (ids || [])) { try { await this.del(id); } catch (e) { /* ignore */ } }
+  },
+
+  /* A usable src/href for an attachment, cached for the session. */
+  async url(id) {
+    if (this.urlCache[id]) return this.urlCache[id];
+    const rec = await this.get(id);
+    if (!rec) return null;
+    let u = null;
+    if (rec.data) u = rec.data;
+    else if (rec.blob) { try { u = URL.createObjectURL(rec.blob); } catch (e) { u = null; } }
+    if (u) this.urlCache[id] = u;
+    return u;
+  },
+
+  /* Every attachment referenced by any record, as base64 — used for backups. */
+  async snapshot() {
+    const ids = [];
+    TYPES.forEach(t => (S[COLL[t].key] || []).forEach(r =>
+      (r.attachments || []).forEach(a => { if (a && a.id && ids.indexOf(a.id) < 0) ids.push(a.id); })));
+    const out = {};
+    for (const id of ids) {
+      let rec = null;
+      try { rec = await this.get(id); } catch (e) { rec = null; }
+      if (!rec) continue;
+      let data = rec.data;
+      if (!data && rec.blob) { try { data = await blobToDataURL(rec.blob); } catch (e) { data = null; } }
+      if (data) out[id] = { name: rec.name, type: rec.type, size: rec.size, data: data };
+    }
+    return out;
+  },
+
+  /* Put a backup's attachments back into storage. */
+  async restore(map) {
+    if (!map || typeof map !== "object") return { n: 0 };
+    let n = 0;
+    for (const id of Object.keys(map)) {
+      const e = map[id];
+      if (!e || !e.data) continue;
+      const blob = dataUrlToBlob(e.data);
+      if (!blob) continue;
+      await this.put(id, blob, { name: e.name, type: e.type, size: e.size, addedAt: new Date().toISOString() });
+      n++;
+    }
+    return { n: n };
+  },
+
+  async clearAll() {
+    if (Store.db) {
+      try {
+        const tx = Store.db.transaction(IDB.files, "readwrite");
+        tx.objectStore(IDB.files).clear();
+        await new Promise(r => { tx.oncomplete = r; tx.onerror = r; });
+      } catch (e) { /* ignore */ }
+    }
+    this._ls = {};
+    try { localStorage.removeItem(LS_FILES); } catch (e) { /* ignore */ }
+    Object.keys(this.urlCache).forEach(id => {
+      if (/^blob:/.test(this.urlCache[id])) { try { URL.revokeObjectURL(this.urlCache[id]); } catch (e) { /* ignore */ } }
+    });
+    this.urlCache = {};
+    this.mem = {};
+  }
+};
+
+/* ------------------------------------------------------------- plumbing -- */
+function blobToDataURL(blob) {
+  return new Promise((resolve, reject) => {
+    try {
+      const fr = new FileReader();
+      fr.onload = () => resolve(String(fr.result));
+      fr.onerror = () => reject(fr.error || new Error("could not read file"));
+      fr.readAsDataURL(blob);
+    } catch (e) { reject(e); }
+  });
+}
+function dataUrlToBlob(dataUrl) {
+  try {
+    const s = String(dataUrl || "");
+    const comma = s.indexOf(",");
+    if (comma < 0) return null;
+    const head = s.slice(0, comma);
+    const mime = (head.match(/data:([^;]+)/) || [])[1] || "application/octet-stream";
+    const bin = atob(s.slice(comma + 1));
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return new Blob([arr], { type: mime });
+  } catch (e) { return null; }
+}
+function loadBitmap(file) {
+  if (typeof createImageBitmap === "function") {
+    return createImageBitmap(file).catch(() => decodeViaImg(file));
+  }
+  return decodeViaImg(file);
+}
+function decodeViaImg(file) {
+  return new Promise((resolve, reject) => {
+    let url = "";
+    try { url = URL.createObjectURL(file); } catch (e) { return reject(e); }
+    // Some environments never fire either event — never hang an attach on it.
+    const timer = setTimeout(() => { try { URL.revokeObjectURL(url); } catch (e) {} reject(new Error("image decode timed out")); }, 3000);
+    const im = new Image();
+    im.onload = () => { clearTimeout(timer); try { URL.revokeObjectURL(url); } catch (e) {} resolve(im); };
+    im.onerror = () => { clearTimeout(timer); try { URL.revokeObjectURL(url); } catch (e) {} reject(new Error("cannot decode image")); };
+    im.src = url;
+  });
+}
+/* Screenshots and photos are usually far bigger than they need to be. Re-encode
+   them smaller; keep the original whenever that would not help. */
+async function prepareFile(file) {
+  const out = { blob: file, type: file.type || "", shrunk: false };
+  if (fileKind(file) !== "image" || !file.size) return out;
+  if (file.size <= 300 * 1024) return out;
+  try {
+    const bmp = await loadBitmap(file);
+    const w0 = bmp.width || 0, h0 = bmp.height || 0;
+    if (!w0 || !h0) return out;
+    const max = 1600;
+    const scale = Math.min(1, max / Math.max(w0, h0));
+    if (scale >= 1 && file.size <= 700 * 1024) return out;
+    const w = Math.max(1, Math.round(w0 * scale)), h = Math.max(1, Math.round(h0 * scale));
+    const cv = document.createElement("canvas");
+    cv.width = w; cv.height = h;
+    const ctx = cv.getContext("2d");
+    if (!ctx) return out;
+    ctx.drawImage(bmp, 0, 0, w, h);
+    const png = cv.toDataURL("image/png");
+    const jpg = cv.toDataURL("image/jpeg", 0.86);
+    const best = png.length <= jpg.length
+      ? { d: png, t: "image/png" }
+      : { d: jpg, t: "image/jpeg" };
+    const blob = dataUrlToBlob(best.d);
+    if (blob && blob.size < file.size) { out.blob = blob; out.type = best.t; out.shrunk = true; }
+    if (bmp.close) { try { bmp.close(); } catch (e) { /* ignore */ } }
+  } catch (e) { /* keep the original */ }
+  return out;
+}
+
+/* -------------------------------------------------------------- rendering -- */
+function fileFieldHTML(f, rec) {
+  const list = (rec && Array.isArray(rec[f.k])) ? rec[f.k] : [];
+  return '<div class="field wide"><label>' + esc(f.label) +
+    (f.hint ? ' <span class="hint">· ' + esc(f.hint) + "</span>" : "") + "</label>" +
+    '<div class="filebox" data-field="' + esc(f.k) + '">' +
+    (list.length ? '<div class="file-grid">' + list.map(m => fileCardHTML(m)).join("") + "</div>" : "") +
+    '<button type="button" class="file-drop" data-act="file-add">' + icon("upload", 15) +
+    "<span><b>Add files</b> — or drop them here, or paste a screenshot</span></button>" +
+    '<div class="hint">' + (list.length ? list.length + " of " + FILE_MAX_PER_REC + " · " : "") + esc(FILE_ACCEPT_HINT) + "</div>" +
+    "</div></div>";
+}
+function fileCardHTML(m) {
+  const k = fileKind(m);
+  const thumb = k === "image"
+    ? '<button type="button" class="file-thumb" data-act="file-view" data-id="' + esc(m.id) + '" title="Open ' + esc(m.name) + '">' +
+      '<img data-file-id="' + esc(m.id) + '" data-file-use="img" alt="' + esc(m.name) + '"></button>'
+    : '<div class="file-thumb file-thumb-icon" aria-hidden="true">' + icon(FILE_KIND_ICON[k], 20) + "</div>";
+  return '<div class="file-card" data-file-card="' + esc(m.id) + '">' + thumb +
+    '<div class="file-meta">' +
+      '<div class="file-name" title="' + esc(m.name) + '">' + esc(m.name) + "</div>" +
+      '<div class="file-sub">' + esc(fileKindLabel(k)) + " · " + esc(fmtBytes(m.size)) + "</div>" +
+      (k === "audio" ? '<audio class="file-audio" controls preload="metadata" data-file-id="' + esc(m.id) + '" data-file-use="audio"></audio>' : "") +
+    "</div>" +
+    '<div class="file-acts">' +
+      (k === "pdf" ? '<button class="icon-btn sm" data-act="file-view" data-id="' + esc(m.id) + '" title="Open PDF">' + icon("external", 14) + "</button>" : "") +
+      '<a class="icon-btn sm" data-file-id="' + esc(m.id) + '" data-file-use="dl" download="' + esc(m.name) + '" title="Download">' + icon("download", 14) + "</a>" +
+      '<button class="icon-btn sm danger" data-act="file-del" data-id="' + esc(m.id) + '" title="Remove attachment">' + icon("trash", 14) + "</button>" +
+    "</div></div>";
+}
+/* Compact strip for list cards — thumbnails where we have them. */
+function fileStripHTML(rec, max) {
+  const list = (rec && Array.isArray(rec.attachments)) ? rec.attachments : [];
+  if (!list.length) return "";
+  const shown = list.slice(0, max || 3);
+  return '<div class="file-strip">' + shown.map(m => {
+    const k = fileKind(m);
+    return k === "image"
+      ? '<span class="file-thumb-sm" title="' + esc(m.name) + '"><img data-file-id="' + esc(m.id) + '" data-file-use="img" alt="' + esc(m.name) + '"></span>'
+      : '<span class="file-thumb-sm file-thumb-icon" title="' + esc(m.name) + '">' + icon(FILE_KIND_ICON[k], 13) + "</span>";
+  }).join("") +
+  (list.length > shown.length ? '<span class="file-more">+' + (list.length - shown.length) + "</span>" : "") +
+  '<span class="file-count">' + icon("paperclip", 11) + list.length + "</span></div>";
+}
+/* Fills in the blob-backed src/href of every attachment in a freshly rendered
+   chunk of DOM. Safe to call repeatedly — it skips what is already done. */
+function hydrateFiles(root) {
+  const scope = root || document;
+  let nodes = [];
+  try { nodes = Array.prototype.slice.call(scope.querySelectorAll("[data-file-id]")); } catch (e) { return; }
+  nodes.forEach(el => {
+    if (el.getAttribute("data-file-ready") === "1") return;
+    const id = el.getAttribute("data-file-id");
+    const use = el.getAttribute("data-file-use");
+    Files.url(id).then(u => {
+      if (!u) {
+        const card = el.closest ? el.closest(".file-card, .file-thumb-sm") : null;
+        if (card) card.classList.add("file-missing");
+        return;
+      }
+      if (use === "img") el.src = u;
+      else if (use === "audio") el.src = u;
+      else if (use === "dl") el.href = u;
+      el.setAttribute("data-file-ready", "1");
+    }).catch(() => { /* leave it blank */ });
+  });
+}
+/* Which record should a pasted or dropped file land on? */
+function attachmentTarget() {
+  if (typeof SWIPE_WIN !== "undefined" && SWIPE_WIN && SWIPE_WIN.id) return { type: "swipe", id: SWIPE_WIN.id };
+  if (typeof drawerRec !== "undefined" && drawerRec && drawerRec.type && drawerRec.id) {
+    if (hasAttachmentsField(drawerRec.type)) return { type: drawerRec.type, id: drawerRec.id };
+  }
+  return null;
+}
+function hasAttachmentsField(type) {
+  const defs = COLL[type] ? COLL[type].fields : [];
+  for (const f of defs) if (f.k === "attachments") return true;
+  return false;
+}
+
+/* ----------------------------------------------------------- attaching --- */
+let fileInputPending = null;
+function pickFiles(type, id) {
+  if (!type || !id) return;
+  const inp = document.createElement("input");
+  inp.type = "file";
+  inp.multiple = true;
+  inp.accept = FILE_ACCEPT;
+  inp.style.display = "none";
+  inp.setAttribute("data-role", "file-picker");
+  fileInputPending = { type: type, id: id };
+  document.body.appendChild(inp);
+  inp.addEventListener("change", () => {
+    const files = inp.files;
+    const t = fileInputPending;
+    try { inp.remove(); } catch (e) { /* ignore */ }
+    if (t) attachFiles(t.type, t.id, files);
+  });
+  try { inp.click(); } catch (e) { toast("Could not open the file picker", "err"); }
+}
+
+async function attachFiles(type, id, fileList) {
+  const rec = findRecord(type, id);
+  if (!rec) { toast("Open the record before adding files", "err"); return; }
+  if (!hasAttachmentsField(type)) return;
+  const files = Array.prototype.slice.call(fileList || []);
+  if (!files.length) return;
+  if (!Array.isArray(rec.attachments)) rec.attachments = [];
+
+  let added = 0, shrunk = 0;
+  const problems = [];
+  for (const f of files) {
+    if (!fileAllowed(f)) { problems.push(truncate(f.name, 30) + ": unsupported type"); continue; }
+    if (f.size > FILE_MAX_BYTES) { problems.push(truncate(f.name, 30) + ": over " + fmtBytes(FILE_MAX_BYTES)); continue; }
+    if (rec.attachments.length >= FILE_MAX_PER_REC) { problems.push("limit of " + FILE_MAX_PER_REC + " files per record"); break; }
+    const prep = await prepareFile(f);
+    if (prep.blob.size > FILE_MAX_BYTES) { problems.push(truncate(f.name, 30) + ": still too large"); continue; }
+    const fid = uid("f");
+    const where = await Files.put(fid, prep.blob, { name: f.name, type: prep.type || f.type, size: prep.blob.size });
+    if (!where) { problems.push(truncate(f.name, 30) + ": could not be saved"); continue; }
+    if (where === "memory") problems.push(truncate(f.name, 30) + ": saved for this session only");
+    rec.attachments.push({ id: fid, name: f.name, type: prep.type || f.type, size: prep.blob.size, addedAt: todayISO() });
+    added++;
+    if (prep.shrunk) shrunk++;
+  }
+  if (!added) {
+    if (problems.length) toast(problems[0], "err", 6000);
+    return;
+  }
+  rec.updatedAt = new Date().toISOString();
+  markDirty(true);
+  refreshAttachmentViews(type, id);
+  toast(added + " file" + plural(added, "", "s") + " attached" + (shrunk ? " (" + shrunk + " shrunk to fit)" : ""), "ok");
+  if (problems.length) setTimeout(() => toast(problems[0], "err", 6000), 400);
+}
+function refreshAttachmentViews(type, id) {
+  if (typeof SWIPE_WIN !== "undefined" && SWIPE_WIN && SWIPE_WIN.id === id) { SWIPE_WIN.draw(); }
+  if (typeof drawerRec !== "undefined" && drawerRec && drawerRec.id === id) renderDrawer();
+  renderCurrentView();
+}
+function removeAttachment(type, id, fileId) {
+  const rec = findRecord(type, id);
+  if (!rec) return;
+  const before = (rec.attachments || []).length;
+  rec.attachments = (rec.attachments || []).filter(a => a.id !== fileId);
+  if (rec.attachments.length === before) return;
+  rec.updatedAt = new Date().toISOString();
+  Files.del(fileId);
+  markDirty(true);
+  refreshAttachmentViews(type, id);
+  toast("Attachment removed", "ok");
+}
+async function openFileViewer(fileId) {
+  const rec = await Files.get(fileId);
+  const url = await Files.url(fileId);
+  if (!url || !rec) { toast("That file is no longer in storage — it may be missing from your backup", "err", 6000); return; }
+  const k = fileKind(rec);
+  if (k === "pdf") {
+    const win = window.open(url, "_blank");
+    if (!win) {
+      openModal({
+        title: esc(rec.name),
+        body: '<p class="small muted">Your browser blocked a new tab. Use Download to save the PDF, then open it.</p>',
+        buttons: [{ label: "Download", cls: "primary", onClick: () => downloadFile(fileId) }, { label: "Close", cls: "subtle", onClick: () => closeModal() }]
+      });
+    }
+    return;
+  }
+  if (k !== "image") { downloadFile(fileId); return; }
+  /* Viewing an image from inside the swipe window must not lose the window. */
+  const prevWin = (typeof SWIPE_WIN !== "undefined" && SWIPE_WIN && SWIPE_WIN.draw) ? SWIPE_WIN : null;
+  openModal({
+    title: false, wide: true,
+    onClose: function () {
+      if (prevWin) { SWIPE_WIN = prevWin; prevWin.draw(); }
+    },
+    body: '<div class="file-viewer"><img src="' + esc(url) + '" alt="' + esc(rec.name) + '">' +
+      '<div class="file-viewer-bar"><span class="grow small muted">' + esc(rec.name) + " · " + esc(fmtBytes(rec.size)) + "</span></div></div>",
+    buttons: [
+      { label: "Close", cls: "subtle", onClick: () => closeModal() },
+      { label: "Download", cls: "primary", onClick: () => downloadFile(fileId) }
+    ]
+  });
+}
+async function downloadFile(fileId) {
+  const rec = await Files.get(fileId);
+  const url = await Files.url(fileId);
+  if (!url || !rec) { toast("That file is no longer in storage", "err"); return; }
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = rec.name || "attachment";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { try { a.remove(); } catch (e) { /* ignore */ } }, 300);
 }
 /* ============================================================================
    MODULE 07 — Settings & Data, search, onboarding, router, event wiring
@@ -3933,6 +4487,7 @@ function renderCurrentView() {
   const fn = VIEWS[UI.view];
   try {
     host.innerHTML = fn ? fn() : emptyState({ title: "Workspace not found", text: "That view does not exist." });
+    hydrateFiles(host);
   } catch (err) {
     console.error("Render error in " + UI.view, err);
     host.innerHTML = '<div class="banner danger">' + icon("alert", 16) +
@@ -3997,6 +4552,7 @@ function deleteRecord(type, id) {
   TYPES.forEach(t => S[COLL[t].key].forEach(r => {
     if (r.links && r.links.length) r.links = r.links.filter(l => !(l.type === type && l.id === id));
   }));
+  if (rec && rec.attachments && rec.attachments.length) Files.delMany(rec.attachments.map(a => a.id));
   return rec;
 }
 function quickAddTask(title, linkTo) {
@@ -4343,9 +4899,18 @@ function finishImport(data, mode, withSettings) {
     return;
   }
   applyTheme();
-  markDirty(true).then(() => { renderAll(); closeDrawer(); });
-  if (mode === "replace") toast("Backup restored", "ok", 4000);
-  else toast("Imported: " + res.added + " added, " + res.updated + " updated, " + res.kept + " kept as newer", "ok", 5000);
+  const after = extra => {
+    markDirty(true).then(() => { renderAll(); closeDrawer(); });
+    if (mode === "replace") toast("Backup restored" + (extra || ""), "ok", 4000);
+    else toast("Imported: " + res.added + " added, " + res.updated + " updated, " + res.kept + " kept as newer" + (extra || ""), "ok", 5000);
+  };
+  const fileMap = (data && data.files && typeof data.files === "object") ? data.files : null;
+  const nFiles = fileMap ? Object.keys(fileMap).length : 0;
+  if (!nFiles) return after("");
+  const job = (mode === "replace" ? Files.clearAll() : Promise.resolve()).then(() => Files.restore(fileMap));
+  toast("Restoring " + nFiles + " attachment" + plural(nFiles, "", "s") + "…", "ok", 3000);
+  job.then(info => after(" · " + (info && info.n ? info.n : 0) + " attachment" + plural((info && info.n) || 0, "", "s") + " restored"))
+     .catch(e => after(" · attachments could not be restored: " + (e && e.message ? e.message : "unknown error")));
 }
 function confirmReset() {
   openModal({
@@ -4540,6 +5105,29 @@ function bindEvents() {
         closeModal();
         markDirty(true).then(renderAll);
         toast("Deleted: " + truncate(name, 40), "ok");
+        break;
+      }
+      case "file-add": {
+        const sc = el.closest("[data-rec-type]");
+        if (!sc) break;
+        pickFiles(sc.getAttribute("data-rec-type"), sc.getAttribute("data-rec-id"));
+        break;
+      }
+      case "file-view":
+        if (d.id) openFileViewer(d.id);
+        break;
+      case "file-del": {
+        const sc2 = el.closest("[data-rec-type]");
+        if (!sc2 || !d.id) break;
+        const ftype = sc2.getAttribute("data-rec-type"), fid = sc2.getAttribute("data-rec-id");
+        const frec = findRecord(ftype, fid);
+        const meta = ((frec && frec.attachments) || []).filter(a => a.id === d.id)[0];
+        confirmDialog({
+          title: "Remove this attachment?",
+          danger: true, confirmText: "Remove",
+          body: "<b>" + esc(meta ? meta.name : "This file") + "</b> will be deleted from storage. The record itself is untouched.",
+          onConfirm: () => removeAttachment(ftype, fid, d.id)
+        });
         break;
       }
       case "open-rec": openRecord(d.type, d.id); break;
@@ -4743,7 +5331,7 @@ function bindEvents() {
         });
         break;
       }
-      case "export": exportBackup(false); break;
+      case "export": exportBackup(false).catch(e => toast("Export failed: " + (e && e.message ? e.message : "unknown error"), "err", 7000)); break;
       case "import": doImport(); break;
       case "reset-data": confirmReset(); break;
       case "restart-onboarding": showOnboarding(); break;
@@ -4823,6 +5411,37 @@ function bindEvents() {
   /* --- form editing (autosave) --- */
   document.addEventListener("input", onFormInput);
   document.addEventListener("change", onFormInput);
+
+  /* --- attachments: drop a file anywhere on an attachment box --- */
+  ["dragenter", "dragover"].forEach(ev => document.addEventListener(ev, e => {
+    const box = e.target && e.target.closest ? e.target.closest(".filebox, .file-drop") : null;
+    if (!box) return;
+    e.preventDefault();
+    box.classList.add("dropping");
+  }));
+  ["dragleave", "dragend"].forEach(ev => document.addEventListener(ev, e => {
+    const box = e.target && e.target.closest ? e.target.closest(".filebox, .file-drop") : null;
+    if (box) box.classList.remove("dropping");
+  }));
+  document.addEventListener("drop", e => {
+    const box = e.target && e.target.closest ? e.target.closest(".filebox, .file-drop") : null;
+    (document.querySelectorAll(".dropping") || []).forEach(el => el.classList.remove("dropping"));
+    if (!box) return;
+    e.preventDefault();
+    const sc = box.closest("[data-rec-type]");
+    if (!sc) return;
+    const files = e.dataTransfer && e.dataTransfer.files;
+    if (files && files.length) attachFiles(sc.getAttribute("data-rec-type"), sc.getAttribute("data-rec-id"), files);
+  });
+  /* --- attachments: paste a screenshot straight into an open record --- */
+  document.addEventListener("paste", e => {
+    const dt = e.clipboardData;
+    if (!dt || !dt.files || !dt.files.length) return;
+    const target = attachmentTarget();
+    if (!target) return;
+    e.preventDefault();
+    attachFiles(target.type, target.id, dt.files);
+  });
 
   /* --- toolbar: search boxes --- */
   document.addEventListener("input", e => {
@@ -4983,5 +5602,5 @@ async function boot() {
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
 else boot();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4a152eb3889e9db',t:'MTc5MTkyNTc1MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4b49d572983fe9c',t:'MTc5MjEyODAyOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

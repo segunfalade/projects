@@ -266,6 +266,22 @@ a.chip:hover{text-decoration:none;border-color:var(--accent-line);background:var
 .rec-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}
 .list{display:flex;flex-direction:column;gap:9px}
 
+/* ------------------------------------------- card grids (for scanning) --- */
+/* Used where a page holds enough records to need scanning rather than
+   reading: insights, offers, plans inside a track, swipe items in a category,
+   reviews and decisions. Lists stay for task-style, day-by-day work. */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(296px,1fr));gap:12px;align-items:stretch}
+.cards > .rec{display:flex;flex-direction:column;height:100%;min-height:134px}
+.cards > .rec:hover{transform:translateY(-1px)}
+.cards .rec-title{align-items:flex-start;line-height:1.35}
+.cards .rec-title svg{flex:none;margin-top:2px}
+.cards .rec-body:not(.lines-4){-webkit-line-clamp:3}
+.cards > .rec > .rec-foot{margin-top:auto;padding-top:10px;border-top:1px solid var(--border)}
+.cards > .rec > .rec-foot:only-child{margin-top:0}
+.cards .rec-meta{margin-top:6px}
+.cards .file-strip{margin-top:8px}
+@media (max-width:640px){.cards{grid-template-columns:1fr;gap:9px}}
+
 .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow-sm)}
 table.tbl{width:100%;border-collapse:collapse;min-width:660px}
 table.tbl th{
@@ -720,7 +736,7 @@ mark.hit{background:var(--warn-soft);color:inherit;border-radius:3px;padding:0 1
    ========================================================================= */
 const APP = {
   name: "Copywriter OS",
-  version: "1.4.0",
+  version: "1.5.0",
   schema: 1,          // data schema version — bumped on breaking data changes
   fileKey: "copywriter-os"
 };
@@ -2769,7 +2785,7 @@ VIEWS.insights = function () {
     html += '<div class="empty"><h3>No insights match</h3><p>Try a different filter or clear the search.</p>' +
       '<button class="btn subtle" data-act="clear-filters" data-view="' + v + '">Reset filters</button></div>';
   } else {
-    html += '<div class="list">' + arr.map(r => {
+    html += '<div class="cards">' + arr.map(r => {
       const conf = r.confidence === "Supported by results" ? "ok" : r.confidence === "Observed" ? "info" : "warn";
       return '<button class="rec" data-act="open-rec" data-type="insight" data-id="' + esc(r.id) + '">' +
         '<div class="rec-title">' + icon("bulb", 14) + esc(truncate(r.title, 90)) + (r.sample ? ' <span class="badge info">sample</span>' : "") + "</div>" +
@@ -2852,7 +2868,7 @@ VIEWS.offers = function () {
     html += '<div class="empty"><h3>No assets match</h3><p>Adjust the filters or clear the search.</p>' +
       '<button class="btn subtle" data-act="clear-filters" data-view="' + v + '">Reset filters</button></div>';
   } else {
-    html += '<div class="list">' + arr.map(o =>
+    html += '<div class="cards">' + arr.map(o =>
       '<button class="rec" data-act="open-rec" data-type="offer" data-id="' + esc(o.id) + '">' +
       '<div class="rec-title">' + icon("box", 14) + esc(truncate(o.name, 90)) +
       (o.readyToUse ? ' <span class="badge ok">ready</span>' : "") + (o.sample ? ' <span class="badge info">sample</span>' : "") + "</div>" +
@@ -3098,11 +3114,12 @@ VIEWS.strategy = function () {
       (p.reviewDate ? badge("Review " + fmtDateShort(p.reviewDate), overdueReview ? "danger" : "neutral", "calendar") : "") + "</div>" +
       (p.skill && p.track === "Craft" ? '<div class="small muted" style="margin-top:6px">' + esc(truncate(p.title, 120)) + "</div>" : "") +
       '<div class="stack" style="gap:3px;margin-top:8px">' + bits.join("") + "</div>" +
-      ((p.links && p.links.length) ? '<div class="rec-foot">' + p.links.slice(0, 3).map(l => typeChip(l.type, l.id)).join("") + "</div>" : "") +
-      '<div class="row" style="gap:5px;margin-top:10px" data-stop-prop="1">' +
-        ["Continue", "Change", "Pause", "Stop"].map(a =>
-          '<button class="btn xs subtle" data-act="plan-status" data-id="' + esc(p.id) + '" data-val="' + a + '">' + a + "</button>").join("") +
-      "</div></div>";
+      '<div class="rec-foot">' +
+        (p.links || []).slice(0, 3).map(l => typeChip(l.type, l.id)).join("") +
+        '<div class="row" style="gap:5px;width:100%;margin-top:2px" data-stop-prop="1">' +
+          ["Continue", "Change", "Pause", "Stop"].map(a =>
+            '<button class="btn xs subtle" data-act="plan-status" data-id="' + esc(p.id) + '" data-val="' + a + '">' + a + "</button>").join("") +
+        "</div></div></div>";
   }
 
   if (!S.plans.length) {
@@ -3123,7 +3140,7 @@ VIEWS.strategy = function () {
       if (!items.length) {
         html += '<div class="tiny faint">Nothing in this track matches the current filters.</div>';
       } else {
-        html += '<div class="list">' + items.map(planCard).join("") + "</div>";
+        html += '<div class="cards">' + items.map(planCard).join("") + "</div>";
       }
       html += "</div>";
     });
@@ -3287,18 +3304,21 @@ VIEWS.reviews = function () {
   } else if (!reviews.length) {
     html += '<div class="empty"><h3>No reviews match</h3><p>Clear the search or filter.</p></div>';
   } else {
-    html += '<div class="list">' + reviews.map(r => {
+    html += '<div class="cards">' + reviews.map(r => {
       const parts = [
         ["Moved the business forward", r.moved], ["Learned", r.learned], ["Signals", r.signals],
         ["Time poorly spent", r.wasted], ["Continue", r.cont], ["Stop", r.stopp], ["Change", r.change]
       ].filter(x => x[1]);
+      const shown = parts.slice(0, 4);
       return '<div class="rec" data-act="open-rec" data-type="review" data-id="' + esc(r.id) + '">' +
         '<div class="rec-title">' + icon("clipboard", 14) + esc((r.type || "Review") + " review · " + (fmtDate(r.date) || "no date")) +
         (r.sample ? ' <span class="badge info">sample</span>' : "") + "</div>" +
         '<div class="rec-meta">' + (r.nextAction ? badge("Next: " + truncate(r.nextAction, 46), "accent") : "") + "</div>" +
-        (parts.length ? '<div class="stack" style="gap:3px;margin-top:8px">' + parts.map(p =>
-          '<div class="small"><span class="faint">' + esc(p[0]) + ":</span> " + esc(truncate(p[1], 160)) + "</div>").join("") + "</div>" : "") +
-        ((r.links && r.links.length) ? '<div class="rec-foot">' + r.links.slice(0, 3).map(l => typeChip(l.type, l.id)).join("") + "</div>" : "") +
+        (shown.length ? '<div class="stack" style="gap:3px;margin-top:8px">' + shown.map(p =>
+          '<div class="small"><span class="faint">' + esc(p[0]) + ":</span> " + esc(truncate(p[1], 120)) + "</div>").join("") +
+          (parts.length > shown.length ? '<div class="tiny faint">+' + (parts.length - shown.length) + " more</div>" : "") + "</div>" : "") +
+        '<div class="rec-foot">' + (r.links || []).slice(0, 3).map(l => typeChip(l.type, l.id)).join("") +
+        '<span class="grow"></span><span class="tiny faint">Open review →</span></div>' +
         "</div>";
     }).join("") + "</div>";
   }
@@ -3317,16 +3337,18 @@ VIEWS.reviews = function () {
   } else if (!decisions.length) {
     html += '<div class="empty"><h3>No decisions match</h3><p>Clear the search or filter.</p></div>';
   } else {
-    html += '<div class="timeline">' + decisions.map(d => {
+    html += '<div class="cards">' + decisions.map(d => {
       const overdueReview = d.status === "Active" && d.reviewDate && dayDiff(d.reviewDate) !== null && dayDiff(d.reviewDate) <= 0;
-      return '<div class="tl-item"><div class="tl-head">' + badge(d.status, d.status === "Active" ? "accent" : d.status === "Confirmed" ? "ok" : "neutral") +
+      return '<div class="rec" data-act="open-rec" data-type="decision" data-id="' + esc(d.id) + '">' +
+        '<div class="rec-title">' + icon("scale", 14) + esc(truncate(d.decision, 120)) +
+        (d.sample ? ' <span class="badge info">sample</span>' : "") + "</div>" +
+        '<div class="rec-meta">' + badge(d.status, d.status === "Active" ? "accent" : d.status === "Confirmed" ? "ok" : "neutral") +
         "<span>" + esc(fmtDate(d.date)) + "</span>" +
-        (d.reviewDate ? badge("Review " + fmtDateShort(d.reviewDate), overdueReview ? "danger" : "neutral", "calendar") : "") +
-        '<button class="btn xs ghost" data-act="open-rec" data-type="decision" data-id="' + esc(d.id) + '">Open</button></div>' +
-        '<div class="tl-title">' + esc(d.decision) + "</div>" +
-        (d.evidence ? '<div class="small"><span class="faint">Evidence:</span> ' + esc(truncate(d.evidence, 200)) + "</div>" : "") +
-        (d.expected ? '<div class="small"><span class="faint">Expected:</span> ' + esc(truncate(d.expected, 200)) + "</div>" : "") +
-        ((d.links && d.links.length) ? '<div class="relbox" style="margin-top:6px">' + d.links.slice(0, 4).map(l => typeChip(l.type, l.id)).join("") + "</div>" : "") +
+        (d.reviewDate ? badge("Review " + fmtDateShort(d.reviewDate), overdueReview ? "danger" : "neutral", "calendar") : "") + "</div>" +
+        (d.evidence ? '<div class="rec-body" style="-webkit-line-clamp:3">' + esc(truncate(d.evidence, 240)) + "</div>" : "") +
+        (d.expected ? '<div class="small muted" style="margin-top:6px"><span class="faint">Expected:</span> ' + esc(truncate(d.expected, 130)) + "</div>" : "") +
+        '<div class="rec-foot">' + (d.links || []).slice(0, 3).map(l => typeChip(l.type, l.id)).join("") +
+        '<span class="grow"></span><span class="tiny faint">Open decision →</span></div>' +
         "</div>";
     }).join("") + "</div>";
   }
@@ -3776,7 +3798,7 @@ VIEWS.swipe = function () {
     return html;
   }
 
-  html += '<div class="list">' + list.map(s => swipeItemCard(s)).join("") + "</div>";
+  html += '<div class="cards">' + list.map(s => swipeItemCard(s)).join("") + "</div>";
   return html;
 };
 
@@ -3793,13 +3815,13 @@ function swipeItemCard(s) {
       (s.status === "In use" ? badge("In use", "ok") : "") +
     "</div>" +
     (prev
-      ? '<div class="swipe-copy">' + esc(prev) + "</div>" +
-        (more ? '<div class="rec-foot" style="gap:6px"><span class="chip subtle">read the rest →</span></div>' : "")
+      ? '<div class="swipe-copy">' + esc(prev) + "</div>"
       : '<div class="rec-body muted">No copy pasted yet.</div>') +
     '<div class="rec-meta">' + [s.source, s.author, s.channel && s.channel !== "Other" ? s.channel : "", s.date ? fmtDateShort(s.date) : ""]
       .filter(Boolean).map(x => "<span>" + esc(truncate(x, 44)) + "</span>").join("<span>·</span>") + "</div>" +
     fileStripHTML(s, 3) +
-    '<div class="rec-foot">' + (s.tags || []).slice(0, 4).map(t => '<span class="tag">' + esc(t) + "</span>").join("") +
+    '<div class="rec-foot">' + (more ? '<span class="chip subtle">full copy →</span>' : "") +
+      (s.tags || []).slice(0, 4).map(t => '<span class="tag">' + esc(t) + "</span>").join("") +
       (s.links || []).slice(0, 2).map(l => typeChip(l.type, l.id)).join("") +
       (copy ? '<button class="btn xs subtle" data-act="copy-swipe" data-id="' + esc(s.id) + '">' + icon("copy", 12) + " Copy text</button>" : "") +
     "</div>" +
@@ -5988,5 +6010,5 @@ async function boot() {
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
 else boot();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4bebbc5bef4f5e3',t:'MTc5MjIzNDEzMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4bef9ba6a2d6668',t:'MTc5MjIzNjY3MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

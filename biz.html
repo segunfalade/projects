@@ -369,6 +369,29 @@ table.tbl tbody tr:hover{background:var(--surface-2)}
 .step-line .grow{min-width:0}
 .paste-box{font-family:var(--mono);font-size:12px;min-height:96px}
 
+/* ------------------------------------ document viewer (no download) -- */
+.doc-head{display:flex;align-items:flex-start;gap:11px;padding:13px 18px;border-bottom:1px solid var(--border)}
+.doc-ico{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);flex:none}
+.doc-name{font-size:14.5px;font-weight:650;letter-spacing:-.01em;overflow-wrap:anywhere}
+.doc-note{font-size:11.5px;color:var(--muted);margin-top:2px}
+.doc-body{padding:16px 18px;max-height:64vh;overflow:auto}
+.doc-loading{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;padding:26px 4px}
+.doc-text{white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:0;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow-wrap:anywhere}
+.doc-read{max-width:74ch}
+.doc-read p{margin:0 0 9px;font-size:13.5px;line-height:1.7}
+.doc-slide{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:var(--surface-2)}
+.doc-slide-n{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:700;margin-bottom:6px}
+.doc-slide p{margin:0 0 5px;font-size:13px;line-height:1.6}
+.doc-h{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:700;margin:14px 0 6px}
+.doc-h:first-child{margin-top:0}
+.frame-note{font-size:11.5px;color:var(--muted);background:var(--surface-2);border:1px solid var(--border);
+  border-radius:8px;padding:7px 10px;margin-bottom:10px}
+.file-frame{width:100%;height:60vh;border:1px solid var(--border);border-radius:10px;background:#fff;display:block}
+.file-audio-wide{padding:6px 0}
+.file-audio-wide audio{width:100%}
+html[data-theme="dark"] .file-frame{background:#1a2129}
+
 /* ---------------------------------------------- attachments --------- */
 .filebox{border:1px dashed var(--border-strong);border-radius:10px;padding:11px;background:var(--surface-2)}
 .filebox.dropping,.file-drop.dropping{border-color:var(--accent);background:var(--accent-soft)}
@@ -697,7 +720,7 @@ mark.hit{background:var(--warn-soft);color:inherit;border-radius:3px;padding:0 1
    ========================================================================= */
 const APP = {
   name: "Copywriter OS",
-  version: "1.3.0",
+  version: "1.4.0",
   schema: 1,          // data schema version — bumped on breaking data changes
   fileKey: "copywriter-os"
 };
@@ -1855,7 +1878,8 @@ const P = {
   paperclip: '<path d="M21.4 11.1l-8.5 8.5a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 1 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/>',
   image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>',
   music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
-  doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>'
+  doc: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  eye: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>'
 };
 function icon(name, size, cls) {
   const d = P[name] || P.link;
@@ -3945,6 +3969,7 @@ function fileAllowed(f) {
 /* ------------------------------------------------------------- the store -- */
 const Files = {
   urlCache: {},      // id -> object URL or data URL (session cache)
+  blobCache: {},     // id -> guaranteed object URL (for frames and downloads)
   mem: {},           // last-resort in-memory store
   _ls: null,         // parsed localStorage map cache
 
@@ -4025,6 +4050,10 @@ const Files = {
       if (/^blob:/.test(this.urlCache[id])) { try { URL.revokeObjectURL(this.urlCache[id]); } catch (e) { /* ignore */ } }
       delete this.urlCache[id];
     }
+    if (this.blobCache[id]) {
+      if (/^blob:/.test(this.blobCache[id])) { try { URL.revokeObjectURL(this.blobCache[id]); } catch (e) { /* ignore */ } }
+      delete this.blobCache[id];
+    }
   },
   async delMany(ids) {
     for (const id of (ids || [])) { try { await this.del(id); } catch (e) { /* ignore */ } }
@@ -4040,6 +4069,23 @@ const Files = {
     else if (rec.blob) { try { u = URL.createObjectURL(rec.blob); } catch (e) { u = null; } }
     if (u) this.urlCache[id] = u;
     return u;
+  },
+
+  /* Always an object URL — data: URLs are refused by some browsers in frames
+     (PDFs) and for downloads. Falls back to the data URL if a Blob is impossible. */
+  async blobUrl(id) {
+    if (this.blobCache[id]) return this.blobCache[id];
+    const rec = await this.get(id);
+    if (!rec) return null;
+    let blob = rec.blob || (rec.data ? dataUrlToBlob(rec.data) : null);
+    if (blob) {
+      try {
+        const u = URL.createObjectURL(blob);
+        this.blobCache[id] = u;
+        return u;
+      } catch (e) { /* fall through */ }
+    }
+    return rec.data || null;
   },
 
   /* Every attachment referenced by any record, as base64 — used for backups. */
@@ -4087,7 +4133,11 @@ const Files = {
     Object.keys(this.urlCache).forEach(id => {
       if (/^blob:/.test(this.urlCache[id])) { try { URL.revokeObjectURL(this.urlCache[id]); } catch (e) { /* ignore */ } }
     });
+    Object.keys(this.blobCache).forEach(id => {
+      if (/^blob:/.test(this.blobCache[id])) { try { URL.revokeObjectURL(this.blobCache[id]); } catch (e) { /* ignore */ } }
+    });
     this.urlCache = {};
+    this.blobCache = {};
     this.mem = {};
   }
 };
@@ -4190,7 +4240,7 @@ function fileCardHTML(m) {
       (k === "audio" ? '<audio class="file-audio" controls preload="metadata" data-file-id="' + esc(m.id) + '" data-file-use="audio"></audio>' : "") +
     "</div>" +
     '<div class="file-acts">' +
-      (k === "pdf" ? '<button class="icon-btn sm" data-act="file-view" data-id="' + esc(m.id) + '" title="Open PDF">' + icon("external", 14) + "</button>" : "") +
+      '<button class="icon-btn sm" data-act="file-view" data-id="' + esc(m.id) + '" title="View">' + icon("eye", 14) + "</button>" +
       '<a class="icon-btn sm" data-file-id="' + esc(m.id) + '" data-file-use="dl" download="' + esc(m.name) + '" title="Download">' + icon("download", 14) + "</a>" +
       '<button class="icon-btn sm danger" data-act="file-del" data-id="' + esc(m.id) + '" title="Remove attachment">' + icon("trash", 14) + "</button>" +
     "</div></div>";
@@ -4318,38 +4368,8 @@ function removeAttachment(type, id, fileId) {
   refreshAttachmentViews(type, id);
   toast("Attachment removed", "ok");
 }
-async function openFileViewer(fileId) {
-  const rec = await Files.get(fileId);
-  const url = await Files.url(fileId);
-  if (!url || !rec) { toast("That file is no longer in storage — it may be missing from your backup", "err", 6000); return; }
-  const k = fileKind(rec);
-  if (k === "pdf") {
-    const win = window.open(url, "_blank");
-    if (!win) {
-      openModal({
-        title: esc(rec.name),
-        body: '<p class="small muted">Your browser blocked a new tab. Use Download to save the PDF, then open it.</p>',
-        buttons: [{ label: "Download", cls: "primary", onClick: () => downloadFile(fileId) }, { label: "Close", cls: "subtle", onClick: () => closeModal() }]
-      });
-    }
-    return;
-  }
-  if (k !== "image") { downloadFile(fileId); return; }
-  /* Viewing an image from inside the swipe window must not lose the window. */
-  const prevWin = (typeof SWIPE_WIN !== "undefined" && SWIPE_WIN && SWIPE_WIN.draw) ? SWIPE_WIN : null;
-  openModal({
-    title: false, wide: true,
-    onClose: function () {
-      if (prevWin) { SWIPE_WIN = prevWin; prevWin.draw(); }
-    },
-    body: '<div class="file-viewer"><img src="' + esc(url) + '" alt="' + esc(rec.name) + '">' +
-      '<div class="file-viewer-bar"><span class="grow small muted">' + esc(rec.name) + " · " + esc(fmtBytes(rec.size)) + "</span></div></div>",
-    buttons: [
-      { label: "Close", cls: "subtle", onClick: () => closeModal() },
-      { label: "Download", cls: "primary", onClick: () => downloadFile(fileId) }
-    ]
-  });
-}
+/* openFileViewer lives in 11-preview.js — the full document viewer. */
+
 async function downloadFile(fileId) {
   const rec = await Files.get(fileId);
   const url = await Files.url(fileId);
@@ -4360,6 +4380,372 @@ async function downloadFile(fileId) {
   document.body.appendChild(a);
   a.click();
   setTimeout(() => { try { a.remove(); } catch (e) { /* ignore */ } }, 300);
+}
+/* ============================================================================
+   MODULE 11 — Inline document preview
+   Opens uploaded files in a centred window instead of sending them to a
+   download folder. PDFs use the browser's own reader in a frame; text, CSV,
+   JSON and RTF are read and printed; Word, Excel and PowerPoint files are
+   unpacked (they are ZIP archives of XML) and their text and tables are
+   rebuilt with no external library. Anything that cannot be rendered says so
+   plainly and still offers Open / Download.
+   ========================================================================= */
+const PREVIEW_TEXT_CAP = 400000;      // characters of extracted text to render
+const PREVIEW_BYTES_CAP = 25 * 1024 * 1024;
+
+/* ------------------------------------------------------- low-level bytes -- */
+async function fileBytes(id) {
+  const rec = await Files.get(id);
+  if (!rec) return null;
+  if (rec.blob) return rec.blob;
+  if (rec.data) return dataUrlToBlob(rec.data);
+  return null;
+}
+async function fileText(id) {
+  const blob = await fileBytes(id);
+  if (!blob) return null;
+  try { return await blob.text(); } catch (e) { /* older browsers */ }
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(String(fr.result));
+    fr.onerror = () => reject(fr.error || new Error("could not read file"));
+    fr.readAsText(blob);
+  });
+}
+async function fileBuffer(id) {
+  const blob = await fileBytes(id);
+  if (!blob) return null;
+  try { return await blob.arrayBuffer(); } catch (e) { /* older browsers */ }
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(fr.result);
+    fr.onerror = () => reject(fr.error || new Error("could not read file"));
+    fr.readAsArrayBuffer(blob);
+  });
+}
+
+/* ------------------------------------------------------------ zip reader -- */
+/* Just enough of the ZIP format to reach the XML inside Office files. */
+function readZipIndex(buf) {
+  const u8 = new Uint8Array(buf);
+  const dv = new DataView(buf);
+  let eocd = -1;
+  const floor = Math.max(0, u8.length - 66000);
+  for (let i = u8.length - 22; i >= floor; i--) {
+    if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) return null;
+  const count = dv.getUint16(eocd + 10, true);
+  let off = dv.getUint32(eocd + 16, true);
+  const entries = {};
+  const order = [];
+  for (let n = 0; n < count; n++) {
+    if (off + 46 > u8.length) break;
+    if (dv.getUint32(off, true) !== 0x02014b50) break;
+    const method = dv.getUint16(off + 10, true);
+    const compSize = dv.getUint32(off + 20, true);
+    const uncompSize = dv.getUint32(off + 24, true);
+    const nameLen = dv.getUint16(off + 28, true);
+    const extraLen = dv.getUint16(off + 30, true);
+    const commentLen = dv.getUint16(off + 32, true);
+    const localOff = dv.getUint32(off + 42, true);
+    let name = "";
+    try { name = new TextDecoder().decode(u8.subarray(off + 46, off + 46 + nameLen)); } catch (e) { name = ""; }
+    if (name) { entries[name] = { method: method, compSize: compSize, uncompSize: uncompSize, localOff: localOff }; order.push(name); }
+    off += 46 + nameLen + extraLen + commentLen;
+  }
+  return { entries: entries, order: order, u8: u8, dv: dv };
+}
+async function inflateRaw(u8, start, length) {
+  const raw = u8.subarray(start, start + length);
+  if (typeof DecompressionStream !== "function") return null;
+  try {
+    const ds = new DecompressionStream("deflate-raw");
+    const stream = new Blob([raw]).stream().pipeThrough(ds);
+    return new TextDecoder().decode(await new Response(stream).arrayBuffer());
+  } catch (e) { return null; }
+}
+async function readZipEntry(zip, name) {
+  const e = zip.entries[name];
+  if (!e) return null;
+  const dv = zip.dv, u8 = zip.u8;
+  if (e.localOff + 30 > u8.length) return null;
+  if (dv.getUint32(e.localOff, true) !== 0x04034b50) return null;
+  const nameLen = dv.getUint16(e.localOff + 26, true);
+  const extraLen = dv.getUint16(e.localOff + 28, true);
+  const start = e.localOff + 30 + nameLen + extraLen;
+  if (e.method === 0) {
+    try { return new TextDecoder().decode(u8.subarray(start, start + e.compSize)); } catch (err) { return null; }
+  }
+  if (e.method === 8) return await inflateRaw(u8, start, e.compSize);
+  return null;
+}
+function zipListing(zip) {
+  const rows = zip.order.map(n => {
+    const e = zip.entries[n];
+    return { name: n, size: e.uncompSize || e.compSize };
+  }).sort((a, b) => a.name.localeCompare(b.name));
+  return '<table class="tbl"><thead><tr><th>File</th><th>Size</th></tr></thead><tbody>' +
+    rows.map(r => "<tr><td>" + esc(r.name) + "</td><td>" + esc(fmtBytes(r.size)) + "</td></tr>").join("") +
+    "</tbody></table>";
+}
+
+/* --------------------------------------------------------- xml -> reading -- */
+function untag(xml) {
+  return String(xml)
+    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+}
+function xmlText(xml) {
+  return untag(String(xml).replace(/<[^>]*>/g, "")).replace(/[ \t]+/g, " ").trim();
+}
+function docxToHtml(xml) {
+  let s = String(xml);
+  // turn paragraphs and breaks into line breaks before stripping tags
+  s = s.replace(/<\/w:p>/g, "\n");
+  s = s.replace(/<w:br\s*\/?>/g, "\n");
+  s = s.replace(/<w:tab\s*\/?>/g, "\t");
+  s = s.replace(/<[^>]+>/g, "");
+  s = untag(s);
+  const paras = s.split("\n").map(l => l.replace(/\s+/g, " ").trim()).filter(l => l.length);
+  if (!paras.length) return "";
+  return '<div class="doc-read">' + paras.map(p => "<p>" + esc(p) + "</p>").join("") + "</div>";
+}
+function pptxToHtml(zipEntries) {
+  const slides = zipEntries.order.filter(n => /^ppt\/slides\/slide\d+\.xml$/.test(n))
+    .sort((a, b) => (parseInt(a.match(/(\d+)/)[1], 10) || 0) - (parseInt(b.match(/(\d+)/)[1], 10) || 0));
+  let out = "";
+  slides.forEach((n, i) => {
+    const xml = zipEntries.cache[n];
+    if (!xml) return;
+    let s = String(xml).replace(/<a:t>/g, "").replace(/<\/a:t>/g, " ");
+    s = s.replace(/<\/a:p>/g, "\n").replace(/<a:br\s*\/?>/g, "\n");
+    s = s.replace(/<[^>]+>/g, "");
+    s = untag(s);
+    const lines = s.split("\n").map(l => l.replace(/\s+/g, " ").trim()).filter(l => l.length);
+    if (!lines.length) return;
+    out += '<div class="doc-slide"><div class="doc-slide-n">Slide ' + (i + 1) + "</div>" +
+      lines.map(l => "<p>" + esc(l) + "</p>").join("") + "</div>";
+  });
+  return out;
+}
+function xlsxToTables(zipEntries) {
+  let shared = [];
+  if (zipEntries.cache["xl/sharedStrings.xml"]) {
+    const ss = zipEntries.cache["xl/sharedStrings.xml"];
+    const parts = ss.match(/<si>[\s\S]*?<\/si>/g) || [];
+    shared = parts.map(p => xmlText(p));
+  }
+  const sheets = zipEntries.order.filter(n => /^xl\/worksheets\/sheet\d+\.xml$/.test(n))
+    .sort((a, b) => (parseInt(a.match(/(\d+)/)[1], 10) || 0) - (parseInt(b.match(/(\d+)/)[1], 10) || 0)).slice(0, 3);
+  let out = "";
+  sheets.forEach((n, si) => {
+    const xml = zipEntries.cache[n];
+    if (!xml) return;
+    const nameMatch = zipEntries.cache["xl/workbook.xml"];
+    let label = "Sheet " + (si + 1);
+    if (nameMatch) {
+      const names = nameMatch.match(/<sheet[^>]*name="([^"]*)"[^>]*>/g) || [];
+      if (names[si]) { const mm = names[si].match(/name="([^"]*)"/); if (mm) label = untag(mm[1]); }
+    }
+    const rows = [];
+    (xml.match(/<row[\s\S]*?<\/row>|<row[^>]*\/>/g) || []).slice(0, 300).forEach(r => {
+      const cells = [];
+      (r.match(/<c[\s\S]*?<\/c>|<c[^>]*\/>/g) || []).slice(0, 24).forEach(c => {
+        const tAttr = (c.match(/t="([^"]*)"/) || [])[1] || "n";
+        const vMatch = c.match(/<v>([\s\S]*?)<\/v>/);
+        let v = vMatch ? xmlText(vMatch[1]) : "";
+        if (tAttr === "s" && v !== "" && shared[Number(v)]) v = shared[Number(v)];
+        const isMatch = c.match(/<t[^>]*>([\s\S]*?)<\/t>/);
+        if (tAttr === "inlineStr" && isMatch) v = xmlText(isMatch[1]);
+        cells.push(v);
+      });
+      if (cells.length) rows.push(cells);
+    });
+    if (!rows.length) return;
+    const head = rows.shift();
+    out += '<h5 class="doc-h">' + esc(label) + "</h5>" +
+      '<div class="tbl-wrap"><table class="tbl"><thead><tr>' +
+      head.map(h => "<th>" + esc(h) + "</th>").join("") + "</tr></thead><tbody>" +
+      rows.map(r => "<tr>" + head.map((_, i) => "<td>" + esc(r[i] === undefined ? "" : r[i]) + "</td>").join("") + "</tr>").join("") +
+      "</tbody></table></div>";
+  });
+  return out;
+}
+
+/* ------------------------------------------------------------------ csv --- */
+function parseCsv(text, maxRows) {
+  const rows = [];
+  let row = [], cell = "", quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else quoted = false; }
+      else cell += c;
+    } else if (c === '"') quoted = true;
+    else if (c === ",") { row.push(cell); cell = ""; }
+    else if (c === "\n") { row.push(cell); rows.push(row); row = []; cell = ""; if (rows.length > maxRows) break; }
+    else if (c !== "\r") cell += c;
+  }
+  if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+function csvToTable(text) {
+  const rows = parseCsv(text, 300);
+  if (!rows.length) return "";
+  const head = rows.shift();
+  return '<div class="tbl-wrap"><table class="tbl"><thead><tr>' +
+    head.map(h => "<th>" + esc(h) + "</th>").join("") + "</tr></thead><tbody>" +
+    rows.map(r => "<tr>" + head.map((_, i) => "<td>" + esc(r[i] === undefined ? "" : r[i]) + "</td>").join("") + "</tr>").join("") +
+    "</tbody></table></div>";
+}
+function rtfToText(s) {
+  return String(s)
+    .replace(/\{\\[^{}]*\}/g, " ")
+    .replace(/\\[a-zA-Z]+-?\d* ?/g, "")
+    .replace(/\\'[0-9a-fA-F]{2}/g, "")
+    .replace(/[{}]/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .split("\n").map(l => l.replace(/\s+/g, " ").trim()).join("\n")
+    .trim();
+}
+
+/* --------------------------------------------------------- the previewer -- */
+/* Returns { html, note } — html goes in the modal body, note is a small line
+   under the header explaining what you are looking at. */
+async function buildFilePreview(rec) {
+  const k = fileKind(rec);
+  const name = rec.name || "file";
+
+  if (k === "image") {
+    const url = await Files.url(rec.id);
+    return { html: '<div class="file-viewer"><img src="' + esc(url) + '" alt="' + esc(name) + '"></div>', note: "Image · " + fmtBytes(rec.size) };
+  }
+  if (k === "audio") {
+    const url = await Files.url(rec.id);
+    return {
+      html: '<div class="file-audio-wide"><audio controls preload="metadata" src="' + esc(url) + '"></audio>' +
+        '<p class="small muted" style="margin-top:10px">Audio plays here — no download needed.</p></div>',
+      note: "Audio · " + fmtBytes(rec.size)
+    };
+  }
+  if (k === "pdf") {
+    const url = await Files.url(rec.id);
+    return {
+      html: '<div class="frame-note">Shown by your browser\'s own PDF reader. If it stays blank, use <b>Open in a new tab</b>.</div>' +
+        '<iframe class="file-frame" src="' + esc(url) + '" title="' + esc(name) + '"></iframe>',
+      note: "PDF · " + fmtBytes(rec.size)
+    };
+  }
+  if (rec.size > PREVIEW_BYTES_CAP) {
+    return { html: '<div class="empty"><h3>Too large to preview</h3><p>This file is ' + esc(fmtBytes(rec.size)) + ". Open or download it instead.</p></div>", note: fileKindLabel(k) };
+  }
+
+  if (/\.rtf$/i.test(name)) {
+    const text = await fileText(rec.id);
+    if (text === null) return unsupported(k, rec);
+    return { html: '<pre class="doc-text">' + esc(rtfToText(text).slice(0, PREVIEW_TEXT_CAP)) + "</pre>", note: "Rich text · " + fmtBytes(rec.size) };
+  }
+
+  if (k === "text") {
+    const text = await fileText(rec.id);
+    if (text === null) return unsupported(k, rec);
+    if (/\.csv$/i.test(name)) {
+      const table = csvToTable(text);
+      if (table) return { html: table, note: "Spreadsheet · " + fmtBytes(rec.size) };
+    }
+    if (/\.json$/i.test(name)) {
+      let pretty = text;
+      try { pretty = JSON.stringify(JSON.parse(text), null, 2); } catch (e) { /* show raw */ }
+      return { html: '<pre class="doc-text">' + esc(pretty.slice(0, PREVIEW_TEXT_CAP)) + "</pre>", note: "JSON · " + fmtBytes(rec.size) };
+    }
+    return { html: '<pre class="doc-text">' + esc(text.slice(0, PREVIEW_TEXT_CAP)) + "</pre>", note: "Text · " + fmtBytes(rec.size) };
+  }
+
+  if (/\.(docx|pptx|xlsx)$/i.test(name)) {
+    const buf = await fileBuffer(rec.id);
+    const zip = buf ? readZipIndex(buf) : null;
+    if (!zip) return unsupported(k, rec);
+    zip.cache = {};
+    const want = zip.order.filter(n =>
+      /^word\/document\.xml$/.test(n) || /^ppt\/slides\/slide\d+\.xml$/.test(n) ||
+      /^xl\/(sharedStrings|workbook)\.xml$/.test(n) || /^xl\/worksheets\/sheet\d+\.xml$/.test(n));
+    for (const n of want.slice(0, 12)) { zip.cache[n] = await readZipEntry(zip, n); }
+    let html = "", note = fileKindLabel(k);
+    if (/\.docx$/i.test(name)) {
+      html = docxToHtml(zip.cache["word/document.xml"] || "");
+      note = "Word document · text only, no layout";
+    } else if (/\.pptx$/i.test(name)) {
+      html = pptxToHtml(zip);
+      note = "PowerPoint · slide text";
+    } else {
+      html = xlsxToTables(zip);
+      note = "Excel workbook · first sheets";
+    }
+    if (!html) return unsupported(k, rec);
+    return { html: html, note: note + " · " + fmtBytes(rec.size) };
+  }
+
+  if (/\.zip$/i.test(name)) {
+    const buf = await fileBuffer(rec.id);
+    const zip = buf ? readZipIndex(buf) : null;
+    if (!zip) return unsupported(k, rec);
+    return { html: zipListing(zip), note: "Archive · " + zip.order.length + " files inside" };
+  }
+
+  if (/\.(doc|xls|ppt)$/i.test(name)) {
+    return {
+      html: '<div class="empty"><h3>This is the older Office format</h3><p>' + esc(name) +
+        " predates the XML formats and cannot be opened inside a browser page. Re-save it as .docx, .xlsx or .pptx and attach that instead — or open it here.</p></div>",
+      note: "Legacy " + fileKindLabel(k)
+    };
+  }
+  return unsupported(k, rec);
+}
+function unsupported(k, rec) {
+  return {
+    html: '<div class="empty"><h3>No preview for this file type</h3><p>' + esc(fileKindLabel(k)) +
+      " files cannot be rendered inside the app. Use <b>Open in a new tab</b> to let your system handle it, or <b>Download</b> to save it.</p></div>",
+    note: fileKindLabel(k)
+  };
+}
+
+/* -------------------------------------------------------- the viewer modal -- */
+async function openFileViewer(fileId) {
+  const rec = await Files.get(fileId);
+  if (!rec) { toast("That file is no longer in storage — it may be missing from your backup", "err", 6000); return; }
+  const url = (await Files.blobUrl(fileId)) || (await Files.url(fileId));
+  if (!url) { toast("That file is no longer in storage — it may be missing from your backup", "err", 6000); return; }
+
+  /* Viewing a file from inside the swipe window must not lose the window. */
+  const prevWin = (typeof SWIPE_WIN !== "undefined" && SWIPE_WIN && SWIPE_WIN.draw) ? SWIPE_WIN : null;
+
+  const show = body => openModal({
+    title: false, wide: true,
+    onClose: function () { if (prevWin) { SWIPE_WIN = prevWin; prevWin.draw(); } },
+    body:
+      '<div class="doc-head">' +
+        '<div class="doc-ico">' + icon(FILE_KIND_ICON[fileKind(rec)], 17) + "</div>" +
+        '<div class="grow" style="min-width:0"><div class="doc-name">' + esc(rec.name || "file") + "</div>" +
+        '<div class="doc-note" id="docNote">Loading…</div></div>' +
+        '<button class="icon-btn" data-act="modal-close" aria-label="Close">' + icon("x", 16) + "</button>" +
+      "</div>" +
+      '<div class="modal-body doc-body" id="docBody">' + body + "</div>",
+    buttons: [
+      { label: "Close", cls: "subtle", onClick: () => closeModal() },
+      { label: "Open in a new tab", cls: "subtle", onClick: () => { const w = window.open(url, "_blank"); if (!w) toast("Your browser blocked the new tab — use Download instead", "err", 5000); } },
+      { label: "Download", cls: "primary", onClick: () => downloadFile(fileId) }
+    ]
+  });
+
+  const shell = show('<div class="doc-loading">' + icon("clock", 18) + " Reading " + esc(rec.name || "file") + "…</div>");
+  const note = shell ? shell.querySelector("#docNote") : null;
+  const bodyEl = shell ? shell.querySelector("#docBody") : null;
+  let out;
+  try { out = await buildFilePreview(rec); }
+  catch (e) { out = unsupported(fileKind(rec), rec); }
+  if (note) note.textContent = out.note || "";
+  if (bodyEl) bodyEl.innerHTML = out.html || "";
 }
 /* ============================================================================
    MODULE 07 — Settings & Data, search, onboarding, router, event wiring
@@ -5602,5 +5988,5 @@ async function boot() {
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
 else boot();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4b49d572983fe9c',t:'MTc5MjEyODAyOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4bebbc5bef4f5e3',t:'MTc5MjIzNDEzMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
